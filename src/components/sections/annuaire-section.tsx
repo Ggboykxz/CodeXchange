@@ -75,7 +75,7 @@ type ProfileDetail = Profile & {
       coverEmoji: string;
       readTime: number;
     }>;
-    mentor?: {
+    mentorProfile?: {
       id: string;
       expertise: string;
       hourlyRate: string | null;
@@ -168,7 +168,7 @@ export function AnnuaireSection() {
     if (loadingProfile) {
       return (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="h-6 w-6 animate-spin text-terracotta" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground" />
         </div>
       );
     }
@@ -195,11 +195,11 @@ export function AnnuaireSection() {
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-3 mb-1">
-                <h1 className="font-serif text-3xl lg:text-4xl font-bold leading-tight">
+                <h1 className="font-bold text-3xl lg:text-4xl leading-tight">
                   {selectedProfile.user.name}
                 </h1>
                 {selectedProfile.available && (
-                  <Tag label={t("annuaire.open_to_work")} variant="baobab" />
+                  <Tag label={t("annuaire.open_to_work")} variant="solid" />
                 )}
               </div>
               {selectedProfile.headline && (
@@ -269,7 +269,7 @@ export function AnnuaireSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {selectedProfile.user.threads.length > 0 && (
             <Card className="p-5">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-terracotta mb-3 flex items-center gap-1.5">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-foreground mb-3 flex items-center gap-1.5">
                 <MessageSquare className="h-3.5 w-3.5" />
                 {t("annuaire.recent_threads")}
               </h3>
@@ -278,7 +278,7 @@ export function AnnuaireSection() {
                   <li key={th.id}>
                     <button
                       onClick={() => navigate("forum", th.slug)}
-                      className="text-sm text-left hover:text-terracotta transition line-clamp-2"
+                      className="text-sm text-left hover:text-foreground transition line-clamp-2"
                     >
                       {th.title}
                     </button>
@@ -296,7 +296,7 @@ export function AnnuaireSection() {
 
           {selectedProfile.user.projects.length > 0 && (
             <Card className="p-5">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-terracotta mb-3 flex items-center gap-1.5">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-foreground mb-3 flex items-center gap-1.5">
                 <FolderGit2 className="h-3.5 w-3.5" />
                 {t("annuaire.recent_projects")}
               </h3>
@@ -317,7 +317,7 @@ export function AnnuaireSection() {
 
           {selectedProfile.user.tutorials.length > 0 && (
             <Card className="p-5">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-terracotta mb-3 flex items-center gap-1.5">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-foreground mb-3 flex items-center gap-1.5">
                 <BookOpen className="h-3.5 w-3.5" />
                 {t("annuaire.recent_tutos")}
               </h3>
@@ -326,7 +326,7 @@ export function AnnuaireSection() {
                   <li key={tu.id}>
                     <button
                       onClick={() => navigate("tutos", tu.slug)}
-                      className="text-sm text-left hover:text-terracotta transition line-clamp-2 flex items-start gap-1.5"
+                      className="text-sm text-left hover:text-foreground transition line-clamp-2 flex items-start gap-1.5"
                     >
                       <span>{tu.coverEmoji}</span>
                       <span className="line-clamp-2">{tu.title}</span>
@@ -458,7 +458,7 @@ export function AnnuaireSection() {
                 onClick={() => navigate("annuaire", p.username)}
                 className="text-left group"
               >
-                <Card className="h-full p-5 hover:border-terracotta/50 hover:shadow-sm transition-all">
+                <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                   <div className="flex items-start gap-3 mb-3">
                     <Avatar
                       name={p.user.name}
@@ -466,7 +466,7 @@ export function AnnuaireSection() {
                       size="lg"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-serif text-lg font-semibold leading-tight group-hover:text-terracotta transition-colors">
+                      <h3 className="font-bold text-lg leading-tight group-hover:text-foreground transition-colors">
                         {p.user.name}
                       </h3>
                       {p.headline && (
@@ -477,14 +477,14 @@ export function AnnuaireSection() {
                       {p.level && (
                         <Tag
                           label={t(`annuaire.level.${p.level}`)}
-                          variant="terracotta"
+                          variant="solid"
                           className="mt-1.5"
                         />
                       )}
                     </div>
                     {p.available && (
                       <span
-                        className="h-2 w-2 rounded-full bg-baobab shrink-0 mt-2"
+                        className="h-2 w-2 rounded-full bg-foreground shrink-0 mt-2"
                         title={t("annuaire.open_to_work")}
                       />
                     )}

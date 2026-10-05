@@ -23,31 +23,24 @@ import { AuthForm } from "@/components/shared/auth-form";
 import { Avatar } from "@/components/shared/avatar";
 import {
   Menu,
-  Terminal,
-  MessageSquare,
-  Briefcase,
-  FolderGit2,
-  GraduationCap,
-  BookOpen,
-  Users,
   LogOut,
   ChevronDown,
+  Github,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
   section: string;
   labelKey: string;
-  icon: typeof MessageSquare;
 }
 
 const navItems: NavItem[] = [
-  { section: "forum", labelKey: "nav.forum", icon: MessageSquare },
-  { section: "jobs", labelKey: "nav.jobs", icon: Briefcase },
-  { section: "projects", labelKey: "nav.projects", icon: FolderGit2 },
-  { section: "mentorat", labelKey: "nav.mentorat", icon: GraduationCap },
-  { section: "tutos", labelKey: "nav.tutos", icon: BookOpen },
-  { section: "annuaire", labelKey: "nav.annuaire", icon: Users },
+  { section: "forum", labelKey: "nav.forum" },
+  { section: "jobs", labelKey: "nav.jobs" },
+  { section: "projects", labelKey: "nav.projects" },
+  { section: "mentorat", labelKey: "nav.mentorat" },
+  { section: "tutos", labelKey: "nav.tutos" },
+  { section: "annuaire", labelKey: "nav.annuaire" },
 ];
 
 export function Header() {
@@ -72,59 +65,61 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/65">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="flex h-14 items-center justify-between gap-4">
             {/* Logo */}
             <button
               onClick={() => go("home")}
               className="flex items-center gap-2 shrink-0 group"
             >
-              <div className="h-9 w-9 rounded-md bg-ink text-background flex items-center justify-center font-serif font-bold text-lg">
-                <span className="text-sun">&gt;_</span>
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-serif text-lg font-bold tracking-tight">
-                  CodeXchange
-                </span>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground hidden sm:block">
-                  by devs, for devs
-                </span>
-              </div>
+              <span className="text-base font-bold tracking-tight">
+                <span className="text-muted-foreground">$</span>{" "}
+                <span className="text-foreground">codexchange</span>
+                <span className="text-muted-foreground">.dev</span>
+              </span>
             </button>
 
             {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-0">
               {navItems.map((item) => {
-                const Icon = item.icon;
                 const active = currentSection === item.section;
                 return (
                   <button
                     key={item.section}
                     onClick={() => go(item.section)}
                     className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                      "px-3 py-1.5 text-sm transition-colors relative",
                       active
-                        ? "bg-terracotta/10 text-terracotta"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
                     )}
                   >
-                    <Icon className="h-3.5 w-3.5" />
                     {t(item.labelKey)}
+                    {active && (
+                      <span className="absolute -bottom-px left-3 right-3 h-px bg-foreground" />
+                    )}
                   </button>
                 );
               })}
             </nav>
 
             {/* Right actions */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
+              <a
+                href="#"
+                aria-label="GitHub"
+                className="hidden sm:flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-foreground transition"
+              >
+                <Github className="h-4 w-4" />
+              </a>
               <LanguageSwitcher />
               <ThemeToggle />
 
               {user ? (
                 <button
                   onClick={() => go("dashboard")}
-                  className="flex items-center gap-2 ml-1 pl-2 pr-1 py-1 rounded-full border border-border hover:bg-muted transition"
+                  className="flex items-center gap-2 ml-1 pl-2 pr-1 py-1 rounded border border-border hover:bg-muted/50 transition text-sm"
                 >
                   <Avatar
                     name={user.name}
@@ -142,14 +137,14 @@ export function Header() {
                     variant="ghost"
                     size="sm"
                     onClick={() => openAuth("login")}
-                    className="hidden sm:inline-flex"
+                    className="hidden sm:inline-flex text-sm"
                   >
                     {t("nav.login")}
                   </Button>
                   <Button
                     size="sm"
                     onClick={() => openAuth("register")}
-                    className="bg-terracotta hover:bg-terracotta/90"
+                    className="bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
                   >
                     {t("nav.register")}
                   </Button>
@@ -162,37 +157,32 @@ export function Header() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="lg:hidden"
+                    className="md:hidden"
                     aria-label="Menu"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[360px]">
+                <SheetContent side="right" className="w-[300px] sm:w-[340px]">
                   <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-md bg-ink text-background flex items-center justify-center font-serif font-bold">
-                        <span className="text-sun">&gt;_</span>
-                      </div>
-                      CodeXchange
+                      <span className="font-mono font-bold">
+                        <span className="text-muted-foreground">$</span> codexchange
+                        <span className="text-muted-foreground">.dev</span>
+                      </span>
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-1 mt-6">
-                    {navItems.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <button
-                          key={item.section}
-                          onClick={() => go(item.section)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-md text-left hover:bg-muted transition"
-                        >
-                          <Icon className="h-4 w-4 text-terracotta" />
-                          <span className="text-sm font-medium">
-                            {t(item.labelKey)}
-                          </span>
-                        </button>
-                      );
-                    })}
+                    {navItems.map((item) => (
+                      <button
+                        key={item.section}
+                        onClick={() => go(item.section)}
+                        className="flex items-center gap-3 px-3 py-2 rounded text-left hover:bg-muted transition text-sm"
+                      >
+                        <span className="text-muted-foreground">→</span>
+                        <span>{t(item.labelKey)}</span>
+                      </button>
+                    ))}
                   </nav>
                   <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border space-y-2">
                     {user ? (
@@ -220,7 +210,7 @@ export function Header() {
                           {t("nav.login")}
                         </Button>
                         <Button
-                          className="w-full bg-terracotta hover:bg-terracotta/90"
+                          className="w-full bg-foreground text-background hover:bg-foreground/90"
                           onClick={() => {
                             openAuth("register");
                             setMobileOpen(false);
@@ -236,25 +226,18 @@ export function Header() {
             </div>
           </div>
         </div>
-        {/* Kente divider */}
-        <div className="kente-divider opacity-30" />
       </header>
 
       {/* Auth modal */}
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-2xl font-serif">
-              <Terminal className="h-5 w-5 text-terracotta" />
+            <DialogTitle className="text-xl">
+              <span className="text-muted-foreground">$</span>{" "}
               {authMode === "login"
-                ? t("auth.login.title")
-                : t("auth.register.title")}
+                ? t("auth.login.title").toLowerCase()
+                : t("auth.register.title").toLowerCase()}
             </DialogTitle>
-            <p className="text-sm text-muted-foreground">
-              {authMode === "login"
-                ? t("auth.login.subtitle")
-                : t("auth.register.subtitle")}
-            </p>
           </DialogHeader>
           <AuthForm
             mode={authMode}

@@ -14,7 +14,7 @@ export async function GET(
           threads: { take: 5, orderBy: { createdAt: "desc" } },
           projects: { take: 5, orderBy: { stars: "desc" } },
           tutorials: { take: 3, orderBy: { createdAt: "desc" } },
-          mentor: true,
+          mentorProfile: true,
         },
       },
     },

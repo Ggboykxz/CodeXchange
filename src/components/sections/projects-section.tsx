@@ -152,13 +152,13 @@ export function ProjectsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((p) => (
             <button key={p.id} onClick={() => setSelected(p)} className="text-left group">
-              <Card className="h-full p-5 hover:border-terracotta/50 hover:shadow-sm transition-all">
+              <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="h-12 w-12 rounded-md bg-sun/15 border border-sun/30 flex items-center justify-center text-2xl shrink-0">
+                  <div className="h-12 w-12 rounded-md bg-muted border border-border flex items-center justify-center text-2xl shrink-0">
                     {p.cover || "📦"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-lg font-semibold leading-tight group-hover:text-terracotta transition-colors">
+                    <h3 className="font-bold text-lg leading-tight group-hover:text-foreground transition-colors">
                       {p.name}
                     </h3>
                     <p className="text-sm text-muted-foreground line-clamp-1">
@@ -211,11 +211,11 @@ export function ProjectsSection() {
             <>
               <DialogHeader>
                 <div className="flex items-start gap-3">
-                  <div className="h-14 w-14 rounded-md bg-sun/15 border border-sun/30 flex items-center justify-center text-3xl shrink-0">
+                  <div className="h-14 w-14 rounded-md bg-muted border border-border flex items-center justify-center text-3xl shrink-0">
                     {selected.cover || "📦"}
                   </div>
                   <div className="flex-1">
-                    <DialogTitle className="font-serif text-2xl">
+                    <DialogTitle className="font-bold text-2xl">
                       {selected.name}
                     </DialogTitle>
                     <DialogDescription className="text-base">
@@ -243,7 +243,7 @@ export function ProjectsSection() {
 
               {selected.lookingFor && (
                 <div>
-                  <h4 className="text-xs font-mono uppercase tracking-widest text-terracotta mb-2 flex items-center gap-1">
+                  <h4 className="text-xs font-mono uppercase tracking-widest text-foreground mb-2 flex items-center gap-1">
                     <Sparkles className="h-3 w-3" />
                     {t("projects.looking_for")}
                   </h4>
@@ -253,7 +253,7 @@ export function ProjectsSection() {
                       .map((s) => s.trim())
                       .filter(Boolean)
                       .map((s) => (
-                        <Tag key={s} label={s} variant="terracotta" />
+                        <Tag key={s} label={s} variant="outline" />
                       ))}
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export function ProjectsSection() {
                     </Button>
                   )}
                   {selected.demoUrl && (
-                    <Button asChild size="sm" className="bg-terracotta hover:bg-terracotta/90">
+                    <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90">
                       <a href={selected.demoUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4 mr-1.5" />
                         {t("projects.demo")}

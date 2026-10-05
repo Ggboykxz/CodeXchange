@@ -245,7 +245,7 @@ export function ForumSection() {
     if (loadingDetail) {
       return (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="h-6 w-6 animate-spin text-terracotta" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground" />
         </div>
       );
     }
@@ -268,12 +268,12 @@ export function ForumSection() {
           <header>
             <div className="flex items-center gap-2 mb-3">
               {selectedThread.pinned && (
-                <Tag label={t("forum.pinned")} variant="terracotta">
+                <Tag label={t("forum.pinned")} variant="solid">
                   <Pin className="h-3 w-3 mr-1 inline" />
                 </Tag>
               )}
               {selectedThread.solved && (
-                <Tag label={t("forum.solved")} variant="baobab">
+                <Tag label={t("forum.solved")} variant="outline">
                   <CheckCircle2 className="h-3 w-3 mr-1 inline" />
                 </Tag>
               )}
@@ -292,7 +292,7 @@ export function ForumSection() {
                 {t("forum.by")}{" "}
                 <button
                   onClick={() => navigate("annuaire", selectedThread.author.profile?.username)}
-                  className="font-medium text-foreground hover:text-terracotta transition"
+                  className="font-medium text-foreground hover:text-foreground transition"
                 >
                   {selectedThread.author.name}
                 </button>
@@ -342,7 +342,7 @@ export function ForumSection() {
 
           {/* Answers */}
           <div className="space-y-4">
-            <h3 className="font-serif text-xl font-semibold">
+            <h3 className="font-bold text-xl">
               {selectedThread.posts.length} {t("forum.answers")}
             </h3>
             {selectedThread.posts.map((post) => (
@@ -350,11 +350,11 @@ export function ForumSection() {
                 key={post.id}
                 className={cn(
                   "p-5",
-                  post.isAnswer && "border-baobab/50 bg-baobab/5"
+                  post.isAnswer && "border-border bg-muted/30"
                 )}
               >
                 {post.isAnswer && (
-                  <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-baobab mb-2">
+                  <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-foreground mb-2">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     {t("forum.solved")}
                   </div>
@@ -372,7 +372,7 @@ export function ForumSection() {
                     <span className="text-sm">
                       <button
                         onClick={() => navigate("annuaire", post.author.profile?.username)}
-                        className="font-medium hover:text-terracotta transition"
+                        className="font-medium hover:text-foreground transition"
                       >
                         {post.author.name}
                       </button>
@@ -403,7 +403,7 @@ export function ForumSection() {
               <Button
                 onClick={handleAnswer}
                 disabled={!answerBody.trim() || postingAnswer}
-                className="bg-terracotta hover:bg-terracotta/90"
+                className="bg-foreground text-background hover:bg-foreground/90"
               >
                 {postingAnswer ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -442,7 +442,7 @@ export function ForumSection() {
             }
             setCreateOpen(true);
           }}
-          className="bg-terracotta hover:bg-terracotta/90 shrink-0"
+          className="bg-foreground text-background hover:bg-foreground/90 shrink-0"
         >
           <Plus className="h-4 w-4 mr-2" />
           {t("forum.new")}
@@ -507,10 +507,10 @@ export function ForumSection() {
               onClick={() => navigate("forum", thread.slug)}
               className="w-full text-left group"
             >
-              <Card className="p-5 hover:border-terracotta/50 hover:shadow-sm transition-all">
+              <Card className="p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                 <div className="flex items-start gap-4">
                   <div className="flex flex-col items-center gap-1 shrink-0 pt-1">
-                    <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-terracotta transition" />
+                    <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition" />
                     <span className="text-xs font-mono text-muted-foreground">
                       {thread.upvotes}
                     </span>
@@ -518,12 +518,12 @@ export function ForumSection() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start gap-2 mb-1">
                       {thread.pinned && (
-                        <Pin className="h-3.5 w-3.5 text-terracotta shrink-0 mt-1" />
+                        <Pin className="h-3.5 w-3.5 text-foreground shrink-0 mt-1" />
                       )}
                       {thread.solved && (
-                        <CheckCircle2 className="h-3.5 w-3.5 text-baobab shrink-0 mt-1" />
+                        <CheckCircle2 className="h-3.5 w-3.5 text-foreground shrink-0 mt-1" />
                       )}
-                      <h3 className="font-serif text-lg font-semibold leading-snug group-hover:text-terracotta transition-colors">
+                      <h3 className="font-bold text-lg leading-snug group-hover:text-foreground transition-colors">
                         {thread.title}
                       </h3>
                     </div>
@@ -571,7 +571,7 @@ export function ForumSection() {
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl">
+            <DialogTitle className="font-bold text-2xl">
               {t("forum.create.title")}
             </DialogTitle>
           </DialogHeader>
@@ -670,7 +670,7 @@ function CreateThreadForm({
       <Button
         type="submit"
         disabled={submitting || !title || !body}
-        className="w-full bg-terracotta hover:bg-terracotta/90"
+        className="w-full bg-foreground text-background hover:bg-foreground/90"
       >
         {t("forum.create.submit")}
       </Button>

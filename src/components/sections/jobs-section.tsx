@@ -202,13 +202,13 @@ export function JobsSection() {
               onClick={() => setSelected(job)}
               className="text-left group"
             >
-              <Card className="h-full p-5 hover:border-terracotta/50 hover:shadow-sm transition-all">
+              <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="h-11 w-11 rounded-md bg-ink/5 dark:bg-background/10 border border-border flex items-center justify-center shrink-0">
-                    <Building2 className="h-5 w-5 text-terracotta" />
+                    <Building2 className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-lg font-semibold leading-tight group-hover:text-terracotta transition-colors">
+                    <h3 className="font-bold text-lg leading-tight group-hover:text-foreground transition-colors">
                       {job.title}
                     </h3>
                     <p className="text-sm text-muted-foreground">
@@ -216,7 +216,7 @@ export function JobsSection() {
                     </p>
                   </div>
                   {job.remote && (
-                    <Tag label="Remote" variant="baobab" />
+                    <Tag label="Remote" variant="outline" />
                   )}
                 </div>
 
@@ -269,10 +269,10 @@ export function JobsSection() {
               <DialogHeader>
                 <div className="flex items-start gap-3">
                   <div className="h-12 w-12 rounded-md bg-ink/5 border border-border flex items-center justify-center shrink-0">
-                    <Building2 className="h-6 w-6 text-terracotta" />
+                    <Building2 className="h-6 w-6 text-foreground" />
                   </div>
                   <div className="flex-1">
-                    <DialogTitle className="font-serif text-2xl">
+                    <DialogTitle className="font-bold text-2xl">
                       {selected.title}
                     </DialogTitle>
                     <DialogDescription className="text-base">
@@ -294,7 +294,7 @@ export function JobsSection() {
                   {t(`jobs.type.${selected.type}`)}
                 </span>
                 {selected.remote && (
-                  <span className="flex items-center gap-1 text-baobab">
+                  <span className="flex items-center gap-1 text-foreground">
                     <Globe className="h-4 w-4" />
                     Remote OK
                   </span>
@@ -341,7 +341,7 @@ export function JobsSection() {
                 </div>
                 <Button
                   asChild
-                  className="bg-terracotta hover:bg-terracotta/90"
+                  className="bg-foreground text-background hover:bg-foreground/90"
                   size="sm"
                 >
                   <a

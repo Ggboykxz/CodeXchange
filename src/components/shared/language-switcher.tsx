@@ -37,7 +37,7 @@ export function LanguageSwitcher() {
               <span>{localeFlags[l]}</span>
               <span>{localeLabels[l]}</span>
             </span>
-            {locale === l && <Check className="h-3.5 w-3.5 text-terracotta" />}
+            {locale === l && <Check className="h-3.5 w-3.5 text-foreground" />}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

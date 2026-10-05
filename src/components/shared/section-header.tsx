@@ -21,19 +21,17 @@ export function SectionHeader({
   children,
 }: SectionHeaderProps) {
   return (
-    <div
-      className={cn(
-        "max-w-3xl",
-        align === "center" && "mx-auto text-center",
-        className
+    <div className={cn("max-w-3xl", align === "center" && "mx-auto text-center", className)}>
+      {eyebrow && (
+        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
+          {eyebrow}
+        </p>
       )}
-    >
-      {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
-      <h2 className="display text-4xl sm:text-5xl lg:text-6xl text-balance">
+      <h2 className="text-2xl lg:text-4xl font-bold tracking-tight text-balance">
         {title}
       </h2>
       {subtitle && (
-        <p className="mt-4 text-lg text-muted-foreground text-pretty leading-relaxed">
+        <p className="mt-3 text-base text-muted-foreground leading-relaxed text-pretty">
           {subtitle}
         </p>
       )}

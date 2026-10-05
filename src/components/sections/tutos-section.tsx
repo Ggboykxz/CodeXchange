@@ -131,7 +131,7 @@ export function TutosSection() {
     if (loadingTutorial) {
       return (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="h-6 w-6 animate-spin text-terracotta" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground" />
         </div>
       );
     }
@@ -174,7 +174,7 @@ export function TutosSection() {
               {t("tutos.by")}{" "}
               <button
                 onClick={() => navigate("annuaire", selectedTutorial.author.profile?.username)}
-                className="font-medium hover:text-terracotta transition"
+                className="font-medium hover:text-foreground transition"
               >
                 {selectedTutorial.author.name}
               </button>
@@ -258,11 +258,11 @@ export function TutosSection() {
                     onClick={() => navigate("tutos", tut.slug)}
                     className="text-left group"
                   >
-                    <Card className="h-full p-5 hover:border-terracotta/50 hover:shadow-sm transition-all">
+                    <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                       <div className="flex items-start gap-3 mb-3">
                         <div className="text-3xl shrink-0">{tut.coverEmoji}</div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-serif text-lg font-semibold leading-tight group-hover:text-terracotta transition-colors">
+                          <h3 className="font-bold text-lg leading-tight group-hover:text-foreground transition-colors">
                             {tut.title}
                           </h3>
                           <div className="flex items-center gap-2 mt-1">
@@ -308,13 +308,13 @@ export function TutosSection() {
           ) : (
             <div className="space-y-3">
               {events.map((evt) => (
-                <Card key={evt.id} className="p-5 hover:border-terracotta/40 transition-colors">
+                <Card key={evt.id} className="p-5 hover:border-foreground/40 transition-colors">
                   <div className="flex items-start gap-4">
                     <div className="flex flex-col items-center justify-center w-16 shrink-0 bg-muted/50 dark:bg-background/30 border border-border rounded-md py-2">
-                      <span className="text-[10px] font-mono uppercase text-terracotta">
+                      <span className="text-[10px] font-mono uppercase text-foreground">
                         {format(new Date(evt.date), "MMM")}
                       </span>
-                      <span className="font-serif text-2xl font-bold leading-none">
+                      <span className="font-bold text-2xl font-bold leading-none">
                         {format(new Date(evt.date), "dd")}
                       </span>
                       <span className="text-[10px] font-mono text-muted-foreground mt-0.5">
@@ -326,11 +326,11 @@ export function TutosSection() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-1">
-                        <h3 className="font-serif text-lg font-semibold leading-tight">
+                        <h3 className="font-bold text-lg leading-tight">
                           {evt.title}
                         </h3>
                         {evt.online && (
-                          <Tag label={t("events.online")} variant="baobab" />
+                          <Tag label={t("events.online")} variant="outline" />
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
@@ -355,7 +355,7 @@ export function TutosSection() {
                     </div>
 
                     {evt.url && (
-                      <Button asChild size="sm" className="bg-terracotta hover:bg-terracotta/90 shrink-0">
+                      <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90 shrink-0">
                         <a href={evt.url} target="_blank" rel="noopener noreferrer">
                           {evt.online ? <Video className="h-3.5 w-3.5 mr-1" /> : null}
                           {t("events.rsvp")}

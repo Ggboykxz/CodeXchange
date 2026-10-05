@@ -147,7 +147,7 @@ export function MentoratSection() {
           {mentors.map((m) => {
             const slotsLeft = m.capacity - m.slotsTaken;
             return (
-              <Card key={m.id} className="p-5 flex flex-col hover:border-terracotta/40 transition-colors">
+              <Card key={m.id} className="p-5 flex flex-col hover:border-foreground/40 transition-colors">
                 <div className="flex items-start gap-3 mb-4">
                   <Avatar
                     name={m.user.name}
@@ -155,7 +155,7 @@ export function MentoratSection() {
                     size="lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-serif text-lg font-semibold leading-tight">
+                    <h3 className="font-bold text-lg leading-tight">
                       {m.user.name}
                     </h3>
                     <p className="text-xs text-muted-foreground line-clamp-2">
@@ -186,7 +186,7 @@ export function MentoratSection() {
                         .filter(Boolean)
                         .slice(0, 4)
                         .map((s) => (
-                          <Tag key={s} label={s} variant="terracotta" />
+                          <Tag key={s} label={s} variant="outline" />
                         ))}
                     </div>
                   </div>
@@ -201,8 +201,8 @@ export function MentoratSection() {
                 <div className="grid grid-cols-3 gap-2 mb-4 pt-3 border-t border-border">
                   <div>
                     <p className="text-[10px] font-mono uppercase text-muted-foreground">Note</p>
-                    <p className="font-serif font-bold flex items-center gap-0.5">
-                      <Star className="h-3 w-3 text-sun fill-sun" />
+                    <p className="font-bold flex items-center gap-0.5">
+                      <Star className="h-3 w-3 text-foreground fill-foreground" />
                       {m.rating.toFixed(1)}
                     </p>
                   </div>
@@ -210,15 +210,15 @@ export function MentoratSection() {
                     <p className="text-[10px] font-mono uppercase text-muted-foreground">
                       {t("mentorat.reviews")}
                     </p>
-                    <p className="font-serif font-bold">{m.reviews}</p>
+                    <p className="font-bold">{m.reviews}</p>
                   </div>
                   <div>
                     <p className="text-[10px] font-mono uppercase text-muted-foreground">
                       {t("mentorat.capacity")}
                     </p>
                     <p
-                      className={`font-serif font-bold ${
-                        slotsLeft === 0 ? "text-muted-foreground" : "text-terracotta"
+                      className={`font-bold ${
+                        slotsLeft === 0 ? "text-muted-foreground" : "text-foreground"
                       }`}
                     >
                       {slotsLeft}/{m.capacity}
@@ -244,7 +244,7 @@ export function MentoratSection() {
                     setSelectedMentor(m);
                   }}
                   disabled={slotsLeft === 0}
-                  className="w-full bg-terracotta hover:bg-terracotta/90"
+                  className="w-full bg-foreground text-background hover:bg-foreground/90"
                   variant="default"
                 >
                   {slotsLeft === 0 ? "Complet" : t("mentorat.request")}
@@ -266,8 +266,8 @@ export function MentoratSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {testimonials.map((tst, i) => (
             <Card key={i} className="p-6 border-border/70">
-              <Quote className="h-6 w-6 text-terracotta mb-3" />
-              <p className="font-serif italic leading-relaxed text-foreground/90 mb-4">
+              <Quote className="h-6 w-6 text-foreground mb-3" />
+              <p className="font-mono italic leading-relaxed text-foreground/90 mb-4">
                 « {tst.text} »
               </p>
               <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border/60">
@@ -288,8 +288,8 @@ export function MentoratSection() {
           {selectedMentor && (
             <>
               <DialogHeader>
-                <DialogTitle className="font-serif text-2xl flex items-center gap-2">
-                  <GraduationCap className="h-5 w-5 text-terracotta" />
+                <DialogTitle className="font-bold text-2xl flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5 text-foreground" />
                   {t("mentorat.request")}
                 </DialogTitle>
                 <DialogDescription>
@@ -325,7 +325,7 @@ export function MentoratSection() {
                 <Button
                   onClick={handleRequest}
                   disabled={!requestMessage.trim() || sending}
-                  className="w-full bg-terracotta hover:bg-terracotta/90"
+                  className="w-full bg-foreground text-background hover:bg-foreground/90"
                 >
                   {sending ? (
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />

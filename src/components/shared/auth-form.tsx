@@ -228,7 +228,7 @@ export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-terracotta hover:bg-terracotta/90 mt-2"
+        className="w-full bg-foreground text-background hover:bg-foreground/90 mt-2"
       >
         {loading ? (
           <Loader2 className="h-4 w-4 mr-2 animate-spin" />

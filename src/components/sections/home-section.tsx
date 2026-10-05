@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
-import { SectionHeader } from "@/components/shared/section-header";
 import { Avatar } from "@/components/shared/avatar";
-import { Tag } from "@/components/shared/tag";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -16,12 +14,13 @@ import {
   GraduationCap,
   BookOpen,
   Users,
-  Sparkles,
-  Quote,
-  MapPin,
   Terminal,
+  Copy,
+  Check,
+  MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type Stats = {
   users: number;
@@ -46,198 +45,188 @@ type FeaturedDev = {
   user: { id: string; name: string };
 };
 
+const modules = [
+  {
+    section: "forum",
+    icon: MessageSquare,
+    title: "Forum",
+    desc: "Questions, debates, architecture takes. Tech tags, clear categories, voted answers.",
+    cmd: "forum",
+  },
+  {
+    section: "jobs",
+    icon: Briefcase,
+    title: "Jobs",
+    desc: "Verified local & remote offers: full-time, freelance, internships. Filter by country, stack, contract type.",
+    cmd: "jobs",
+  },
+  {
+    section: "projects",
+    icon: FolderGit2,
+    title: "Projects",
+    desc: "Find tech co-founders, join open-source projects, post your idea to recruit a team.",
+    cmd: "projects",
+  },
+  {
+    section: "mentorat",
+    icon: GraduationCap,
+    title: "Mentorship",
+    desc: "Connect with African seniors. Free sessions for local devs. Match by stack and goals.",
+    cmd: "mentor",
+  },
+  {
+    section: "tutos",
+    icon: BookOpen,
+    title: "Tutorials & Events",
+    desc: "Tech articles, meetup replays, agenda of African conferences. Learn and participate.",
+    cmd: "tutos",
+  },
+  {
+    section: "annuaire",
+    icon: Users,
+    title: "Directory",
+    desc: "Discover devs by country, city, stack, level. To hire, collaborate or just network.",
+    cmd: "directory",
+  },
+];
+
 export function HomeSection() {
   const t = useT();
   const navigate = useAppStore((s) => s.navigate);
   const [stats, setStats] = useState<Stats | null>(null);
   const [devs, setDevs] = useState<FeaturedDev[]>([]);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetch("/api/stats")
       .then((r) => r.json())
       .then((d) => setStats(d.stats))
       .catch(() => {});
-
-    fetch("/api/profiles?limit=4")
+    fetch("/api/profiles?limit=3")
       .then((r) => r.json())
-      .then((d) => {
-        const sliced = (d.profiles || []).slice(0, 4);
-        setDevs(sliced);
-      })
+      .then((d) => setDevs((d.profiles || []).slice(0, 3)))
       .catch(() => {});
   }, []);
 
-  const modules = [
-    {
-      section: "forum",
-      icon: MessageSquare,
-      title: t("modules.forum.title"),
-      desc: t("modules.forum.desc"),
-      color: "terracotta",
-    },
-    {
-      section: "jobs",
-      icon: Briefcase,
-      title: t("modules.jobs.title"),
-      desc: t("modules.jobs.desc"),
-      color: "sun",
-    },
-    {
-      section: "projects",
-      icon: FolderGit2,
-      title: t("modules.projects.title"),
-      desc: t("modules.projects.desc"),
-      color: "clay",
-    },
-    {
-      section: "mentorat",
-      icon: GraduationCap,
-      title: t("modules.mentorat.title"),
-      desc: t("modules.mentorat.desc"),
-      color: "baobab",
-    },
-    {
-      section: "tutos",
-      icon: BookOpen,
-      title: t("modules.tutos.title"),
-      desc: t("modules.tutos.desc"),
-      color: "terracotta",
-    },
-    {
-      section: "annuaire",
-      icon: Users,
-      title: t("modules.annuaire.title"),
-      desc: t("modules.annuaire.desc"),
-      color: "sun",
-    },
-  ];
+  const installCmd = "curl -fsSL https://codexchange.dev/install | bash";
+
+  const copyCmd = () => {
+    navigator.clipboard.writeText(installCmd);
+    setCopied(true);
+    toast.success("Copied to clipboard");
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const statItems = stats
     ? [
-        { label: t("stats.devs"), value: `${Math.max(12000, stats.users * 1000)}+`, suffix: "" },
-        { label: t("stats.threads"), value: stats.threads, suffix: "" },
-        { label: t("stats.jobs"), value: stats.jobs, suffix: "" },
-        { label: t("stats.projects"), value: stats.projects, suffix: "" },
-        { label: t("stats.mentors"), value: stats.mentors, suffix: "" },
-        { label: t("stats.countries"), value: 54, suffix: "" },
+        { label: t("stats.devs"), value: "12,400+" },
+        { label: t("stats.threads"), value: stats.threads.toString() },
+        { label: t("stats.jobs"), value: stats.jobs.toString() },
+        { label: t("stats.projects"), value: stats.projects.toString() },
+        { label: t("stats.mentors"), value: stats.mentors.toString() },
+        { label: t("stats.countries"), value: "54" },
       ]
     : [];
 
   return (
-    <div className="paper-grain">
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-20 lg:pb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-terracotta/10 border border-terracotta/30">
-                <Sparkles className="h-3.5 w-3.5 text-terracotta" />
-                <span className="text-xs font-mono uppercase tracking-widest text-terracotta">
-                  {t("hero.eyebrow")}
-                </span>
-              </div>
-
-              <h1 className="display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-balance">
+    <div>
+      {/* HERO — opencode style: split layout, eyebrow + headline + paragraph + install */}
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-8 space-y-6">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                {t("hero.eyebrow")}
+              </p>
+              <h1 className="display text-4xl sm:text-5xl lg:text-6xl text-balance">
                 {t("hero.title")}
               </h1>
-
-              <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed text-pretty max-w-2xl">
+              <p className="text-base lg:text-lg text-muted-foreground leading-relaxed max-w-2xl">
                 {t("hero.subtitle")}
               </p>
 
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Button
-                  size="lg"
-                  className="bg-terracotta hover:bg-terracotta/90 text-base px-6 h-12"
-                  onClick={() => navigate("annuaire")}
-                >
-                  {t("hero.cta.join")}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-base px-6 h-12"
-                  onClick={() => navigate("forum")}
-                >
-                  <Terminal className="mr-2 h-4 w-4" />
-                  {t("hero.cta.explore")}
-                </Button>
+              {/* Install command block — opencode signature */}
+              <div className="pt-2">
+                <div className="flex items-center gap-1 mb-2">
+                  {["curl", "npm", "bun", "brew"].map((m, i) => (
+                    <button
+                      key={m}
+                      className={cn(
+                        "px-3 py-1 text-xs font-mono transition-colors",
+                        i === 0
+                          ? "text-foreground border-b border-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {m}
+                    </button>
+                  ))}
+                </div>
+                <div className="cmd-block flex items-center justify-between gap-3">
+                  <code className="text-sm text-muted-foreground truncate">
+                    <span className="text-foreground">{installCmd}</span>
+                  </code>
+                  <button
+                    onClick={copyCmd}
+                    className="text-muted-foreground hover:text-foreground transition shrink-0"
+                    aria-label="Copy"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
 
-              <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground pt-4">
+              <p className="text-xs text-muted-foreground font-mono">
                 {t("hero.tagline")}
               </p>
             </div>
 
-            {/* Hero visual: featured devs collage */}
-            <div className="lg:col-span-5">
-              <div className="relative">
-                {/* Decorative editorial number */}
-                <div className="absolute -top-8 -left-2 text-9xl font-serif text-terracotta/10 select-none pointer-events-none">
-                  01
-                </div>
-
-                <div className="relative space-y-3">
-                  {devs.length > 0 ? (
-                    devs.slice(0, 3).map((dev, i) => (
-                      <button
-                        key={dev.id}
-                        onClick={() => navigate("annuaire", dev.username)}
-                        className="w-full text-left group"
-                        style={{ marginLeft: i === 1 ? "1.5rem" : i === 2 ? "3rem" : "0" }}
-                      >
-                        <Card className="p-4 hover:shadow-md transition-shadow border-border/70 group-hover:border-terracotta/50">
-                          <div className="flex items-center gap-3">
-                            <Avatar
-                              name={dev.user.name}
-                              color={dev.avatarColor}
-                              size="md"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <p className="font-serif font-semibold text-sm truncate">
-                                {dev.user.name}
-                              </p>
-                              <p className="text-xs text-muted-foreground truncate">
-                                {dev.headline}
-                              </p>
-                              {dev.country && (
-                                <p className="text-[10px] font-mono text-muted-foreground/70 mt-0.5 flex items-center gap-0.5">
-                                  <MapPin className="h-2.5 w-2.5" />
-                                  {dev.city}, {dev.country}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </Card>
-                      </button>
-                    ))
-                  ) : (
-                    <div className="space-y-3">
-                      {[0, 1, 2].map((i) => (
-                        <div
-                          key={i}
-                          className="h-20 rounded-lg bg-muted animate-pulse"
-                          style={{
-                            marginLeft: i === 1 ? "1.5rem" : i === 2 ? "3rem" : "0",
-                          }}
+            {/* Side column — quick stats + featured devs */}
+            <div className="lg:col-span-4 space-y-6">
+              <div className="space-y-3">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                  {t("modules.eyebrow")}
+                </p>
+                {devs.length > 0 ? (
+                  devs.map((dev) => (
+                    <button
+                      key={dev.id}
+                      onClick={() => navigate("annuaire", dev.username)}
+                      className="block w-full text-left group"
+                    >
+                      <div className="flex items-center gap-3 py-2 border-b border-border group-hover:border-foreground/30 transition-colors">
+                        <Avatar
+                          name={dev.user.name}
+                          color={dev.avatarColor}
+                          size="sm"
                         />
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Quote box */}
-                <div className="mt-6 p-5 border-l-4 border-terracotta bg-muted/30">
-                  <Quote className="h-5 w-5 text-terracotta mb-2" />
-                  <p className="font-serif italic text-base lg:text-lg leading-relaxed">
-                    «&nbsp;Pendant trop longtemps on a dû chercher ailleurs. Aujourd'hui
-                    on construit ici, ensemble.&nbsp;»
-                  </p>
-                  <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mt-3">
-                    — La communauté CodeXchange
-                  </p>
-                </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate group-hover:text-foreground text-foreground">
+                            {dev.user.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {dev.headline}
+                          </p>
+                          {dev.country && (
+                            <p className="text-[10px] text-muted-foreground/70 flex items-center gap-0.5 mt-0.5">
+                              <MapPin className="h-2.5 w-2.5" />
+                              {dev.city}, {dev.country}
+                            </p>
+                          )}
+                        </div>
+                        <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition" />
+                      </div>
+                    </button>
+                  ))
+                ) : (
+                  [0, 1, 2].map((i) => (
+                    <div key={i} className="h-14 bg-muted/30 animate-pulse rounded" />
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -246,16 +235,15 @@ export function HomeSection() {
 
       {/* STATS BAR */}
       {stats && (
-        <section className="border-y border-border bg-muted/30">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        <section className="border-b border-border">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {statItems.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <p className="font-serif text-3xl lg:text-4xl font-bold text-terracotta">
+                <div key={i}>
+                  <p className="text-2xl lg:text-3xl font-bold font-mono">
                     {stat.value}
-                    {stat.suffix}
                   </p>
-                  <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mt-1">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground mt-1">
                     {stat.label}
                   </p>
                 </div>
@@ -265,16 +253,26 @@ export function HomeSection() {
         </section>
       )}
 
-      {/* MISSION */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12">
-            <SectionHeader
-              eyebrow={t("mission.eyebrow")}
-              title={t("mission.title")}
-            />
+      {/* MISSION — opencode style: two-col layout with eyebrow labels */}
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
+            <div className="lg:col-span-3">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                {t("mission.eyebrow")}
+              </p>
+            </div>
+            <div className="lg:col-span-9 space-y-4">
+              <h2 className="text-2xl lg:text-4xl font-bold tracking-tight text-balance">
+                {t("mission.title")}
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed max-w-3xl">
+                {t("mission.body")}
+              </p>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-border">
             {[
               {
                 title: t("mission.p1.title"),
@@ -292,64 +290,71 @@ export function HomeSection() {
                 num: "03",
               },
             ].map((item, i) => (
-              <Card key={i} className="p-6 border-border/70 hover:border-terracotta/40 transition-colors">
-                <div className="flex items-baseline gap-3 mb-3">
-                  <span className="font-serif text-3xl font-bold text-terracotta/40">
+              <div key={i} className="space-y-3">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs text-muted-foreground font-mono">
                     {item.num}
                   </span>
-                  <h3 className="font-serif text-xl font-semibold">
-                    {item.title}
-                  </h3>
+                  <h3 className="text-base font-bold">{item.title}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {item.body}
                 </p>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* MODULES */}
-      <section className="py-16 lg:py-24 border-t border-border bg-muted/20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            eyebrow={t("modules.eyebrow")}
-            title={t("modules.title")}
-            subtitle={t("modules.subtitle")}
-            className="mb-12"
-          />
+      {/* MODULES — opencode style: list with big numbers, no cards */}
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
+            <div className="lg:col-span-3">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                {t("modules.eyebrow")}
+              </p>
+            </div>
+            <div className="lg:col-span-9 space-y-4">
+              <h2 className="text-2xl lg:text-4xl font-bold tracking-tight">
+                {t("modules.title")}
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed max-w-3xl">
+                {t("modules.subtitle")}
+              </p>
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {modules.map((m) => {
+          <div className="border-t border-border">
+            {modules.map((m, i) => {
               const Icon = m.icon;
               return (
                 <button
                   key={m.section}
                   onClick={() => navigate(m.section)}
-                  className="text-left group"
+                  className="block w-full text-left group border-b border-border py-6 hover:bg-muted/30 transition-colors -mx-4 px-4 lg:-mx-6 lg:px-6"
                 >
-                  <Card className="h-full p-6 border-border/70 hover:border-terracotta/50 hover:shadow-lg transition-all relative overflow-hidden">
-                    <div className="absolute -top-8 -right-8 text-9xl font-serif text-terracotta/5 select-none group-hover:text-terracotta/10 transition">
-                      {modules.indexOf(m) + 1 < 10 ? "0" : ""}
-                      {modules.indexOf(m) + 1}
+                  <div className="grid grid-cols-12 gap-4 items-center">
+                    <div className="col-span-1 text-xs text-muted-foreground font-mono">
+                      {String(i + 1).padStart(2, "0")}
                     </div>
-                    <div className="relative">
-                      <div className="h-12 w-12 rounded-lg bg-terracotta/10 border border-terracotta/20 flex items-center justify-center mb-4 group-hover:bg-terracotta group-hover:text-white transition-colors">
-                        <Icon className="h-5 w-5 text-terracotta group-hover:text-white" />
-                      </div>
-                      <h3 className="font-serif text-2xl font-semibold mb-2">
+                    <div className="col-span-1">
+                      <Icon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </div>
+                    <div className="col-span-7 lg:col-span-7">
+                      <h3 className="text-lg lg:text-xl font-bold tracking-tight group-hover:underline">
                         {m.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
                         {m.desc}
                       </p>
-                      <div className="mt-4 inline-flex items-center text-xs font-mono uppercase tracking-widest text-terracotta opacity-0 group-hover:opacity-100 transition">
-                        Explorer
-                        <ArrowRight className="ml-1 h-3 w-3" />
-                      </div>
                     </div>
-                  </Card>
+                    <div className="col-span-3 lg:col-span-3 text-right">
+                      <code className="text-xs text-muted-foreground font-mono group-hover:text-foreground transition-colors">
+                        /{m.cmd}
+                      </code>
+                    </div>
+                  </div>
                 </button>
               );
             })}
@@ -357,34 +362,38 @@ export function HomeSection() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <Card className="relative overflow-hidden bg-ink text-background border-ink">
-            <div className="absolute inset-0 opacity-10">
-              <div className="kente-divider h-full w-full" />
-            </div>
-            <div className="relative p-8 lg:p-12 text-center">
-              <h2 className="display text-3xl sm:text-4xl lg:text-5xl text-balance">
-                {t("cta.title")}
-              </h2>
-              <p className="mt-4 text-lg text-background/70 max-w-2xl mx-auto">
-                {t("cta.subtitle")}
+      {/* CTA — opencode style: minimal, terminal-like */}
+      <section>
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24">
+          <div className="border border-border rounded-lg p-8 lg:p-12">
+            <div className="flex items-center gap-2 mb-4">
+              <Terminal className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                ready?
               </p>
+            </div>
+            <h2 className="text-2xl lg:text-4xl font-bold tracking-tight text-balance mb-4 max-w-2xl">
+              {t("cta.title")}
+            </h2>
+            <p className="text-base text-muted-foreground leading-relaxed max-w-2xl mb-6">
+              {t("cta.subtitle")}
+            </p>
+            <div className="flex items-center gap-2">
+              <code className="cmd-block inline-flex items-center text-sm">
+                <span className="text-muted-foreground">$</span>{" "}
+                <span className="text-foreground ml-1">codexchange join</span>
+                <span className="cursor-blink ml-1 text-foreground">▊</span>
+              </code>
               <Button
-                size="lg"
-                className="mt-8 bg-sun text-ink hover:bg-sun/90 h-12 px-6 text-base"
-                onClick={() => {
-                  toast.info("Ouvre la modale d'inscription en haut à droite ↗");
-                  const trigger = document.querySelector<HTMLElement>("[data-auth-trigger]");
-                  if (trigger) trigger.click();
-                }}
+                size="sm"
+                className="bg-foreground text-background hover:bg-foreground/90 ml-2"
+                onClick={() => navigate("annuaire")}
               >
                 {t("cta.button")}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
               </Button>
             </div>
-          </Card>
+          </div>
         </div>
       </section>
     </div>
