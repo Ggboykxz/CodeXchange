@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 import { sessionUserId } from "@/lib/session";
+import { notify } from "@/lib/notify";
 
 export async function POST(
   req: NextRequest,
@@ -40,6 +41,20 @@ export async function POST(
         isAnswer: accepted,
       },
       include: { author: { include: { profile: true } } },
+    });
+
+    // Tell the thread author someone replied (never self-notifications).
+    const actor = await db.user.findUnique({
+      where: { id: authorId },
+      select: { name: true },
+    });
+    await notify({
+      recipientId: thread.authorId,
+      actorId: authorId,
+      type: "reply",
+      title: `${actor?.name ?? "Un dev"} a répondu à ta discussion`,
+      body: postBody.slice(0, 140),
+      href: `#forum/${thread.slug}`,
     });
 
     return json({ post });

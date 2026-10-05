@@ -3,6 +3,13 @@
  * Seeds realistic mock data for the African dev platform.
  */
 import { db } from "../src/lib/db";
+import { hashPassword } from "../src/lib/password";
+
+/**
+ * Every seeded account shares the same demo password so the README's
+ * "any password >= 6 chars" claim holds for the whole dataset.
+ */
+const DEMO_PASSWORD = "codexchange";
 
 function slugify(s: string) {
   return s
@@ -742,6 +749,7 @@ async function main() {
 
   console.log("👤 Creating users + profiles...");
   const userMap = new Map<string, string>();
+  const demoPasswordHash = hashPassword(DEMO_PASSWORD);
   for (let i = 0; i < users.length; i++) {
     const u = users[i];
     const user = await db.user.create({
@@ -749,6 +757,7 @@ async function main() {
         name: u.name,
         email: u.email,
         role: "member",
+        passwordHash: demoPasswordHash,
         profile: {
           create: {
             username: u.username,

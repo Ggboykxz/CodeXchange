@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 import { sessionUserId } from "@/lib/session";
+import { notify } from "@/lib/notify";
 
 export async function POST(
   req: NextRequest,
@@ -53,6 +54,19 @@ export async function POST(
         goal: goal || null,
         status: "pending",
       },
+    });
+
+    const mentee = await db.user.findUnique({
+      where: { id: menteeId },
+      select: { name: true },
+    });
+    await notify({
+      recipientId: mentor.userId,
+      actorId: menteeId,
+      type: "mentorship",
+      title: `${mentee?.name ?? "Un dev"} demande ton mentorat`,
+      body: message.slice(0, 140),
+      href: "#mentorat",
     });
 
     return json({ mentorship });
