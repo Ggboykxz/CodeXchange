@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
@@ -21,5 +22,5 @@ export async function GET(req: NextRequest) {
     take: 100,
   });
 
-  return NextResponse.json({ jobs });
+  return json({ jobs });
 }

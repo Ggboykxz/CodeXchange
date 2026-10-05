@@ -1,5 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
+import { sessionUserId } from "@/lib/session";
 
 export async function POST(
   req: NextRequest,
@@ -8,10 +10,15 @@ export async function POST(
   try {
     const { slug } = await params;
     const body = await req.json();
-    const { body: postBody, authorId, isAnswer } = body;
+    const { body: postBody, isAnswer } = body;
 
-    if (!postBody || !authorId) {
-      return NextResponse.json(
+    const authorId = sessionUserId(req);
+    if (!authorId) {
+      return json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    if (!postBody) {
+      return json(
         { error: "Missing required fields" },
         { status: 400 }
       );
@@ -19,22 +26,25 @@ export async function POST(
 
     const thread = await db.thread.findUnique({ where: { slug } });
     if (!thread) {
-      return NextResponse.json({ error: "Thread not found" }, { status: 404 });
+      return json({ error: "Thread not found" }, { status: 404 });
     }
+
+    // Only the thread author can mark an answer as accepted.
+    const accepted = Boolean(isAnswer) && thread.authorId === authorId;
 
     const post = await db.post.create({
       data: {
         threadId: thread.id,
         authorId,
         body: postBody,
-        isAnswer: isAnswer || false,
+        isAnswer: accepted,
       },
       include: { author: { include: { profile: true } } },
     });
 
-    return NextResponse.json({ post });
+    return json({ post });
   } catch (e) {
     console.error("Create post error:", e);
-    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+    return json({ error: "Failed to create post" }, { status: 500 });
   }
 }

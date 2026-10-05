@@ -1,5 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
+import { sessionUserId } from "@/lib/session";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -27,16 +29,22 @@ export async function GET(req: NextRequest) {
     take: 100,
   });
 
-  return NextResponse.json({ threads });
+  return json({ threads });
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, body: threadBody, tags, category, authorId } = body;
+    const { title, body: threadBody, tags, category } = body;
 
-    if (!title || !threadBody || !authorId) {
-      return NextResponse.json(
+    // The author comes from the signed session cookie, never from the body.
+    const authorId = sessionUserId(req);
+    if (!authorId) {
+      return json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    if (!title || !threadBody) {
+      return json(
         { error: "Missing required fields" },
         { status: 400 }
       );
@@ -58,10 +66,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ thread });
+    return json({ thread });
   } catch (e) {
     console.error("Create thread error:", e);
-    return NextResponse.json(
+    return json(
       { error: "Failed to create thread" },
       { status: 500 }
     );

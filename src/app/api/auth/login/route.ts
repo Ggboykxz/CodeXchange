@@ -1,28 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import crypto from "crypto";
-
-function verifyPassword(password: string, stored: string): boolean {
-  const [salt, hash] = stored.split(":");
-  const verify = crypto
-    .pbkdf2Sync(password, salt, 100000, 64, "sha512")
-    .toString("hex");
-  return hash === verify;
-}
-
-function generateToken(): string {
-  return crypto.randomBytes(32).toString("hex");
-}
+import { authJson, json } from "@/lib/api";
+import { verifyPassword } from "@/lib/password";
+import { createSessionToken } from "@/lib/session";
 
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: "Missing email or password" },
-        { status: 400 }
-      );
+      return json({ error: "Missing email or password" }, { status: 400 });
     }
 
     const user = await db.user.findUnique({
@@ -30,23 +17,13 @@ export async function POST(req: NextRequest) {
       include: { profile: true },
     });
 
-    if (!user || !user.passwordHash) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+    if (!user || !user.passwordHash || !verifyPassword(password, user.passwordHash)) {
+      return json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    if (!verifyPassword(password, user.passwordHash)) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
+    const token = createSessionToken(user.id);
 
-    const token = generateToken();
-
-    const response = NextResponse.json({
+    const response = authJson({
       user: {
         id: user.id,
         name: user.name,
@@ -60,11 +37,12 @@ export async function POST(req: NextRequest) {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 30,
       path: "/",
+      secure: process.env.NODE_ENV === "production",
     });
 
     return response;
   } catch (e) {
     console.error("Login error:", e);
-    return NextResponse.json({ error: "Failed to login" }, { status: 500 });
+    return json({ error: "Failed to login" }, { status: 500 });
   }
 }

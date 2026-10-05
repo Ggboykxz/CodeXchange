@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 
 export async function GET() {
@@ -19,7 +19,7 @@ export async function GET() {
     distinct: ["country"],
   });
 
-  return NextResponse.json({
+  return json({
     stats: {
       users,
       threads,

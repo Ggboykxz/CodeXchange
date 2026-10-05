@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 
 export async function GET() {
@@ -7,5 +8,5 @@ export async function GET() {
     orderBy: { date: "asc" },
   });
 
-  return NextResponse.json({ events });
+  return json({ events });
 }

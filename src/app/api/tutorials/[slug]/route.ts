@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 
 export async function GET(
@@ -12,8 +13,8 @@ export async function GET(
   });
 
   if (!tutorial) {
-    return NextResponse.json({ error: "Tutorial not found" }, { status: 404 });
+    return json({ error: "Tutorial not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ tutorial });
+  return json({ tutorial });
 }

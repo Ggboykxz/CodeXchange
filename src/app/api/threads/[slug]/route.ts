@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { json } from "@/lib/api";
 import { db } from "@/lib/db";
 
 export async function GET(
@@ -18,7 +19,7 @@ export async function GET(
   });
 
   if (!thread) {
-    return NextResponse.json({ error: "Thread not found" }, { status: 404 });
+    return json({ error: "Thread not found" }, { status: 404 });
   }
 
   // Increment views (fire-and-forget)
@@ -27,5 +28,5 @@ export async function GET(
     data: { views: { increment: 1 } },
   });
 
-  return NextResponse.json({ thread });
+  return json({ thread });
 }

@@ -1,18 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import crypto from "crypto";
+import { authJson, json } from "@/lib/api";
+import { hashPassword } from "@/lib/password";
+import { createSessionToken } from "@/lib/session";
 
-function hashPassword(password: string): string {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto
-    .pbkdf2Sync(password, salt, 100000, 64, "sha512")
-    .toString("hex");
-  return `${salt}:${hash}`;
-}
-
-function generateToken(): string {
-  return crypto.randomBytes(32).toString("hex");
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_RE = /^[a-z0-9_.-]{3,24}$/i;
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,36 +13,38 @@ export async function POST(req: NextRequest) {
       await req.json();
 
     if (!name || !email || !password || !username) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
+      return json({ error: "Missing required fields" }, { status: 400 });
+    }
+    if (!EMAIL_RE.test(email)) {
+      return json({ error: "Invalid email address" }, { status: 400 });
+    }
+    if (String(password).length < 6) {
+      return json({ error: "Password must be at least 6 characters" }, { status: 400 });
+    }
+    if (!USERNAME_RE.test(username)) {
+      return json(
+        { error: "Username must be 3-24 chars (letters, digits, _ . -)" },
         { status: 400 }
       );
     }
 
     const existing = await db.user.findUnique({ where: { email } });
     if (existing) {
-      return NextResponse.json(
-        { error: "Email already in use" },
-        { status: 409 }
-      );
+      return json({ error: "Email already in use" }, { status: 409 });
     }
 
     const existingUsername = await db.profile.findUnique({
       where: { username },
     });
     if (existingUsername) {
-      return NextResponse.json(
-        { error: "Username already taken" },
-        { status: 409 }
-      );
+      return json({ error: "Username already taken" }, { status: 409 });
     }
 
-    const passwordHash = hashPassword(password);
     const user = await db.user.create({
       data: {
         name,
         email,
-        passwordHash,
+        passwordHash: hashPassword(password),
         profile: {
           create: {
             username,
@@ -65,9 +60,9 @@ export async function POST(req: NextRequest) {
       include: { profile: true },
     });
 
-    const token = generateToken();
+    const token = createSessionToken(user.id);
 
-    const response = NextResponse.json({
+    const response = authJson({
       user: { id: user.id, name: user.name, email: user.email, profile: user.profile },
       token,
     });
@@ -76,14 +71,12 @@ export async function POST(req: NextRequest) {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: "/",
+      secure: process.env.NODE_ENV === "production",
     });
 
     return response;
   } catch (e) {
     console.error("Register error:", e);
-    return NextResponse.json(
-      { error: "Failed to create account" },
-      { status: 500 }
-    );
+    return json({ error: "Failed to create account" }, { status: 500 });
   }
 }
