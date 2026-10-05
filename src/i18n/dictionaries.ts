@@ -1,0 +1,518 @@
+/**
+ * CodeXchange — i18n
+ * FR / EN / SW / AR translations. Falls back to FR.
+ */
+export type Locale = "fr" | "en" | "sw" | "ar";
+
+export const locales: Locale[] = ["fr", "en", "sw", "ar"];
+
+export const localeLabels: Record<Locale, string> = {
+  fr: "Français",
+  en: "English",
+  sw: "Kiswahili",
+  ar: "العربية",
+};
+
+export const localeFlags: Record<Locale, string> = {
+  fr: "🇫🇷",
+  en: "🇬🇧",
+  sw: "🇰🇪",
+  ar: "🇪🇬",
+};
+
+type Dict = Record<string, string>;
+
+const fr: Dict = {
+  // Header
+  "nav.home": "Accueil",
+  "nav.forum": "Forum",
+  "nav.jobs": "Jobs",
+  "nav.projects": "Projets",
+  "nav.mentorat": "Mentorat",
+  "nav.tutos": "Tutos & Events",
+  "nav.annuaire": "Annuaire",
+  "nav.login": "Connexion",
+  "nav.register": "Rejoindre",
+  "nav.logout": "Déconnexion",
+  "nav.dashboard": "Mon espace",
+  "nav.search": "Rechercher...",
+
+  // Hero / Landing
+  "hero.eyebrow": "Plateforme des développeurs africains",
+  "hero.title": "Le code africain prend sa place.",
+  "hero.subtitle":
+    "CodeXchange réunit les développeurs africains et de la diaspora : forum, jobs, projets open-source, mentorat, tutos, events et annuaire. Une seule plateforme, par les devs, pour les devs.",
+  "hero.cta.join": "Rejoindre la communauté",
+  "hero.cta.explore": "Explorer la plateforme",
+  "hero.tagline": "12 000+ devs · 54 pays · 100+ stacks",
+
+  // Stats
+  "stats.devs": "Développeurs",
+  "stats.threads": "Discussions",
+  "stats.jobs": "Offres d'emploi",
+  "stats.projects": "Projets open-source",
+  "stats.mentors": "Mentors disponibles",
+  "stats.countries": "Pays représentés",
+
+  // Mission
+  "mission.eyebrow": "Notre mission",
+  "mission.title": "Construire le futur tech de l'Afrique, ensemble.",
+  "mission.body":
+    "Pendant trop longtemps, les devs africains ont dû chercher ailleurs : forums anglo-saxons, tutos pensés pour d'autres contextes, jobs à l'autre bout du monde. CodeXchange veut changer ça. On rassemble les talents, les opportunités et le savoir dans une plateforme pensée pour le terrain, avec une exigence de qualité.",
+  "mission.p1.title": "Par les devs, pour les devs",
+  "mission.p1.body":
+    "Pas de marketing creux. Juste des devs qui partagent leur savoir, leur code et leurs opportunités. La communauté est modérée par des ingénieurs en activité.",
+  "mission.p2.title": "Pensé pour le contexte africain",
+  "mission.p2.body":
+    "Multi-devises, multi-langues, multi-fuseaux. Offline-friendly. Patterns qui marchent en conditions réelles, pas dans des docs de la Silicon Valley.",
+  "mission.p3.title": "Open-source et transparent",
+  "mission.p3.body":
+    "Une grande partie de la plateforme est open-source. Les contributions sont bienvenues. On publie nos métriques, pas nos slogans.",
+
+  // Modules
+  "modules.eyebrow": "Tout ce dont tu as besoin",
+  "modules.title": "Une plateforme, six modules.",
+  "modules.subtitle":
+    "Du premier commit à l'embauche, CodeXchange t'accompagne à chaque étape.",
+
+  "modules.forum.title": "Forum & Q&A",
+  "modules.forum.desc":
+    "Pose tes questions, partage tes trouvailles, débats d'archi. Tags par techno, catégories claires, réponses votées.",
+  "modules.jobs.title": "Jobs & Missions",
+  "modules.jobs.desc":
+    "Offres locales et remote vérifiées : full-time, freelance, stages. Filtres par pays, stack, type de contrat.",
+  "modules.projects.title": "Projets & Collab",
+  "modules.projects.desc":
+    "Trouve des co-fondateurs tech, rejoins des projets open-source, poste ton idée pour recruter une équipe.",
+  "modules.mentorat.title": "Mentorat",
+  "modules.mentorat.desc":
+    "Connecte-toi avec des seniors africains. Sessions gratuites pour les devs locaux. Match par stack et objectifs.",
+  "modules.tutos.title": "Tutos & Events",
+  "modules.tutos.desc":
+    "Articles techniques, replay de meetups, agenda des conférences africaines. Apprends et participe.",
+  "modules.annuaire.title": "Annuaire Devs",
+  "modules.annuaire.desc":
+    "Découvre les devs par pays, ville, stack, niveau. Pour recruter, collaborer ou juste réseauter.",
+
+  // Forum
+  "forum.title": "Forum",
+  "forum.subtitle":
+    "Questions, débats, retours d'expérience. Tout ce qui fait avancer la communauté.",
+  "forum.new": "Nouvelle discussion",
+  "forum.search.placeholder": "Rechercher dans le forum...",
+  "forum.filter.all": "Toutes catégories",
+  "forum.filter.tag.all": "Tous les tags",
+  "forum.empty": "Aucune discussion trouvée. Sois le premier à en lancer une !",
+  "forum.views": "vues",
+  "forum.answers": "réponses",
+  "forum.upvotes": "upvotes",
+  "forum.pinned": "Épinglé",
+  "forum.solved": "Résolu",
+  "forum.by": "par",
+  "forum.category.general": "Général",
+  "forum.category.frontend": "Frontend",
+  "forum.category.backend": "Backend",
+  "forum.category.mobile": "Mobile",
+  "forum.category.devops": "DevOps",
+  "forum.category.ai": "IA & ML",
+  "forum.category.career": "Carrière",
+  "forum.create.title": "Lancer une discussion",
+  "forum.create.body.placeholder": "Décris ton sujet en détail. Code, contexte, ce que tu as essayé...",
+  "forum.create.tags.placeholder": "react,go,architecture (séparés par virgules)",
+  "forum.create.submit": "Publier",
+  "forum.create.cancel": "Annuler",
+  "forum.answer.placeholder": "Ta réponse, avec code et exemples si besoin...",
+  "forum.answer.submit": "Répondre",
+  "forum.mark_answer": "Marquer comme réponse acceptée",
+  "forum.back_to_list": "Retour au forum",
+
+  // Jobs
+  "jobs.title": "Jobs & Missions",
+  "jobs.subtitle":
+    "Offres vérifiées pour les devs africains — full-time, freelance, stages, remote et local.",
+  "jobs.filter.country.all": "Tous les pays",
+  "jobs.filter.type.all": "Tous types",
+  "jobs.filter.stack.all": "Toutes stacks",
+  "jobs.remote_only": "Remote uniquement",
+  "jobs.apply": "Postuler",
+  "jobs.view": "Voir l'offre",
+  "jobs.posted_by": "posté par",
+  "jobs.type.full-time": "Temps plein",
+  "jobs.type.part-time": "Temps partiel",
+  "jobs.type.contract": "Contrat",
+  "jobs.type.internship": "Stage",
+  "jobs.type.freelance": "Freelance",
+  "jobs.empty": "Aucune offre ne correspond à tes filtres.",
+
+  // Projects
+  "projects.title": "Projets & Collab",
+  "projects.subtitle":
+    "Découvre des projets open-source africains, trouve des coéquipiers, lance ton idée.",
+  "projects.filter.status.all": "Tous statuts",
+  "projects.filter.stack.all": "Toutes stacks",
+  "projects.status.idea": "Idée",
+  "projects.status.mvp": "MVP",
+  "projects.status.beta": "Beta",
+  "projects.status.live": "En production",
+  "projects.status.maintained": "Maintenu",
+  "projects.stars": "étoiles",
+  "projects.looking_for": "Cherche :",
+  "projects.repo": "Voir le repo",
+  "projects.demo": "Voir la démo",
+  "projects.by": "par",
+  "projects.empty": "Aucun projet trouvé pour ces filtres.",
+
+  // Mentorat
+  "mentorat.title": "Mentorat",
+  "mentorat.subtitle":
+    "Des seniors africains qui partagent leur savoir. Sessions gratuites pour les devs locaux.",
+  "mentorat.request": "Demander un mentorat",
+  "mentorat.message.placeholder": "Présente-toi et ton objectif en quelques lignes...",
+  "mentorat.goal.placeholder": "Ex: Passer de junior à mid frontend",
+  "mentorat.send": "Envoyer la demande",
+  "mentorat.cancel": "Annuler",
+  "mentorat.capacity": "places disponibles",
+  "mentorat.languages": "Langues",
+  "mentorat.rate": "Tarif",
+  "mentorat.reviews": "avis",
+  "mentorat.testimonials.title": "Ils ont été mentorés",
+  "mentorat.testimonials.subtitle":
+    "Des parcours concrets de juniors à seniors, accompagnés par la communauté.",
+
+  // Tutos & Events
+  "tutos.title": "Tutos & Events",
+  "tutos.subtitle":
+    "Apprends avec des tutos écrits par des devs africains. Participe aux meetups et conférences près de chez toi.",
+  "tutos.tab.tutos": "Tutos",
+  "tutos.tab.events": "Events",
+  "tutos.filter.category.all": "Toutes catégories",
+  "tutos.read_time": "min de lecture",
+  "tutos.by": "par",
+  "tutos.read_more": "Lire le tuto",
+  "tutos.back_to_list": "Retour aux tutos",
+  "events.upcoming": "À venir",
+  "events.past": "Passé",
+  "events.attendees": "participants",
+  "events.rsvp": "S'inscrire",
+  "events.online": "En ligne",
+  "events.empty": "Aucun événement pour le moment.",
+
+  // Annuaire
+  "annuaire.title": "Annuaire des développeurs",
+  "annuaire.subtitle":
+    "Découvre les devs par pays, ville, stack et niveau. Pour recruter, collaborer ou réseauter.",
+  "annuaire.filter.country.all": "Tous les pays",
+  "annuaire.filter.city.all": "Toutes villes",
+  "annuaire.filter.stack.all": "Toutes stacks",
+  "annuaire.filter.level.all": "Tous niveaux",
+  "annuaire.available_only": "Disponibles uniquement",
+  "annuaire.view_profile": "Voir le profil",
+  "annuaire.back": "Retour à l'annuaire",
+  "annuaire.level.junior": "Junior",
+  "annuaire.level.mid": "Confirmé·e",
+  "annuaire.level.senior": "Senior",
+  "annuaire.level.lead": "Lead / Staff",
+  "annuaire.open_to_work": "Dispo pour opportunités",
+  "annuaire.recent_threads": "Discussions récentes",
+  "annuaire.recent_projects": "Projets récents",
+  "annuaire.recent_tutos": "Tutos récents",
+  "annuaire.empty": "Aucun·e dev trouvé·e avec ces filtres.",
+
+  // Auth
+  "auth.login.title": "Connexion",
+  "auth.login.subtitle": "Bon retour parmi nous.",
+  "auth.register.title": "Rejoindre CodeXchange",
+  "auth.register.subtitle": "Une plateforme, par les devs pour les devs.",
+  "auth.email": "Email",
+  "auth.password": "Mot de passe",
+  "auth.name": "Nom complet",
+  "auth.username": "Nom d'utilisateur",
+  "auth.country": "Pays",
+  "auth.city": "Ville",
+  "auth.stack": "Stack principale (ex: React, Go)",
+  "auth.level": "Niveau",
+  "auth.login.submit": "Se connecter",
+  "auth.register.submit": "Créer mon compte",
+  "auth.switch.to_register": "Pas encore de compte ? Rejoins-nous",
+  "auth.switch.to_login": "Déjà membre ? Connecte-toi",
+  "auth.demo_note": "Compte démo : aicha.diallo@codexchange.dev / password",
+
+  // Footer
+  "footer.tagline": "La plateforme des développeurs africains, par les devs.",
+  "footer.made_with": "Construit avec",
+  "footer.by": "par la communauté CodeXchange",
+  "footer.explore": "Explorer",
+  "footer.about": "À propos",
+  "footer.legal": "Légal",
+  "footer.rights": "Tous droits réservés",
+  "footer.about_us": "À propos",
+  "footer.code_of_conduct": "Code de conduite",
+  "footer.terms": "Conditions",
+  "footer.privacy": "Confidentialité",
+  "footer.contact": "Contact",
+  "footer.newsletter": "Newsletter",
+  "footer.newsletter_cta": "Une fois par mois, le meilleur de CodeXchange dans ta boîte.",
+  "footer.newsletter_placeholder": "ton@email.com",
+  "footer.newsletter_subscribe": "S'abonner",
+
+  // CTA
+  "cta.title": "Prêt·e à construire l'avenir du code africain ?",
+  "cta.subtitle": "Rejoins 12 000+ développeurs qui partagent, apprennent et recrutent ensemble.",
+  "cta.button": "Créer mon compte gratuit",
+
+  // Common
+  "common.loading": "Chargement...",
+  "common.error": "Une erreur est survenue. Réessaie.",
+  "common.search": "Rechercher",
+  "common.filters": "Filtres",
+  "common.reset_filters": "Réinitialiser",
+  "common.results": "résultats",
+  "common.copy_link": "Copier le lien",
+  "common.copied": "Copié !",
+  "common.share": "Partager",
+};
+
+const en: Dict = {
+  "nav.home": "Home",
+  "nav.forum": "Forum",
+  "nav.jobs": "Jobs",
+  "nav.projects": "Projects",
+  "nav.mentorat": "Mentorship",
+  "nav.tutos": "Tutorials & Events",
+  "nav.annuaire": "Directory",
+  "nav.login": "Sign in",
+  "nav.register": "Join",
+  "nav.logout": "Sign out",
+  "nav.dashboard": "My space",
+  "nav.search": "Search...",
+
+  "hero.eyebrow": "African developers' platform",
+  "hero.title": "African code takes its place.",
+  "hero.subtitle":
+    "CodeXchange brings together African developers and the diaspora: forum, jobs, open-source projects, mentorship, tutorials, events and a directory. One platform, by devs, for devs.",
+  "hero.cta.join": "Join the community",
+  "hero.cta.explore": "Explore the platform",
+  "hero.tagline": "12,000+ devs · 54 countries · 100+ stacks",
+
+  "stats.devs": "Developers",
+  "stats.threads": "Discussions",
+  "stats.jobs": "Job offers",
+  "stats.projects": "Open-source projects",
+  "stats.mentors": "Available mentors",
+  "stats.countries": "Countries represented",
+
+  "mission.eyebrow": "Our mission",
+  "mission.title": "Building the future of African tech, together.",
+  "mission.body":
+    "For too long, African devs had to look elsewhere: Anglo-Saxon forums, tutorials written for other contexts, jobs at the other end of the world. CodeXchange wants to change that. We bring together talent, opportunities and knowledge in a platform built for the terrain, with quality standards.",
+  "mission.p1.title": "By devs, for devs",
+  "mission.p1.body":
+    "No empty marketing. Just devs sharing their knowledge, code and opportunities. The community is moderated by active engineers.",
+  "mission.p2.title": "Designed for African context",
+  "mission.p2.body":
+    "Multi-currency, multi-language, multi-timezone. Offline-friendly. Patterns that work in real conditions, not in Silicon Valley docs.",
+  "mission.p3.title": "Open-source and transparent",
+  "mission.p3.body":
+    "A large part of the platform is open-source. Contributions are welcome. We publish our metrics, not our slogans.",
+
+  "modules.eyebrow": "Everything you need",
+  "modules.title": "One platform, six modules.",
+  "modules.subtitle":
+    "From first commit to hire, CodeXchange supports you at every step.",
+
+  "modules.forum.title": "Forum & Q&A",
+  "modules.forum.desc":
+    "Ask questions, share findings, debate architecture. Tech tags, clear categories, voted answers.",
+  "modules.jobs.title": "Jobs & Missions",
+  "modules.jobs.desc":
+    "Verified local and remote offers: full-time, freelance, internships. Filter by country, stack, contract type.",
+  "modules.projects.title": "Projects & Collab",
+  "modules.projects.desc":
+    "Find tech co-founders, join open-source projects, post your idea to recruit a team.",
+  "modules.mentorat.title": "Mentorship",
+  "modules.mentorat.desc":
+    "Connect with African seniors. Free sessions for local devs. Match by stack and goals.",
+  "modules.tutos.title": "Tutorials & Events",
+  "modules.tutos.desc":
+    "Tech articles, meetup replays, agenda of African conferences. Learn and participate.",
+  "modules.annuaire.title": "Devs Directory",
+  "modules.annuaire.desc":
+    "Discover devs by country, city, stack, level. To hire, collaborate or just network.",
+
+  "forum.title": "Forum",
+  "forum.subtitle":
+    "Questions, debates, feedback. Everything that moves the community forward.",
+  "forum.new": "New discussion",
+  "forum.search.placeholder": "Search the forum...",
+  "forum.filter.all": "All categories",
+  "forum.filter.tag.all": "All tags",
+  "forum.empty": "No discussion found. Be the first to start one!",
+  "forum.views": "views",
+  "forum.answers": "answers",
+  "forum.upvotes": "upvotes",
+  "forum.pinned": "Pinned",
+  "forum.solved": "Solved",
+  "forum.by": "by",
+  "forum.category.general": "General",
+  "forum.category.frontend": "Frontend",
+  "forum.category.backend": "Backend",
+  "forum.category.mobile": "Mobile",
+  "forum.category.devops": "DevOps",
+  "forum.category.ai": "AI & ML",
+  "forum.category.career": "Career",
+  "forum.create.title": "Start a discussion",
+  "forum.create.body.placeholder": "Describe your topic in detail. Code, context, what you tried...",
+  "forum.create.tags.placeholder": "react,go,architecture (comma-separated)",
+  "forum.create.submit": "Publish",
+  "forum.create.cancel": "Cancel",
+  "forum.answer.placeholder": "Your answer, with code and examples as needed...",
+  "forum.answer.submit": "Reply",
+  "forum.mark_answer": "Mark as accepted answer",
+  "forum.back_to_list": "Back to forum",
+
+  "jobs.title": "Jobs & Missions",
+  "jobs.subtitle":
+    "Verified offers for African devs — full-time, freelance, internships, remote and local.",
+  "jobs.filter.country.all": "All countries",
+  "jobs.filter.type.all": "All types",
+  "jobs.filter.stack.all": "All stacks",
+  "jobs.remote_only": "Remote only",
+  "jobs.apply": "Apply",
+  "jobs.view": "View offer",
+  "jobs.posted_by": "posted by",
+  "jobs.type.full-time": "Full-time",
+  "jobs.type.part-time": "Part-time",
+  "jobs.type.contract": "Contract",
+  "jobs.type.internship": "Internship",
+  "jobs.type.freelance": "Freelance",
+  "jobs.empty": "No offer matches your filters.",
+
+  "projects.title": "Projects & Collab",
+  "projects.subtitle":
+    "Discover African open-source projects, find teammates, launch your idea.",
+  "projects.filter.status.all": "All statuses",
+  "projects.filter.stack.all": "All stacks",
+  "projects.status.idea": "Idea",
+  "projects.status.mvp": "MVP",
+  "projects.status.beta": "Beta",
+  "projects.status.live": "Live",
+  "projects.status.maintained": "Maintained",
+  "projects.stars": "stars",
+  "projects.looking_for": "Looking for:",
+  "projects.repo": "View repo",
+  "projects.demo": "View demo",
+  "projects.by": "by",
+  "projects.empty": "No project found for these filters.",
+
+  "mentorat.title": "Mentorship",
+  "mentorat.subtitle":
+    "African seniors sharing their knowledge. Free sessions for local devs.",
+  "mentorat.request": "Request mentorship",
+  "mentorat.message.placeholder": "Introduce yourself and your goal in a few lines...",
+  "mentorat.goal.placeholder": "Ex: Move from junior to mid frontend",
+  "mentorat.send": "Send request",
+  "mentorat.cancel": "Cancel",
+  "mentorat.capacity": "spots available",
+  "mentorat.languages": "Languages",
+  "mentorat.rate": "Rate",
+  "mentorat.reviews": "reviews",
+  "mentorat.testimonials.title": "They were mentored",
+  "mentorat.testimonials.subtitle":
+    "Concrete journeys from junior to senior, supported by the community.",
+
+  "tutos.title": "Tutorials & Events",
+  "tutos.subtitle":
+    "Learn with tutorials written by African devs. Join meetups and conferences near you.",
+  "tutos.tab.tutos": "Tutorials",
+  "tutos.tab.events": "Events",
+  "tutos.filter.category.all": "All categories",
+  "tutos.read_time": "min read",
+  "tutos.by": "by",
+  "tutos.read_more": "Read tutorial",
+  "tutos.back_to_list": "Back to tutorials",
+  "events.upcoming": "Upcoming",
+  "events.past": "Past",
+  "events.attendees": "attendees",
+  "events.rsvp": "RSVP",
+  "events.online": "Online",
+  "events.empty": "No event scheduled yet.",
+
+  "annuaire.title": "Developers directory",
+  "annuaire.subtitle":
+    "Discover devs by country, city, stack and level. To hire, collaborate or network.",
+  "annuaire.filter.country.all": "All countries",
+  "annuaire.filter.city.all": "All cities",
+  "annuaire.filter.stack.all": "All stacks",
+  "annuaire.filter.level.all": "All levels",
+  "annuaire.available_only": "Available only",
+  "annuaire.view_profile": "View profile",
+  "annuaire.back": "Back to directory",
+  "annuaire.level.junior": "Junior",
+  "annuaire.level.mid": "Mid-level",
+  "annuaire.level.senior": "Senior",
+  "annuaire.level.lead": "Lead / Staff",
+  "annuaire.open_to_work": "Open to work",
+  "annuaire.recent_threads": "Recent threads",
+  "annuaire.recent_projects": "Recent projects",
+  "annuaire.recent_tutos": "Recent tutorials",
+  "annuaire.empty": "No dev found with these filters.",
+
+  "auth.login.title": "Sign in",
+  "auth.login.subtitle": "Welcome back.",
+  "auth.register.title": "Join CodeXchange",
+  "auth.register.subtitle": "One platform, by devs for devs.",
+  "auth.email": "Email",
+  "auth.password": "Password",
+  "auth.name": "Full name",
+  "auth.username": "Username",
+  "auth.country": "Country",
+  "auth.city": "City",
+  "auth.stack": "Main stack (ex: React, Go)",
+  "auth.level": "Level",
+  "auth.login.submit": "Sign in",
+  "auth.register.submit": "Create my account",
+  "auth.switch.to_register": "No account yet? Join us",
+  "auth.switch.to_login": "Already a member? Sign in",
+  "auth.demo_note": "Demo account: aicha.diallo@codexchange.dev / password",
+
+  "footer.tagline": "The platform for African developers, by devs.",
+  "footer.made_with": "Built with",
+  "footer.by": "by the CodeXchange community",
+  "footer.explore": "Explore",
+  "footer.about": "About",
+  "footer.legal": "Legal",
+  "footer.rights": "All rights reserved",
+  "footer.about_us": "About us",
+  "footer.code_of_conduct": "Code of conduct",
+  "footer.terms": "Terms",
+  "footer.privacy": "Privacy",
+  "footer.contact": "Contact",
+  "footer.newsletter": "Newsletter",
+  "footer.newsletter_cta": "Once a month, the best of CodeXchange in your inbox.",
+  "footer.newsletter_placeholder": "your@email.com",
+  "footer.newsletter_subscribe": "Subscribe",
+
+  "cta.title": "Ready to build the future of African code?",
+  "cta.subtitle": "Join 12,000+ developers who share, learn and hire together.",
+  "cta.button": "Create my free account",
+
+  "common.loading": "Loading...",
+  "common.error": "An error occurred. Try again.",
+  "common.search": "Search",
+  "common.filters": "Filters",
+  "common.reset_filters": "Reset",
+  "common.results": "results",
+  "common.copy_link": "Copy link",
+  "common.copied": "Copied!",
+  "common.share": "Share",
+};
+
+// For SW and AR we fall back to EN (no full translations yet — but we ship the framework)
+const sw: Dict = { ...en };
+const ar: Dict = { ...en };
+
+export const dictionaries: Record<Locale, Dict> = { fr, en, sw, ar };
+
+export function translate(locale: Locale, key: string): string {
+  return dictionaries[locale]?.[key] ?? dictionaries.fr[key] ?? key;
+}

@@ -1,0 +1,197 @@
+// CodeXchange — Prisma schema
+// La plateforme d'échange pour les développeurs africains
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String?
+  image         String?
+  role          String    @default("member") // member | moderator | admin
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  profile       Profile?
+  threads       Thread[]
+  posts         Post[]
+  jobsPosted    Job[]      @relation("JobAuthor")
+  projects      Project[]  @relation("ProjectAuthor")
+  tutorials     Tutorial[] @relation("TutorialAuthor")
+  events        Event[]    @relation("EventOrganizer")
+  mentorProfile Mentor?
+  mentorshipsRequested Mentorship[] @relation("Mentee")
+  mentorshipsProvided  Mentorship[] @relation("Mentor")
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username      String   @unique
+  headline      String?
+  bio           String?
+  country       String?
+  city          String?
+  stack         String? // comma-separated: "React,Go,Rust"
+  level         String? // junior | mid | senior | lead
+  github        String?
+  twitter       String?
+  linkedin      String?
+  website       String?
+  available     Boolean  @default(false) // open to work / collab
+  avatarColor   String?  @default("terracotta")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Thread {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  body        String
+  tags        String    // comma-separated
+  category    String   @default("general") // general | frontend | backend | mobile | devops | ai | career
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  posts       Post[]
+  views       Int       @default(0)
+  upvotes     Int       @default(0)
+  pinned      Boolean   @default(false)
+  solved      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([authorId])
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  threadId    String
+  thread      Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body        String
+  upvotes     Int      @default(0)
+  isAnswer    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([threadId])
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  title       String
+  company     String
+  companyLogo String?
+  location    String?
+  country     String?
+  remote      Boolean   @default(true)
+  type        String    @default("full-time") // full-time | part-time | contract | internship | freelance
+  stack       String?   // comma-separated
+  salary      String?   // display string e.g. "3-5K EUR / month"
+  description String
+  applyUrl    String?
+  authorId    String
+  author      User      @relation("JobAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([country])
+  @@index([type])
+}
+
+model Project {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique
+  tagline      String
+  description  String
+  repoUrl      String?
+  demoUrl      String?
+  stack        String?   // comma-separated
+  status       String    @default("idea") // idea | mvp | beta | live | maintained
+  lookingFor   String?   // comma-separated roles: "frontend,backend,design"
+  authorId     String
+  author       User      @relation("ProjectAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  cover        String?
+  stars        Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([status])
+}
+
+model Tutorial {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String
+  body        String
+  category    String    @default("general") // frontend | backend | mobile | devops | ai | career | general
+  tags        String?   // comma-separated
+  coverEmoji  String    @default("📝")
+  readTime    Int       @default(5) // minutes
+  authorId    String
+  author      User      @relation("TutorialAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([category])
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  date        DateTime
+  endDate     DateTime?
+  location    String?   // "Abidjan, Côte d'Ivoire"
+  online       Boolean  @default(false)
+  url          String?
+  coverEmoji   String   @default("📅")
+  organizerId  String
+  organizer    User     @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  attendees    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Mentor {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expertise    String   // comma-separated
+  bio          String
+  languages    String?  // comma-separated: "fr,en,sw"
+  hourlyRate   String?  // "Free" or "30 EUR"
+  capacity     Int      @default(2) // mentees per month
+  slotsTaken   Int      @default(0)
+  rating       Float    @default(5.0)
+  reviews      Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Mentorship {
+  id          String   @id @default(cuid())
+  mentorId     String
+  mentor       User     @relation("Mentor", fields: [mentorId], references: [id], onDelete: Cascade)
+  menteeId    String
+  mentee      User     @relation("Mentee", fields: [menteeId], references: [id], onDelete: Cascade)
+  status      String   @default("pending") // pending | accepted | declined | active | completed
+  message      String
+  goal         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
