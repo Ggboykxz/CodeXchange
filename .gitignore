@@ -52,3 +52,14 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# CodeXchange-specific
+/db/
+/scripts/*.png
+/scripts/*.pdf
+/scripts/*.webm
+/download/
+/tests/
+/.zscripts/
+*.tar
+worklog.md
