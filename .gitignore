@@ -55,6 +55,11 @@ server.log
 
 # CodeXchange-specific
 /db/
+/prisma/*.db
+/prisma/*.db-journal
+/prisma/prisma/
+/package-lock.json
+next-env.d.ts
 /scripts/*.png
 /scripts/*.pdf
 /scripts/*.webm

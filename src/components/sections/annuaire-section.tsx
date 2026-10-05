@@ -112,8 +112,12 @@ export function AnnuaireSection() {
   const [stack, setStack] = useState("all");
   const [level, setLevel] = useState("all");
   const [availableOnly, setAvailableOnly] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState<ProfileDetail | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(false);
+  // Profile detail is cached by username so view state is derived, not
+  // mutated from an effect.
+  const [detail, setDetail] = useState<{
+    username: string;
+    profile: ProfileDetail | null;
+  } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -147,21 +151,32 @@ export function AnnuaireSection() {
     )
   ).sort();
 
+  const selectedProfile =
+    sectionParam && detail && detail.username === sectionParam
+      ? detail.profile
+      : null;
+  const loadingProfile =
+    !!sectionParam && (!detail || detail.username !== sectionParam);
+
   useEffect(() => {
-    if (!sectionParam) {
-      setSelectedProfile(null);
-      return;
-    }
-    setLoadingProfile(true);
+    if (!sectionParam) return;
+    if (detail?.username === sectionParam) return;
+    let cancelled = false;
     fetch(`/api/profiles/${sectionParam}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d.profile) setSelectedProfile(d.profile);
+        if (cancelled) return;
+        if (d.profile) setDetail({ username: sectionParam, profile: d.profile });
         else navigate("annuaire");
       })
-      .catch(() => {})
-      .finally(() => setLoadingProfile(false));
-  }, [sectionParam, navigate]);
+      .catch(() => {
+        if (cancelled) return;
+        setDetail({ username: sectionParam, profile: null });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [sectionParam, detail, navigate]);
 
   // PROFILE DETAIL VIEW
   if (sectionParam) {

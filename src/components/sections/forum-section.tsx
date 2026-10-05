@@ -118,11 +118,17 @@ export function ForumSection() {
   const [category, setCategory] = useState("all");
   const [tag, setTag] = useState("all");
   const [q, setQ] = useState("");
-  const [selectedThread, setSelectedThread] = useState<ThreadDetail | null>(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);
+  // Detail is cached by slug so we never have to reset it from an effect.
+  const [detail, setDetail] = useState<{ slug: string; thread: ThreadDetail | null } | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [answerBody, setAnswerBody] = useState("");
   const [postingAnswer, setPostingAnswer] = useState(false);
+
+  // Derived view state — no setState inside effects needed.
+  const selectedThread =
+    sectionParam && detail && detail.slug === sectionParam ? detail.thread : null;
+  const loadingDetail =
+    !!sectionParam && (!detail || detail.slug !== sectionParam);
 
   // Available tags (computed from current threads)
   const allTags = Array.from(
@@ -151,25 +157,29 @@ export function ForumSection() {
   }, [category, tag, q, t]);
 
   useEffect(() => {
-    if (!sectionParam) {
-      loadThreads();
-      setSelectedThread(null);
-      return;
-    }
-    // Load thread detail
-    setLoadingDetail(true);
+    if (!sectionParam) return;
+    if (detail?.slug === sectionParam) return;
+    let cancelled = false;
     fetch(`/api/threads/${sectionParam}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d.thread) setSelectedThread(d.thread);
+        if (cancelled) return;
+        if (d.thread) setDetail({ slug: sectionParam, thread: d.thread });
         else {
+          setDetail({ slug: sectionParam, thread: null });
           toast.error("Discussion introuvable");
           navigate("forum");
         }
       })
-      .catch(() => toast.error(t("common.error")))
-      .finally(() => setLoadingDetail(false));
-  }, [sectionParam, loadThreads, navigate, t]);
+      .catch(() => {
+        if (cancelled) return;
+        toast.error(t("common.error"));
+        setDetail({ slug: sectionParam, thread: null });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [sectionParam, detail, navigate, t]);
 
   // Debounce search
   useEffect(() => {
@@ -227,9 +237,12 @@ export function ForumSection() {
         toast.error(data.error || "Erreur");
         return;
       }
-      setSelectedThread({
-        ...selectedThread,
-        posts: [...selectedThread.posts, data.post],
+      setDetail({
+        slug: selectedThread.slug,
+        thread: {
+          ...selectedThread,
+          posts: [...selectedThread.posts, data.post],
+        },
       });
       setAnswerBody("");
       toast.success("Réponse publiée !");
