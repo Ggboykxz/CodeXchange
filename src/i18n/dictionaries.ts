@@ -270,6 +270,13 @@ const fr: Dict = {
   "common.copy_link": "Copier le lien",
   "common.copied": "Copié !",
   "common.share": "Partager",
+
+  // Notifications
+  "notif.title": "Notifications",
+  "notif.empty": "Aucune notification pour l'instant.",
+  "notif.mark_all": "Tout marquer comme lu",
+  "notif.unread": "non lues",
+  "notif.login_required": "Connecte-toi pour voir tes notifications",
 };
 
 const en: Dict = {
@@ -505,6 +512,13 @@ const en: Dict = {
   "common.copy_link": "Copy link",
   "common.copied": "Copied!",
   "common.share": "Share",
+
+  // Notifications
+  "notif.title": "Notifications",
+  "notif.empty": "No notifications yet.",
+  "notif.mark_all": "Mark all as read",
+  "notif.unread": "unread",
+  "notif.login_required": "Sign in to see your notifications",
 };
 
 // For SW and AR we fall back to EN (no full translations yet — but we ship the framework)

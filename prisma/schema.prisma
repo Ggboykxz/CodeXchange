@@ -32,10 +32,14 @@ model User {
   mentorProfile Mentor?
   mentorshipsRequested Mentorship[] @relation("Mentee")
   mentorshipsProvided  Mentorship[] @relation("Mentor")
-  sessions     Session[]
+  sessions             Session[]
+  notificationsReceived Notification[] @relation("NotificationRecipient")
+  notificationsSent     Notification[] @relation("NotificationActor")
 }
 
 /// Session serveur : le jeton brut n'est JAMAIS stocké, seul son hash SHA-256.
+/// Contrairement à un jeton signé « stateless », une session en base peut être
+/// révoquée immédiatement (logout, expiration, suppression de compte).
 model Session {
   id        String   @id @default(cuid())
   tokenHash String   @unique
@@ -244,4 +248,20 @@ model Mentorship {
   goal         String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  recipientId String
+  recipient   User     @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  actorId     String?
+  actor       User?    @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+  type        String   // reply | answer | mentorship | follow | mention | system
+  title       String
+  body        String?
+  href        String?  // in-app target, e.g. "#forum/<slug>"
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([recipientId, read, createdAt])
 }

@@ -21,6 +21,7 @@ import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { AuthForm } from "@/components/shared/auth-form";
 import { Avatar } from "@/components/shared/avatar";
+import { NotificationBell } from "@/components/shared/notification-bell";
 import {
   Menu,
   LogOut,
@@ -113,6 +114,7 @@ export function Header() {
               >
                 <Github className="h-4 w-4" />
               </a>
+              <NotificationBell />
               <LanguageSwitcher />
               <ThemeToggle />
 

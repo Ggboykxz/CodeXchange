@@ -65,26 +65,34 @@ Switcher de langue dans le header avec drapeaux.
 
 ```
 GET    /api/threads              Lister / filtrer les discussions
-POST   /api/threads              Créer une discussion
+POST   /api/threads              Créer une discussion (session requise)
 GET    /api/threads/[slug]       Détail d'une discussion
-POST   /api/threads/[slug]/posts Répondre à une discussion
+POST   /api/threads/[slug]/posts Répondre à une discussion (session requise)
 
 GET    /api/jobs                 Lister / filtrer les offres
 GET    /api/projects             Lister / filtrer les projets
 GET    /api/mentors              Lister les mentors
-POST   /api/mentors/[id]/request Demander un mentorat
+POST   /api/mentors/[id]/request Demander un mentorat (session requise)
 GET    /api/tutorials            Lister les tutos
 GET    /api/tutorials/[slug]     Détail d'un tuto
 GET    /api/events               Lister les events
 GET    /api/profiles             Lister / filtrer les profils dev
 GET    /api/profiles/[username]   Détail d'un profil dev
 
+GET    /api/notifications           Notifications + non-lues
+PATCH  /api/notifications           Marquer une notification comme lue
+POST   /api/notifications/read-all  Tout marquer comme lu
+
 POST   /api/auth/register        Créer un compte
 POST   /api/auth/login           Se connecter
-GET    /api/auth/me              Utilisateur courant
+GET    /api/auth/me              Utilisateur courant (token HMAC vérifié)
 DELETE /api/auth/me              Se déconnecter
 GET    /api/stats                Stats globales de la plateforme
 ```
+
+Les réponses publiques ne contiennent jamais `passwordHash` ni `email`
+(`src/lib/api.ts`). L'auteur d'une écriture est toujours lu dans le cookie
+de session, jamais dans le corps de la requête.
 
 ## Structure du projet
 
@@ -112,7 +120,18 @@ scripts/
 
 12 développeurs africains (Sénégal, Côte d'Ivoire, Nigeria, Kenya, Ghana, Mali, Gabon, Egypt, RD Congo, Burkina Faso), 10 discussions, 8 offres d'emploi (Wave, Paystack, Orange Money, Jumia, Twiga, Andela, Polygon...), 6 projets open-source (BaobabUI, Paybridge, KolaLearn...), 5 mentors, 6 tutos et 5 events.
 
-Compte démo : `aicha.diallo@codexchange.dev` (n'importe quel mot de passe ≥ 6 caractères).
+Compte démo : `aicha.diallo@codexchange.dev`, mot de passe `codexchange`.
+Les 12 comptes du seed partagent le même mot de passe démo.
+
+## Notifications in-app
+
+- Modèle Prisma `Notification` (recipient, actor, type, href, read)
+- `GET /api/notifications` → 30 dernières + compteur non-lues
+- `PATCH /api/notifications` → marquer une notification comme lue
+- `POST /api/notifications/read-all` → tout marquer comme lu
+- Cloche dans le header (badge, polling 60 s, navigation in-app au clic)
+- Déclenchées par : réponse à une discussion, demande de mentorat
+- Jamais d'auto-notification quand on agit sur soi-même
 
 ## Roadmap
 

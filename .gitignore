@@ -57,10 +57,14 @@ server.log
 # CodeXchange-specific
 /db/
 # SQLite local (prisma db push) — jamais versionné
-prisma/*.db
-prisma/*.db-journal
-prisma/*.db-shm
-prisma/*.db-wal
+/prisma/*.db
+/prisma/*.db-journal
+/prisma/*.db-shm
+/prisma/*.db-wal
+/prisma/prisma/
+# bun.lock est le lockfile canonique (cf. README) — pas de second lockfile npm
+/package-lock.json
+/next-env.d.ts
 /scripts/*.png
 /scripts/*.pdf
 /scripts/*.webm
