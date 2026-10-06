@@ -1,3 +1,4 @@
+import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
       db.thread.findMany({
         where,
         include: {
-          author: { select: { id: true, name: true, image: true, profile: true } },
+          author: { select: authorSelect },
           _count: { select: { posts: true } },
         },
         orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
@@ -91,7 +92,7 @@ export async function POST(req: NextRequest) {
     const thread = await db.thread.create({
       data: { title, slug, body, tags, category, authorId: user.id },
       include: {
-        author: { select: { id: true, name: true, image: true, profile: true } },
+        author: { select: authorSelect },
         _count: { select: { posts: true } },
       },
     });

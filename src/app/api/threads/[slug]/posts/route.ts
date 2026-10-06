@@ -1,3 +1,4 @@
+import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
@@ -5,7 +6,6 @@ import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { postCreateSchema } from "@/lib/validate";
 import { notify } from "@/lib/notify";
 
-const authorSelect = { id: true, name: true, image: true, profile: true } as const;
 
 /**
  * POST /api/threads/[slug]/posts — répondre à une question.

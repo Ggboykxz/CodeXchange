@@ -1,3 +1,4 @@
+import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
@@ -100,7 +101,7 @@ export async function PATCH(
 
     const updated = await db.post.findUnique({
       where: { id },
-      include: { author: { select: { id: true, name: true, image: true, profile: true } } },
+      include: { author: { select: authorSelect } },
     });
 
     return NextResponse.json({ post: updated });

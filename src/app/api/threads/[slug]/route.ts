@@ -1,8 +1,8 @@
+import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { pagination } from "@/lib/validate";
 
-const authorSelect = { id: true, name: true, image: true, profile: true } as const;
 
 export async function GET(
   req: NextRequest,
