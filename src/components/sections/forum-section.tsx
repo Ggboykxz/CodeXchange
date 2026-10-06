@@ -135,6 +135,9 @@ export function ForumSection() {
   const [category, setCategory] = useState("all");
   const [tag, setTag] = useState("all");
   const [q, setQ] = useState("");
+  // C8 — filtre « non résolu » : l'API acceptait déjà `?solved=`, il n'y
+  // avait aucun sélecteur pour l'atteindre depuis l'interface.
+  const [solved, setSolved] = useState<"all" | "false" | "true">("all");
   // Detail is cached by slug so we never have to reset it from an effect.
   const [detail, setDetail] = useState<{ slug: string; thread: ThreadDetail | null } | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
@@ -163,6 +166,7 @@ export function ForumSection() {
       if (category !== "all") params.set("category", category);
       if (tag !== "all") params.set("tag", tag);
       if (q) params.set("q", q);
+      if (solved !== "all") params.set("solved", solved);
       const res = await fetch(`/api/threads?${params}`);
       const data = await res.json();
       setThreads(data.threads || []);
@@ -171,7 +175,7 @@ export function ForumSection() {
     } finally {
       setLoading(false);
     }
-  }, [category, tag, q, t]);
+  }, [category, tag, q, solved, t]);
 
   useEffect(() => {
     if (!sectionParam) return;
@@ -624,6 +628,19 @@ export function ForumSection() {
                 {tg}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+        <Select value={solved} onValueChange={(v) => setSolved(v as typeof solved)}>
+          <SelectTrigger
+            className="w-full sm:w-[180px]"
+            aria-label={t("forum.filter.status.label")}
+          >
+            <SelectValue placeholder={t("forum.filter.status.all")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("forum.filter.status.all")}</SelectItem>
+            <SelectItem value="false">{t("forum.filter.status.unsolved")}</SelectItem>
+            <SelectItem value="true">{t("forum.filter.status.solved")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
