@@ -30,6 +30,22 @@ export const SESSION_TTL_S = SESSION_TTL_MS / 1000;
 /** Un jeton est toujours 32 octets hexadécimaux. */
 const TOKEN_RE = /^[0-9a-f]{64}$/i;
 
+/**
+ * Secret de session : sert de *sel* au hash du jeton.
+ *
+ * En faisant entrer `SESSION_SECRET` dans le digest, on donne à la variable
+ * un rôle concret : la changer invalide instantanément toutes les sessions
+ * en base (sha256(ancien:jeton) ne correspond plus à sha256(nouveau:jeton)),
+ * ce qui revient à un « déconnecter tout le monde » à la moindre suspicion
+ * de compromission. Sans ce sel, tourner la clé ne toucherait à rien.
+ */
+const SESSION_SECRET = process.env.SESSION_SECRET || "codexchange-dev-session-secret";
+
+/** Digest de session — utilisé pour créer ET rechercher : toujours identique. */
+export function sessionDigest(token: string): string {
+  return sha256(`${SESSION_SECRET}:${token}`);
+}
+
 /* ------------------------------------------------------------------ */
 /* Sessions                                                            */
 /* ------------------------------------------------------------------ */
@@ -42,7 +58,7 @@ export async function createSession(
   const jwt = randomBytes(32).toString("hex");
   await db.session.create({
     data: {
-      tokenHash: sha256(jwt),
+      tokenHash: sessionDigest(jwt),
       userId,
       userAgent: meta.userAgent?.slice(0, 255) ?? null,
       ip: meta.ip ?? null,
@@ -57,7 +73,7 @@ export async function getSessionUser(token: string | undefined): Promise<AuthUse
   if (!token || !TOKEN_RE.test(token)) return null;
 
   const session = await db.session.findUnique({
-    where: { tokenHash: sha256(token) },
+    where: { tokenHash: sessionDigest(token) },
     include: { user: { select: authUserSelect } },
   });
   if (!session) return null;
@@ -73,7 +89,7 @@ export async function getSessionUser(token: string | undefined): Promise<AuthUse
 export async function revokeSession(token: string | undefined): Promise<void> {
   if (!token || !TOKEN_RE.test(token)) return;
   await db.session
-    .deleteMany({ where: { tokenHash: sha256(token) } })
+    .deleteMany({ where: { tokenHash: sessionDigest(token) } })
     .catch(() => undefined);
 }
 
