@@ -69,7 +69,6 @@ server.log
 /scripts/*.pdf
 /scripts/*.webm
 /download/
-/tests/
 /.zscripts/
 *.tar
 worklog.md

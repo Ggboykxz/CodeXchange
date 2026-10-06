@@ -341,6 +341,33 @@ bun run start     # NODE_ENV=production sur .next/standalone/server.js
 Le service worker **ne s'enregistre qu'en production** (`sw-register.tsx` vérifie
 `NODE_ENV === "production"`) : la démonstration hors-ligne exige donc `build` + `start`, pas `dev`.
 
+### Déploiement Vercel
+
+Le projet est relié à GitHub : tout `push` sur `main` déclenche un déploiement.
+
+`vercel.json` impose `npx prisma generate && next build`. Sans cette étape explicite,
+le `postinstall` de `@prisma/client` n'est pas garanti (Bun bloque les scripts des
+dépendances) : le client n'est jamais généré et `next build` s'arrête sur
+`Module '"@prisma/client"' has no exported member 'PrismaClient'`. Le même
+`postinstall` existe dans `package.json` pour les installs locales et la CI.
+
+Variables à poser dans Vercel (*Settings → Environment Variables*) :
+
+| Variable | Valeur |
+| --- | --- |
+| `SESSION_SECRET` | `openssl rand -hex 32` — sel du hash des jetons de session |
+| `COOKIE_SECURE` | `true` (HTTPS) |
+| `NEXT_PUBLIC_SITE_URL` | `https://…` domaine réel (repli `VERCEL_URL`) |
+| `DATABASE_URL` | URL **PostgreSQL** — voir l'encadré ci-dessous |
+
+> ⚠️ **SQLite ne fonctionne pas sur Vercel** : le disque des fonctions est en
+> lecture seule et chaque instance a le sien — `file:./dev.db` ne survivrait pas
+> au premier écrit. Il faut passer `provider = "postgresql"` dans
+> `prisma/schema.prisma` (procédure dans [docs/ENVIRONNEMENTS.md](./docs/ENVIRONNEMENTS.md))
+> et brancher une base managée (Vercel Postgres, Neon, Supabase). C'est l'étape
+> **M2** de la feuille de route — en attente, l'UI s'affiche mais toutes les
+> routes `/api/*` qui lisent la base renvoient une erreur.
+
 ---
 
 ## Feuille de route
