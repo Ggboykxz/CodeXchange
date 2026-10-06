@@ -68,7 +68,7 @@
 | **RTL arabe** | `lang`/`dir` sont maintenant pilotés par `LocaleSync`, mais `dir` reste `"ltr"` : le layout s'appuie encore sur des propriétés physiques (`pl-`/`pr-`/`left`) qui casserait le rendu |
 | **Traduction sw/ar** | 0 clé propre (voir ci-dessus) |
 | **PostgreSQL / Supabase** | `provider = "sqlite"`, aucune migration versionnée (utilisation de `db push`) |
-| **Tests (unitaires / E2E)** | Aucun runner ni fichier de test dans le dépôt |
+| **Tests E2E (Playwright)** | Les **unitaires** sont là (Vitest, 75 tests sur hash, validation, sélecteurs, rate limit) — mais aucun parcours n'est exécuté dans un vrai navigateur |
 | **SEO / pages par module** | Application mono-page : une seule route `src/app/page.tsx`, navigation par hash |
 
 ---

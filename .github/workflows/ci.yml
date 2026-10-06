@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Lint, typecheck & build
+    name: Lint, tests, typecheck & build
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -47,6 +47,12 @@ jobs:
 
       - name: Lint
         run: bun run lint
+
+      # Posé avant typecheck/build : la suite dure moins d'une seconde et
+      # ne dépend ni de `next typegen` ni de la base — autant échouer tôt.
+      # Aucun test n'importe `lib/db` : le seed n'est jamais touché.
+      - name: Test
+        run: bun run test
 
       # next-env.d.ts et .next/types sont gitignorés : les générer avant tsc
       # (documenté — `next build` les régénère aussi, mais après le typecheck)

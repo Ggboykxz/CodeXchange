@@ -123,7 +123,7 @@
 | J4 | Non-fuite de `passwordHash` / `email` | ✅ | Sélecteurs Prisma publics + filtre récursif `json()` |
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
-| J7 | Tests unitaires / E2E | ⬜ | Aucun runner ni fichier de test |
+| J7 | Tests unitaires / E2E | ⏳ | **Unitaires livrés** : Vitest, 75 tests / 6 fichiers (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays), étape `bun run test` en CI. **E2E (Playwright) à venir** — prévu en M1 |
 | J8 | Journalisation & monitoring | ⬜ | `console.error` + logs `tee` ; log SQL Prisma en dev uniquement (volontaire) |
 | J9 | Sauvegardes / réplication de base | ⬜ | SQLite local, aucun plan de backup |
 

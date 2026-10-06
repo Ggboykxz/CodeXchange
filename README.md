@@ -201,8 +201,10 @@ recalculés à partir des votes réels).
 | `bun run build` | `next build` + copie des assets et de `public/` dans `.next/standalone/` |
 | `bun run start` | Prod : `NODE_ENV=production bun .next/standalone/server.js` (`tee server.log`) |
 | `bun run lint` | `eslint .` |
+| `bun run test` | `vitest run` — 75 tests unitaires, sans base (`tests/`) |
+| `bun run test:watch` | `vitest` en mode watch (développement) |
 | `bun run typecheck` | `tsc --noEmit` |
-| `bun run check` | lint + typecheck + build (une seule commande) |
+| `bun run check` | lint + tests + typecheck + build (une seule commande) |
 | `bun run db:push` | `prisma db push --accept-data-loss` |
 | `bun run db:generate` | `prisma generate` |
 | `bun run db:migrate` | `prisma migrate dev` |
@@ -212,7 +214,21 @@ recalculés à partir des votes réels).
 **CI** (`.github/workflows/ci.yml`, badge en haut de page) : déclenchée sur `push` vers `main` et sur
 les pull requests, une exécution par branche (annulation des runs en cours). Étapes : Bun (latest) +
 Node 22 → `bun install --frozen-lockfile` → `cp .env.example .env` → `prisma db push` →
-`prisma generate` → `bun run lint` → `bunx next typegen` → `bun run typecheck` → `bun run build`.
+`prisma generate` → `bun run lint` → `bun run test` → `bunx next typegen` → `bun run typecheck` →
+`bun run build`. Les tests sont posés avant typecheck/build : ils durent moins d'une seconde et ne
+dépendent ni de `next typegen` ni de la base, donc autant échouer tôt.
+
+**Ce que la suite couvre** (`tests/`, 6 fichiers, 75 tests, ~0,8 s) : politique de hash mot de passe
+(sel unique, refus des stockages corrompus sans exception, anti-oracle `burnPasswordTime`), digest
+de session/vérification (déterministe, portées distinctes), les sélecteurs Prisma — un test échoue
+si `passwordHash`, `email` ou `role` venait à figurer dans un select public —, les schémas zod
+(bornes de vote, pagination, jeton de vérification, rejet des champs `role`/`reputation` injectés),
+le rate limiting (fenêtre glissante, clés isolées, `Retry-After`) et la liste de pays partagée
+(doublons, tri, cohérence formulaire/filtre).
+
+**Ce que la suite ne couvre pas** : aucun test n'importe `lib/db`, donc le seed et le `dev.db` ne
+sont jamais touchés — mais aucun parcours n'est non plus exécuté dans un vrai navigateur. Le test
+E2E Playwright du parcours Q&R est prévu en M1 (`docs/ROADMAP.md`).
 
 ---
 
@@ -334,7 +350,7 @@ le backlog complet avec statut réel dans **[docs/BACKLOG.md](./docs/BACKLOG.md)
 
 En bref : ✅ auth par session, Q&R Markdown, votes + meilleure réponse, recherche, annuaire +
 édition de profil, jobs/projets/tutos/events en lecture, mentorat, notifications, PWA hors-ligne,
-CI — ⏳ i18n (sw/ar à traduire), création de contenus, e-mails —
+CI — ⏳ i18n (sw/ar à traduire), création de contenus, e-mails, tests E2E —
 ⬜ RTL arabe, OAuth, messagerie, paiement mobile money, modération, e-mails, tests E2E.
 
 ---
