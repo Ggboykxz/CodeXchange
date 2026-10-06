@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FAFAF9" />
+    <meta
+      name="description"
+      content="CodeXchange est hors ligne : une connexion Internet est requise pour charger cette page."
+    />
+    <title>Hors ligne — CodeXchange</title>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <style>
+      /* Palette issue de src/app/globals.css (thème clair par défaut) */
+      :root {
+        --background: #fafaf9; /* oklch(0.985 0.001 100) */
+        --foreground: #1c1a19; /* oklch(0.22 0.004 60) */
+        --card: #f8f8f7; /* oklch(0.978 0.001 100) */
+        --muted: #e8e8e6; /* oklch(0.93 0.002 100) */
+        --muted-foreground: #73716f; /* oklch(0.55 0.004 60) */
+        --border: #d8d7d4; /* oklch(0.88 0.005 100) */
+        --terracotta: #c43b15; /* --chart-1 : oklch(0.55 0.18 35) */
+        --amber: #c37f00; /* --chart-2 : oklch(0.65 0.15 75) */
+        --mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+          Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #0f0d0c; /* oklch(0.16 0.004 60) */
+          --foreground: #f2f2f1; /* oklch(0.96 0.001 100) */
+          --card: #151312; /* oklch(0.19 0.004 60) */
+          --muted: #211f1d; /* oklch(0.24 0.004 60) */
+          --muted-foreground: #918f8d; /* oklch(0.65 0.004 60) */
+          --border: rgba(255, 255, 255, 0.1);
+          --terracotta: #e75c3a; /* --chart-1 (dark) */
+          --amber: #e49e22; /* --chart-2 (dark) */
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.25rem;
+        background: var(--background);
+        color: var(--foreground);
+        font-family: var(--mono);
+        font-feature-settings: "ss01", "cv11";
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main {
+        width: 100%;
+        max-width: 42rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 0.375rem;
+        padding: 2rem 1.75rem;
+      }
+
+      .eyebrow {
+        margin: 0 0 1rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+
+      h1 {
+        margin: 0 0 1rem;
+        font-size: clamp(1.75rem, 6vw, 2.75rem);
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+      }
+
+      h1 .code {
+        color: var(--terracotta);
+      }
+
+      p {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--muted-foreground);
+      }
+
+      p strong {
+        color: var(--foreground);
+      }
+
+      .dot-divider {
+        height: 2px;
+        margin: 1.5rem 0;
+        background-image: radial-gradient(
+          circle,
+          var(--muted-foreground) 1px,
+          transparent 1px
+        );
+        background-size: 6px 6px;
+        background-repeat: repeat-x;
+        background-position: center;
+        opacity: 0.3;
+      }
+
+      .prompt {
+        display: block;
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        font-family: var(--mono);
+        font-size: 0.875rem;
+        color: var(--foreground);
+        overflow-wrap: anywhere;
+      }
+
+      .prompt .caret {
+        color: var(--amber);
+      }
+
+      .actions {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      a,
+      button {
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 6px;
+        padding: 0.6rem 1.1rem;
+        text-decoration: none;
+        transition: background-color 0.15s ease, color 0.15s ease;
+      }
+
+      a {
+        background: var(--foreground);
+        color: var(--background);
+        border: 1px solid var(--foreground);
+      }
+
+      button {
+        background: transparent;
+        color: var(--foreground);
+        border: 1px solid var(--border);
+      }
+
+      a:hover,
+      button:hover {
+        background: var(--terracotta);
+        border-color: var(--terracotta);
+        color: #fafaf9;
+      }
+
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--amber);
+        outline-offset: 2px;
+      }
+
+      footer {
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">codexchange // status: offline</p>
+      <h1><span class="code">Hors ligne.</span> Connexion requise.</h1>
+      <p>
+        Vous consultez <strong>CodeXchange</strong> sans connexion Internet, ou
+        votre réseau ne répond plus. Cette page n'a pas encore été visitée, elle
+        n'est donc pas disponible dans le cache.
+      </p>
+      <p>
+        Les pages que vous avez déjà ouvertes restent accessibles hors ligne —
+        revenez-y, ou réessayez une fois votre connexion rétablie.
+      </p>
+
+      <div class="dot-divider" role="presentation"></div>
+
+      <code class="prompt"
+        ><span class="caret">$</span> ping codexchange — 100% packet loss</code
+      >
+
+      <div class="actions">
+        <button type="button" onclick="window.location.reload()">
+          Réessayer
+        </button>
+        <a href="/">Retour à l'accueil</a>
+      </div>
+
+      <footer>CodeXchange — par les devs, pour les devs.</footer>
+    </main>
+  </body>
+</html>

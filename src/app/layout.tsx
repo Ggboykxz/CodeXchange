@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SWRegister } from "@/components/sw-register";
 
 const mono = IBM_Plex_Mono({
   variable: "--font-mono",
@@ -28,6 +29,14 @@ export const metadata: Metadata = {
   authors: [{ name: "CodeXchange" }],
   icons: {
     icon: "/logo.svg",
+    apple: "/icons/icon-192.png",
+  },
+  // PWA (A6) — manifest installable
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CodeXchange",
   },
   openGraph: {
     title: "CodeXchange — La plateforme des développeurs africains",
@@ -41,6 +50,16 @@ export const metadata: Metadata = {
     title: "CodeXchange",
     description: "La plateforme des développeurs africains.",
   },
+};
+
+// `themeColor` dans `metadata` est déprécié depuis Next 14 : il vit dans
+// `viewport` (émet <meta name="theme-color">, requis pour l'installation PWA).
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FAFAF9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F0D0C" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -58,6 +77,7 @@ export default function RootLayout({
         </ThemeProvider>
         <Toaster />
         <SonnerToaster richColors position="top-right" />
+        <SWRegister />
       </body>
     </html>
   );

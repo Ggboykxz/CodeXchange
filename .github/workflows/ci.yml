@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Une seule exécution par branche : les runs en cours sont annulés
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, typecheck & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # bun.lock est le lockfile canonique (package-lock.json est gitignoré)
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # Node requis pour les binaires Prisma / Next
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # DATABASE_URL (SQLite) doit exister pour `next build`
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Prisma db push
+        run: bunx prisma db push
+
+      - name: Prisma generate
+        run: bunx prisma generate
+
+      - name: Lint
+        run: bun run lint
+
+      # next-env.d.ts et .next/types sont gitignorés : les générer avant tsc
+      # (documenté — `next build` les régénère aussi, mais après le typecheck)
+      - name: Generate Next.js types
+        run: bunx next typegen
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Build
+        run: bun run build
