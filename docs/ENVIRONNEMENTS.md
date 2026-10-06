@@ -17,6 +17,7 @@
 | `DATABASE_URL` | `file:./dev.db` | `postgresql://user:pass@host:5432/codexchange` (ou URL Supabase) | **Seule variable obligatoire** : lue par `prisma/schema.prisma` (`env("DATABASE_URL")`) |
 | `COOKIE_SECURE` | `false` | `true` (uniquement derrière HTTPS) | `src/lib/auth.ts` : ajoute `secure` au cookie `cx_session`. **À `true` sur un site en HTTP, le cookie n'est jamais stocké → connexion « acceptée » mais reste déconnecté** |
 | `SESSION_SECRET` | `change-me-…` | `openssl rand -hex 32` | Sert de **sel** au hash du jeton de session : `sha256(SECRET:jeton)`. Le changer invalide **toutes les sessions** d'un coup — le geste à faire en cas de suspicion de compromission. Absente en dev local ⇒ valeur de repli utilisée |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://…` (domaine réel) | `src/lib/site.ts` : `metadataBase` (aperçus Open Graph), `robots.ts` et `sitemap.xml`. Repli `VERCEL_URL`, puis `localhost:3000` |
 
 Éléments d'infrastructure associés :
 
