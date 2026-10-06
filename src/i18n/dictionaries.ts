@@ -228,6 +228,8 @@ const fr: Dict = {
   "annuaire.level": "Niveau",
   "annuaire.bio": "Bio",
   "annuaire.site": "Site web",
+  "annuaire.reputation": "réputation",
+  "annuaire.reputation_hint": "Score de contribution : +2 par réponse votée, +10 par réponse acceptée, -1 par question mal votée.",
 
   // Auth
   "auth.login.title": "Connexion",
@@ -506,6 +508,8 @@ const en: Dict = {
   "annuaire.level": "Level",
   "annuaire.bio": "Bio",
   "annuaire.site": "Website",
+  "annuaire.reputation": "reputation",
+  "annuaire.reputation_hint": "Contribution score: +2 per upvoted answer, +10 per accepted answer, -1 per downvoted question.",
 
   "auth.login.title": "Sign in",
   "auth.login.subtitle": "Welcome back.",

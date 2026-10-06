@@ -67,6 +67,7 @@ type Profile = {
 type Author = {
   id: string;
   name: string;
+  reputation?: number;
   profile: Profile | null;
 };
 
@@ -480,6 +481,16 @@ export function ForumSection() {
                       >
                         {post.author.name}
                       </button>
+                      <span
+                        className="ml-1 font-mono text-[11px] text-muted-foreground"
+                        title={t("annuaire.reputation_hint")}
+                      >
+                        ★ {post.author.reputation ?? 0}
+                        <span className="sr-only">
+                          {" "}
+                          {t("annuaire.reputation")}
+                        </span>
+                      </span>
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

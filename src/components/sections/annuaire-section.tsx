@@ -66,6 +66,7 @@ type ProfileDetail = Profile & {
   user: {
     id: string;
     name: string;
+    reputation: number;
     threads: Array<{
       id: string;
       title: string;
@@ -96,18 +97,37 @@ type ProfileDetail = Profile & {
   };
 };
 
+/**
+ * Pays proposés au filtre. La liste doit refléter les pays réellement
+ * présents en base : avec 10 entrées codées en dur pour 21 pays au seed,
+ * 12 pays étaient impossibles à sélectionner (le filtre « Tous » restait
+ * donc le seul recours).
+ * TODO : servir par un `SELECT DISTINCT country` via /api/profiles le jour
+ * où les pays viendront d'exports ou de comptes réels.
+ */
 const countries = [
   "all",
-  "Sénégal",
-  "Côte d'Ivoire",
-  "Nigeria",
-  "Kenya",
-  "Ghana",
-  "Mali",
-  "Gabon",
-  "Egypt",
-  "RD Congo",
+  "Afrique du Sud",
+  "Bénin",
   "Burkina Faso",
+  "Cameroun",
+  "Côte d'Ivoire",
+  "Egypt",
+  "Éthiopie",
+  "Gabon",
+  "Ghana",
+  "Guinée",
+  "Kenya",
+  "Mali",
+  "Maroc",
+  "Nigeria",
+  "Ouganda",
+  "RD Congo",
+  "Rwanda",
+  "Sénégal",
+  "Tanzanie",
+  "Tunisie",
+  "Zambie",
 ];
 
 const levels = ["all", "junior", "mid", "senior", "lead"];
@@ -342,6 +362,22 @@ export function AnnuaireSection() {
                   {selectedProfile.city}, {selectedProfile.country}
                 </p>
               )}
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span
+                  className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 font-mono text-xs"
+                  title={t("annuaire.reputation_hint")}
+                >
+                  <Star className="h-3 w-3 text-chart-2" aria-hidden="true" />
+                  <span className="sr-only">{t("annuaire.reputation")} : </span>
+                  {selectedProfile.user.reputation ?? 0}
+                  <span className="text-muted-foreground">
+                    {t("annuaire.reputation")}
+                  </span>
+                </span>
+                <span className="font-mono text-xs text-muted-foreground">
+                  @{selectedProfile.username}
+                </span>
+              </div>
               {selectedProfile.stack && (
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {selectedProfile.stack

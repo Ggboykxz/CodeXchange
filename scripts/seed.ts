@@ -2352,6 +2352,38 @@ async function main() {
     await db.post.update({ where: { id: p.id }, data: { upvotes } });
   }
 
+  console.log("🎓 Computing reputation...");
+  // Le barème du CDC §3.2 (+2 par réponse votée, +10 par réponse acceptée,
+  // -1 par question mal votée) doit être appliqué au seed lui-même : sinon
+  // les profils afficheraient 0 de réputation alors qu'ils totalisent des
+  // dizaines de votes, et l'écran paraîtrait cassé au jury.
+  const repByUser = new Map<string, number>();
+  const bump = (id: string, by: number) =>
+    repByUser.set(id, (repByUser.get(id) ?? 0) + by);
+
+  const postsWithThread = await db.post.findMany({
+    select: {
+      id: true,
+      authorId: true,
+      isAnswer: true,
+      thread: { select: { authorId: true } },
+    },
+  });
+  for (const p of postsWithThread) {
+    const up = await db.vote.count({
+      where: { kind: "post", refId: p.id, value: 1 },
+    });
+    bump(p.authorId, up * 2);
+    // Comme dans /api/posts/[id] : un auteur ne gagne pas en répondant à
+    // sa propre question.
+    if (p.isAnswer && p.thread.authorId !== p.authorId) bump(p.authorId, 10);
+  }
+  // Les upvotes de questions ne rapportent rien (cf. barème).
+  for (const id of userIds) {
+    const reputation = repByUser.get(id) ?? 0;
+    await db.user.update({ where: { id }, data: { reputation } });
+  }
+
   console.log("✅ Seed complete!");
   const counts = {
     users: await db.user.count(),

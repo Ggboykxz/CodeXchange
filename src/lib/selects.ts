@@ -12,6 +12,9 @@ export const publicUserSelect = {
   id: true,
   name: true,
   image: true,
+  // Réputation (CDC §3.2) : publique par principe — c'est le score visible
+  // de la contribution, à l'inverse de email/role/passwordHash.
+  reputation: true,
   profile: true,
 } satisfies Prisma.UserSelect;
 
