@@ -87,7 +87,7 @@ export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
       );
       onSuccess();
     } catch {
-      toast.error("Erreur réseau. Réessaie.");
+      toast.error(t("common.network_error"));
     } finally {
       setLoading(false);
     }

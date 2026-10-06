@@ -160,7 +160,7 @@ export function Header() {
                     variant="ghost"
                     size="icon"
                     className="md:hidden"
-                    aria-label="Menu"
+                    aria-label={t("nav.menu")}
                   >
                     <Menu className="h-5 w-5" />
                   </Button>

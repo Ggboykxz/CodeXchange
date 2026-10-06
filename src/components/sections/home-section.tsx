@@ -113,7 +113,7 @@ export function HomeSection() {
   const copyCmd = () => {
     navigator.clipboard.writeText(installCmd);
     setCopied(true);
-    toast.success("Copied to clipboard");
+    toast.success(t("common.copied"));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -169,7 +169,7 @@ export function HomeSection() {
                   <button
                     onClick={copyCmd}
                     className="text-muted-foreground hover:text-foreground transition shrink-0"
-                    aria-label="Copy"
+                    aria-label={t("common.copy")}
                   >
                     {copied ? (
                       <Check className="h-4 w-4" />

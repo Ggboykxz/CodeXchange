@@ -22,7 +22,7 @@ export function Footer() {
 
   const subscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Done. You'll hear from us.");
+    toast.success(t("footer.newsletter_done"));
   };
 
   return (
