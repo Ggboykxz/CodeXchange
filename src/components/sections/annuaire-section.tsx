@@ -1,5 +1,6 @@
 "use client";
 
+import { AFRICAN_COUNTRIES } from "@/lib/countries";
 import { useEffect, useState, useCallback } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
@@ -99,38 +100,12 @@ type ProfileDetail = Profile & {
   };
 };
 
-/**
- * Pays proposés au filtre. La liste doit refléter les pays réellement
- * présents en base : avec 10 entrées codées en dur pour 21 pays au seed,
- * 12 pays étaient impossibles à sélectionner (le filtre « Tous » restait
- * donc le seul recours).
- * TODO : servir par un `SELECT DISTINCT country` via /api/profiles le jour
- * où les pays viendront d'exports ou de comptes réels.
- */
-const countries = [
-  "all",
-  "Afrique du Sud",
-  "Bénin",
-  "Burkina Faso",
-  "Cameroun",
-  "Côte d'Ivoire",
-  "Egypt",
-  "Éthiopie",
-  "Gabon",
-  "Ghana",
-  "Guinée",
-  "Kenya",
-  "Mali",
-  "Maroc",
-  "Nigeria",
-  "Ouganda",
-  "RD Congo",
-  "Rwanda",
-  "Sénégal",
-  "Tanzanie",
-  "Tunisie",
-  "Zambie",
-];
+// Liste partagée avec le formulaire d'inscription (`lib/countries.ts`) :
+// 10 entrées en dur pour 21 pays au seed rendaient la moitié du continent
+// inatteignable par le filtre. Le `all` n'existe que dans ce sélecteur.
+// TODO : servir par un `SELECT DISTINCT country` via /api/profiles le jour
+// où les pays viendront d'exports ou de comptes réels.
+const countries: readonly string[] = ["all", ...AFRICAN_COUNTRIES];
 
 const levels = ["all", "junior", "mid", "senior", "lead"];
 const stacks = ["all", "React", "TypeScript", "Go", "Python", "Flutter", "Rust", "Django", "Angular"];

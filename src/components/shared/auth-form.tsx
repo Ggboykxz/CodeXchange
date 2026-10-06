@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { REGISTRATION_COUNTRIES } from "@/lib/countries";
 import { Loader2, ArrowRight } from "lucide-react";
 
 interface AuthFormProps {
@@ -22,23 +23,9 @@ interface AuthFormProps {
   onSwitch: () => void;
 }
 
-const countries = [
-  "Sénégal",
-  "Côte d'Ivoire",
-  "Nigeria",
-  "Kenya",
-  "Ghana",
-  "Mali",
-  "Gabon",
-  "Egypt",
-  "RD Congo",
-  "Burkina Faso",
-  "Cameroun",
-  "Maroc",
-  "Tunisie",
-  "Afrique du Sud",
-  "Autre",
-];
+// Liste partagée avec le filtre de l'annuaire : 15 pays ici contre 21 au
+// seed signifiait qu'un membre ne pouvait pas déclarer son pays d'origine.
+const countries: readonly string[] = REGISTRATION_COUNTRIES;
 
 export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
   const t = useT();
