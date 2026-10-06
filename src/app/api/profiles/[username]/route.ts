@@ -1,28 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { publicUserSelect } from "@/lib/selects";
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ username: string }> }
 ) {
-  const { username } = await params;
-  const profile = await db.profile.findUnique({
-    where: { username },
-    include: {
-      user: {
-        include: {
-          threads: { take: 5, orderBy: { createdAt: "desc" } },
-          projects: { take: 5, orderBy: { stars: "desc" } },
-          tutorials: { take: 3, orderBy: { createdAt: "desc" } },
-          mentorProfile: true,
+  try {
+    const { username } = await params;
+    const profile = await db.profile.findUnique({
+      where: { username },
+      include: {
+        user: {
+          // Sélectif : sinon `passwordHash` + `role` partent en clair.
+          select: {
+            ...publicUserSelect,
+            reputation: true,
+            threads: { take: 5, orderBy: { createdAt: "desc" as const } },
+            projects: { take: 5, orderBy: { stars: "desc" as const } },
+            tutorials: { take: 3, orderBy: { createdAt: "desc" as const } },
+            mentorProfile: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  if (!profile) {
-    return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (!profile) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ profile });
+  } catch (e) {
+    console.error("Get profile error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Failed to load profile" }, { status: 500 });
   }
-
-  return NextResponse.json({ profile });
 }

@@ -1,18 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { currentUser, unauthorized } from "@/lib/auth";
+import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
+import { postCreateSchema } from "@/lib/validate";
 
+const authorSelect = { id: true, name: true, image: true, profile: true } as const;
+
+/**
+ * POST /api/threads/[slug]/posts — répondre à une question.
+ *
+ * L'auteur vient de la session ; `isAnswer` n'est plus lisible depuis le body
+ * (sinon n'importe qui pouvait marquer sa réponse comme "meilleure réponse").
+ * Le statut se pose via PATCH /api/posts/[id].
+ */
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await params;
-    const body = await req.json();
-    const { body: postBody, authorId, isAnswer } = body;
+    const user = await currentUser(req);
+    if (!user) return unauthorized("You must be signed in to answer");
 
-    if (!postBody || !authorId) {
+    const limited = rateLimit(`post:${user.id}`, WRITE_POLICY.limit, WRITE_POLICY.windowMs);
+    if (!limited.ok) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Too many answers. Slow down." },
+        { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } }
+      );
+    }
+
+    const { slug } = await params;
+    const parsed = postCreateSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid answer payload", details: parsed.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
@@ -23,18 +44,13 @@ export async function POST(
     }
 
     const post = await db.post.create({
-      data: {
-        threadId: thread.id,
-        authorId,
-        body: postBody,
-        isAnswer: isAnswer || false,
-      },
-      include: { author: { include: { profile: true } } },
+      data: { threadId: thread.id, authorId: user.id, body: parsed.data.body },
+      include: { author: { select: authorSelect } },
     });
 
-    return NextResponse.json({ post });
+    return NextResponse.json({ post }, { status: 201 });
   } catch (e) {
-    console.error("Create post error:", e);
+    console.error("Create post error:", e instanceof Error ? e.message : e);
     return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
   }
 }

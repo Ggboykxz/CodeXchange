@@ -1,21 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { authorSelect } from "@/lib/selects";
+import { pagination } from "@/lib/validate";
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const status = searchParams.get("status");
-  const stack = searchParams.get("stack");
+  try {
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status");
+    const stack = searchParams.get("stack");
+    const q = searchParams.get("q")?.trim();
+    const { limit, skip } = pagination(searchParams, 30);
 
-  const where: Record<string, unknown> = {};
-  if (status && status !== "all") where.status = status;
-  if (stack && stack !== "all") where.stack = { contains: stack };
+    const where: Record<string, unknown> = {};
+    if (status && status !== "all") where.status = status;
+    if (stack && stack !== "all") where.stack = { contains: stack };
+    if (q) {
+      where.OR = [
+        { name: { contains: q } },
+        { tagline: { contains: q } },
+        { description: { contains: q } },
+        { stack: { contains: q } },
+      ];
+    }
 
-  const projects = await db.project.findMany({
-    where,
-    include: { author: { include: { profile: true } } },
-    orderBy: [{ stars: "desc" }, { createdAt: "desc" }],
-    take: 100,
-  });
+    const [projects, total] = await Promise.all([
+      db.project.findMany({
+        where,
+        include: { author: { select: authorSelect } },
+        orderBy: [{ stars: "desc" }, { createdAt: "desc" }],
+        take: limit,
+        skip,
+      }),
+      db.project.count({ where }),
+    ]);
 
-  return NextResponse.json({ projects });
+    return NextResponse.json({ projects, total, limit, hasMore: skip + projects.length < total });
+  } catch (e) {
+    console.error("List projects error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Failed to list projects" }, { status: 500 });
+  }
 }
