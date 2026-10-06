@@ -55,6 +55,21 @@ export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
   const [stack, setStack] = useState("");
   const [level, setLevel] = useState("junior");
 
+  /** Relance un lien de vérification pour le compte connecté. */
+  const resendLink = async () => {
+    try {
+      const res = await fetch("/api/auth/verify/resend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (res.ok) toast.success(t("verify.resent"));
+      else toast.error(t("common.error"));
+    } catch {
+      toast.error(t("common.network_error"));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -85,6 +100,26 @@ export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
           ? `Bon retour, ${data.user.name} !`
           : `Bienvenue sur CodeXchange, ${data.user.name} !`
       );
+
+      // B1 — vérification d'e-mail. En dev, l'inscription renvoie le lien
+      // (pas de serveur mail) : on le rend clivable plutôt que de demander
+      // d'aller fouiller le terminal.
+      if (mode === "register" && data.verificationUrl) {
+        toast.info(t("auth.verify_sent"), {
+          description: (
+            <a href={data.verificationUrl} className="underline break-all">
+              {t("auth.verify_link")}
+            </a>
+          ),
+          duration: 15000,
+        });
+      } else if (mode === "login" && !data.user?.emailVerifiedAt) {
+        toast.warning(t("auth.verify_needed"), {
+          description: t("auth.verify_sent"),
+          action: { label: t("auth.verify_resend"), onClick: resendLink },
+        });
+      }
+
       onSuccess();
     } catch {
       toast.error(t("common.network_error"));

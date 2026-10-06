@@ -18,6 +18,15 @@ model User {
   image         String?
   role          String    @default("member") // member | moderator | admin
   reputation    Int       @default(0) // +10 réponse acceptée, +2 réponse votée
+
+  // B1 — vérification d'e-mail. Le jeton n'existe en base que hashé
+  // (`sha256(SECRET:verify:jeton)`, cf. lib/digest.ts) et expire : une
+  // extraction de `dev.db` ne donne aucun lien valide. `@unique` pour
+  // résoudre le jeton en O(1) sans balayer la table.
+  emailVerifiedAt        DateTime?
+  verificationTokenHash  String?   @unique
+  verificationExpiresAt  DateTime?
+
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 

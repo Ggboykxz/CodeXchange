@@ -89,6 +89,27 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(128),
 });
 
+/**
+ * Vérification d'e-mail (B1). Le jeton est toujours 32 octets hexadécimaux :
+ * on refuse toute autre forme avant même de toucher la base, ce qui évite
+ * de faire tourner un hash sur une chaîne arbitraire envoyée par un bot.
+ */
+export const verifySchema = z.object({
+  token: z
+    .string()
+    .trim()
+    .regex(/^[0-9a-f]{64}$/i, "Invalid verification token"),
+});
+
+/**
+ * Renvoi du lien. `email` absent → on se sert du cookie de session ;
+ * la valeur est optionnelle parce que l'utilisateur peut demander un
+ * lien avant même d'être connecté.
+ */
+export const verifyResendSchema = z.object({
+  email: email.optional(),
+});
+
 export const registerSchema = z.object({
   name: text(2, 80),
   email,

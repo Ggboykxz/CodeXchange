@@ -15,6 +15,9 @@ export const publicUserSelect = {
   // Réputation (CDC §3.2) : publique par principe — c'est le score visible
   // de la contribution, à l'inverse de email/role/passwordHash.
   reputation: true,
+  // B1 — date de vérification : publique parce que c'est ce qui alimente
+  // le badge « profil vérifié ». Le jeton, lui, ne sort jamais d'ici.
+  emailVerifiedAt: true,
   profile: true,
 } satisfies Prisma.UserSelect;
 

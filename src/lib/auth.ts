@@ -19,6 +19,7 @@ import { randomBytes } from "node:crypto";
 import { db } from "@/lib/db";
 import { authUserSelect, type AuthUser } from "@/lib/selects";
 import { burnPasswordTime, hashPassword, sha256, verifyPassword } from "@/lib/password";
+import { sessionDigest } from "@/lib/digest";
 
 // Ré-export : les routes importent tout depuis `@/lib/auth`.
 export { burnPasswordTime, hashPassword, verifyPassword, sha256 };
@@ -31,20 +32,13 @@ export const SESSION_TTL_S = SESSION_TTL_MS / 1000;
 const TOKEN_RE = /^[0-9a-f]{64}$/i;
 
 /**
- * Secret de session : sert de *sel* au hash du jeton.
- *
- * En faisant entrer `SESSION_SECRET` dans le digest, on donne à la variable
- * un rôle concret : la changer invalide instantanément toutes les sessions
- * en base (sha256(ancien:jeton) ne correspond plus à sha256(nouveau:jeton)),
- * ce qui revient à un « déconnecter tout le monde » à la moindre suspicion
- * de compromission. Sans ce sel, tourner la clé ne toucherait à rien.
+ * `sessionDigest` = `sha256(SECRET:jeton)` — utilisé pour créer, lire ET
+ * révoquer, donc toujours identique. Le sel fait de `SESSION_SECRET` une
+ * variable qui sert vraiment : la changer invalide toutes les sessions en
+ * base, ce qui revient à un « déconnecter tout le monde » à la moindre
+ * suspicion de compromission. L'implémentation vit dans `lib/digest.ts`,
+ * partagée avec la vérification d'e-mail.
  */
-const SESSION_SECRET = process.env.SESSION_SECRET || "codexchange-dev-session-secret";
-
-/** Digest de session — utilisé pour créer ET rechercher : toujours identique. */
-export function sessionDigest(token: string): string {
-  return sha256(`${SESSION_SECRET}:${token}`);
-}
 
 /* ------------------------------------------------------------------ */
 /* Sessions                                                            */

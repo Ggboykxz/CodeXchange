@@ -41,6 +41,7 @@ import {
   Briefcase,
   Loader2,
   Pencil,
+  BadgeCheck,
 } from "lucide-react";
 
 type Profile = {
@@ -67,6 +68,7 @@ type ProfileDetail = Profile & {
     id: string;
     name: string;
     reputation: number;
+    emailVerifiedAt: string | null;
     threads: Array<{
       id: string;
       title: string;
@@ -363,6 +365,15 @@ export function AnnuaireSection() {
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-2 mb-3">
+                {selectedProfile.user.emailVerifiedAt && (
+                  <span
+                    className="inline-flex items-center gap-1 rounded border border-emerald-600/40 bg-emerald-600/10 px-2 py-0.5 font-mono text-xs text-emerald-700 dark:text-emerald-400"
+                    title={t("annuaire.verified_hint")}
+                  >
+                    <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t("annuaire.verified")}
+                  </span>
+                )}
                 <span
                   className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 font-mono text-xs"
                   title={t("annuaire.reputation_hint")}

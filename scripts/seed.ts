@@ -2154,6 +2154,10 @@ async function main() {
         email: u.email,
         passwordHash: sharedPasswordHash,
         role: "member",
+        // B1 : comptes de démo déjà vérifiés, sinon le badge « profil
+        // vérifié » serait vide partout et le parcours de démonstration
+        // se terminerait sur un compte non confirmé.
+        emailVerifiedAt: new Date(),
         profile: {
           create: {
             username: u.username,

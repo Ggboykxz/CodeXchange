@@ -30,6 +30,7 @@
 | B6 | OAuth GitHub / Google | ⬜ | L'implémentation d'origine transportait `next-auth` **sans jamais l'importer** : dépendance retirée, il faudra l'intégrer pour de bon |
 | B7 | E-mail de bienvenue / réinitialisation | ⬜ | Aucune dépendance ni route d'envoi |
 | B8 | Rôles & permissions (member / moderator / admin) | ⏳ | Champ `role` + contrôle serveur à l'acceptation d'une réponse ; **aucun outil** de gestion des rôles dans l'UI |
+| B9 | Vérification d'e-mail | ✅ | **Absente du backlog initial**, ajoutée et livrée : `emailVerifiedAt` + jeton hashé (24 h), `POST /api/auth/verify` (`200`/`410`/`400`), `/verify` en page, badge `profil vérifié`, renvoi toujours `200`. 18 tests bout en bout |
 
 ## EPIC C — Questions & réponses
 

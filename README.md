@@ -27,7 +27,7 @@ Tout ce qui suit **existe aujourd'hui dans ce dépôt** (rien n'est repris de la
 
 | Domaine | Ce qui marche |
 |---|---|
-| **Auth** | Inscription, connexion, déconnexion par **sessions serveur** en base (`cx_session`, cookie `httpOnly`), TTL 30 jours, révocation serveur immédiate à la déconnexion |
+| **Auth** | Inscription, connexion, déconnexion par **sessions serveur** en base (`cx_session`, cookie `httpOnly`), TTL 30 jours, révocation serveur immédiate à la déconnexion, **vérification d'e-mail** (jeton de 24 h, badge `profil vérifié` sur le profil public) |
 | **Forum Q&R** | Questions avec titre/catégorie/tags, corps en **Markdown** (GFM, blocs de code colorés + bouton copier), réponses, **votes**, **meilleure réponse** (→ badge « Résolu »), compteur de vues |
 | **Recherche & filtres** | Recherche plein-texte côté serveur (titre, corps, tags — `?q=`), filtres catégorie et tags, debounce 250 ms ; filtres pays/type/stack/remote côté jobs et statut/stack côté projets (**côté serveur**), catégorie côté tutos et ville côté annuaire (**filtre client**), pays/stack/niveau/disponibilité côté annuaire (serveur) |
 | **Annuaire** | Liste des profils, filtres, page profil publique (activité récente : discussions, projets, tutos), **édition de son propre profil** (`PATCH /api/profiles/me`) avec accroche, bio, pays, ville, stack, niveaux, réseaux, disponibilité |
@@ -87,7 +87,7 @@ change.
 
 ---
 
-## API — 25 endpoints (22 fichiers `route.ts`)
+## API — 27 endpoints (24 fichiers `route.ts`)
 
 « Session » = cookie `cx_session` valide recherché côté serveur. Deux marqueurs :
 **session** = lit la session et dégrade proprement si elle est absente (`{ user: null }`, liste vide) ;
@@ -101,6 +101,8 @@ change.
 | POST | `/api/auth/login` | Connexion — public (rate limit IP + email) |
 | GET | `/api/auth/me` | Utilisateur courant (`{ user: null }` sinon) — session |
 | DELETE | `/api/auth/me` | Déconnexion : révocation serveur du jeton + cookie vidé — session |
+| POST | `/api/auth/verify` | Valide l'adresse par le jeton du lien (24 h, hashé en base) — public (rate limit) |
+| POST | `/api/auth/verify/resend` | Réémet un lien — **toujours `200`**, que l'adresse existe ou non — session ou `email` |
 | GET | `/api/threads` | Questions : `?q=&category=&tag=&solved=&page=&limit=` — public |
 | POST | `/api/threads` | Créer une question — **session requise** |
 | GET | `/api/threads/[slug]` | Détail + réponses (tri : meilleure réponse, puis upvotes) + incrémente les vues — public |
@@ -249,6 +251,13 @@ déclare `"dir": "ltr"`. Activer l'arabe correctement demandera de poser `lang`/
 - **Mots de passe** : **PBKDF2-SHA512**, 100 000 itérations, sel 16 octets, format `sel:hash`,
   vérification en temps constant ; un hash « factice » est calculé pour les comptes inconnus afin
   d'égaliser les temps de réponse.
+- **Vérification d'e-mail** (`src/lib/verify.ts`) : jeton de 32 octets, stocké **hashé** sous
+  `sha256(SECRET:verify:jeton)` — portée distincte de celle des sessions, donc un jeton n'y valide
+  jamais dans l'autre contexte — expire au bout de 24 h. `POST /api/auth/verify` valide, `POST
+  /api/auth/verify/resend` réémet un lien en répondant **toujours `200`** : répondre « adresse
+  inconnue » permettrait de sonder qui possède un compte. Sans serveur mail dans le projet, le
+  lien n'est rendu et journalisé (`[verify] …`) **qu'en dev** : le renvoyer à celui qui saisit
+  l'adresse neutraliserait la preuve de possession de la boîte.
 - **Rate limiting** (`src/lib/rate-limit.ts` + `src/proxy.ts`, fenêtre glissante en mémoire) :
   auth **10/min par IP et par route**, **5/5 min par email** sur le login, écritures **30/min**
   (questions, votes, réponses, mentorat, profils). Réponses `429` avec `Retry-After`.

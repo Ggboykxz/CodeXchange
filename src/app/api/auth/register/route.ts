@@ -8,6 +8,11 @@ import {
   hashPassword,
   setSessionCookie,
 } from "@/lib/auth";
+import {
+  exposesVerificationLink,
+  issueVerification,
+  verificationUrl,
+} from "@/lib/verify";
 
 export async function POST(req: NextRequest) {
   try {
@@ -58,12 +63,32 @@ export async function POST(req: NextRequest) {
       select: authUserSelect,
     });
 
+    // B1 — vérification d'e-mail : le jeton est émis AVANT la réponse,
+    // pour que le lien soit déjà valide dès l'ouverture (et qu'une
+    // relance du formulaire ne laisse jamais un jeton orphelin).
+    const verifyToken = await issueVerification(user.id);
+
     const token = await createSession(user.id, {
       userAgent: req.headers.get("user-agent"),
       ip: clientIp(req),
     });
 
-    const response = NextResponse.json({ user }, { status: 201 });
+    // Hors production uniquement : renvoyer le lien à celui qui vient de
+    // saisir l'adresse neutraliserait la preuve de possession de la
+    // boîte mail — voir `exposesVerificationLink()` dans lib/verify.ts.
+    const devLink = exposesVerificationLink()
+      ? verificationUrl(verifyToken)
+      : null;
+    if (devLink) {
+      // Pas d'envoi d'e-mail dans le projet (B7) : en dev, le lien part
+      // dans le journal du serveur.
+      console.info(`[verify] ${user.email} → ${devLink}`);
+    }
+
+    const response = NextResponse.json(
+      { user, ...(devLink ? { verificationUrl: devLink } : {}) },
+      { status: 201 }
+    );
     setSessionCookie(response, token);
     return response;
   } catch (e) {

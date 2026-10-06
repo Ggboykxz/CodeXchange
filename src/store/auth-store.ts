@@ -9,6 +9,8 @@ export type AuthUser = {
   email: string;
   /** Utile pour la modération (accepter une réponse, épingler…). */
   role?: "member" | "moderator" | "admin";
+  /** B1 — `null` tant que l'adresse n'est pas confirmée (badge vérifié). */
+  emailVerifiedAt?: string | null;
   profile?: {
     username: string;
     headline?: string | null;

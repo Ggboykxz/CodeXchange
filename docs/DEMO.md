@@ -164,8 +164,23 @@ Le score s'affiche **dans l'interface** : badge `★ réputation` sur le profil 
 > `−1` de la question downvotée reviennent tous à **l'auteur du contenu**, jamais au votant. On peut
 > le prouver en votant puis en relisant le profil de l'auteur.
 
-**Bilan du parcours :** inscription → profil éditable → contenu Markdown → réponse → vote → meilleure
- réponse → réputation serveur. **Tout est persisté en base SQLite, révocable, et relisible au
+### 7. Vérification de l'e-mail et badge (1 min)
+
+Un profil vérifié porte un badge **`profil vérifié`** (coche émeraude) à côté du nom, avant la
+réputation.
+
+1. Fenêtre privée → inscription avec une adresse neuve : le toast affiche **« Ouvrir le lien de
+   vérification »** (il est aussi dans le terminal, ligne `[verify]`).
+2. Clic → la page `/verify` valide le jeton → retour accueil → `Annuaire` → **le badge est là**.
+3. Avant le clic, le même profil n'affiche rien : montrez la différence, puis rechargez.
+
+> ⚠️ **Seul `bun run dev` rend le lien.** En build de production la réponse ne le contient pas :
+> c'est voulu — renvoyer le jeton à celui qui saisit l'adresse prouverait exactement ce que la
+> vérification doit établir (voir `exposesVerificationLink()`). Les comptes du seed sont déjà
+> vérifiés, donc aucun n'affiche d'état vide.
+
+**Bilan du parcours :** inscription → profil éditable → e-mail vérifié (badge) → contenu Markdown →
+ réponse → vote → meilleure réponse → réputation serveur. **Tout est persisté en base SQLite, révocable, et relisible au
  prochain démarrage.**
 
 ---

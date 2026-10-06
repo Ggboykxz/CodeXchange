@@ -140,6 +140,8 @@ Si c'est **l'application** qui plante (pas le réseau) : lire à la place le par
 - [ ] Serveur démarré avec `bun run start` (**pas** `bun run dev`, sinon pas de service worker)
 - [ ] `COOKIE_SECURE="false"` en local (sinon la connexion semble marcher puis se perd)
 - [ ] Compte de démo testé : `kwame.mensah@codexchange.dev` / `codexchange2026`
+- [ ] Badge `profil vérifié` visible sur un profil du seed ; en dev, la ligne `[verify] …` apparaît
+      dans le terminal lors d'une inscription
 - [ ] Service worker `activated` dans DevTools → Application
 - [ ] Fenêtre privée ouverte pour le second compte, notifications visibles
 - [ ] Thème clair, zoom navigateur à 100 %, notifications système coupées
