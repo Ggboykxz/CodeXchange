@@ -248,7 +248,7 @@ const fr: Dict = {
   "auth.register.submit": "Créer mon compte",
   "auth.switch.to_register": "Pas encore de compte ? Rejoins-nous",
   "auth.switch.to_login": "Déjà membre ? Connecte-toi",
-  "auth.demo_note": "Compte démo : aicha.diallo@codexchange.dev / password",
+  "auth.demo_note": "Compte démo : aicha.diallo@codexchange.dev / codexchange2026",
 
   // Footer
   "footer.tagline": "La plateforme des développeurs africains, par les devs.",
@@ -527,7 +527,7 @@ const en: Dict = {
   "auth.register.submit": "Create my account",
   "auth.switch.to_register": "No account yet? Join us",
   "auth.switch.to_login": "Already a member? Sign in",
-  "auth.demo_note": "Demo account: aicha.diallo@codexchange.dev / password",
+  "auth.demo_note": "Demo account: aicha.diallo@codexchange.dev / codexchange2026",
 
   "footer.tagline": "The platform for African developers, by devs.",
   "footer.made_with": "Built with",
