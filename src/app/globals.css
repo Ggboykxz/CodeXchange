@@ -67,7 +67,10 @@
   --input: oklch(0.93 0.002 100);
   --ring: var(--foreground);
   --chart-1: oklch(0.55 0.18 35);
-  --chart-2: oklch(0.65 0.15 75);
+  /* L (0.55 au lieu de 0.65) : mesuré à 4.75:1 sur --background, donc conforme
+     WCAG AA pour un texte normal. À 0.65 l'ambre ne montait que 3.16:1 et
+     était illégal pour les libellés de tags et les `$` de prompt. */
+  --chart-2: oklch(0.55 0.15 75);
   --chart-3: oklch(0.5 0.12 145);
   --chart-4: oklch(0.5 0.18 280);
   --chart-5: oklch(0.55 0.2 15);
@@ -214,4 +217,56 @@
     font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.875rem;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Accessibilité (WCAG 2.1 AA) — volontairement HORS @layer :           */
+/* les règles en couches (utilitaires Tailwind) l'emporteraient sinon    */
+/* sur un `outline-none` porté par certains composants.                  */
+/* ------------------------------------------------------------------ */
+
+/* 2.4.7 Focus Visible : tout élément atteignable au clavier doit afficher
+   un indicateur net. Les <Button> shadcn ont déjà leur ring ; ce règle
+   couvre les liens, les <button> maison et les contrôles natifs. */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* 2.4.13 : ne pas surbriller lors d'un clic souris (le focus clavier suffit). */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* 1.4.10 / 2.3.3 : respect du réglage système « réduire les animations ».
+   tw-animate-css et les squelettes `animate-pulse` restaurent sinon un
+   mouvement que l'utilisateur a explicitement demandé de couper. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Lien d'évitement (2.4.1) : masqué tant qu'il n'est pas focalisé. */
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border: 1px solid var(--border);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  transition: transform 120ms ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
 }

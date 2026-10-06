@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 py-16">
-      <main className="w-full max-w-xl">
+      <main id="contenu" className="w-full max-w-xl">
         <p className="eyebrow">codexchange // status 404</p>
 
         <h1 className="display text-4xl sm:text-5xl mt-4">

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LocaleSync } from "@/components/locale-sync";
 import { SWRegister } from "@/components/sw-register";
 
 const mono = IBM_Plex_Mono({
@@ -68,10 +69,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" dir="ltr" suppressHydrationWarning>
       <body
         className={`${mono.variable} antialiased bg-background text-foreground font-mono`}
       >
+        {/* WCAG 2.4.1 — premier élément focalisable de la page, pour sauter
+            le header et aller droit au contenu. */}
+        <a id="skip-link" href="#contenu" className="skip-link">
+          Aller au contenu principal
+        </a>
+        <LocaleSync />
         <ThemeProvider>
           {children}
         </ThemeProvider>

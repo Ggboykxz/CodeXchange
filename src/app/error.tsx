@@ -21,7 +21,7 @@ export default function Error({
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center bg-background px-4 py-16">
-      <main className="w-full max-w-xl">
+      <main id="contenu" className="w-full max-w-xl">
         <p className="eyebrow">codexchange // erreur</p>
 
         <h1 className="display text-3xl sm:text-4xl mt-4">

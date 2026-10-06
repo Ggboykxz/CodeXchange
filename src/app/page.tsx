@@ -111,7 +111,10 @@ export default function Page() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1">{renderSection()}</main>
+      {/* `id="contenu"` = cible du lien d'évitement (WCAG 2.4.1). */}
+      <main id="contenu" className="flex-1">
+        {renderSection()}
+      </main>
       <Footer />
     </div>
   );
