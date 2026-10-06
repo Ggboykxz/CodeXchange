@@ -39,7 +39,7 @@
 | C1 | Création de question (titre, catégorie, tags, corps) | ✅ | `POST /api/threads`, slug unique généré serveur, taux limite 30/min |
 | C2 | Rendu Markdown + blocs de code | ✅ | `react-markdown` + `remark-gfm` + PrismLight (12 langages), bouton copier, **pas de HTML brut** |
 | C3 | Réponses | ✅ | `POST /api/threads/[slug]/posts`, tri meilleure réponse → upvotes → ancienneté |
-| C4 | Votes `+1 / -1 / 0` | ⏳ | API complète avec recount + anti-auto-upvote (422) ; **l'UI n'envoie que `+1`** |
+| C4 | Votes `+1 / -1 / 0` | ✅ | API complète (recount, anti-auto-upvote 422) **et** UI : ↑ / ↓ / ré-cliquer annule, `myVote` renvoyé par la session au chargement de la question |
 | C5 | Meilleure réponse + statut `Résolu` | ✅ | `PATCH /api/posts/[id]`, transaction (une seule acceptée), auteur **ou** modérateur |
 | C6 | Recherche plein-texte (titre, corps, tags) | ✅ | `GET /api/threads?q=`, debounce 250 ms côté UI |
 | C7 | Filtres catégorie / tag | ✅ | `?category=&tag=` + sélecteurs dans l'interface |

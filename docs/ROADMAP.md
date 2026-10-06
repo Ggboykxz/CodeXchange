@@ -8,7 +8,7 @@
 | Phase | Contenu | Statut |
 |---|---|---|
 | **Hackathon J1–J2** | Fondations (Prisma 13 modèles, SQLite, seed), auth par session serveur, Q&R Markdown, votes + meilleure réponse, annuaire + édition de profil, lecture jobs/projets/tutos/events, mentorat, notifications in-app, i18n fr/en, dark mode, PWA hors-ligne, CI | ✅ **livré** (détail ligne par ligne ci-dessous) |
-| **Beta privée S1–S4** | Traductions sw/ar, RTL arabe, filtre « non résolu » en UI, création de contenus (jobs/projets/tutos/events), votes −1 / annulation en UI, messagerie privée, e-mails transactionnels, tests E2E | ⏳ **en cours / partiel** — voir le détail |
+| **Beta privée S1–S4** | Traductions sw/ar, RTL arabe, filtre « non résolu » en UI, création de contenus (jobs/projets/tutos/events), messagerie privée, e-mails transactionnels, tests E2E | ⏳ **en cours / partiel** — voir le détail |
 | **Beta publique M2–M3** | Bascule PostgreSQL/Supabase, OAuth GitHub/Google, modération communautaire, compteurs de home fiables, landings SEO par module | ⬜ à venir |
 | **Croissance M4–M6** | Paiement mobile money, offres sponsorisées, programme de mentorat structuré (acceptation/refus côté mentor), API publique | ⬜ à venir |
 | **Consolidation M7–M12** | Applications mobiles légères, analytics communauté, gouvernance open-source, extension diaspora | ⬜ à venir |
@@ -50,7 +50,6 @@
 | Élément | Ce qui manque |
 |---|---|
 | **i18n sw / ar** | Cadre prêt (`Locale`, drapeaux, `sw`/`ar` exposés) mais **0 clé traduite** : `const sw = { ...en }`, `const ar = { ...en }` → l'anglais s'affiche |
-| **Votes** | UI : bouton `↑` uniquement (`value: 1`) ; pas de downvote ni d'annulation côté client (l'API les accepte déjà) |
 | **Filtre « non résolu »** | Existe en API (`?solved=false`) et badge `Résolu` affiché, mais **aucun sélecteur** dans la liste du forum |
 | **Création de contenus** | Questions/réponses ✅ ; jobs, projets, tutos, events : **API en lecture seule** (`GET`), pas de formulaire |
 | **Modération** | Champs `role` (`member`/`moderator`/`admin`) et contrôle auteur/modérateur à l'acceptation ✅ ; **aucun outil** (dashboard, épinglage, signalement) |
@@ -79,7 +78,7 @@
 | Milestone | Fenêtre | Critères de sortie (définissables, vérifiables) |
 |---|---|---|
 | **M0 — Démo stable** ✅ | J1–J2 | `bun install` → `db:push` → `scripts/seed.ts` → `dev` en 4 commandes ; les 3 parcours de `docs/DEMO.md` passent sans erreur ; `bun run check` vert ; CI verte sur `main`. **Atteint.** |
-| **M1 — Produit complet en lecture/écriture** ⏳ | S1–S4 | Formulaires de création jobs/projets/tutos/events ; filtre « non résolu » en UI ; réputation affichée sur le profil (et correctement attribuée) ; votes −1/annulation en UI ; mentor peut répondre à une demande ; au moins 1 test E2E Playwright sur le parcours Q&R |
+| **M1 — Produit complet en lecture/écriture** ⏳ | S1–S4 | Formulaires de création jobs/projets/tutos/events ; mentor peut répondre à une demande ; au moins 1 test E2E Playwright sur le parcours Q&R |
 | **M2 — Multilingue + portabilité** ⬜ | M1–M2 | 100 % des 232 clés traduites en sw et ar ; `lang`/`dir` pilotés par la locale (`dir="rtl"` pour `ar`) ; bascule PostgreSQL effectuée avec `prisma migrate` versionné et seed ré-exécuté sans erreur |
 | **M3 — Confiance & ouverture** ⬜ | M2–M3 | OAuth GitHub/Google opérationnel ; e-mail de bienvenue + réinitialisation ; outils de modération (signalement, rôles, épinglage) ; compteurs home tous issus de `/api/stats` ; budget de poids vérifié en CI (≤ 100 Ko ou décision explicite) |
 | **M4 — Monétisation & échelle** ⬜ | M4–M6 | Paiement mobile money sur un flux réel (abonnement mentor ou boosting d'offre) avec reçus ; 100 offres et 100 binômes atteints ; API publique documentée ; rate limiting distribué (Redis/Upstash) derrière une instance multi-nœuds |

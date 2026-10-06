@@ -28,7 +28,7 @@ Tout ce qui suit **existe aujourd'hui dans ce dépôt** (rien n'est repris de la
 | Domaine | Ce qui marche |
 |---|---|
 | **Auth** | Inscription, connexion, déconnexion par **sessions serveur** en base (`cx_session`, cookie `httpOnly`), TTL 30 jours, révocation serveur immédiate à la déconnexion, **vérification d'e-mail** (jeton de 24 h, badge `profil vérifié` sur le profil public) |
-| **Forum Q&R** | Questions avec titre/catégorie/tags, corps en **Markdown** (GFM, blocs de code colorés + bouton copier), réponses, **votes**, **meilleure réponse** (→ badge « Résolu »), compteur de vues |
+| **Forum Q&R** | Questions avec titre/catégorie/tags, corps en **Markdown** (GFM, blocs de code colorés + bouton copier), réponses, **votes** (`+1` / `−1` / annulation, état rappelé au rechargement), **meilleure réponse** (→ badge « Résolu »), compteur de vues |
 | **Recherche & filtres** | Recherche plein-texte côté serveur (titre, corps, tags — `?q=`), filtres catégorie et tags, debounce 250 ms ; filtres pays/type/stack/remote côté jobs et statut/stack côté projets (**côté serveur**), catégorie côté tutos et ville côté annuaire (**filtre client**), pays/stack/niveau/disponibilité côté annuaire (serveur) |
 | **Annuaire** | Liste des profils, filtres, page profil publique (activité récente : discussions, projets, tutos), **édition de son propre profil** (`PATCH /api/profiles/me`) avec accroche, bio, pays, ville, stack, niveaux, réseaux, disponibilité |
 | **Jobs** | Offres avec détail, filtres pays / type de contrat / stack / « Remote uniquement », bouton « Postuler » (lien externe) |
@@ -44,7 +44,7 @@ Tout ce qui suit **existe aujourd'hui dans ce dépôt** (rien n'est repris de la
 **Honnêteté sur les limites actuelles** :
 
 - **Jobs, projets, tutos et events sont en lecture seule** : les API n'exposent que `GET`, il n'existe pas encore de formulaire de création côté client (les données viennent du seed).
-- **L'interface n'expose que le vote +1** (l'API accepte aussi `-1` et `0`), et on ne peut pas upvoter sa propre contribution (422).
+- **L'interface expose `+1`, `−1` et l'annulation** : chaque vote est relevé côté serveur depuis la session (`myVote` sur la question et sur chaque réponse), donc l'état survit au rechargement — avant, le vote partait toujours de zéro à l'affichage. Auto-vote refusé (`422`).
 - **La réputation est calculée par le serveur et rendue dans l'UI** — règles du CDC §3.2 : `+10`
   réponse acceptée, `+2` réponse votée, `−1` question downvotée, versées à **l'auteur du contenu
   voté** (jamais au votant). Elle apparaît sur le profil de l'annuaire et à côté de l'auteur de
@@ -334,7 +334,7 @@ le backlog complet avec statut réel dans **[docs/BACKLOG.md](./docs/BACKLOG.md)
 
 En bref : ✅ auth par session, Q&R Markdown, votes + meilleure réponse, recherche, annuaire +
 édition de profil, jobs/projets/tutos/events en lecture, mentorat, notifications, PWA hors-ligne,
-CI — ⏳ i18n (sw/ar à traduire), création de contenus, votes hors « +1 » —
+CI — ⏳ i18n (sw/ar à traduire), création de contenus, e-mails —
 ⬜ RTL arabe, OAuth, messagerie, paiement mobile money, modération, e-mails, tests E2E.
 
 ---

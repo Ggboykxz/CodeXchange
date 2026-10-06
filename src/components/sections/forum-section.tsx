@@ -33,6 +33,7 @@ import {
   Eye,
   MessageSquare,
   ChevronUp,
+  ChevronDown,
   Pin,
   CheckCircle2,
   ArrowLeft,
@@ -80,6 +81,8 @@ type Thread = {
   category: string;
   views: number;
   upvotes: number;
+  /** Vote du visiteur : 1 / -1 / 0 — déduit de la session, jamais du body. */
+  myVote?: number;
   pinned: boolean;
   solved: boolean;
   createdAt: string;
@@ -91,6 +94,7 @@ type Post = {
   id: string;
   body: string;
   upvotes: number;
+  myVote?: number;
   isAnswer: boolean;
   createdAt: string;
   author: Author;
@@ -284,7 +288,9 @@ export function ForumSection() {
   const handleVote = async (
     target: "thread" | "post",
     targetId: string,
-    value: 1 | -1
+    // 0 = annuler le vote précédent : l'API l'accepte depuis le début,
+    // l'UI ne l'envoyait jamais.
+    value: 1 | -1 | 0
   ) => {
     if (!user) {
       toast.error(t("forum.sign_in_to_vote"));
@@ -302,18 +308,23 @@ export function ForumSection() {
         return;
       }
       const upvotes: number = data.upvotes;
+      const myVote: number = data.value;
       patchDetail((prev) =>
         target === "thread"
-          ? { ...prev, upvotes }
+          ? { ...prev, upvotes, myVote }
           : {
               ...prev,
               posts: prev.posts.map((p) =>
-                p.id === targetId ? { ...p, upvotes } : p
+                p.id === targetId ? { ...p, upvotes, myVote } : p
               ),
             }
       );
       setThreads((prev) =>
-        prev.map((th) => (th.id === targetId ? { ...th, upvotes } : th))
+        prev.map((th) =>
+          target === "thread" && th.id === targetId
+            ? { ...th, upvotes, myVote }
+            : th
+        )
       );
     } catch {
       toast.error(t("common.network_error"));
@@ -432,15 +443,58 @@ export function ForumSection() {
           )}
 
           <div className="flex items-center gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
-            <button
-              type="button"
-              onClick={() => handleVote("thread", selectedThread.id, 1)}
-              aria-label={t("forum.upvote_question")}
-              className="flex items-center gap-1 rounded px-1 -mx-1 transition hover:text-chart-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
-            >
-              <ChevronUp className="h-4 w-4" />
-              {selectedThread.upvotes} {t("forum.upvotes")}
-            </button>
+            <span className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() =>
+                  handleVote(
+                    "thread",
+                    selectedThread.id,
+                    selectedThread.myVote === 1 ? 0 : 1
+                  )
+                }
+                aria-label={
+                  selectedThread.myVote === 1
+                    ? t("forum.cancel_vote")
+                    : t("forum.upvote_question")
+                }
+                aria-pressed={selectedThread.myVote === 1}
+                className={cn(
+                  "flex items-center gap-1 rounded px-1 -mx-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                  selectedThread.myVote === 1
+                    ? "text-chart-1"
+                    : "hover:text-chart-1"
+                )}
+              >
+                <ChevronUp className="h-4 w-4" />
+                {selectedThread.upvotes} {t("forum.upvotes")}
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  handleVote(
+                    "thread",
+                    selectedThread.id,
+                    selectedThread.myVote === -1 ? 0 : -1
+                  )
+                }
+                aria-label={
+                  selectedThread.myVote === -1
+                    ? t("forum.cancel_vote")
+                    : t("forum.downvote_question")
+                }
+                aria-pressed={selectedThread.myVote === -1}
+                title={t("forum.downvote_hint")}
+                className={cn(
+                  "rounded px-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                  selectedThread.myVote === -1
+                    ? "text-chart-1"
+                    : "hover:text-chart-1"
+                )}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </span>
             <span className="flex items-center gap-1">
               <Eye className="h-4 w-4" />
               {selectedThread.views} {t("forum.views")}
@@ -516,16 +570,50 @@ export function ForumSection() {
                         {post.isAnswer ? t("forum.accepted") : t("forum.accept")}
                       </Button>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => handleVote("post", post.id, 1)}
-                      aria-label={t("forum.upvote_answer")}
-                      aria-pressed={false}
-                      className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-muted-foreground transition hover:border-chart-1 hover:text-chart-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
-                    >
-                      <ChevronUp className="h-3.5 w-3.5" />
-                      {post.upvotes}
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleVote("post", post.id, post.myVote === 1 ? 0 : 1)
+                        }
+                        aria-label={
+                          post.myVote === 1
+                            ? t("forum.cancel_vote")
+                            : t("forum.upvote_answer")
+                        }
+                        aria-pressed={post.myVote === 1}
+                        className={cn(
+                          "flex items-center gap-1 rounded border px-2 py-1 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                          post.myVote === 1
+                            ? "border-chart-1 text-chart-1"
+                            : "border-border text-muted-foreground hover:border-chart-1 hover:text-chart-1"
+                        )}
+                      >
+                        <ChevronUp className="h-3.5 w-3.5" />
+                        {post.upvotes}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleVote("post", post.id, post.myVote === -1 ? 0 : -1)
+                        }
+                        aria-label={
+                          post.myVote === -1
+                            ? t("forum.cancel_vote")
+                            : t("forum.downvote_answer")
+                        }
+                        aria-pressed={post.myVote === -1}
+                        title={t("forum.downvote_hint")}
+                        className={cn(
+                          "flex items-center rounded border px-2 py-1 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                          post.myVote === -1
+                            ? "border-chart-1 text-chart-1"
+                            : "border-border text-muted-foreground hover:border-chart-1 hover:text-chart-1"
+                        )}
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </Card>

@@ -336,7 +336,7 @@ codexchange** et **Application → Cache storage**.
 | **Mot de passe de démo** | `401 Invalid credentials` | `codexchange2026` (affiché tel quel dans la modale de connexion) |
 | **Mot de passe trop faible** | `400 Invalid registration payload` à l'inscription | 8+ caractères, **une lettre ET un chiffre** |
 | **Auto-vote** | `422 You cannot vote on your own answer` | faire voter un **autre** compte |
-| **Le bouton `↑` ne se décoche pas** | Recliquer ne change rien | normal : l'UI n'envoie que `value: 1` (pas d'annulation/downvote côté client) |
+| **Le vote semble revenir à zéro** | Après rechargement, plus aucun bouton en surbrillance | normal si on était déconnecté : `myVote` vient de la session. Se reconnecter, voter, recharger |
 | **Réponses non temps réel** | La 2e fenêtre ne voit pas la nouvelle réponse | recharger la page |
 | **Cloche vide tout de suite** | Polling toutes les **60 s** | recharger la page avant de montrer la notification |
 | **Demande de mentorat refusée** | `422` (c'est le mentor connecté) ou `409` (doublon / complet) | se connecter sur un **autre** compte, prendre un mentor avec `places restantes > 0` |

@@ -31,7 +31,7 @@
 
 ## Slide 3 — Démo (ce qu'on montre)
 
-- **Parcours 1 (8 min)** : inscription → profil éditable → question avec bloc de code Markdown → réponse d'un second compte → vote +1 → **meilleure réponse** → réputation (+10) affichée dans l'UI.
+- **Parcours 1 (8 min)** : inscription → profil éditable → question avec bloc de code Markdown → réponse d'un second compte → votes (+1 / −1 / annulation) → **meilleure réponse** → réputation (+10) affichée dans l'UI.
 - **Parcours 2 (4 min)** : recherche plein-texte `flutter` (`GET /api/threads?q=`), filtres catégorie `Mobile` et tag `flutter`, badge `Résolu`, démonstration de `?solved=false`.
 - **Parcours 3 (5 min)** : annuaire filtré (pays / ville / stack / niveau / disponibilité) → profil public → demande de mentorat → **notification qui tombe dans la cloche du mentor**.
 - **Encadré hors-ligne (2 min)** : DevTools → `Offline` → recharger → la page consultée est servie par le service worker, puis retour en ligne.
