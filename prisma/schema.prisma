@@ -17,12 +17,14 @@ model User {
   passwordHash  String?
   image         String?
   role          String    @default("member") // member | moderator | admin
+  reputation    Int       @default(0) // +10 réponse acceptée, +2 réponse votée
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   profile       Profile?
   threads       Thread[]
   posts         Post[]
+  votes         Vote[]
   jobsPosted    Job[]      @relation("JobAuthor")
   projects      Project[]  @relation("ProjectAuthor")
   tutorials     Tutorial[] @relation("TutorialAuthor")
@@ -30,6 +32,22 @@ model User {
   mentorProfile Mentor?
   mentorshipsRequested Mentorship[] @relation("Mentee")
   mentorshipsProvided  Mentorship[] @relation("Mentor")
+  sessions     Session[]
+}
+
+/// Session serveur : le jeton brut n'est JAMAIS stocké, seul son hash SHA-256.
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model Profile {
@@ -51,6 +69,12 @@ model Profile {
   avatarColor   String?  @default("terracotta")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([country])
+  @@index([city])
+  @@index([level])
+  @@index([available])
+  @@index([createdAt])
 }
 
 model Thread {
@@ -72,6 +96,7 @@ model Thread {
 
   @@index([category])
   @@index([authorId])
+  @@index([pinned, createdAt])
 }
 
 model Post {
@@ -87,6 +112,24 @@ model Post {
   updatedAt   DateTime @updatedAt
 
   @@index([threadId])
+  @@index([authorId])
+}
+
+/// Vote +1 / -1 sur une question (thread) ou une réponse (post).
+/// `kind` + `refId` en unique par utilisateur : un vote par cible,
+/// le changement d'avis passe par un upsert, l'annulation par une suppression.
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      String   // thread | post
+  refId     String   // Thread.id ou Post.id
+  value     Int      // 1 | -1
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, kind, refId])
+  @@index([kind, refId])
 }
 
 model Job {
@@ -130,6 +173,7 @@ model Project {
   updatedAt    DateTime  @updatedAt
 
   @@index([status])
+  @@index([stars, createdAt])
 }
 
 model Tutorial {
@@ -148,6 +192,7 @@ model Tutorial {
   updatedAt   DateTime  @updatedAt
 
   @@index([category])
+  @@index([createdAt])
 }
 
 model Event {
@@ -165,6 +210,9 @@ model Event {
   attendees    Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([date])
+  @@index([online])
 }
 
 model Mentor {
@@ -181,6 +229,8 @@ model Mentor {
   reviews      Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([rating, reviews])
 }
 
 model Mentorship {

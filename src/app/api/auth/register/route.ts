@@ -1,50 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import crypto from "crypto";
-
-function hashPassword(password: string): string {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto
-    .pbkdf2Sync(password, salt, 100000, 64, "sha512")
-    .toString("hex");
-  return `${salt}:${hash}`;
-}
-
-function generateToken(): string {
-  return crypto.randomBytes(32).toString("hex");
-}
+import { registerSchema } from "@/lib/validate";
+import { authUserSelect } from "@/lib/selects";
+import {
+  clientIp,
+  createSession,
+  hashPassword,
+  setSessionCookie,
+} from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password, username, country, city, stack, level } =
-      await req.json();
-
-    if (!name || !email || !password || !username) {
+    const body = await req.json().catch(() => null);
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        {
+          error: "Invalid registration payload",
+          details: parsed.error.flatten().fieldErrors,
+        },
         { status: 400 }
       );
     }
+    const { name, email, password, username, country, city, stack, level } =
+      parsed.data;
 
     const existing = await db.user.findUnique({ where: { email } });
     if (existing) {
-      return NextResponse.json(
-        { error: "Email already in use" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
     }
 
-    const existingUsername = await db.profile.findUnique({
-      where: { username },
-    });
+    const existingUsername = await db.profile.findUnique({ where: { username } });
     if (existingUsername) {
-      return NextResponse.json(
-        { error: "Username already taken" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: "Username already taken" }, { status: 409 });
     }
 
-    const passwordHash = hashPassword(password);
+    // Hash asynchrone : pbkdf2Sync bloquait l'event loop (~80 ms/requête).
+    const passwordHash = await hashPassword(password);
+
     const user = await db.user.create({
       data: {
         name,
@@ -56,34 +49,25 @@ export async function POST(req: NextRequest) {
             country: country || null,
             city: city || null,
             stack: stack || null,
-            level: level || "junior",
+            level,
             bio: "",
             avatarColor: "terracotta",
           },
         },
       },
-      include: { profile: true },
+      select: authUserSelect,
     });
 
-    const token = generateToken();
-
-    const response = NextResponse.json({
-      user: { id: user.id, name: user.name, email: user.email, profile: user.profile },
-      token,
-    });
-    response.cookies.set("cx_session", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: "/",
+    const token = await createSession(user.id, {
+      userAgent: req.headers.get("user-agent"),
+      ip: clientIp(req),
     });
 
+    const response = NextResponse.json({ user }, { status: 201 });
+    setSessionCookie(response, token);
     return response;
   } catch (e) {
-    console.error("Register error:", e);
-    return NextResponse.json(
-      { error: "Failed to create account" },
-      { status: 500 }
-    );
+    console.error("Register error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Failed to create account" }, { status: 500 });
   }
 }
