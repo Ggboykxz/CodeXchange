@@ -4,21 +4,30 @@ import { currentUser, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { voteSchema } from "@/lib/validate";
 
-/** Points attribués (cf. cahier des charges §3.2). */
+/**
+ * Barème du cahier des charges §3.2 :
+ *   +2 pour une réponse votée, -1 pour une question mal votée.
+ * Le +10 de « réponse acceptée » est géré par PATCH /api/posts/[id].
+ *
+ * IMPORTANT : ces points reviennent à l'AUTEUR du contenu voté, jamais au
+ * votant. Une version précédente incrémentait `user.reputation` sur
+ * `user.id` — c'est-à-dire la réputation du votant, qui pouvait donc
+ * s'auto-enrichir en votant partout.
+ */
 const REPUTATION = {
-  acceptedAnswer: 10,
-  answerUpvoted: 2,
+  answerVoted: 2,
   questionDownvoted: -1,
+  acceptedAnswer: 10, // rappel, appliqué dans /api/posts/[id]
 } as const;
 
 /** Compteur dénormalisé à recalculer après chaque mutation de vote. */
 async function recount(kind: "thread" | "post", refId: string) {
+  // `_count` sur le filtre value:1 = nombre net d'upvotes.
   const agg = await db.vote.aggregate({
     where: { kind, refId, value: 1 },
-    _sum: { value: true },
-    _count: true,
+    _count: { _all: true },
   });
-  const upvotes = agg._count;
+  const upvotes = agg._count._all;
 
   if (kind === "thread") {
     await db.thread.updateMany({ where: { id: refId }, data: { upvotes } });
@@ -26,6 +35,44 @@ async function recount(kind: "thread" | "post", refId: string) {
     await db.post.updateMany({ where: { id: refId }, data: { upvotes } });
   }
   return upvotes;
+}
+
+/**
+ * Applique le delta de réputation à l'auteur du contenu.
+ *
+ * `previous` / `next` sont les valeurs du vote (1, -1 ou 0). Toute
+ * transition est couverte : poser, annuler, basculer de +1 à -1.
+ *
+ * On ne plafonne PAS à 0 : un plancher rendrait les deltas non réciproques.
+ * Exemple concret — question à réputation 0, un votant met -1 (bloqué à 0),
+ * puis annule son vote : +1 → l'auteur se retrouve à 1 point pour une
+ * question sanctionnée puis rétablie. La réputation est donc la somme pure
+ * des événements, ce qui garde `annuler == ne jamais avoir voté`.
+ */
+async function applyReputation(
+  target: "thread" | "post",
+  authorId: string,
+  previous: number,
+  next: number
+): Promise<void> {
+  if (previous === next) return;
+
+  let delta: number;
+  if (target === "post") {
+    // Linéaire : chaque point de vote vaut 2 points de réputation.
+    delta = REPUTATION.answerVoted * (next - previous);
+  } else {
+    // Seule la sanction existe : +1 sur une question ne rapporte pas.
+    if (next === -1 && previous !== -1) delta = REPUTATION.questionDownvoted;
+    else if (next !== -1 && previous === -1) delta = -REPUTATION.questionDownvoted;
+    else return;
+  }
+  if (delta === 0) return;
+
+  await db.user.update({
+    where: { id: authorId },
+    data: { reputation: { increment: delta } },
+  });
 }
 
 /**
@@ -61,74 +108,60 @@ export async function POST(req: NextRequest) {
     const { target, targetId, value } = parsed.data;
 
     // La cible doit exister — sinon un vote créerait un compteur fantôme.
+    let authorId: string;
     if (target === "thread") {
       const exists = await db.thread.findUnique({ where: { id: targetId } });
-      if (!exists) return NextResponse.json({ error: "Question not found" }, { status: 404 });
-      // On ne vote pas sa propre question (règle anti-auto-upvote).
-      if (exists.authorId === user.id && value === 1) {
-        return NextResponse.json(
-          { error: "You cannot upvote your own question" },
-          { status: 422 }
-        );
+      if (!exists) {
+        return NextResponse.json({ error: "Question not found" }, { status: 404 });
       }
+      authorId = exists.authorId;
     } else {
       const post = await db.post.findUnique({ where: { id: targetId } });
-      if (!post) return NextResponse.json({ error: "Answer not found" }, { status: 404 });
-      if (post.authorId === user.id && value === 1) {
-        return NextResponse.json(
-          { error: "You cannot upvote your own answer" },
-          { status: 422 }
-        );
+      if (!post) {
+        return NextResponse.json({ error: "Answer not found" }, { status: 404 });
       }
+      authorId = post.authorId;
     }
 
-    const where = { userId: user.id, kind: target, refId: targetId };
+    // On ne vote jamais sur son propre contenu : sinon un auteur pourrait
+    // fabriquer sa propre réputation (et s'auto-pénaliser par ailleurs).
+    if (authorId === user.id && value !== 0) {
+      return NextResponse.json(
+        {
+          error:
+            target === "thread"
+              ? "You cannot vote on your own question"
+              : "You cannot vote on your own answer",
+        },
+        { status: 422 }
+      );
+    }
+
     const existing = await db.vote.findUnique({
-      where: { userId_kind_refId: where },
+      where: { userId_kind_refId: { userId: user.id, kind: target, refId: targetId } },
     });
+    const previous = existing?.value ?? 0;
 
     if (value === 0) {
       if (existing) {
         await db.vote.delete({ where: { id: existing.id } });
-        // La réputation redescend si on retire un upvote qui en avait donné.
-        if (existing.value === 1) {
-          const delta =
-            target === "post" ? -REPUTATION.answerUpvoted : target === "thread" ? 0 : 0;
-          if (delta !== 0) {
-            await db.user.update({
-              where: { id: user.id },
-              data: { reputation: { increment: delta } },
-            });
-          }
-        }
+        // Le vote était +1 ou -1 : on rend à l'auteur ce qu'il avait pris.
+        await applyReputation(target, authorId, previous, 0);
       }
       const upvotes = await recount(target, targetId);
       return NextResponse.json({ value: 0, upvotes });
     }
 
-    const previous = existing?.value ?? 0;
-
     if (existing) {
       await db.vote.update({ where: { id: existing.id }, data: { value } });
     } else {
-      await db.vote.create({ data: { userId: user.id, kind: target, refId: targetId, value } });
+      await db.vote.create({
+        data: { userId: user.id, kind: target, refId: targetId, value },
+      });
     }
 
-    // Réputation : uniquement sur les réponses (cf. backlog EPIC F pour le reste).
-    if (target === "post") {
-      const gained =
-        value === 1 && previous !== 1
-          ? REPUTATION.answerUpvoted
-          : value === -1 && previous === 1
-            ? -REPUTATION.answerUpvoted
-            : 0;
-      if (gained !== 0) {
-        await db.user.update({
-          where: { id: user.id },
-          data: { reputation: { increment: gained } },
-        });
-      }
-    }
+    // Réputation de l'AUTEUR du contenu — cf. avertissement en tête de fichier.
+    await applyReputation(target, authorId, previous, value);
 
     const upvotes = await recount(target, targetId);
     return NextResponse.json({ value, upvotes });
