@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
+import { useAuthStore } from "@/store/auth-store";
+import { toast } from "sonner";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Tag } from "@/components/shared/tag";
 import { Avatar } from "@/components/shared/avatar";
@@ -10,6 +12,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -30,6 +40,7 @@ import {
   BookOpen,
   Briefcase,
   Loader2,
+  Pencil,
 } from "lucide-react";
 
 type Profile = {
@@ -47,6 +58,7 @@ type Profile = {
   website: string | null;
   available: boolean;
   avatarColor: string | null;
+  userId: string;
   user: { id: string; name: string };
 };
 
@@ -118,6 +130,96 @@ export function AnnuaireSection() {
     username: string;
     profile: ProfileDetail | null;
   } | null>(null);
+
+  const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
+
+  // Edition du profil (B4) — formulaire contrôlé, rempli à l'ouverture.
+  const [editOpen, setEditOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    headline: "",
+    bio: "",
+    country: "",
+    city: "",
+    stack: "",
+    level: "junior",
+    github: "",
+    twitter: "",
+    linkedin: "",
+    website: "",
+    available: false,
+  });
+
+  const setField = (key: keyof typeof form, value: string | boolean) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
+
+  const openEdit = (p: ProfileDetail) => {
+    setForm({
+      name: p.user.name ?? "",
+      headline: p.headline ?? "",
+      bio: p.bio ?? "",
+      country: p.country ?? "",
+      city: p.city ?? "",
+      stack: p.stack ?? "",
+      level: p.level ?? "junior",
+      github: p.github ?? "",
+      twitter: p.twitter ?? "",
+      linkedin: p.linkedin ?? "",
+      website: p.website ?? "",
+      available: p.available,
+    });
+    setEditOpen(true);
+  };
+
+  const saveProfile = async (p: ProfileDetail) => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profiles/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim() || undefined,
+          headline: form.headline.trim(),
+          bio: form.bio,
+          country: form.country.trim() || null,
+          city: form.city.trim() || null,
+          stack: form.stack,
+          level: form.level,
+          github: form.github.trim() || null,
+          twitter: form.twitter.trim() || null,
+          linkedin: form.linkedin.trim() || null,
+          website: form.website.trim() || null,
+          available: form.available,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data?.error || t("common.error"));
+        return;
+      }
+      setDetail((prev) =>
+        prev?.profile
+          ? {
+              ...prev,
+              profile: {
+                ...prev.profile,
+                ...data.profile,
+                user: { ...prev.profile.user, name: data.profile.user.name },
+              },
+            }
+          : prev
+      );
+      if (user && data.user) setUser({ ...user, name: data.user.name });
+      toast.success(t("annuaire.profile_saved"));
+      setEditOpen(false);
+    } catch {
+      toast.error(t("common.network_error"));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -213,9 +315,21 @@ export function AnnuaireSection() {
                 <h1 className="font-bold text-3xl lg:text-4xl leading-tight">
                   {selectedProfile.user.name}
                 </h1>
-                {selectedProfile.available && (
-                  <Tag label={t("annuaire.open_to_work")} variant="solid" />
-                )}
+                <div className="flex items-center gap-2 shrink-0">
+                  {selectedProfile.available && (
+                    <Tag label={t("annuaire.open_to_work")} variant="solid" />
+                  )}
+                  {user && selectedProfile.userId === user.id && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEdit(selectedProfile)}
+                    >
+                      <Pencil className="h-3.5 w-3.5 mr-1" />
+                      {t("annuaire.edit_profile")}
+                    </Button>
+                  )}
+                </div>
               </div>
               {selectedProfile.headline && (
                 <p className="text-base text-muted-foreground mb-2">
@@ -352,6 +466,152 @@ export function AnnuaireSection() {
             </Card>
           )}
         </div>
+
+        {/* Edition du profil (B4) */}
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{t("annuaire.edit_profile")}</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="pf-name">{t("auth.name")}</Label>
+                <Input
+                  id="pf-name"
+                  value={form.name}
+                  onChange={(e) => setField("name", e.target.value)}
+                  maxLength={80}
+                />
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="pf-headline">{t("annuaire.headline")}</Label>
+                <Input
+                  id="pf-headline"
+                  value={form.headline}
+                  onChange={(e) => setField("headline", e.target.value)}
+                  maxLength={140}
+                  placeholder="Senior Frontend Engineer"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-country">{t("annuaire.country")}</Label>
+                <Input
+                  id="pf-country"
+                  value={form.country}
+                  onChange={(e) => setField("country", e.target.value)}
+                  maxLength={80}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-city">{t("annuaire.city")}</Label>
+                <Input
+                  id="pf-city"
+                  value={form.city}
+                  onChange={(e) => setField("city", e.target.value)}
+                  maxLength={80}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-stack">{t("annuaire.stack")}</Label>
+                <Input
+                  id="pf-stack"
+                  value={form.stack}
+                  onChange={(e) => setField("stack", e.target.value)}
+                  placeholder="React, Go, PostgreSQL"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-level">{t("annuaire.level")}</Label>
+                <Select value={form.level} onValueChange={(v) => setField("level", v)}>
+                  <SelectTrigger id="pf-level" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {levels
+                      .filter((l) => l !== "all")
+                      .map((l) => (
+                        <SelectItem key={l} value={l}>
+                          {t(`annuaire.level.${l}`)}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-github">GitHub</Label>
+                <Input
+                  id="pf-github"
+                  value={form.github}
+                  onChange={(e) => setField("github", e.target.value)}
+                  maxLength={60}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-twitter">Twitter / X</Label>
+                <Input
+                  id="pf-twitter"
+                  value={form.twitter}
+                  onChange={(e) => setField("twitter", e.target.value)}
+                  maxLength={60}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-linkedin">LinkedIn</Label>
+                <Input
+                  id="pf-linkedin"
+                  value={form.linkedin}
+                  onChange={(e) => setField("linkedin", e.target.value)}
+                  maxLength={80}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="pf-website">{t("annuaire.site")}</Label>
+                <Input
+                  id="pf-website"
+                  value={form.website}
+                  onChange={(e) => setField("website", e.target.value)}
+                  maxLength={255}
+                  placeholder="https://"
+                />
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="pf-bio">{t("annuaire.bio")}</Label>
+                <Textarea
+                  id="pf-bio"
+                  value={form.bio}
+                  onChange={(e) => setField("bio", e.target.value)}
+                  rows={4}
+                  maxLength={2000}
+                  className="resize-y"
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3 sm:col-span-2 border-t border-border pt-4">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="pf-available"
+                    checked={form.available}
+                    onCheckedChange={(v) => setField("available", v)}
+                  />
+                  <Label htmlFor="pf-available" className="cursor-pointer">
+                    {t("annuaire.open_to_work")}
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" onClick={() => setEditOpen(false)}>
+                    {t("forum.create.cancel")}
+                  </Button>
+                  <Button
+                    onClick={() => saveProfile(selectedProfile)}
+                    disabled={saving || !form.name.trim()}
+                  >
+                    {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    {t("annuaire.save")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
+import { notify } from "@/lib/notify";
 
 const acceptSchema = z.object({
   isAnswer: z.boolean(),
@@ -83,6 +84,19 @@ export async function PATCH(
         data: { solved: wantsAccept },
       });
     });
+
+    // Notifie l'auteur de la réponse (sauf s'il est aussi l'auteur de la
+    // question — `notify` ignore déjà l'auto-notification).
+    if (wantsAccept) {
+      notify({
+        recipientId: post.authorId,
+        actorId: user.id,
+        type: "answer",
+        title: "Ta réponse a été acceptée",
+        body: post.body.slice(0, 160),
+        href: "#forum",
+      });
+    }
 
     const updated = await db.post.findUnique({
       where: { id },

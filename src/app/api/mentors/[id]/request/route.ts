@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
+import { notify } from "@/lib/notify";
 import { mentorRequestSchema } from "@/lib/validate";
 
 /**
@@ -62,6 +63,15 @@ export async function POST(
         goal: parsed.data.goal || null,
         status: "pending",
       },
+    });
+
+    notify({
+      recipientId: mentor.userId,
+      actorId: user.id,
+      type: "mentorship",
+      title: `${user.name} demande un mentorat`,
+      body: parsed.data.message.slice(0, 160),
+      href: "#mentorat",
     });
 
     return NextResponse.json({ mentorship }, { status: 201 });

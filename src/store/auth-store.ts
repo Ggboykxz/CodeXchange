@@ -7,6 +7,8 @@ export type AuthUser = {
   id: string;
   name: string;
   email: string;
+  /** Utile pour la modération (accepter une réponse, épingler…). */
+  role?: "member" | "moderator" | "admin";
   profile?: {
     username: string;
     headline?: string | null;

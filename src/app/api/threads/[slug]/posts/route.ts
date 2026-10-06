@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { postCreateSchema } from "@/lib/validate";
+import { notify } from "@/lib/notify";
 
 const authorSelect = { id: true, name: true, image: true, profile: true } as const;
 
@@ -46,6 +47,16 @@ export async function POST(
     const post = await db.post.create({
       data: { threadId: thread.id, authorId: user.id, body: parsed.data.body },
       include: { author: { select: authorSelect } },
+    });
+
+    // Notification à l'auteur de la question (jamais à soi-même : `notify` le gère).
+    notify({
+      recipientId: thread.authorId,
+      actorId: user.id,
+      type: "reply",
+      title: `${user.name} a répondu à « ${thread.title} »`,
+      body: parsed.data.body.slice(0, 160),
+      href: `#forum/${thread.slug}`,
     });
 
     return NextResponse.json({ post }, { status: 201 });

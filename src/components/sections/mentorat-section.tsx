@@ -96,7 +96,7 @@ export function MentoratSection() {
 
   const handleRequest = async () => {
     if (!user) {
-      toast.error("Connecte-toi pour demander un mentorat");
+      toast.error(t("mentorat.sign_in"));
       return;
     }
     if (!selectedMentor || !requestMessage.trim()) return;
@@ -106,7 +106,6 @@ export function MentoratSection() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          menteeId: user.id,
           message: requestMessage,
           goal: requestGoal,
         }),
@@ -116,12 +115,12 @@ export function MentoratSection() {
         toast.error(data.error || "Erreur");
         return;
       }
-      toast.success("Demande envoyée ! Le mentor te répondra sous 48h.");
+      toast.success(t("mentorat.request_sent"));
       setSelectedMentor(null);
       setRequestMessage("");
       setRequestGoal("");
     } catch {
-      toast.error("Erreur réseau");
+      toast.error(t("common.network_error"));
     } finally {
       setSending(false);
     }
@@ -238,7 +237,7 @@ export function MentoratSection() {
                 <Button
                   onClick={() => {
                     if (!user) {
-                      toast.error("Connecte-toi pour demander un mentorat");
+                      toast.error(t("mentorat.sign_in"));
                       return;
                     }
                     setSelectedMentor(m);

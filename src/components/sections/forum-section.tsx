@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
 import {
   Search,
   Plus,
@@ -39,6 +40,21 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+/**
+ * Chargé à la demande : react-markdown + Prism pèsent dans la centaine de Ko,
+ * inutiles tant qu'on n'a pas ouvert une discussion (objectif bundle du CDC).
+ */
+const Markdown = dynamic(
+  () => import("@/components/shared/markdown").then((m) => m.Markdown),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-24 w-full animate-pulse rounded bg-muted/50" aria-hidden="true" />
+    ),
+  }
+);
+
 
 type Profile = {
   id: string;
@@ -167,7 +183,7 @@ export function ForumSection() {
         if (d.thread) setDetail({ slug: sectionParam, thread: d.thread });
         else {
           setDetail({ slug: sectionParam, thread: null });
-          toast.error("Discussion introuvable");
+          toast.error(t("forum.thread_not_found"));
           navigate("forum");
         }
       })
@@ -196,26 +212,28 @@ export function ForumSection() {
     category: string;
   }) => {
     if (!user) {
-      toast.error("Connecte-toi pour créer une discussion");
+      toast.error(t("forum.sign_in_to_ask"));
       return;
     }
     try {
       const res = await fetch("/api/threads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, authorId: user.id }),
+        // L'auteur est déduit de la session côté serveur : envoyer
+        // `authorId` depuis le client permettait de poster en n'importe qui.
+        body: JSON.stringify(data),
       });
       const result = await res.json();
       if (!res.ok) {
         toast.error(result.error || "Erreur");
         return;
       }
-      toast.success("Discussion publiée !");
+      toast.success(t("forum.thread_created"));
       setCreateOpen(false);
       loadThreads();
       navigate("forum", result.thread.slug);
     } catch {
-      toast.error("Erreur réseau");
+      toast.error(t("common.network_error"));
     }
   };
 
@@ -226,11 +244,7 @@ export function ForumSection() {
       const res = await fetch(`/api/threads/${selectedThread.slug}/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          body: answerBody,
-          authorId: user.id,
-          isAnswer: false,
-        }),
+        body: JSON.stringify({ body: answerBody }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -245,11 +259,87 @@ export function ForumSection() {
         },
       });
       setAnswerBody("");
-      toast.success("Réponse publiée !");
+      toast.success(t("forum.answer_published"));
     } catch {
-      toast.error("Erreur réseau");
+      toast.error(t("common.network_error"));
     } finally {
       setPostingAnswer(false);
+    }
+  };
+
+  /** Mise à jour locale de la discussion affichée (votes, acceptation). */
+  const patchDetail = (fn: (t: ThreadDetail) => ThreadDetail) =>
+    setDetail((prev) => (prev?.thread ? { ...prev, thread: fn(prev.thread) } : prev));
+
+  /**
+   * Vote ±1 sur une question ou une réponse.
+   * L'identité vient du cookie de session côté serveur — le client n'envoie
+   * que la cible et la valeur.
+   */
+  const handleVote = async (
+    target: "thread" | "post",
+    targetId: string,
+    value: 1 | -1
+  ) => {
+    if (!user) {
+      toast.error(t("forum.sign_in_to_vote"));
+      return;
+    }
+    try {
+      const res = await fetch("/api/votes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ target, targetId, value }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || t("common.error"));
+        return;
+      }
+      const upvotes: number = data.upvotes;
+      patchDetail((prev) =>
+        target === "thread"
+          ? { ...prev, upvotes }
+          : {
+              ...prev,
+              posts: prev.posts.map((p) =>
+                p.id === targetId ? { ...p, upvotes } : p
+              ),
+            }
+      );
+      setThreads((prev) =>
+        prev.map((th) => (th.id === targetId ? { ...th, upvotes } : th))
+      );
+    } catch {
+      toast.error(t("common.network_error"));
+    }
+  };
+
+  /** Marque / démarque la meilleure réponse (auteur de la question ou modérateur). */
+  const handleAccept = async (postId: string, next: boolean) => {
+    if (!user) return;
+    try {
+      const res = await fetch(`/api/posts/${postId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isAnswer: next }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || t("common.error"));
+        return;
+      }
+      patchDetail((prev) => ({
+        ...prev,
+        solved: next,
+        posts: prev.posts.map((p) => ({
+          ...p,
+          isAnswer: p.id === postId ? next : false,
+        })),
+      }));
+      toast.success(next ? t("forum.answer_accepted") : t("forum.answer_unaccepted"));
+    } catch {
+      toast.error(t("common.network_error"));
     }
   };
 
@@ -321,9 +411,7 @@ export function ForumSection() {
 
           {/* Thread body */}
           <div className="prose-editorial">
-            <p className="whitespace-pre-wrap text-foreground/90 leading-relaxed">
-              {selectedThread.body}
-            </p>
+            <Markdown content={selectedThread.body} />
           </div>
 
           {selectedThread.tags && (
@@ -339,10 +427,15 @@ export function ForumSection() {
           )}
 
           <div className="flex items-center gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
-            <span className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => handleVote("thread", selectedThread.id, 1)}
+              aria-label={t("forum.upvote_question")}
+              className="flex items-center gap-1 rounded px-1 -mx-1 transition hover:text-chart-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+            >
               <ChevronUp className="h-4 w-4" />
               {selectedThread.upvotes} {t("forum.upvotes")}
-            </span>
+            </button>
             <span className="flex items-center gap-1">
               <Eye className="h-4 w-4" />
               {selectedThread.views} {t("forum.views")}
@@ -372,10 +465,8 @@ export function ForumSection() {
                     {t("forum.solved")}
                   </div>
                 )}
-                <p className="whitespace-pre-wrap text-foreground/90 leading-relaxed text-[15px]">
-                  {post.body}
-                </p>
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/60">
+                <Markdown content={post.body} />
+                <div className="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-border/60">
                   <div className="flex items-center gap-2">
                     <Avatar
                       name={post.author.name}
@@ -391,10 +482,36 @@ export function ForumSection() {
                       </button>
                     </span>
                   </div>
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <ChevronUp className="h-3 w-3" />
-                    {post.upvotes}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {/* Accepter / retirer la meilleure réponse — visible pour
+                        l'auteur de la question et les modérateurs. */}
+                    {(selectedThread.author.id === user?.id || user?.role === "admin" || user?.role === "moderator") && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant={post.isAnswer ? "default" : "outline"}
+                        onClick={() => handleAccept(post.id, !post.isAnswer)}
+                        aria-pressed={post.isAnswer}
+                        className={cn(
+                          "h-7 px-2 text-[11px]",
+                          post.isAnswer && "bg-foreground text-background"
+                        )}
+                      >
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                        {post.isAnswer ? t("forum.accepted") : t("forum.accept")}
+                      </Button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleVote("post", post.id, 1)}
+                      aria-label={t("forum.upvote_answer")}
+                      aria-pressed={false}
+                      className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-muted-foreground transition hover:border-chart-1 hover:text-chart-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+                    >
+                      <ChevronUp className="h-3.5 w-3.5" />
+                      {post.upvotes}
+                    </button>
+                  </div>
                 </div>
               </Card>
             ))}
@@ -450,7 +567,7 @@ export function ForumSection() {
         <Button
           onClick={() => {
             if (!user) {
-              toast.error("Connecte-toi pour créer une discussion");
+              toast.error(t("forum.sign_in_to_ask"));
               return;
             }
             setCreateOpen(true);
@@ -640,7 +757,7 @@ function CreateThreadForm({
           required
           maxLength={120}
           className="mt-1"
-          placeholder="Comment faire X avec Y ?"
+          placeholder={t("forum.create.body.placeholder")}
         />
       </div>
       <div>
