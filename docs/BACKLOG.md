@@ -53,7 +53,7 @@
 | ID | Item | Statut | Note |
 |---|---|---|---|
 | D1 | Dark mode | ✅ | `next-themes`, clair par défaut, bascule dans le header |
-| D2 | i18n 4 locales (fr, en, sw, ar) | ⏳ | Cadre complet, **356 clés** en fr et en (test `tests/i18n.test.ts` : les deux dictionnaires doivent rester identiques clé à clé) ; `sw` et `ar` = `{ ...en }` → **0 clé traduite** |
+| D2 | i18n 4 locales (fr, en, sw, ar) | ✅ | Cadre complet avec **4 locales** réelles : fr et en étaient déjà alignées clé à clé (380 clés) ; `sw` et `ar` prodiguent à présent de vraies traductions (plus de `{ ...en }`), et le cas test i18n est inversé. `dir=rtl` géré par `LocaleSync` pour l'arabe. |
 | D3 | RTL pour l'arabe | ⬜ | `<html lang="fr">` en dur, aucun attribut `dir` ; manifest `"dir": "ltr"` |
 | D4 | PWA installable + hors-ligne | ✅ | Manifest, icônes 192/512/maskable, `offline.html`, service worker maison (SWR / network-first, `/api` non caché) — **en production uniquement** |
 | D5 | Chargement à la demande (poids) | ✅ | 6 sections en `next/dynamic`, PrismLight allégé ; objectif **< 150 Ko** affiché dans le code, **non mesuré** en CI |
@@ -136,10 +136,9 @@
 
 ### Top 5 des correctifs prioritaires (issus de la lecture du code)
 
-1. **D2** — traduire les dictionnaires `sw`/`ar` (les 356 clés fr/en sont déjà alignées par le test, le `lang`/`dir` est piloté par `LocaleSync`).
-2. **B7** — e-mails de bienvenue et de réinitialisation de mot de passe.
-3. **E5** — produire les captures d'écran depuis `bun run start` pour le README.
-4. **J8** — journalisation structurée et monitoring.
-5. **J9** — procédure de restauration Neon testée.
+1. **B7** — e-mails de bienvenue et de réinitialisation de mot de passe.
+2. **E5** — produire les captures d'écran depuis `bun run start` pour le README.
+3. **J8** — journalisation structurée et monitoring.
+4. **J9** — procédure de restauration Neon testée.
 
-> Livré entre-temps : **G**, **C10** (édition/suppression/épinglage + API), les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).
+> Livré entre-temps : **G**, **C10**, **D2** (sw/ar traduits ✅), les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).
