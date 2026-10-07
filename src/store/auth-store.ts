@@ -29,10 +29,10 @@ type AuthState = {
    * possédait sa propre copie : on pouvait en avoir deux d'ouvertes.
    */
   authOpen: boolean;
-  authMode: "login" | "register";
+  authMode: "login" | "register" | "forgot";
   setUser: (u: AuthUser | null) => void;
   setLoading: (b: boolean) => void;
-  openAuth: (mode?: "login" | "register") => void;
+  openAuth: (mode?: "login" | "register" | "forgot") => void;
   closeAuth: () => void;
   switchAuthMode: () => void;
   logout: () => void;

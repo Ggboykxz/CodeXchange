@@ -45,7 +45,7 @@ const email = z
   .email("Invalid email address");
 
 /** Politique de mot de passe : 8+ avec au moins une lettre ET un chiffre. */
-const password = z
+export const passwordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters")
   .max(128)
@@ -116,10 +116,32 @@ export const verifyResendSchema = z.object({
   email: email.optional(),
 });
 
+/**
+ * Mot de passe oublié (B7). L'appelant répond de façon identique
+ * que l'adresse existe ou non : le schéma ne fait que borner la
+ * forme, l'anti-énumération est du ressort de la route.
+ */
+export const forgotSchema = z.object({
+  email,
+});
+
+/**
+ * Confirmation de la réinitialisation. Le jeton suit le même format
+ * 32 octets hexadécimaux que la vérification : refusé avant tout
+ * hash en base.
+ */
+export const resetSchema = z.object({
+  token: z
+    .string()
+    .trim()
+    .regex(/^[0-9a-f]{64}$/i, "Invalid reset token"),
+  password: passwordSchema,
+});
+
 export const registerSchema = z.object({
   name: text(2, 80),
   email,
-  password,
+  password: passwordSchema,
   username,
   country: z.string().trim().max(80).optional(),
   city: z.string().trim().max(80).optional(),

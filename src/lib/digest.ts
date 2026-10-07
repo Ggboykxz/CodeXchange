@@ -24,3 +24,8 @@ export function sessionDigest(token: string): string {
 export function verificationDigest(token: string): string {
   return sha256(`${SECRET}:verify:${token}`);
 }
+
+/** Jeton de réinitialisation de mot de passe → `User.resetTokenHash`. */
+export function resetDigest(token: string): string {
+  return sha256(`${SECRET}:reset:${token}`);
+}

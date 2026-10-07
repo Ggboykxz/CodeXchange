@@ -21,13 +21,15 @@ interface AuthFormProps {
   mode: "login" | "register";
   onSuccess: () => void;
   onSwitch: () => void;
+  /** B7 — ouvre le panneau « mot de passe oublié ». */
+  onForgot: () => void;
 }
 
 // Liste partagée avec le filtre de l'annuaire : 15 pays ici contre 21 au
 // seed signifiait qu'un membre ne pouvait pas déclarer son pays d'origine.
 const countries: readonly string[] = REGISTRATION_COUNTRIES;
 
-export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
+export function AuthForm({ mode, onSuccess, onSwitch, onForgot }: AuthFormProps) {
   const t = useT();
   const setUser = useAuthStore((s) => s.setUser);
   const [loading, setLoading] = useState(false);
@@ -257,6 +259,18 @@ export function AuthForm({ mode, onSuccess, onSwitch }: AuthFormProps) {
         ) : null}
         {mode === "login" ? t("auth.login.submit") : t("auth.register.submit")}
       </Button>
+
+      {mode === "login" && (
+        <div className="text-center">
+          <button
+            type="button"
+            onClick={onForgot}
+            className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition"
+          >
+            {t("auth.login.forgot")}
+          </button>
+        </div>
+      )}
 
       <div className="text-center pt-2">
         <button

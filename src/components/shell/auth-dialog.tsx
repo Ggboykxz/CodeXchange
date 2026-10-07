@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AuthForm } from "@/components/shared/auth-form";
+import { ForgotForm } from "@/components/shared/forgot-form";
 
 /**
  * La modale d'authentification de l'application — **une seule**, rendue une
@@ -24,6 +25,7 @@ export function AuthDialog() {
   const mode = useAuthStore((s) => s.authMode);
   const closeAuth = useAuthStore((s) => s.closeAuth);
   const switchAuthMode = useAuthStore((s) => s.switchAuthMode);
+  const openAuth = useAuthStore((s) => s.openAuth);
   const fetchMe = useAuthStore((s) => s.fetchMe);
 
   /** Ferme la modale et revalide la session (état de vérification inclus). */
@@ -32,16 +34,32 @@ export function AuthDialog() {
     void fetchMe();
   };
 
+  const title =
+    mode === "login"
+      ? t("nav.login")
+      : mode === "register"
+        ? t("nav.register")
+        : t("auth.forgot.title");
+
   return (
     <Dialog open={open} onOpenChange={(next) => !next && closeAuth()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             <span className="text-muted-foreground">$</span>{" "}
-            {mode === "login" ? t("nav.login") : t("nav.register")}
+            {title}
           </DialogTitle>
         </DialogHeader>
-        <AuthForm mode={mode} onSuccess={onAuthSuccess} onSwitch={switchAuthMode} />
+        {mode === "forgot" ? (
+          <ForgotForm onBack={() => openAuth("login")} />
+        ) : (
+          <AuthForm
+            mode={mode}
+            onSuccess={onAuthSuccess}
+            onSwitch={switchAuthMode}
+            onForgot={() => openAuth("forgot")}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

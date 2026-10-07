@@ -14,6 +14,7 @@ import {
   issueVerification,
   verificationUrl,
 } from "@/lib/verify";
+import { sendWelcomeEmail } from "@/lib/mailer";
 
 export async function POST(req: NextRequest) {
   try {
@@ -85,6 +86,14 @@ export async function POST(req: NextRequest) {
       // dans le journal du serveur.
       console.info(`[verify] ${user.email} → ${devLink}`);
     }
+
+    // B7 — e-mail de bienvenue. Envoi réel si `SMTP_HOST` est
+    // configuré, aperçu dans le journal sinon. L'envoi ne
+    // bloque pas la réponse : l'inscription réussit même si le
+    // mail ne part pas (l'erreur est journalisée).
+    void sendWelcomeEmail({ name: user.name, email: user.email }).catch(
+      (e) => logger.route("Welcome email error", e, { userId: user.id })
+    );
 
     const response = NextResponse.json(
       { user, ...(devLink ? { verificationUrl: devLink } : {}) },
