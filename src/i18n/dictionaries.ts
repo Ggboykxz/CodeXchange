@@ -44,7 +44,7 @@ const fr: Dict = {
     "CodeXchange réunit les développeurs africains et de la diaspora : forum, jobs, projets open-source, mentorat, tutos, events et annuaire. Une seule plateforme, par les devs, pour les devs.",
   "hero.cta.join": "Rejoindre la communauté",
   "hero.cta.explore": "Explorer la plateforme",
-  "hero.tagline": "12 000+ devs · 54 pays · 100+ stacks",
+  "hero.tagline": "Le réseau des développeurs africains",
 
   // Stats
   "stats.devs": "Développeurs",
@@ -294,7 +294,8 @@ const fr: Dict = {
 
   // CTA
   "cta.title": "Prêt·e à construire l'avenir du code africain ?",
-  "cta.subtitle": "Rejoins 12 000+ développeurs qui partagent, apprennent et recrutent ensemble.",
+  "cta.subtitle":
+    "Rejoins des développeurs qui partagent, apprennent et recrutent ensemble.",
   "cta.button": "Créer mon compte gratuit",
 
   // Common
@@ -333,6 +334,28 @@ const fr: Dict = {
   "mentorat.request_sent": "Demande envoyée ! Le mentor te répondra sous 48h.",
   "footer.newsletter_done": "C'est fait. On revient vers toi.",
 
+  // Fil d'accueil (le réseau)
+  "feed.sort_label": "Trier le fil",
+  "feed.sort.new": "Récents",
+  "feed.sort.top": "Populaires",
+  "feed.sort.active": "Actifs",
+  "feed.filter.unsolved": "Non résolus",
+  "feed.compose": "Publier",
+  "feed.empty": "Personne n'a encore publié ici. Lance le mouvement !",
+  "feed.more": "Charger plus",
+  "feed.no_more": "Tu as tout vu — reviens plus tard.",
+  "feed.retry": "Réessayer",
+  "feed.sidebar_label": "CodeXchange en bref",
+  "feed.sidebar_stats": "La communauté, en chiffres réels",
+  "feed.sidebar_explore": "Explorer",
+
+  // Composeur de question (libellés de formulaire, i18n)
+  "forum.create.title_field": "Titre",
+  "forum.create.category_field": "Catégorie",
+  "forum.create.body_field": "Détails",
+  "forum.create.tags_field": "Tags",
+  "forum.create.title.placeholder": "Ta question en une phrase",
+
   // Notifications
   "notif.title": "Notifications",
   "notif.empty": "Aucune notification pour l'instant.",
@@ -361,7 +384,7 @@ const en: Dict = {
     "CodeXchange brings together African developers and the diaspora: forum, jobs, open-source projects, mentorship, tutorials, events and a directory. One platform, by devs, for devs.",
   "hero.cta.join": "Join the community",
   "hero.cta.explore": "Explore the platform",
-  "hero.tagline": "12,000+ devs · 54 countries · 100+ stacks",
+  "hero.tagline": "The African developers' network",
 
   "stats.devs": "Developers",
   "stats.threads": "Discussions",
@@ -599,7 +622,8 @@ const en: Dict = {
   "footer.newsletter_subscribe": "Subscribe",
 
   "cta.title": "Ready to build the future of African code?",
-  "cta.subtitle": "Join 12,000+ developers who share, learn and hire together.",
+  "cta.subtitle":
+    "Join developers who share, learn and hire together.",
   "cta.button": "Create my free account",
 
   "common.loading": "Loading...",
@@ -636,6 +660,28 @@ const en: Dict = {
   "mentorat.sign_in": "Sign in to request a mentor",
   "mentorat.request_sent": "Request sent! The mentor will reply within 48h.",
   "footer.newsletter_done": "Done. You'll hear from us.",
+
+  // Home feed (the network)
+  "feed.sort_label": "Sort the feed",
+  "feed.sort.new": "New",
+  "feed.sort.top": "Top",
+  "feed.sort.active": "Active",
+  "feed.filter.unsolved": "Unanswered",
+  "feed.compose": "Post",
+  "feed.empty": "Nobody has posted yet. Start the movement!",
+  "feed.more": "Load more",
+  "feed.no_more": "That's everything — check back later.",
+  "feed.retry": "Retry",
+  "feed.sidebar_label": "CodeXchange at a glance",
+  "feed.sidebar_stats": "The community, in real numbers",
+  "feed.sidebar_explore": "Explore",
+
+  // Question composer (form labels, i18n)
+  "forum.create.title_field": "Title",
+  "forum.create.category_field": "Category",
+  "forum.create.body_field": "Details",
+  "forum.create.tags_field": "Tags",
+  "forum.create.title.placeholder": "Your question in one sentence",
 
   // Notifications
   "notif.title": "Notifications",

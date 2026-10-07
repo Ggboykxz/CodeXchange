@@ -52,6 +52,24 @@ const toneMap: Record<TagTone, string> = {
 type BaseVariant = "default" | "muted" | "solid" | "outline";
 
 /**
+ * Accents par tag technique, partagés par le fil d'accueil et le forum :
+ * `react` doit être la même couleur d'un écran à l'autre, sinon le lecteur
+ * perd le repère visuel.
+ */
+export const tagColors: Record<string, TagTone | "default"> = {
+  react: "terracotta",
+  nextjs: "terracotta",
+  go: "sun",
+  rust: "clay",
+  flutter: "sun",
+  ai: "baobab",
+  ml: "baobab",
+  devops: "clay",
+  career: "default",
+  kotlin: "clay",
+};
+
+/**
  * Legacy callers pass their color name as `variant`; accept it and route it
  * to `tone` so old code keeps compiling while the API stays explicit.
  */

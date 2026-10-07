@@ -1,5 +1,6 @@
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
     const tag = searchParams.get("tag");
     const q = searchParams.get("q")?.trim();
     const solved = searchParams.get("solved");
+    const sort = searchParams.get("sort"); // new (défaut) | top | active
     const { limit, skip } = pagination(searchParams, 20);
 
     const where: Record<string, unknown> = {};
@@ -34,22 +36,48 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    const [threads, total] = await Promise.all([
+    // Tri du fil. `new` (défaut) = chronologique, `top` = votes,
+    // `active` = plus de réponses. Les questions épinglées restent en tête
+    // quel que soit le tri, comme les « sticky » de Reddit.
+    const orderBy: Prisma.ThreadOrderByWithRelationInput[] =
+      sort === "top"
+        ? [{ pinned: "desc" }, { upvotes: "desc" }, { createdAt: "desc" }]
+        : sort === "active"
+        ? [{ pinned: "desc" }, { posts: { _count: "desc" } }, { createdAt: "desc" }]
+        : [{ pinned: "desc" }, { createdAt: "desc" }];
+
+    const [threads, total, user] = await Promise.all([
       db.thread.findMany({
         where,
         include: {
           author: { select: authorSelect },
           _count: { select: { posts: true } },
         },
-        orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
+        orderBy,
         take: limit,
         skip,
       }),
       db.thread.count({ where }),
+      currentUser(req),
     ]);
 
+    // `myVote` : sans lui, les flèches ↑↓ du fil ne savent pas si l'utilisateur
+    // a déjà voté — une seule requête couvre toute la page.
+    const myVotes = user
+      ? await db.vote.findMany({
+          where: {
+            userId: user.id,
+            kind: "thread",
+            refId: { in: threads.map((t) => t.id) },
+          },
+          select: { refId: true, value: true },
+        })
+      : [];
+    const voteByRef = new Map(myVotes.map((v) => [v.refId, v.value]));
+    const items = threads.map((t) => ({ ...t, myVote: voteByRef.get(t.id) ?? 0 }));
+
     return NextResponse.json({
-      threads,
+      threads: items,
       total,
       page: Math.floor(skip / limit) + 1,
       limit,

@@ -70,27 +70,29 @@ export function Header() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex h-14 items-center justify-between gap-4">
             {/* Logo */}
-            <button
-              onClick={() => go("home")}
-              className="flex items-center gap-2 shrink-0 group"
+            <a
+              href="#home"
+              className="flex items-center gap-2 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1 rounded"
             >
               <span className="text-base font-bold tracking-tight">
                 <span className="text-muted-foreground">$</span>{" "}
                 <span className="text-foreground">codexchange</span>
                 <span className="text-muted-foreground">.dev</span>
               </span>
-            </button>
+            </a>
 
-            {/* Desktop nav */}
+            {/* Desktop nav — de vrais liens : clic médian, clic droit →
+                « ouvrir dans un onglet », URL copiable, Retour du navigateur. */}
             <nav className="hidden md:flex items-center gap-0">
               {navItems.map((item) => {
                 const active = currentSection === item.section;
                 return (
-                  <button
+                  <a
                     key={item.section}
-                    onClick={() => go(item.section)}
+                    href={`#${item.section}`}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
-                      "px-3 py-1.5 text-sm transition-colors relative",
+                      "px-3 py-1.5 text-sm transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
                       active
                         ? "text-foreground"
                         : "text-muted-foreground hover:text-foreground"
@@ -100,7 +102,7 @@ export function Header() {
                     {active && (
                       <span className="absolute -bottom-px left-3 right-3 h-px bg-foreground" />
                     )}
-                  </button>
+                  </a>
                 );
               })}
             </nav>
@@ -108,7 +110,9 @@ export function Header() {
             {/* Right actions */}
             <div className="flex items-center gap-2">
               <a
-                href="#"
+                href="https://github.com/Ggboykxz/CodeXchange"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="GitHub"
                 className="hidden sm:flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-foreground transition"
               >
@@ -135,6 +139,9 @@ export function Header() {
                 </button>
               ) : (
                 <>
+                  {/* Connexion / Rejoindre : masqués sous `sm` — ils sont déjà
+                      en bas du menu hamburger, et le header doit laisser passer
+                      le bouton de menu sur un écran de 390 px. */}
                   <Button
                     variant="ghost"
                     size="sm"
@@ -146,7 +153,7 @@ export function Header() {
                   <Button
                     size="sm"
                     onClick={() => openAuth("register")}
-                    className="bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
+                    className="hidden sm:inline-flex bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
                   >
                     {t("nav.register")}
                   </Button>
@@ -176,14 +183,22 @@ export function Header() {
                   </SheetHeader>
                   <nav className="flex flex-col gap-1 mt-6">
                     {navItems.map((item) => (
-                      <button
+                      <a
                         key={item.section}
-                        onClick={() => go(item.section)}
-                        className="flex items-center gap-3 px-3 py-2 rounded text-left hover:bg-muted transition text-sm"
+                        href={`#${item.section}`}
+                        aria-current={
+                          currentSection === item.section ? "page" : undefined
+                        }
+                        onClick={() => setMobileOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded text-left hover:bg-muted transition text-sm",
+                          currentSection === item.section &&
+                            "bg-muted font-medium"
+                        )}
                       >
                         <span className="text-muted-foreground">→</span>
                         <span>{t(item.labelKey)}</span>
-                      </button>
+                      </a>
                     ))}
                   </nav>
                   <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border space-y-2">

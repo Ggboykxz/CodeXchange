@@ -6,7 +6,7 @@ import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { Header } from "@/components/shell/header";
 import { Footer } from "@/components/shell/footer";
-import { HomeSection } from "@/components/sections/home-section";
+import { FeedSection } from "@/components/sections/feed-section";
 
 /**
  * Découpage du bundle.
@@ -63,7 +63,6 @@ const AnnuaireSection = dynamic(
 
 export default function Page() {
   const section = useAppStore((s) => s.section);
-  const navigate = useAppStore((s) => s.navigate);
   const fetchMe = useAuthStore((s) => s.fetchMe);
 
   // Try to fetch current user on mount
@@ -71,20 +70,26 @@ export default function Page() {
     fetchMe();
   }, [fetchMe]);
 
-  // Parse initial hash on mount (e.g. #forum or #forum/some-slug)
+  /**
+   * L'URL est la source de vérité de la navigation.
+   *
+   * - au montage : un lien partagé `#forum/slug` ouvre la bonne discussion ;
+   * - `hashchange` : clic sur un lien natif (`<a href="#jobs">`) ;
+   * - `popstate`   : boutons Retour / Avant du navigateur.
+   *
+   * `syncFromHash` ne réécrit jamais l'historique, sinon on créerait une
+   * boucle (le navigateur écrit → on réécris → …).
+   */
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    const [sectionName, param] = hash.split("/");
-    if (
-      ["forum", "jobs", "projects", "mentorat", "tutos", "annuaire"].includes(
-        sectionName
-      )
-    ) {
-      navigate(sectionName, param);
-    }
-  }, [navigate]);
+    const sync = () => useAppStore.getState().syncFromHash();
+    sync();
+    window.addEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("hashchange", sync);
+    };
+  }, []);
 
   const renderSection = () => {
     switch (section) {
@@ -104,7 +109,9 @@ export default function Page() {
         return <AnnuaireSection />;
       case "home":
       default:
-        return <HomeSection />;
+        // L'accueil EST le fil : on arrive sur du contenu vivant, pas sur une
+        // page vitrine (cf. Reddit/Facebook : le réseau commence par un flux).
+        return <FeedSection />;
     }
   };
 

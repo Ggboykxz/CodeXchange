@@ -5,7 +5,12 @@ import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
-import { Tag } from "@/components/shared/tag";
+import { Tag, tagColors } from "@/components/shared/tag";
+import { ThreadCard } from "@/components/shared/thread-card";
+import {
+  CreateThreadForm,
+  categories,
+} from "@/components/shared/create-thread-form";
 import { Avatar } from "@/components/shared/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,30 +107,6 @@ type Post = {
 
 type ThreadDetail = Thread & {
   posts: Post[];
-};
-
-const categories = [
-  { value: "all", labelKey: "forum.filter.all" },
-  { value: "general", labelKey: "forum.category.general" },
-  { value: "frontend", labelKey: "forum.category.frontend" },
-  { value: "backend", labelKey: "forum.category.backend" },
-  { value: "mobile", labelKey: "forum.category.mobile" },
-  { value: "devops", labelKey: "forum.category.devops" },
-  { value: "ai", labelKey: "forum.category.ai" },
-  { value: "career", labelKey: "forum.category.career" },
-];
-
-const tagColors: Record<string, "terracotta" | "sun" | "clay" | "baobab" | "default"> = {
-  react: "terracotta",
-  nextjs: "terracotta",
-  go: "sun",
-  rust: "clay",
-  flutter: "sun",
-  ai: "baobab",
-  ml: "baobab",
-  devops: "clay",
-  career: "default",
-  kotlin: "clay",
 };
 
 export function ForumSection() {
@@ -748,67 +729,12 @@ export function ForumSection() {
       ) : (
         <div className="space-y-3">
           {threads.map((thread) => (
-            <button
+            <ThreadCard
               key={thread.id}
-              onClick={() => navigate("forum", thread.slug)}
-              className="w-full text-left group"
-            >
-              <Card className="p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="flex flex-col items-center gap-1 shrink-0 pt-1">
-                    <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition" />
-                    <span className="text-xs font-mono text-muted-foreground">
-                      {thread.upvotes}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-2 mb-1">
-                      {thread.pinned && (
-                        <Pin className="h-3.5 w-3.5 text-foreground shrink-0 mt-1" />
-                      )}
-                      {thread.solved && (
-                        <CheckCircle2 className="h-3.5 w-3.5 text-foreground shrink-0 mt-1" />
-                      )}
-                      <h3 className="font-bold text-lg leading-snug group-hover:text-foreground transition-colors">
-                        {thread.title}
-                      </h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                      {thread.body}
-                    </p>
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                      <Tag label={t(`forum.category.${thread.category}`)} />
-                      {thread.tags
-                        .split(",")
-                        .map((s) => s.trim())
-                        .filter(Boolean)
-                        .slice(0, 3)
-                        .map((tg) => (
-                          <Tag
-                            key={tg}
-                            label={tg}
-                            variant={tagColors[tg] || "default"}
-                          />
-                        ))}
-                      <span className="ml-auto flex items-center gap-3">
-                        <span className="flex items-center gap-1">
-                          <MessageSquare className="h-3 w-3" />
-                          {thread._count?.posts ?? 0}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          {thread.views}
-                        </span>
-                        <span className="hidden sm:inline">·</span>
-                        <span className="hidden sm:flex items-center gap-1">
-                          {t("forum.by")} {thread.author.name}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </button>
+              thread={thread}
+              onOpen={(th) => navigate("forum", th.slug)}
+              onVote={(th, value) => handleVote("thread", th.id, value)}
+            />
           ))}
         </div>
       )}
@@ -831,95 +757,4 @@ export function ForumSection() {
 // Small inline import to keep file self-contained
 function useAppStoreNav() {
   return useAppStore((s) => s.navigate);
-}
-
-function CreateThreadForm({
-  onSubmit,
-  categories,
-}: {
-  onSubmit: (data: {
-    title: string;
-    body: string;
-    tags: string;
-    category: string;
-  }) => void;
-  categories: { value: string; labelKey: string }[];
-}) {
-  const t = useT();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [tags, setTags] = useState("");
-  const [category, setCategory] = useState("general");
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    onSubmit({ title, body, tags, category });
-    setSubmitting(false);
-    setTitle("");
-    setBody("");
-    setTags("");
-    setCategory("general");
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div>
-        <Label className="text-xs font-mono uppercase">Titre</Label>
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          maxLength={120}
-          className="mt-1"
-          placeholder={t("forum.create.body.placeholder")}
-        />
-      </div>
-      <div>
-        <Label className="text-xs font-mono uppercase">Catégorie</Label>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="mt-1">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {categories
-              .filter((c) => c.value !== "all")
-              .map((c) => (
-                <SelectItem key={c.value} value={c.value}>
-                  {t(c.labelKey)}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <Label className="text-xs font-mono uppercase">Détails</Label>
-        <Textarea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          required
-          rows={6}
-          className="mt-1 resize-y"
-          placeholder={t("forum.create.body.placeholder")}
-        />
-      </div>
-      <div>
-        <Label className="text-xs font-mono uppercase">Tags</Label>
-        <Input
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          className="mt-1 font-mono"
-          placeholder={t("forum.create.tags.placeholder")}
-        />
-      </div>
-      <Button
-        type="submit"
-        disabled={submitting || !title || !body}
-        className="w-full bg-foreground text-background hover:bg-foreground/90"
-      >
-        {t("forum.create.submit")}
-      </Button>
-    </form>
-  );
 }
