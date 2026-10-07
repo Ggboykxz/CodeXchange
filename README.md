@@ -17,7 +17,15 @@ CodeXchange réunit les développeurs africains et de la diaspora sur **une seul
 
 Une application mono-page (navigation par hash : `#forum`, `#jobs`, `#mentorat`…) avec un header collant — logo `$ codexchange.dev`, navigation, cloche de notifications, sélecteur de langue, bascule clair/sombre — et un **fil d'accueil type réseau social** : tri `Récents / Populaires / Actifs`, filtre `Non résolus`, composeur `Publier`, vote `↑ / ↓` sur chaque carte, auteur (avatar, réputation, temps relatif), `Charger plus`, et une colonne de droite (CTA, compteurs réels via `GET /api/stats`, modules). La navigation utilise de **vrais liens** (`<a href="#…">`) : clic médian, « ouvrir dans un onglet », et bouton **Retour** du navigateur fonctionnent. Chaque section secondaire (forum, jobs, projets, mentorat, tutos, annuaire) est chargée dynamiquement pour garder la première charge légère.
 
-> Les captures d'écran ne sont pas versionnées dans ce dépôt : à produire depuis `bun run start` (voir `docs/ENVIRONNEMENTS.md` pour le plan de tournage).
+**Captures** (générées par `node scripts/screenshots.mjs` contre le build de production) :
+
+| Fil d'accueil | Forum | Fiche question |
+|---|---|---|
+| ![Accueil](docs/screenshots/home.png) | ![Forum](docs/screenshots/forum.png) | ![Question](docs/screenshots/question.png) |
+
+| Jobs | Projets | Tutos & Events | Annuaire |
+|---|---|---|---|
+| ![Jobs](docs/screenshots/jobs.png) | ![Projets](docs/screenshots/projects.png) | ![Tutos](docs/screenshots/tutos.png) | ![Annuaire](docs/screenshots/annuaire.png) |
 
 ---
 
