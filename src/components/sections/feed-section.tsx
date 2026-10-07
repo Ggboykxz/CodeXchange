@@ -7,6 +7,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -21,8 +28,11 @@ import { ThreadCard, type ThreadCardData } from "@/components/shared/thread-card
 import { toast } from "sonner";
 import {
   ArrowRight,
+  BarChart3,
   BookOpen,
   Briefcase,
+  Clock,
+  Flame,
   FolderGit2,
   Loader2,
   MapPin,
@@ -31,14 +41,21 @@ import {
   RefreshCw,
   Search,
   Sparkles,
+  TrendingUp,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TIME_WINDOWS, type TimeWindow } from "@/lib/ranking";
 
 /** Page du fil — volontairement courte : le défilement reste réactif. */
 const PAGE = 10;
 
-type Sort = "new" | "top" | "active";
+/**
+ * Les cinq tris de Reddit, dans l'ordre où il les présente : Chaud (défaut),
+ * Nouveaux, Populaires (+ fenêtre temporelle), En croissance, Actifs.
+ * Les formules vivent dans `lib/ranking` — ici, on ne fait qu'afficher.
+ */
+type Sort = "hot" | "new" | "top" | "rising" | "active";
 
 type Stats = {
   users: number;
@@ -51,11 +68,22 @@ type Stats = {
   countries: number;
 };
 
-const sortOptions: { value: Sort; labelKey: string }[] = [
-  { value: "new", labelKey: "feed.sort.new" },
-  { value: "top", labelKey: "feed.sort.top" },
-  { value: "active", labelKey: "feed.sort.active" },
+const sortOptions: { value: Sort; labelKey: string; Icon: typeof Flame }[] = [
+  { value: "hot", labelKey: "feed.sort.hot", Icon: Flame },
+  { value: "new", labelKey: "feed.sort.new", Icon: Clock },
+  { value: "top", labelKey: "feed.sort.top", Icon: BarChart3 },
+  { value: "rising", labelKey: "feed.sort.rising", Icon: TrendingUp },
+  { value: "active", labelKey: "feed.sort.active", Icon: MessageSquare },
 ];
+
+const timeLabels: Record<TimeWindow, string> = {
+  hour: "feed.time.hour",
+  day: "feed.time.day",
+  week: "feed.time.week",
+  month: "feed.time.month",
+  year: "feed.time.year",
+  all: "feed.time.all",
+};
 
 const modules = [
   { section: "forum", labelKey: "nav.forum", titleKey: "modules.forum.title", Icon: MessageSquare },
@@ -81,7 +109,9 @@ export function FeedSection() {
   const fetchMe = useAuthStore((s) => s.fetchMe);
 
   const [threads, setThreads] = useState<ThreadCardData[]>([]);
-  const [sort, setSort] = useState<Sort>("new");
+  const [sort, setSort] = useState<Sort>("hot");
+  /** Fenêtre de `Populaires` (heure → tout) : n'est lue que par ce tri. */
+  const [timeWindow, setTimeWindow] = useState<TimeWindow>("all");
   const [unsolved, setUnsolved] = useState(false);
   /** Saisie instantanée de la barre de recherche… */
   const [searchInput, setSearchInput] = useState("");
@@ -98,7 +128,7 @@ export function FeedSection() {
   const [hasMore, setHasMore] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
 
-  const key = `${sort}|${unsolved}|${q}`;
+  const key = `${sort}|${timeWindow}|${unsolved}|${q}`;
   const pending = loadedKey !== key;
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -140,6 +170,8 @@ export function FeedSection() {
           page: String(page),
           sort,
         });
+        // `?t=` ne concerne que `top`, comme le sélecteur d'échéance de Reddit.
+        if (sort === "top" && timeWindow !== "all") params.set("t", timeWindow);
         if (unsolved) params.set("solved", "false");
         if (q) params.set("q", q);
 
@@ -168,7 +200,7 @@ export function FeedSection() {
         if (id === reqRef.current) setLoadingMore(false);
       }
     },
-    [key, sort, unsolved, q, t]
+    [key, sort, timeWindow, unsolved, q, t]
   );
 
   // Recharge à chaque changement de tri/filtre (et au premier rendu), ainsi
@@ -298,18 +330,45 @@ export function FeedSection() {
                   key={o.value}
                   type="button"
                   aria-pressed={sort === o.value}
+                  aria-label={t(o.labelKey)}
+                  title={t(o.labelKey)}
                   onClick={() => setSort(o.value)}
                   className={cn(
-                    "rounded px-3 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                    "flex items-center gap-1.5 rounded px-2.5 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
                     sort === o.value
                       ? "bg-background text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  {t(o.labelKey)}
+                  <o.Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                  {/* Libellés masqués sous `sm` : les 5 onglets tiennent
+                      alors sur un écran de 390 px, icônes seules. */}
+                  <span className="hidden sm:inline">{t(o.labelKey)}</span>
                 </button>
               ))}
             </div>
+
+            {/* Échéance — n'apparaît que sur `Populaires`, comme sur Reddit. */}
+            {sort === "top" && (
+              <Select
+                value={timeWindow}
+                onValueChange={(v) => setTimeWindow(v as TimeWindow)}
+              >
+                <SelectTrigger
+                  className="h-9 w-[168px] text-xs"
+                  aria-label={t("feed.time.label")}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIME_WINDOWS.map((w) => (
+                    <SelectItem key={w} value={w}>
+                      {t(timeLabels[w])}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
             <button
               type="button"

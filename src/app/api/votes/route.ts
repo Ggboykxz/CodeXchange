@@ -20,14 +20,20 @@ const REPUTATION = {
   acceptedAnswer: 10, // rappel, appliqué dans /api/posts/[id]
 } as const;
 
-/** Compteur dénormalisé à recalculer après chaque mutation de vote. */
+/**
+ * Compteur dénormalisé à recalculer après chaque mutation de vote.
+ *
+ * La colonne `upvotes` stocke en réalité le score **net** (↑ − ↓) : c'est
+ * celui que Reddit affiche, et celui que l'UI recalcule de façon optimiste
+ * quand on retire le vote précédent. Ne compter que les ↑ faisait « remonter »
+ * le score après un ↓, puisque le serveur renvoyait l'ancienne valeur.
+ */
 async function recount(kind: "thread" | "post", refId: string) {
-  // `_count` sur le filtre value:1 = nombre net d'upvotes.
   const agg = await db.vote.aggregate({
-    where: { kind, refId, value: 1 },
-    _count: { _all: true },
+    where: { kind, refId },
+    _sum: { value: true },
   });
-  const upvotes = agg._count._all;
+  const upvotes = agg._sum.value ?? 0;
 
   if (kind === "thread") {
     await db.thread.updateMany({ where: { id: refId }, data: { upvotes } });

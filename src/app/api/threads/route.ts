@@ -5,12 +5,28 @@ import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { pagination, threadCreateSchema } from "@/lib/validate";
+import { uniqueSlug } from "@/lib/slug";
+import { parseSort, parseWindow, rankThreads, windowStart } from "@/lib/ranking";
+
+/**
+ * Candidats retenus pour les tris qui ne peuvent pas se faire côté SQL
+ * (`hot`, `rising` : une formule avec vieillissement n'existe pas dans
+ * l'ordre Prisma). Plafonné pour borner la mémoire ; au-delà, la page est
+ * réputée vide — les deux tri chronologiques restent paginés en base.
+ */
+const RANK_CANDIDATES = 500;
+
+/** Votes ↑ reçus pendant cette durée pour le tri `rising`. */
+const RISING_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 /**
  * GET /api/threads — liste + filtrage + recherche plein-texte + pagination.
  *
  * `select` explicite côté auteur : un `include: { author: true }` renverrait
  * `passwordHash` et `role`.
+ *
+ * Tris (cf. lib/ranking) : `hot` (défaut), `new`, `top` (+ `?t=` la fenêtre),
+ * `active`, `rising`.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -19,7 +35,8 @@ export async function GET(req: NextRequest) {
     const tag = searchParams.get("tag");
     const q = searchParams.get("q")?.trim();
     const solved = searchParams.get("solved");
-    const sort = searchParams.get("sort"); // new (défaut) | top | active
+    const sort = parseSort(searchParams.get("sort"));
+    const timeWindow = parseWindow(searchParams.get("t"));
     const { limit, skip } = pagination(searchParams, 20);
 
     const where: Record<string, unknown> = {};
@@ -35,10 +52,15 @@ export async function GET(req: NextRequest) {
         { tags: { contains: q, mode: "insensitive" } },
       ];
     }
+    // `?t=` borne le tri `top`, exactement comme le sélecteur d'échéance de
+    // Reddit (heure / jour / semaine / mois / année / tout).
+    if (sort === "top") {
+      const since = windowStart(timeWindow);
+      if (since) where.createdAt = { gte: since };
+    }
 
-    // Tri du fil. `new` (défaut) = chronologique, `top` = votes,
-    // `active` = plus de réponses. Les questions épinglées restent en tête
-    // quel que soit le tri, comme les « sticky » de Reddit.
+    // Les questions épinglées restent en tête quel que soit le tri (leur
+    // classement est réappliqué dans `rankThreads` pour les tris calculés).
     const orderBy: Prisma.ThreadOrderByWithRelationInput[] =
       sort === "top"
         ? [{ pinned: "desc" }, { upvotes: "desc" }, { createdAt: "desc" }]
@@ -46,20 +68,64 @@ export async function GET(req: NextRequest) {
         ? [{ pinned: "desc" }, { posts: { _count: "desc" } }, { createdAt: "desc" }]
         : [{ pinned: "desc" }, { createdAt: "desc" }];
 
-    const [threads, total, user] = await Promise.all([
+    const needsRanking = sort === "hot" || sort === "rising";
+
+    const [rows, total, user] = await Promise.all([
       db.thread.findMany({
         where,
         include: {
           author: { select: authorSelect },
           _count: { select: { posts: true } },
         },
-        orderBy,
-        take: limit,
-        skip,
+        orderBy: needsRanking ? [{ createdAt: "desc" }] : orderBy,
+        take: needsRanking ? RANK_CANDIDATES : limit,
+        skip: needsRanking ? 0 : skip,
       }),
       db.thread.count({ where }),
       currentUser(req),
     ]);
+
+    let items = rows;
+    let pageTotal = total;
+
+    if (needsRanking) {
+      // `rising` a besoin du nombre de votes **récents** : les votes sont
+      // une table sans relation vers Thread, on les agrège donc à part.
+      let recentVotes: Map<string, number> | undefined;
+      if (sort === "rising") {
+        const since = new Date(Date.now() - RISING_WINDOW_MS);
+        const grouped = await db.vote.groupBy({
+          by: ["refId"],
+          where: {
+            kind: "thread",
+            value: 1,
+            createdAt: { gte: since },
+            refId: { in: rows.map((r) => r.id) },
+          },
+          _count: { _all: true },
+        });
+        recentVotes = new Map(grouped.map((g) => [g.refId, g._count._all]));
+      }
+
+      const ranked = rankThreads(
+        rows.map((r) => ({
+          id: r.id,
+          pinned: r.pinned,
+          upvotes: r.upvotes,
+          createdAt: r.createdAt,
+          comments: r._count.posts,
+        })),
+        sort,
+        { recentVotes }
+      );
+      const position = new Map(ranked.map((r, i) => [r.id, i]));
+      const ordered = [...rows].sort(
+        (a, b) => (position.get(a.id) ?? 0) - (position.get(b.id) ?? 0)
+      );
+      items = ordered.slice(skip, skip + limit);
+      // Au-delà du plafond de candidats, il n'y a plus de page suivante.
+      pageTotal = Math.min(total, rows.length);
+    }
 
     // `myVote` : sans lui, les flèches ↑↓ du fil ne savent pas si l'utilisateur
     // a déjà voté — une seule requête couvre toute la page.
@@ -68,20 +134,21 @@ export async function GET(req: NextRequest) {
           where: {
             userId: user.id,
             kind: "thread",
-            refId: { in: threads.map((t) => t.id) },
+            refId: { in: items.map((t) => t.id) },
           },
           select: { refId: true, value: true },
         })
       : [];
     const voteByRef = new Map(myVotes.map((v) => [v.refId, v.value]));
-    const items = threads.map((t) => ({ ...t, myVote: voteByRef.get(t.id) ?? 0 }));
+    const page = items.map((t) => ({ ...t, myVote: voteByRef.get(t.id) ?? 0 }));
 
     return NextResponse.json({
-      threads: items,
+      threads: page,
       total,
+      sort,
       page: Math.floor(skip / limit) + 1,
       limit,
-      hasMore: skip + threads.length < total,
+      hasMore: skip + page.length < pageTotal,
     });
   } catch (e) {
     console.error("List threads error:", e instanceof Error ? e.message : e);

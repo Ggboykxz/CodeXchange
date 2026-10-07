@@ -534,7 +534,9 @@ const threads = [
     upvotes: 67,
     views: 1450,
     solved: false,
-    pinned: true,
+    // Non épinglé : Reddit n'autorise que 2 « sticky » par communauté, et
+    // 4 fils épinglés sur 40 occuperaient la moitié de la première page.
+    pinned: false,
   },
   {
     title: "Django + HTMX en 2025 : est-ce que ça tient la route face à React ?",
@@ -600,7 +602,7 @@ const threads = [
     upvotes: 95,
     views: 3400,
     solved: false,
-    pinned: true,
+    pinned: false,
   },
   {
     title: "Flutter : compresser images et uploads en 2G sans faire fuir l'utilisateur",
@@ -2126,6 +2128,26 @@ const mentors = [
   },
 ];
 
+/**
+ * Chronologie du seed.
+ *
+ * Sans horodatage explicite, tout le contenu porte l'heure du seed : le tri
+ * « Chaud » n'aurait aucun écart de fraîcheur à exploiter, « En croissance »
+ * verrait tous les votes tomber dans les dernières 24 h, et chaque carte
+ * afficherait « il y a quelques secondes ». Les contenus sont donc étalés
+ * sur ~3 mois, dans l'ordre éditorial (le premier est le plus récent).
+ */
+const DAY_MS = 86_400_000;
+
+/** Âge en jours du contenu d'indice `i` : régulier + une irrégularité. */
+const ageDays = (i: number, step = 2, jitter = 5) => i * step + ((i * 7) % jitter);
+
+const daysAgo = (days: number) => new Date(Date.now() - days * DAY_MS);
+
+/** Tirage uniforme entre `from` et maintenant (jamais dans le futur). */
+const between = (from: number, to = Date.now()) =>
+  new Date(from + Math.random() * Math.max(to - from, 0));
+
 async function main() {
   console.log("🗑️  Cleaning existing data...");
   await db.session.deleteMany();
@@ -2183,10 +2205,13 @@ async function main() {
 
   console.log("💬 Creating threads...");
   const threadMap = new Map<string, string>();
-  for (const t of threads) {
+  /** Date de création de chaque question — sert à dater ses réponses. */
+  const threadCreatedAt = new Map<string, Date>();
+  for (const [i, t] of threads.entries()) {
     const authorId = userMap.get(t.author);
     if (!authorId) continue;
     const slug = slugify(t.title);
+    const createdAt = daysAgo(ageDays(i));
     const thread = await db.thread.create({
       data: {
         title: t.title,
@@ -2199,25 +2224,40 @@ async function main() {
         upvotes: t.upvotes,
         pinned: t.pinned,
         solved: t.solved,
+        createdAt,
       },
     });
     threadMap.set(slug, thread.id);
+    threadCreatedAt.set(thread.id, createdAt);
   }
 
   console.log("💬 Creating posts...");
+  /** Réponses déjà posées sur chaque question (pour les dater entre deux). */
+  const postsPerThread = new Map<string, number>();
+  /** Date de chaque réponse — sert à dater ses votes. */
+  const postCreatedAt = new Map<string, Date>();
   for (const p of posts) {
     const threadId = threadMap.get(p.threadSlug);
     const authorId = userMap.get(p.author);
     if (!threadId || !authorId) continue;
-    await db.post.create({
+    const threadTs = threadCreatedAt.get(threadId)?.getTime() ?? Date.now() - DAY_MS;
+    const seen = postsPerThread.get(threadId) ?? 0;
+    postsPerThread.set(threadId, seen + 1);
+    // La réponse tombe entre 15 % et 85 % de la durée de vie de la question :
+    // jamais avant elle, jamais dans le futur.
+    const ratio = 0.15 + 0.7 * (Math.min(seen, 4) / 4);
+    const createdAt = new Date(threadTs + (Date.now() - threadTs) * ratio);
+    const post = await db.post.create({
       data: {
         threadId,
         authorId,
         body: p.body,
         upvotes: p.upvotes,
         isAnswer: p.isAnswer,
+        createdAt,
       },
     });
+    postCreatedAt.set(post.id, createdAt);
   }
 
   console.log("💼 Creating jobs...");
@@ -2324,31 +2364,80 @@ async function main() {
   console.log("🗳️  Creating votes...");
   // Les compteurs `upvotes` sont dénormalisés : on les recalcule à partir des
   // votes réels pour que le seed ne produise pas des scores fantômes.
+  //
+  // Le score est **net** (↑ − ↓), comme l'affiche Reddit : on insère donc
+  // aussi quelques ↓ pour que le compteur ne soit jamais décoratif, et on
+  // applique à ces ↓ le barème du CDC §3.2 (−1 de réputation pour l'auteur).
   const allUsers = await db.user.findMany({ select: { id: true } });
   const userIds = allUsers.map((u) => u.id);
   const allThreads = await db.thread.findMany({ select: { id: true, authorId: true } });
   const allPosts = await db.post.findMany({ select: { id: true, authorId: true } });
 
+  // Barème du CDC §3.2, amorcé AVANT les votes : les ↓ de questions viennent
+  // y ajouter −1 pour l'auteur, puis le calcul des réponses (plus bas).
+  const repByUser = new Map<string, number>();
+  const bump = (id: string, by: number) =>
+    repByUser.set(id, (repByUser.get(id) ?? 0) + by);
+
   let voteCount = 0;
+  /** `n` votants distincts, jamais l'auteur du contenu voté. */
+  const pickVoters = (pool: string[], authorId: string, min: number, span: number) => {
+    const others = pool.filter((id) => id !== authorId);
+    const count = Math.min(others.length, min + Math.floor(Math.random() * span));
+    return others.sort(() => Math.random() - 0.5).slice(0, count);
+  };
+
   for (const t of allThreads) {
-    const pool = userIds.filter((id) => id !== t.authorId);
-    const voters = pool.sort(() => Math.random() - 0.5).slice(0, 2 + Math.floor(Math.random() * 5));
+    // Un vote tombe entre la publication de la question et maintenant :
+    // « En croissance » ne doit montrer que de la vraie activité récente.
+    const t0 = threadCreatedAt.get(t.id)?.getTime() ?? Date.now() - DAY_MS;
+    const voters = pickVoters(userIds, t.authorId, 4, 10);
     for (const voterId of voters) {
       await db.vote.create({
-        data: { userId: voterId, kind: "thread", refId: t.id, value: 1 },
+        data: {
+          userId: voterId,
+          kind: "thread",
+          refId: t.id,
+          value: 1,
+          createdAt: between(t0),
+        },
       });
       voteCount++;
     }
-    const upvotes = await db.vote.count({ where: { kind: "thread", refId: t.id, value: 1 } });
+    // Un tiers des questions attire un ↓ : le score affiché peut donc passer
+    // sous zéro, comme sur Reddit. Les votants sont pris parmi ceux qui n'ont
+    // PAS déjà voté ↑ (contrainte unique userId+kind+refId).
+    if (Math.random() < 0.34) {
+      const against = userIds
+        .filter((id) => id !== t.authorId && !voters.includes(id))
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 1 + Math.floor(Math.random() * 2));
+      for (const voterId of against) {
+        await db.vote.create({
+          data: {
+            userId: voterId,
+            kind: "thread",
+            refId: t.id,
+            value: -1,
+            createdAt: between(t0),
+          },
+        });
+        voteCount++;
+        bump(t.authorId, -1); // barème : question mal votée = −1
+      }
+    }
+    const upvotes =
+      (await db.vote.count({ where: { kind: "thread", refId: t.id, value: 1 } })) -
+      (await db.vote.count({ where: { kind: "thread", refId: t.id, value: -1 } }));
     await db.thread.update({ where: { id: t.id }, data: { upvotes } });
   }
 
   for (const p of allPosts) {
-    const pool = userIds.filter((id) => id !== p.authorId);
-    const voters = pool.sort(() => Math.random() - 0.5).slice(0, 1 + Math.floor(Math.random() * 4));
+    const p0 = postCreatedAt.get(p.id)?.getTime() ?? Date.now() - DAY_MS;
+    const voters = pickVoters(userIds, p.authorId, 2, 6);
     for (const voterId of voters) {
       await db.vote.create({
-        data: { userId: voterId, kind: "post", refId: p.id, value: 1 },
+        data: { userId: voterId, kind: "post", refId: p.id, value: 1, createdAt: between(p0) },
       });
       voteCount++;
     }
@@ -2358,13 +2447,12 @@ async function main() {
 
   console.log("🎓 Computing reputation...");
   // Le barème du CDC §3.2 (+2 par réponse votée, +10 par réponse acceptée,
-  // -1 par question mal votée) doit être appliqué au seed lui-même : sinon
+  // −1 par question mal votée) doit être appliqué au seed lui-même : sinon
   // les profils afficheraient 0 de réputation alors qu'ils totalisent des
   // dizaines de votes, et l'écran paraîtrait cassé au jury.
-  const repByUser = new Map<string, number>();
-  const bump = (id: string, by: number) =>
-    repByUser.set(id, (repByUser.get(id) ?? 0) + by);
-
+  //
+  // `repByUser` est déjà amorcé par les ↓ de questions plus haut (bump est
+  // une closure du même scope) — on y ajoute le reste du barème.
   const postsWithThread = await db.post.findMany({
     select: {
       id: true,
