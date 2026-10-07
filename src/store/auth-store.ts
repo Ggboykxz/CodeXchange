@@ -23,8 +23,18 @@ export type AuthUser = {
 type AuthState = {
   user: AuthUser | null;
   loading: boolean;
+  /**
+   * Modale d'authentification **unique**, pilotée depuis n'importe où
+   * (en-tête, fil, 401 d'une publication…). Précédemment, chaque section
+   * possédait sa propre copie : on pouvait en avoir deux d'ouvertes.
+   */
+  authOpen: boolean;
+  authMode: "login" | "register";
   setUser: (u: AuthUser | null) => void;
   setLoading: (b: boolean) => void;
+  openAuth: (mode?: "login" | "register") => void;
+  closeAuth: () => void;
+  switchAuthMode: () => void;
   logout: () => void;
   fetchMe: () => Promise<void>;
 };
@@ -34,8 +44,13 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       loading: false,
+      authOpen: false,
+      authMode: "register",
       setUser: (user) => set({ user }),
       setLoading: (loading) => set({ loading }),
+      openAuth: (mode) => set({ authOpen: true, ...(mode ? { authMode: mode } : {}) }),
+      closeAuth: () => set({ authOpen: false }),
+      switchAuthMode: () => set((s) => ({ authMode: s.authMode === "login" ? "register" : "login" })),
       logout: () => {
         fetch("/api/auth/me", { method: "DELETE" }).catch(() => {});
         set({ user: null });

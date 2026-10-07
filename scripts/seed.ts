@@ -2236,6 +2236,13 @@ async function main() {
   const postsPerThread = new Map<string, number>();
   /** Date de chaque réponse — sert à dater ses votes. */
   const postCreatedAt = new Map<string, Date>();
+  /** Réponses de niveau 1 créées — candidates à recevoir des enfants. */
+  const createdPosts: {
+    id: string;
+    threadId: string;
+    authorId: string;
+    createdAt: Date;
+  }[] = [];
   for (const p of posts) {
     const threadId = threadMap.get(p.threadSlug);
     const authorId = userMap.get(p.author);
@@ -2258,7 +2265,60 @@ async function main() {
       },
     });
     postCreatedAt.set(post.id, createdAt);
+    createdPosts.push({ id: post.id, threadId, authorId, createdAt });
   }
+
+  /**
+   * Fil de discussion : une réponse sur six reçoit elle-même des enfants.
+   *
+   * Sans cette phase, la base semée ne contiendrait QUE des commentaires de
+   * niveau 1 : l'imbrication — le cœur du modèle Reddit — serait invisible
+   * sur une prod fraîchement installée. Chronologie respectée : chaque
+   * enfant tombe entre sa réponse parente et maintenant, et n'est jamais
+   * écrit par l'auteur de cette réponse.
+   */
+  console.log("🧵 Creating nested replies...");
+  const NESTED_BODIES = [
+    "Précision utile : dans notre cas le gain apparaît au-delà de ~30 ms p95, en dessous il ne se voit pas.",
+    "Tu as un benchmark quelque part ? J'hésite entre les deux options pour mon propre projet.",
+    "Attention au coût mémoire : avec 200 connexions ouvertes on est monté à 1,2 Go. On a borné le pool à 50 et c'est passé.",
+    "Merci pour la précision — c'était exactement le point qui nous bloquait côté équipe.",
+    "Je nuancerai : ça dépend surtout du volume. En dessous de 1 000 req/min, la version simple suffit largement.",
+    "On a ajouté un test de non-régression sur ce chemin : deux régressions évitées depuis.",
+    "Quelqu'un a déjà migré sans interruption de service ? On hésite à passer par une réplication temporaire.",
+    "Bon plan. Pense aussi à journaliser les erreurs de conversion, c'est là que se cachent les bugs en prod.",
+    "D'accord sur le principe, mais versionnez le contrat d'API avant d'aller plus loin.",
+    "Même retour chez nous : la documentation a fait plus de différence que le choix technique lui-même.",
+  ];
+  const postAuthors = [...userMap.values()];
+  let nestedCount = 0;
+  for (const [i, parent] of createdPosts.entries()) {
+    if (i % 6 !== 0) continue;
+    const childCount = i % 12 === 0 ? 2 : 1;
+    const pool = postAuthors.filter((id) => id !== parent.authorId);
+    for (let k = 0; k < childCount; k++) {
+      const authorId = pool[(i * 3 + k * 7) % pool.length];
+      if (!authorId) continue;
+      // L'enfant tombe entre la réponse parente et maintenant.
+      const p0 = parent.createdAt.getTime();
+      const ratio = 0.55 + 0.35 * ((k + 1) / (childCount + 1));
+      const createdAt = new Date(p0 + (Date.now() - p0) * ratio);
+      const child = await db.post.create({
+        data: {
+          threadId: parent.threadId,
+          parentId: parent.id,
+          authorId,
+          body: NESTED_BODIES[(i + k) % NESTED_BODIES.length],
+          upvotes: 0,
+          isAnswer: false,
+          createdAt,
+        },
+      });
+      postCreatedAt.set(child.id, createdAt);
+      nestedCount++;
+    }
+  }
+  console.log(`🧵 ${nestedCount} réponses imbriquées (fils visibles)`);
 
   console.log("💼 Creating jobs...");
   for (const j of jobs) {

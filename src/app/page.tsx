@@ -6,6 +6,7 @@ import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { Header } from "@/components/shell/header";
 import { Footer } from "@/components/shell/footer";
+import { AuthDialog } from "@/components/shell/auth-dialog";
 import { FeedSection } from "@/components/sections/feed-section";
 
 /**
@@ -123,6 +124,8 @@ export default function Page() {
         {renderSection()}
       </main>
       <Footer />
+      {/* Modale d'auth unique : ouverte par `openAuth()` depuis n'importe où. */}
+      <AuthDialog />
     </div>
   );
 }

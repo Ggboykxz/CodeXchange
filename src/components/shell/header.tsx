@@ -11,15 +11,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { AuthForm } from "@/components/shared/auth-form";
 import { Avatar } from "@/components/shared/avatar";
 import { NotificationBell } from "@/components/shared/notification-bell";
 import {
@@ -50,18 +43,13 @@ export function Header() {
   const currentSection = useAppStore((s) => s.section);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  // Modale unique pilotée par le store : le header ne fait que la déclencher.
+  const openAuth = useAuthStore((s) => s.openAuth);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "register">("register");
 
   const go = (section: string) => {
     navigate(section);
     setMobileOpen(false);
-  };
-
-  const openAuth = (mode: "login" | "register") => {
-    setAuthMode(mode);
-    setAuthOpen(true);
   };
 
   return (
@@ -119,8 +107,14 @@ export function Header() {
                 <Github className="h-4 w-4" />
               </a>
               <NotificationBell />
-              <LanguageSwitcher />
-              <ThemeToggle />
+              {/* Langue + thème : masqués sous `sm`. Seul le groupe
+                  connecté fait déborder le header de 62 px sur un écran de
+                  390 px ; les deux contrôles restent atteignables dans le
+                  menu hamburger, où ils sont ajoutés ci-dessous. */}
+              <div className="hidden sm:flex items-center gap-2">
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
 
               {user ? (
                 <button
@@ -202,6 +196,11 @@ export function Header() {
                     ))}
                   </nav>
                   <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border space-y-2">
+                    {/* Contrôles masqués en petit écran : repris ici. */}
+                    <div className="flex items-center gap-2">
+                      <LanguageSwitcher />
+                      <ThemeToggle />
+                    </div>
                     {user ? (
                       <Button
                         variant="outline"
@@ -244,27 +243,6 @@ export function Header() {
           </div>
         </div>
       </header>
-
-      {/* Auth modal */}
-      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl">
-              <span className="text-muted-foreground">$</span>{" "}
-              {authMode === "login"
-                ? t("auth.login.title").toLowerCase()
-                : t("auth.register.title").toLowerCase()}
-            </DialogTitle>
-          </DialogHeader>
-          <AuthForm
-            mode={authMode}
-            onSuccess={() => setAuthOpen(false)}
-            onSwitch={() =>
-              setAuthMode(authMode === "login" ? "register" : "login")
-            }
-          />
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

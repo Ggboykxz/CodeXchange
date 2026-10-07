@@ -3,7 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
+import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
+import { ContentDialog } from "@/components/shared/content-forms";
 import { Tag } from "@/components/shared/tag";
 import { Avatar } from "@/components/shared/avatar";
 import { Button } from "@/components/ui/button";
@@ -24,7 +26,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Briefcase, MapPin, Globe, DollarSign, ArrowUpRight, Building2 } from "lucide-react";
+import { Briefcase, MapPin, Globe, DollarSign, ArrowUpRight, Building2, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Profile = {
@@ -78,6 +80,10 @@ export function JobsSection() {
   const [stack, setStack] = useState("all");
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [selected, setSelected] = useState<Job | null>(null);
+  // Publication d'une offre : bouton toujours visible, modale unique.
+  const [createOpen, setCreateOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const openAuth = useAuthStore((s) => s.openAuth);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -109,7 +115,18 @@ export function JobsSection() {
         title={t("jobs.title")}
         subtitle={t("jobs.subtitle")}
         className="mb-8"
-      />
+      >
+        <div className="mt-4">
+          <Button
+            onClick={() => (user ? setCreateOpen(true) : openAuth("login"))}
+            size="sm"
+            className="bg-foreground text-background hover:bg-foreground/90"
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            {t("create.job")}
+          </Button>
+        </div>
+      </SectionHeader>
 
       {/* Filters */}
       <Card className="p-4 mb-6">
@@ -358,6 +375,14 @@ export function JobsSection() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Publication d'une offre (G) — un seul composant pour les 4 contenus. */}
+      <ContentDialog<Job>
+        kind="job"
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onCreated={(job) => setJobs((prev) => [job, ...prev])}
+      />
     </div>
   );
 }

@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
+import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
+import { ContentDialog } from "@/components/shared/content-forms";
 import { Tag } from "@/components/shared/tag";
 import { Avatar } from "@/components/shared/avatar";
 import { Button } from "@/components/ui/button";
@@ -38,6 +40,7 @@ import {
   ArrowLeft,
   Video,
   Loader2,
+  Plus,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -88,6 +91,13 @@ export function TutosSection() {
   const [category, setCategory] = useState("all");
   const [selectedTutorial, setSelectedTutorial] = useState<Tutorial | null>(null);
   const [loadingTutorial, setLoadingTutorial] = useState(false);
+  // Publication : un bouton par onglet (tuto / événement), modale unique.
+  const [tutoCreateOpen, setTutoCreateOpen] = useState(false);
+  const [eventCreateOpen, setEventCreateOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const openAuth = useAuthStore((s) => s.openAuth);
+  /** Bouton « Publier » : connecté → modale, sinon → connexion. */
+  const publish = (open: () => void) => (user ? open() : openAuth("login"));
 
   useEffect(() => {
     fetch("/api/tutorials")
@@ -220,7 +230,7 @@ export function TutosSection() {
 
         {/* TUTORIALS TAB */}
         <TabsContent value="tutos" className="space-y-4">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Label className="text-xs font-mono uppercase">
               {t("tutos.filter.category.all")}
             </Label>
@@ -238,6 +248,14 @@ export function TutosSection() {
                 ))}
               </SelectContent>
             </Select>
+            <Button
+              onClick={() => publish(() => setTutoCreateOpen(true))}
+              size="sm"
+              className="ml-auto bg-foreground text-background hover:bg-foreground/90"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {t("create.tutorial")}
+            </Button>
           </div>
 
           {loading ? (
@@ -293,7 +311,17 @@ export function TutosSection() {
         </TabsContent>
 
         {/* EVENTS TAB */}
-        <TabsContent value="events">
+        <TabsContent value="events" className="space-y-4">
+          <div className="flex justify-end">
+            <Button
+              onClick={() => publish(() => setEventCreateOpen(true))}
+              size="sm"
+              className="bg-foreground text-background hover:bg-foreground/90"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {t("create.event")}
+            </Button>
+          </div>
           {loading ? (
             <div className="space-y-3">
               {[0, 1, 2].map((i) => (
@@ -370,6 +398,20 @@ export function TutosSection() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Publications (G) — le même composant pour les quatre contenus. */}
+      <ContentDialog<Tutorial>
+        kind="tutorial"
+        open={tutoCreateOpen}
+        onOpenChange={setTutoCreateOpen}
+        onCreated={(tut) => setTutorials((prev) => [tut, ...prev])}
+      />
+      <ContentDialog<EventItem>
+        kind="event"
+        open={eventCreateOpen}
+        onOpenChange={setEventCreateOpen}
+        onCreated={(evt) => setEvents((prev) => [evt, ...prev])}
+      />
     </div>
   );
 }

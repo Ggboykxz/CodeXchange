@@ -19,7 +19,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AuthForm } from "@/components/shared/auth-form";
 import {
   CreateThreadForm,
   type NewThreadData,
@@ -107,6 +106,7 @@ export function FeedSection() {
   const navigate = useAppStore((s) => s.navigate);
   const user = useAuthStore((s) => s.user);
   const fetchMe = useAuthStore((s) => s.fetchMe);
+  const openAuth = useAuthStore((s) => s.openAuth);
 
   const [threads, setThreads] = useState<ThreadCardData[]>([]);
   const [sort, setSort] = useState<Sort>("hot");
@@ -132,8 +132,6 @@ export function FeedSection() {
   const pending = loadedKey !== key;
 
   const [createOpen, setCreateOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "register">("register");
 
   /** Longueur courante : nécessaire pour calculer la page suivante. */
   const countRef = useRef(0);
@@ -150,10 +148,8 @@ export function FeedSection() {
     return () => clearTimeout(id);
   }, [searchInput]);
 
-  const askSignIn = (mode: "login" | "register") => {
-    setAuthMode(mode);
-    setAuthOpen(true);
-  };
+  /** Ouvre la modale d'auth **unique** (store partagé avec l'en-tête). */
+  const askSignIn = (mode: "login" | "register") => openAuth(mode);
 
   /* ---------------------------------------------------------------- */
   /* Chargement du fil                                                 */
@@ -568,25 +564,6 @@ export function FeedSection() {
             </DialogTitle>
           </DialogHeader>
           <CreateThreadForm onSubmit={handleCreate} />
-        </DialogContent>
-      </Dialog>
-
-      {/* Connexion / inscription */}
-      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
-              {authMode === "login" ? t("nav.login") : t("nav.register")}
-            </DialogTitle>
-          </DialogHeader>
-          <AuthForm
-            mode={authMode}
-            onSuccess={() => {
-              setAuthOpen(false);
-              fetchMe();
-            }}
-            onSwitch={() => setAuthMode((m) => (m === "login" ? "register" : "login"))}
-          />
         </DialogContent>
       </Dialog>
     </div>

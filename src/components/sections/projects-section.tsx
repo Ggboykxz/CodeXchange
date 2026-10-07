@@ -3,7 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
+import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
+import { ContentDialog } from "@/components/shared/content-forms";
 import { Tag } from "@/components/shared/tag";
 import { Avatar } from "@/components/shared/avatar";
 import { Button } from "@/components/ui/button";
@@ -30,6 +32,7 @@ import {
   FolderGit2,
   Users,
   Sparkles,
+  Plus,
 } from "lucide-react";
 
 type Profile = {
@@ -67,6 +70,10 @@ export function ProjectsSection() {
   const [status, setStatus] = useState("all");
   const [stack, setStack] = useState("all");
   const [selected, setSelected] = useState<Project | null>(null);
+  // Publication d'un projet : bouton visible, modale unique.
+  const [createOpen, setCreateOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const openAuth = useAuthStore((s) => s.openAuth);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -96,7 +103,18 @@ export function ProjectsSection() {
         title={t("projects.title")}
         subtitle={t("projects.subtitle")}
         className="mb-8"
-      />
+      >
+        <div className="mt-4">
+          <Button
+            onClick={() => (user ? setCreateOpen(true) : openAuth("login"))}
+            size="sm"
+            className="bg-foreground text-background hover:bg-foreground/90"
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            {t("create.project")}
+          </Button>
+        </div>
+      </SectionHeader>
 
       <Card className="p-4 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -295,6 +313,14 @@ export function ProjectsSection() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Publication d'un projet (G). */}
+      <ContentDialog<Project>
+        kind="project"
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onCreated={(project) => setProjects((prev) => [project, ...prev])}
+      />
     </div>
   );
 }
