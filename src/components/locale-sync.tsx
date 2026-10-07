@@ -5,15 +5,15 @@ import { useAppStore } from "@/store/app-store";
 import type { Locale } from "@/i18n/dictionaries";
 
 /**
- * WCAG 3.1.1 « Langue de la page » : `<html lang>` doit décrire la langue
- * *réellement servie*, et non la locale sélectionnée dans le menu.
+ * WCAG 3.1.1 « Langue de la page » : `<html lang>` décrit la langue réelle
+ * servie, et non la sélection du menu.
  *
- * `sw` et `ar` héritent encore du dictionnaire anglais (`src/i18n/dictionaries.ts`
- * : `const sw = { ...en }`), donc annoncer `lang="sw"` mentirait au lecteur
- * d'écran. On déclare la langue du contenu et on basculera sur `sw`/`ar`
- * le jour où leurs clés seront traduites — avec, pour l'arabe, `dir="rtl"`
- * (le layout actuel repose encore sur des propriétés physiques `pl-/pr-/left`,
- * activer le RTL maintenant casserait la mise en page).
+ * Depuis D2, les clés `sw` et `ar` sont traduites, donc on annonce honnêtement
+ * `lang="sw"` / `lang="ar"`. Pour l'arabe on active aussi `dir="rtl"` :
+ * l'alignement des paragraphes et les flex suivent le sens d'écriture.
+ * (Les classes physiques du layout — `pl-/pr-/ml-/mr-/left/right` — restent
+ * physiques ; le passage intégral en propriétés logiques est un chantier
+ * séparé.)
  *
  * Composant séparé de `layout.tsx` (serveur) : `<html lang>` est rendu côté
  * serveur en `fr`, la synchronisation se fait à la montée du client, donc
@@ -22,16 +22,16 @@ import type { Locale } from "@/i18n/dictionaries";
 const CONTENT_LANG: Record<Locale, string> = {
   fr: "fr",
   en: "en",
-  sw: "en", // TODO: "sw" quand les clés swahili seront fournies
-  ar: "en", // TODO: "ar" + dir="rtl" quand les clés arabes seront fournies
+  sw: "sw",
+  ar: "ar",
 };
 
 /** Libellé du lien d'évitement, mémorisé côté serveur en français (défaut). */
 const SKIP_LABEL: Record<Locale, string> = {
   fr: "Aller au contenu principal",
   en: "Skip to main content",
-  sw: "Skip to main content",
-  ar: "Skip to main content",
+  sw: "Ruka hadi kwenye maudhui makuu",
+  ar: "تخطَّ إلى المحتوى الرئيسي",
 };
 
 export function LocaleSync() {
