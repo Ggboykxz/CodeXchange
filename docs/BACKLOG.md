@@ -11,7 +11,7 @@
 |---|---|---|---|
 | A1 | Schéma Prisma (13 modèles) | ✅ | `prisma/schema.prisma` : User, Session, Profile, Thread, Post, Vote, Job, Project, Tutorial, Event, Mentor, Mentorship, Notification |
 | A2 | Base de données + scripts `db:*` | ✅ | PostgreSQL (`provider = "postgresql"`, même base en dev, CI et prod), scripts `db:push` / `db:generate` / `db:migrate` / `db:reset` |
-| A3 | Seed de données réalistes | ✅ | `scripts/seed.ts` : 30 comptes, 40 questions, 100 réponses, 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors, votes recalculés |
+| A3 | Seed de données réalistes | ✅ | `scripts/seed.ts` : 30 comptes, 40 questions, **126 réponses dont 26 imbriquées** (fil visible), chronologie réaliste (questions étalées sur ~3 mois, réponses et votes datés entre les deux), downvotes réels sur 1/3 des questions (−1 de réputation), **2 épinglées** (limite Reddit), 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors |
 | A4 | Charte visuelle (monospace, palette, grain) | ✅ | IBM Plex Mono en variable `--font-mono`, tokens Tailwind 4, `paper-grain` |
 | A5 | CI (lint → typecheck → build) | ✅ | `.github/workflows/ci.yml`, Bun + Node 22, `bun install --frozen-lockfile`, badge en tête du README |
 | A6 | README + documentation | ✅ | README complet réécrit + `docs/` (DEMO, PITCH, ROADMAP, BACKLOG, ENVIRONNEMENTS) |
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | C1 | Création de question (titre, catégorie, tags, corps) | ✅ | `POST /api/threads`, slug unique généré serveur, taux limite 30/min |
 | C2 | Rendu Markdown + blocs de code | ✅ | `react-markdown` + `remark-gfm` + PrismLight (12 langages), bouton copier, **pas de HTML brut** |
-| C3 | Réponses | ✅ | `POST /api/threads/[slug]/posts`, tri meilleure réponse → upvotes → ancienneté |
+| C3 | Réponses **imbriquées** | ✅ | `POST /api/threads/[slug]/posts` avec `parentId` (la cible doit appartenir à la même question, sinon 404 ; l'auteur du parent est notifié). Arbre pur `lib/comments.ts` (parents disparus / auto-références / cycles → racine), tri best / new / old, pliage de branche, badge Auteur, acceptation réservée à l'auteur de la question ou au staff |
 | C4 | Votes `+1 / -1 / 0` | ✅ | API complète (recount, anti-auto-upvote 422) **et** UI : ↑ / ↓ / ré-cliquer annule. `myVote` renvoyé par **la liste et le détail** : les flèches de la liste savent donc si le visiteur a déjà voté |
 | C5 | Meilleure réponse + statut `Résolu` | ✅ | `PATCH /api/posts/[id]`, transaction (une seule acceptée), auteur **ou** modérateur |
 | C6 | Recherche plein-texte (titre, corps, tags) | ✅ | `GET /api/threads?q=`, debounce 250 ms côté UI |
@@ -46,14 +46,14 @@
 | C8 | Filtre « non résolu » | ✅ | API `?solved=false` + badge `Résolu` + **sélecteur `Non résolus`** dans le fil d'accueil (le forum garde son sélecteur de statut) |
 | C9 | Compteur de vues | ✅ | Incrémentation non bloquante à l'ouverture du détail |
 | C10 | Édition / suppression / épinglage d'une question | ⬜ | `threadUpdateSchema` existe dans `validate.ts` mais **aucune route ne l'utilise** (seul le tri `pinned` est codé) |
-| C11 | Tri du fil (récents / populaires / actifs) | ✅ | `GET /api/threads` avec `sort` = `new` (défaut) / `top` / `active` — `new` = chronologique, `top` = upvotes, `active` = nombre de réponses ; épinglées toujours en tête |
+| C11 | Tri du fil — les 5 tris de Reddit | ✅ | `GET /api/threads?sort=` = `hot` (défaut), `new`, `top`, `active`, `rising` + `?t=hour\|day\|week\|month\|year\|all` sur `top` ; moteur pur `lib/ranking.ts` (`hotScore` signé = log10 du score net + rang temporel), tris SQL paginés, `hot`/`rising` classés sur 500 candidats bornés ; barre d'icônes + sélecteur d'échéance dans le fil |
 
 ## EPIC D — Expérience
 
 | ID | Item | Statut | Note |
 |---|---|---|---|
 | D1 | Dark mode | ✅ | `next-themes`, clair par défaut, bascule dans le header |
-| D2 | i18n 4 locales (fr, en, sw, ar) | ⏳ | Cadre complet, **280 clés** en fr et en (test `tests/i18n.test.ts` : les deux dictionnaires doivent rester identiques clé à clé) ; `sw` et `ar` = `{ ...en }` → **0 clé traduite** |
+| D2 | i18n 4 locales (fr, en, sw, ar) | ⏳ | Cadre complet, **356 clés** en fr et en (test `tests/i18n.test.ts` : les deux dictionnaires doivent rester identiques clé à clé) ; `sw` et `ar` = `{ ...en }` → **0 clé traduite** |
 | D3 | RTL pour l'arabe | ⬜ | `<html lang="fr">` en dur, aucun attribut `dir` ; manifest `"dir": "ltr"` |
 | D4 | PWA installable + hors-ligne | ✅ | Manifest, icônes 192/512/maskable, `offline.html`, service worker maison (SWR / network-first, `/api` non caché) — **en production uniquement** |
 | D5 | Chargement à la demande (poids) | ✅ | 6 sections en `next/dynamic`, PrismLight allégé ; objectif **< 150 Ko** affiché dans le code, **non mesuré** en CI |
@@ -63,7 +63,8 @@
 | D9 | Recherche globale (tout module) | ⏳ | **Recherche dans le fil d'accueil livrée** (debounce 300 ms, `?q=` côté serveur, état vide dédié) ; le champ `nav.search` du header reste sans implémentation transverse |
 | D10 | Fil d'accueil (flux social) | ✅ | `FeedSection` : tri Récents/Populaires/Actifs, filtre non résolus, **votes ↑↓ optimistes** avec retour serveur, composeur `Publier` (formulaire partagé `CreateThreadForm`), `Charger plus`, colonne de droite = CTA + **compteurs réels** (`/api/stats`) + modules. Carte `ThreadCard` réutilisée par la liste du forum |
 | D11 | Navigation du navigateur | ✅ | Nav et logo en **vrais liens** `<a href="#…">` (clic médiant, ouvrir dans un onglet), `pushState` au lieu de `replaceState` + écouteurs `hashchange`/`popstate` → boutons **Retour/Avant opérationnels** |
-| D12 | Header mobile sans débordement | ✅ | `Connexion`/`Rejoindre` masqués sous `sm` (déjà en bas de la feuille) : le bouton menu reste visible sur un écran de 390 px (contrôlé en audit Playwright) |
+| D12 | Header mobile sans débordement | ✅ | `Connexion`/`Rejoindre` masqués sous `sm` (déjà en bas de la feuille) ; **et une fois connecté** : le groupe de droite faisait 257 px et débordait de 62 px sur toutes les pages — langue + thème passent sous `sm` et sont repris dans la feuille (où le sélecteur de langue s'ouvre bien). Audit Playwright 390 px : 0 px sur les 5 sections, la modale de création et le menu |
+| D13 | Modale d'authentification unique | ✅ | Existait en **deux exemplaires** (en-tête et fil) avec leur propre état → deux superpositions possibles. `authOpen` / `authMode` / `openAuth()` dans `auth-store`, composant `AuthDialog` rendu une fois dans `page.tsx` : n'importe quelle section, y compris sur un 401, appelle `openAuth("login")` |
 
 ## EPIC E — Démo & livrables Sprint 0
 
@@ -91,7 +92,7 @@
 |---|---|---|---|
 | G1 | Liste d'offres + filtres (pays, type, stack, remote) | ✅ | `GET /api/jobs` + sélecteurs de l'UI |
 | G2 | Fiche détaillée + « Postuler » | ✅ | Panneau détail avec description et lien `applyUrl` |
-| G3 | Création / modification d'offre | ⬜ | API `GET` uniquement, aucun formulaire |
+| G3 | Création / modification d'offre | ✅ | `POST /api/jobs` + `PATCH`/`DELETE /api/jobs/[id]` (droits auteur/staff, rate-limit), et l'**écran** : `ContentDialog` — un composant générique pour les 4 contenus (offres, projets, tutos, événements) qui choisit endpoint / formulaire / libellé selon `kind`, gère 401 → modale de connexion, 400 → erreur sous le champ en `role="alert"`, 429 → rate-limit. Bouton « Publier » dans Jobs, Projets et les deux onglets de Tutos & Events |
 | G4 | Recherche plein-texte des offres | ⏳ | `?q=` supporté côté serveur, **aucun champ de recherche** dans l'UI |
 | G5 | Multi-devises & salaires | ⏳ | Champ `salary` simple (`"3-5K EUR / month"`), aucune logique de devise |
 | G6 | Offres sponsorisées / boosting | ⬜ | Rien |
@@ -127,7 +128,7 @@
 | J4 | Non-fuite de `passwordHash` / `email` | ✅ | Sélecteurs Prisma publics + filtre récursif `json()` |
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
-| J7 | Tests unitaires / E2E | ⏳ | **Unitaires livrés** : Vitest, 75 tests / 6 fichiers (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays), étape `bun run test` en CI. **E2E (Playwright) à venir** — prévu en M1 |
+| J7 | Tests unitaires / E2E | ⏳ | **Unitaires livrés** : Vitest, **197 tests / 11 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod — dont les 45 de la couche d'écriture —, rate limit, pays, `ranking` 43, `comments` 22, i18n), étape `bun run test` en CI. **E2E Playwright exécuté à chaque livraison** (connexion, publication des 4 contenus, votes, réponse imbriquée + pliage + tri, audit 390 px) mais via des scripts hors CI : il reste à les versionner et à les lancer en workflow |
 | J8 | Journalisation & monitoring | ⬜ | `console.error` + logs `tee` ; log SQL Prisma en dev uniquement (volontaire) |
 | J9 | Sauvegardes / réplication de base | ⬜ | PostgreSQL managé en prod : les backups (PITR) relèvent du fournisseur (Neon / Supabase) — il reste à écrire la procédure de restauration et à la tester |
 
@@ -135,8 +136,10 @@
 
 ### Top 5 des correctifs prioritaires (issus de la lecture du code)
 
-1. **C8** — ajouter le sélecteur « non résolu » dans la liste du forum (l'API est prête).
-2. **D2** — traduire les dictionnaires sw/ar (le `lang`/`dir` est déjà piloté par `LocaleSync`).
-3. **G — création de contenus** — un formulaire pour jobs, projets, tutos, events (API en lecture seule).
+1. **C10** — édition / suppression / épinglage d'une question (`threadUpdateSchema` est écrit dans `validate.ts`, aucune route ne l'utilise encore).
+2. **D2** — traduire les dictionnaires `sw`/`ar` (les 356 clés fr/en sont déjà alignées par le test, le `lang`/`dir` est piloté par `LocaleSync`).
+3. **J7** — versionner les scénarios Playwright et les lancer en CI : ils sont aujourd'hui exécutés à la main avant chaque livraison.
 4. **B7** — e-mails de bienvenue et de réinitialisation de mot de passe.
 5. **E5** — produire les captures d'écran depuis `bun run start` pour le README.
+
+> Livré entre-temps : **G — création de contenus** (API d'écriture + `ContentDialog`), les **5 tris de Reddit**, les **réponses imbriquées** et la **modale d'auth unique**.
