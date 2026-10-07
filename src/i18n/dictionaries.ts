@@ -218,6 +218,11 @@ const fr: Dict = {
   "post.delete_title": "Supprimer cette question ?",
   "post.delete_body": "Les réponses et les votes partiront avec. Cette action est irréversible.",
   "post.deleted_ok": "Question supprimée.",
+  "post.pinned_ok": "Épinglé en tête du forum.",
+  "post.unpinned_ok": "Désépinglé du haut du forum.",
+  "forum.edit_ok": "Question mise à jour.",
+  "forum.save_changes": "Enregistrer les modifications",
+  "forum.cancel": "Annuler",
   "feed.all_hidden": "Tu as masqué toutes les publications de cette page.",
   "feed.show_hidden": "Tout réafficher",
 
@@ -653,6 +658,11 @@ const en: Dict = {
   "post.delete_title": "Delete this thread?",
   "post.delete_body": "Its replies and votes go with it. This cannot be undone.",
   "post.deleted_ok": "Thread deleted.",
+  "post.pinned_ok": "Pinned to the top of the forum.",
+  "post.unpinned_ok": "Unpinned from the top.",
+  "forum.edit_ok": "Thread updated.",
+  "forum.save_changes": "Save changes",
+  "forum.cancel": "Cancel",
   "feed.all_hidden": "You hid every post on this page.",
   "feed.show_hidden": "Show them all again",
 

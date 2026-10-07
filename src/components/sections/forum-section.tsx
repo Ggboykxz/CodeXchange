@@ -5,6 +5,10 @@ import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useFeedPrefsStore } from "@/store/feed-prefs-store";
+import {
+  PostActions,
+  DeleteThreadDialog,
+} from "@/components/shared/post-actions";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Tag, tagColors } from "@/components/shared/tag";
 import { ThreadCard } from "@/components/shared/thread-card";
@@ -136,12 +140,29 @@ export function ForumSection() {
   // Detail is cached by slug so we never have to reset it from an effect.
   const [detail, setDetail] = useState<{ slug: string; thread: ThreadDetail | null } | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  // --- C10 : édition / suppression / épinglage de la question affichée ----
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [editTags, setEditTags] = useState("");
+  const [editCategory, setEditCategory] = useState("general");
+  const [deleting, setDeleting] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   // Derived view state — no setState inside effects needed.
   const selectedThread =
     sectionParam && detail && detail.slug === sectionParam ? detail.thread : null;
   const loadingDetail =
     !!sectionParam && (!detail || detail.slug !== sectionParam);
+
+  /** Staff = `admin` ou `moderator` : épingle et modère. */
+  const isStaffUser =
+    !!user && (user.role === "admin" || user.role === "moderator");
+  /** Auteur de la question OU staff : peut modifier / supprimer. */
+  const canManageDetail =
+    !!user &&
+    !!selectedThread &&
+    (user.id === selectedThread.author.id || isStaffUser);
 
   // Available tags (computed from current threads)
   const allTags = Array.from(
@@ -271,6 +292,93 @@ export function ForumSection() {
   /** Mise à jour locale de la discussion affichée (votes, acceptation). */
   const patchDetail = (fn: (t: ThreadDetail) => ThreadDetail) =>
     setDetail((prev) => (prev?.thread ? { ...prev, thread: fn(prev.thread) } : prev));
+
+  /** Ouvre le formulaire d'édition pré-rempli avec la question courante. */
+  const startEdit = () => {
+    if (!selectedThread) return;
+    setEditTitle(selectedThread.title);
+    setEditBody(selectedThread.body);
+    setEditTags(selectedThread.tags);
+    setEditCategory(selectedThread.category);
+    setEditing(true);
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedThread) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/threads/${selectedThread.slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle,
+          body: editBody,
+          tags: editTags,
+          category: editCategory,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || t("common.error"));
+        return;
+      }
+      // `data.thread` ne porte que les champs scalaires — on les fusionne
+      // dans le détail courant pour ne pas perdre l'auteur ni les réponses.
+      patchDetail((prev) => ({ ...prev, ...data.thread }));
+      toast.success(t("forum.edit_ok"));
+      setEditing(false);
+    } catch {
+      toast.error(t("common.network_error"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /** Épinglage réservé au staff côté serveur — le front n'expose le bouton
+   *  que si `isStaffUser` (`management.canPin`). */
+  const handleTogglePin = async () => {
+    if (!selectedThread) return;
+    try {
+      const res = await fetch(`/api/threads/${selectedThread.slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pinned: !selectedThread.pinned }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || t("common.error"));
+        return;
+      }
+      patchDetail((prev) => ({ ...prev, ...data.thread }));
+      toast.success(selectedThread.pinned ? t("post.unpinned_ok") : t("post.pinned_ok"));
+    } catch {
+      toast.error(t("common.network_error"));
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedThread) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/threads/${selectedThread.slug}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        toast.error(d.error || t("common.error"));
+        return;
+      }
+      toast.success(t("post.deleted_ok"));
+      setDeleting(false);
+      navigate("forum");
+      loadThreads();
+    } catch {
+      toast.error(t("common.network_error"));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   /**
    * Vote ±1 sur une question ou une réponse.
@@ -425,12 +533,84 @@ export function ForumSection() {
             </div>
           </header>
 
-          {/* Thread body */}
-          <div className="prose-editorial">
-            <Markdown content={selectedThread.body} />
-          </div>
+          {/* Corps de la question — remplacé par le formulaire d'édition
+              quand on est en mode `editing` (C10). */}
+          {editing ? (
+            <form onSubmit={handleEdit} className="space-y-4 rounded-lg border border-border p-4">
+              <div>
+                <Label htmlFor="edit-title" className="text-xs font-mono uppercase">
+                  {t("forum.create.title_field")}
+                </Label>
+                <Input
+                  id="edit-title"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  minLength={8}
+                  maxLength={180}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-category" className="text-xs font-mono uppercase">
+                  {t("forum.create.category_field")}
+                </Label>
+                <Select value={editCategory} onValueChange={setEditCategory}>
+                  <SelectTrigger id="edit-category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((c) => (
+                      <SelectItem key={c.value} value={c.value}>
+                        {t(c.labelKey)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="edit-tags" className="text-xs font-mono uppercase">
+                  {t("forum.create.tags_field")}
+                </Label>
+                <Input
+                  id="edit-tags"
+                  value={editTags}
+                  onChange={(e) => setEditTags(e.target.value)}
+                  placeholder={t("forum.create.tags.placeholder")}
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-body" className="text-xs font-mono uppercase">
+                  {t("forum.create.body_field")}
+                </Label>
+                <Textarea
+                  id="edit-body"
+                  rows={10}
+                  value={editBody}
+                  onChange={(e) => setEditBody(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit" disabled={busy}>
+                  {t("forum.save_changes")}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setEditing(false)}
+                  disabled={busy}
+                >
+                  {t("forum.cancel")}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div className="prose-editorial">
+              <Markdown content={selectedThread.body} />
+            </div>
+          )}
 
-          {selectedThread.tags && (
+          {selectedThread.tags && !editing && (
             <div className="flex flex-wrap gap-1.5">
               {selectedThread.tags
                 .split(",")
@@ -505,9 +685,47 @@ export function ForumSection() {
             </span>
           </div>
 
+          {/* Barre d'actions façon Reddit : commenter · partager · sauvegarder
+              · ⋯. La gestion (épingler / modifier / supprimer) n'apparaît que
+              si l'utilisateur y a droit (auteur ou staff). */}
+          <PostActions
+            threadId={selectedThread.id}
+            threadSlug={selectedThread.slug}
+            comments={selectedThread.posts.length}
+            onOpen={() =>
+              document
+                .getElementById("thread-comments")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            management={
+              canManageDetail
+                ? {
+                    pinned: selectedThread.pinned,
+                    canManage: true,
+                    canPin: isStaffUser,
+                    onTogglePin: handleTogglePin,
+                    onEdit: startEdit,
+                    onDelete: () => setDeleting(true),
+                  }
+                : undefined
+            }
+          />
+
+          <DeleteThreadDialog
+            open={deleting}
+            onOpenChange={setDeleting}
+            title={t("post.delete_title")}
+            body={t("post.delete_body")}
+            confirmLabel={t("post.delete")}
+            cancelLabel={t("forum.cancel")}
+            busy={busy}
+            onConfirm={handleDelete}
+          />
+
           {/* Fil de commentaires : imbriqué, triable et repliable, à la
               façon de Reddit. Le composant reconstruit l'arbre à partir de
               la liste plate fournie par l'API. */}
+          <div id="thread-comments">
           <CommentThread
             posts={selectedThread.posts}
             threadAuthorId={selectedThread.author.id}
@@ -517,6 +735,7 @@ export function ForumSection() {
             onReply={handleReply}
             onOpenProfile={(username) => navigate("annuaire", username)}
           />
+          </div>
         </article>
       </div>
     );

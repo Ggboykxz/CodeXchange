@@ -156,6 +156,8 @@ export const threadCreateSchema = z.object({
 export const threadUpdateSchema = z.object({
   title: text(8, 180).optional(),
   body: text(1, 40_000).optional(),
+  // PATCH : absent ⇒ inchangé ; présent ⇒ normalisé via csvPatch.
+  tags: csvPatch(200),
   category: z.enum(CATEGORIES).optional(),
   pinned: z.boolean().optional(),
   solved: z.boolean().optional(),
