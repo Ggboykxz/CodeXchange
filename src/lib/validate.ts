@@ -65,20 +65,26 @@ const username = z
   );
 
 /** Tags/stack : liste CSV nettoyée, jamais d'objet fourni par le client. */
-const csv = (max: number) =>
+const cleanList = (v: string) =>
+  v
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 20)
+    .join(",");
+
+const csv = (max: number) => z.string().max(max).optional().default("").transform(cleanList);
+
+/**
+ * Variante PATCH : le champ **absent** reste `undefined` (Prisma n'y touche
+ * pas), alors que `csv()` appliquerait le défaut `""` et effacerait la liste.
+ */
+const csvPatch = (max: number) =>
   z
     .string()
     .max(max)
     .optional()
-    .default("")
-    .transform((v) =>
-      v
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .slice(0, 20)
-        .join(",")
-    );
+    .transform((v) => (v === undefined ? undefined : cleanList(v)));
 
 /* ------------------------------------------------------------------ */
 /* Auth                                                                */
@@ -169,6 +175,148 @@ export const mentorRequestSchema = z.object({
   message: text(10, 1000),
   goal: z.string().trim().max(300).optional().nullable(),
 });
+
+/* ------------------------------------------------------------------ */
+/* Contenus publiés par les membres (offres, projets, tutos, events)   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Seules les URL http(s) sont acceptées : un `javascript:` ou un `data:`
+ * collé dans un lien de candidature s'exécuterait dans un onglet.
+ */
+const httpUrl = z
+  .string()
+  .trim()
+  .max(300)
+  .refine((v) => /^https?:\/\/[^\s/$.?#][^\s]*$/i.test(v), "Invalid URL");
+
+/** Lien optionnel : `undefined` = absent (inchangé en PATCH), `null` = effacé. */
+const link = httpUrl.optional().nullable();
+
+/** Couverture : un émoji saisi par l'auteur, jamais une image distante imposée. */
+const emoji = (fallback: string) => z.string().trim().min(1).max(8).default(fallback);
+
+/** Date interprétée par le serveur (`Date.parse`), pas un `new Date` aveugle. */
+const dateTime = z
+  .string()
+  .trim()
+  .min(4)
+  .max(40)
+  .refine((v) => !Number.isNaN(Date.parse(v)), "Invalid date");
+
+/**
+ * Chaque contenu est déclaré **une fois**, sous forme 100 % optionnelle
+ * (« patch »), puis la création est dérivée par `.extend()` : les champs
+ * obligatoires y redeviennent obligatoires et les défauts (`remote`,
+ * `type`, `coverEmoji`…) n'existent QUE là.
+ *
+ * Attention — `.partial()` sur un schéma qui porte des `.default()` ne
+ * fonctionne pas : le défaut s'applique quand même à la création, donc un
+ * PATCH viendrait réinitialiser `remote`, `type` et `stack` à chaque
+ * édition. D'où ce sens de dérivation (patch → create) et non l'inverse.
+ */
+const jobPatch = z.object({
+  title: text(4, 140).optional(),
+  company: text(2, 120).optional(),
+  location: z.string().trim().max(120).optional().nullable(),
+  country: z.string().trim().max(80).optional().nullable(),
+  remote: z.boolean().optional(),
+  type: z.enum(JOB_TYPES).optional(),
+  stack: csvPatch(300),
+  salary: z.string().trim().max(80).optional().nullable(),
+  description: text(1, 8000).optional(),
+  applyUrl: link,
+});
+
+const projectPatch = z.object({
+  name: text(2, 120).optional(),
+  tagline: text(3, 160).optional(),
+  description: text(1, 8000).optional(),
+  repoUrl: link,
+  demoUrl: link,
+  stack: csvPatch(300),
+  status: z.enum(PROJECT_STATUSES).optional(),
+  lookingFor: csvPatch(200),
+  cover: link,
+});
+
+const tutorialPatch = z.object({
+  title: text(6, 180).optional(),
+  excerpt: text(10, 300).optional(),
+  body: text(1, 40_000).optional(),
+  category: z.enum(CATEGORIES).optional(),
+  tags: csvPatch(300),
+  coverEmoji: z.string().trim().min(1).max(8).optional(),
+});
+
+const eventPatch = z.object({
+  title: text(4, 140).optional(),
+  description: text(1, 4000).optional(),
+  date: dateTime.optional(),
+  endDate: dateTime.optional().nullable(),
+  location: z.string().trim().max(160).optional().nullable(),
+  online: z.boolean().optional(),
+  url: link,
+  coverEmoji: z.string().trim().min(1).max(8).optional(),
+});
+
+export const jobUpdateSchema = jobPatch;
+export const projectUpdateSchema = projectPatch;
+export const tutorialUpdateSchema = tutorialPatch;
+export const eventUpdateSchema = eventPatch;
+
+export const jobCreateSchema = jobPatch.extend({
+  title: text(4, 140),
+  company: text(2, 120),
+  description: text(1, 8000),
+  remote: z.boolean().default(true),
+  type: z.enum(JOB_TYPES).default("full-time"),
+  stack: csv(300),
+});
+
+export const projectCreateSchema = projectPatch.extend({
+  name: text(2, 120),
+  tagline: text(3, 160),
+  description: text(1, 8000),
+  stack: csv(300),
+  status: z.enum(PROJECT_STATUSES).default("idea"),
+  lookingFor: csv(200),
+});
+
+export const tutorialCreateSchema = tutorialPatch.extend({
+  title: text(6, 180),
+  excerpt: text(10, 300),
+  body: text(1, 40_000),
+  category: z.enum(CATEGORIES).default("general"),
+  tags: csv(300),
+  coverEmoji: emoji("📝"),
+});
+
+export const eventCreateSchema = eventPatch.extend({
+  title: text(4, 140),
+  description: text(1, 4000),
+  date: dateTime,
+  online: z.boolean().default(false),
+  coverEmoji: emoji("📅"),
+});
+
+/** Une fin d'événement qui précède son début n'a aucun sens à afficher. */
+export function isValidEventRange(start: Date, end?: Date | null): boolean {
+  if (Number.isNaN(start.getTime())) return false;
+  if (!end) return true;
+  if (Number.isNaN(end.getTime())) return false;
+  return end.getTime() >= start.getTime();
+}
+
+/**
+ * Temps de lecture **dérivé** du corps (~200 mots/minute) : il est calculé
+ * à l'écriture, jamais saisi par l'auteur — donc jamais en décalage avec
+ * le texte réellement publié.
+ */
+export function readMinutes(body: string): number {
+  const words = body.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}
 
 /* ------------------------------------------------------------------ */
 /* Pagination                                                          */

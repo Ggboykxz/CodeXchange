@@ -34,3 +34,21 @@ export function json(data: unknown, init?: ResponseInit) {
 export function authJson(data: unknown, init?: ResponseInit) {
   return NextResponse.json(sanitize(data, true), init);
 }
+
+/**
+ * 400 — `details` reprend `zod.flatten().fieldErrors` : le client sait
+ * quel champ corrigé, sans jamais recevoir le payload complet rejeté.
+ */
+export function badRequest(error: string, details?: unknown) {
+  return NextResponse.json(details === undefined ? { error } : { error, details }, {
+    status: 400,
+  });
+}
+
+/** 429 — `Retry-After` obligatoire, sinon le client réessaie en boucle. */
+export function rateLimited(error: string, retryAfterSec: number) {
+  return NextResponse.json(
+    { error },
+    { status: 429, headers: { "Retry-After": String(retryAfterSec) } }
+  );
+}

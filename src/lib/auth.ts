@@ -143,3 +143,21 @@ export function clientIp(req: NextRequest): string | null {
 export function unauthorized(message = "Authentication required"): NextResponse {
   return NextResponse.json({ error: message }, { status: 401 });
 }
+
+/* ------------------------------------------------------------------ */
+/* Droits                                                              */
+/* ------------------------------------------------------------------ */
+
+/** Équipe de modération : `admin` ou `moderator`. */
+export function isStaff(user: Pick<AuthUser, "role">): boolean {
+  return user.role === "admin" || user.role === "moderator";
+}
+
+/**
+ * Modifier ou supprimer une ressource : son auteur, ou l'équipe.
+ * Une seule définition partagée — le test d'ownership ne peut pas dériver
+ * d'un endpoint à l'autre.
+ */
+export function canManage(ownerId: string, user: AuthUser): boolean {
+  return user.id === ownerId || isStaff(user);
+}

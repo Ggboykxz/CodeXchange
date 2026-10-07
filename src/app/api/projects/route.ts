@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authorSelect } from "@/lib/selects";
-import { pagination } from "@/lib/validate";
+import { badRequest, rateLimited } from "@/lib/api";
+import { currentUser, unauthorized } from "@/lib/auth";
+import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
+import { pagination, projectCreateSchema } from "@/lib/validate";
+import { uniqueSlug } from "@/lib/slug";
 
 export async function GET(req: NextRequest) {
   try {
@@ -38,5 +42,35 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     console.error("List projects error:", e instanceof Error ? e.message : e);
     return NextResponse.json({ error: "Failed to list projects" }, { status: 500 });
+  }
+}
+
+/**
+ * POST /api/projects — proposer un projet (G).
+ * Le slug est dérivé du nom puis rendu unique : deux « Kora » coexistent.
+ */
+export async function POST(req: NextRequest) {
+  try {
+    const user = await currentUser(req);
+    if (!user) return unauthorized("Sign in to share a project");
+
+    const limited = rateLimit(`project:${user.id}`, WRITE_POLICY.limit, WRITE_POLICY.windowMs);
+    if (!limited.ok) return rateLimited("Too many projects. Slow down.", limited.retryAfterSec);
+
+    const parsed = projectCreateSchema.safeParse(await req.json().catch(() => null));
+    if (!parsed.success) {
+      return badRequest("Invalid project payload", parsed.error.flatten().fieldErrors);
+    }
+
+    const slug = await uniqueSlug("project", parsed.data.name, "projet");
+    const project = await db.project.create({
+      data: { ...parsed.data, slug, authorId: user.id },
+      include: { author: { select: authorSelect } },
+    });
+
+    return NextResponse.json({ project }, { status: 201 });
+  } catch (e) {
+    console.error("Create project error:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "Failed to publish project" }, { status: 500 });
   }
 }
