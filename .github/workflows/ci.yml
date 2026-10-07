@@ -86,3 +86,16 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      # ---------------------------------------------------------------- #
+      # E2E Playwright (J7) : on seed la base du service, on sert le build  #
+      # de production (`next start`) et on exécute les scénarios de tests/e2e.#
+      # ---------------------------------------------------------------- #
+      - name: Seed CI database
+        run: npx tsx scripts/seed.ts
+
+      - name: Install Playwright Chromium (+ deps système)
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E (Playwright)
+        run: npx playwright test

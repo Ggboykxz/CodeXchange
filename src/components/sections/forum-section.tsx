@@ -487,7 +487,7 @@ export function ForumSection() {
               « colonne grise » de Reddit), contenu à droite. Sous `sm`, le
               rail devient une barre horizontale, à l'inverse (`order`). */}
           <div className="flex gap-4">
-            <div className="hidden sm:flex shrink-0 flex-col items-center gap-0.5 self-start rounded-md border border-border bg-muted/40 px-1.5 py-2 text-sm">
+            <div data-testid="vote-rail" className="hidden sm:flex shrink-0 flex-col items-center gap-0.5 self-start rounded-md border border-border bg-muted/40 px-1.5 py-2 text-sm">
               <button
                 type="button"
                 onClick={() =>
@@ -663,7 +663,7 @@ export function ForumSection() {
 
           {/* Sous `sm`, le rail vertical n'existe pas : on garde une barre de
               vote horizontale, masquée dès `sm` où le rail prend le relais. */}
-          <div className="flex sm:hidden items-center justify-between gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
+          <div data-testid="vote-bar" className="flex sm:hidden items-center justify-between gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
             <span className="flex items-center gap-1">
               <button
                 type="button"
