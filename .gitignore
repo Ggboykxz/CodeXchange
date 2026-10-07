@@ -76,3 +76,6 @@ server.log
 /.zscripts/
 *.tar
 worklog.md
+
+# sauvegardes locales (J9)
+/backups/
