@@ -9,8 +9,8 @@
 |---|---|---|
 | **Hackathon J1–J2** | Fondations (Prisma 13 modèles, seed), auth par session serveur, Q&R Markdown, votes + meilleure réponse, annuaire + édition de profil, lecture jobs/projets/tutos/events, mentorat, notifications in-app, i18n fr/en, dark mode, PWA hors-ligne, CI | ✅ **livré** (détail ligne par ligne ci-dessous) |
 | **Bascule PostgreSQL** | `provider = "postgresql"` en local, CI (service `postgres:16`) et Vercel ; `mode: "insensitive"` sur les 24 filtres de recherche (SQLite les rendait insensibles à la casse par défaut) ; `.env.example`, README et docs alignés | ✅ **livré** — bloquait le déploiement Vercel (disque des fonctions en lecture seule) |
-| **Beta privée S1–S4** | Traductions sw/ar, RTL arabe, filtre « non résolu » en UI, création de contenus (jobs/projets/tutos/events), messagerie privée, e-mails transactionnels, tests E2E | ⏳ **en cours / partiel** — voir le détail |
-| **Beta publique M2–M3** | OAuth GitHub/Google, modération communautaire, compteurs de home fiables, landings SEO par module | ⬜ à venir |
+| **Beta privée S1–S4** | Traductions sw/ar, RTL arabe, ~~filtre « non résolu » en UI~~ ✅, création de contenus (jobs/projets/tutos/events), messagerie privée, e-mails transactionnels, tests E2E | ⏳ **en cours / partiel** — voir le détail |
+| **Beta publique M2–M3** | OAuth GitHub/Google, modération communautaire, ~~compteurs de home fiables~~ ✅, landings SEO par module | ⬜ à venir |
 | **Croissance M4–M6** | Paiement mobile money, offres sponsorisées, programme de mentorat structuré (acceptation/refus côté mentor), API publique | ⬜ à venir |
 | **Consolidation M7–M12** | Applications mobiles légères, analytics communauté, gouvernance open-source, extension diaspora | ⬜ à venir |
 
@@ -36,7 +36,7 @@
 | Jobs, projets, tutos, events : **lecture** + filtres + détail | `GET /api/{jobs,projects,tutorials,events}` |
 | Mentorat : liste des mentors + demande (message/objectif) avec garde-fous (doublon, complétude, soi-même) | `src/app/api/mentors/**` |
 | Notifications in-app : création (réponse, acceptation, mentorat), listing, lecture, tout-lu, cloche avec badge | `src/lib/notify.ts`, `src/app/api/notifications/**`, `notification-bell.tsx` |
-| i18n : 4 locales typées, FR et EN **232 clés** chacun, sélecteur à drapeaux, locale persistée | `src/i18n/dictionaries.ts` |
+| i18n : 4 locales typées, FR et EN **280 clés** chacun (test de parité `tests/i18n.test.ts`), sélecteur à drapeaux, locale persistée | `src/i18n/dictionaries.ts` |
 | PWA : manifest + icônes 192/512/maskable + `offline.html` + service worker maison (SWR assets, network-first pages, `/api` jamais caché) | `public/manifest.webmanifest`, `public/sw.js` |
 | Dark mode (clair par défaut) | `next-themes`, `theme-toggle.tsx` |
 | Rate limiting (auth 10/min/IP, login 5/5 min/email, écritures 30/min) + `429` avec `Retry-After` | `src/lib/rate-limit.ts`, `src/proxy.ts` |
@@ -44,6 +44,10 @@
 | Validation zod de toutes les entrées, pagination bornée à 100 | `src/lib/validate.ts` |
 | Pas de fuite de `passwordHash` / `email` | `src/lib/selects.ts`, `src/lib/api.ts` |
 | CI GitHub Actions : install → `db push` → generate → lint → `next typegen` → typecheck → build | `.github/workflows/ci.yml` |
+| **Fil d'accueil type réseau social** : tri `new`/`top`/`active`, filtre non résolus, votes `↑↓` optimistes (`myVote` dans la liste), composeur, `Charger plus`, colonne (CTA + compteurs réels + modules) | `src/components/sections/feed-section.tsx`, `src/app/api/threads/route.ts` |
+| **Carte de discussion partagée** (rail de vote, avatar, réputation, temps relatif, titre en lien) utilisée par le fil **et** le forum | `src/components/shared/thread-card.tsx` |
+| **Navigation du navigateur** : nav en `<a href="#…">`, `pushState`, écouteurs `hashchange`/`popstate` → Retour/Avant opérationnels | `src/store/app-store.ts`, `src/app/page.tsx` |
+| **Compteurs100 % réels** : plus aucun chiffre codé en dur (test qui refuse les valeurs inventées) | `GET /api/stats`, `tests/i18n.test.ts` |
 | Licence MIT | `LICENSE` |
 
 ### ⏳ Partiellement fait
@@ -51,11 +55,9 @@
 | Élément | Ce qui manque |
 |---|---|
 | **i18n sw / ar** | Cadre prêt (`Locale`, drapeaux, `sw`/`ar` exposés) mais **0 clé traduite** : `const sw = { ...en }`, `const ar = { ...en }` → l'anglais s'affiche |
-| **Filtre « non résolu »** | Existe en API (`?solved=false`) et badge `Résolu` affiché, mais **aucun sélecteur** dans la liste du forum |
 | **Création de contenus** | Questions/réponses ✅ ; jobs, projets, tutos, events : **API en lecture seule** (`GET`), pas de formulaire |
 | **Modération** | Champs `role` (`member`/`moderator`/`admin`) et contrôle auteur/modérateur à l'acceptation ✅ ; **aucun outil** (dashboard, épinglage, signalement) |
 | **Mentorat** | Côté menté ✅ ; **aucune interface pour le mentor** (accepter/refuser/planifier) et 0 statut géré dans l'UI |
-| **Stats home** | Discussions/offres/projets/mentors en direct (`/api/stats`) ; « Développeurs » (`12,400+`) et « Pays représentés » (`54`) **codés en dur** |
 | **Poids bundle** | Découpage dynamique en place, objectif affiché **< 150 Ko** ; le CDC annonce **< 100 Ko** — non mesuré automatiquement en CI |
 
 ### ⬜ Rien de fait pour l'instant
@@ -69,7 +71,7 @@
 | **RTL arabe** | `lang`/`dir` sont maintenant pilotés par `LocaleSync`, mais `dir` reste `"ltr"` : le layout s'appuie encore sur des propriétés physiques (`pl-`/`pr-`/`left`) qui casserait le rendu |
 | **Traduction sw/ar** | 0 clé propre (voir ci-dessus) |
 | **Migrations versionnées** | Le schéma est poussé par `db push` partout (local, CI, Vercel) : aucun dossier `prisma/migrations/` n'est versionné |
-| **Tests E2E (Playwright)** | Les **unitaires** sont là (Vitest, 75 tests sur hash, validation, sélecteurs, rate limit) — mais aucun parcours n'est exécuté dans un vrai navigateur |
+| **Tests E2E (Playwright)** | Les **unitaires** sont là (Vitest, 87 tests sur hash, validation, sélecteurs, rate limit, temps relatif, parité i18n) — mais aucun parcours n'est exécuté dans un vrai navigateur |
 | **SEO / pages par module** | Application mono-page : une seule route `src/app/page.tsx`, navigation par hash |
 
 ---
@@ -80,7 +82,7 @@
 |---|---|---|
 | **M0 — Démo stable** ✅ | J1–J2 | `bun install` → `db:push` → `scripts/seed.ts` → `dev` en 4 commandes ; les 3 parcours de `docs/DEMO.md` passent sans erreur ; `bun run check` vert ; CI verte sur `main`. **Atteint.** |
 | **M1 — Produit complet en lecture/écriture** ⏳ | S1–S4 | Formulaires de création jobs/projets/tutos/events ; mentor peut répondre à une demande ; au moins 1 test E2E Playwright sur le parcours Q&R |
-| **M2 — Multilingue + portabilité** ⬜ | M1–M2 | 100 % des 232 clés traduites en sw et ar ; `lang`/`dir` pilotés par la locale (`dir="rtl"` pour `ar`) ; bascule PostgreSQL effectuée avec `prisma migrate` versionné et seed ré-exécuté sans erreur |
+| **M2 — Multilingue + portabilité** ⬜ | M1–M2 | 100 % des 280 clés traduites en sw et ar ; `lang`/`dir` pilotés par la locale (`dir="rtl"` pour `ar`) ; bascule PostgreSQL effectuée avec `prisma migrate` versionné et seed ré-exécuté sans erreur |
 | **M3 — Confiance & ouverture** ⬜ | M2–M3 | OAuth GitHub/Google opérationnel ; e-mail de bienvenue + réinitialisation ; outils de modération (signalement, rôles, épinglage) ; compteurs home tous issus de `/api/stats` ; budget de poids vérifié en CI (≤ 100 Ko ou décision explicite) |
 | **M4 — Monétisation & échelle** ⬜ | M4–M6 | Paiement mobile money sur un flux réel (abonnement mentor ou boosting d'offre) avec reçus ; 100 offres et 100 binômes atteints ; API publique documentée ; rate limiting distribué (Redis/Upstash) derrière une instance multi-nœuds |
 

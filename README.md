@@ -15,7 +15,7 @@ CodeXchange réunit les développeurs africains et de la diaspora sur **une seul
 
 ## Ce qu'on voit à l'écran
 
-Une application mono-page (navigation par hash : `#forum`, `#jobs`, `#mentorat`…) avec un header collant — logo `$ codexchange.dev`, navigation, cloche de notifications, sélecteur de langue, bascule clair/sombre — et une home « style terminal » qui affiche les compteurs réels de la plateforme (`GET /api/stats`), les 3 derniers profils, les 6 modules et un CTA d'inscription. Chaque section (forum, jobs, projets, mentorat, tutos, annuaire) est chargée dynamiquement pour garder la première charge légère.
+Une application mono-page (navigation par hash : `#forum`, `#jobs`, `#mentorat`…) avec un header collant — logo `$ codexchange.dev`, navigation, cloche de notifications, sélecteur de langue, bascule clair/sombre — et un **fil d'accueil type réseau social** : tri `Récents / Populaires / Actifs`, filtre `Non résolus`, composeur `Publier`, vote `↑ / ↓` sur chaque carte, auteur (avatar, réputation, temps relatif), `Charger plus`, et une colonne de droite (CTA, compteurs réels via `GET /api/stats`, modules). La navigation utilise de **vrais liens** (`<a href="#…">`) : clic médian, « ouvrir dans un onglet », et bouton **Retour** du navigateur fonctionnent. Chaque section secondaire (forum, jobs, projets, mentorat, tutos, annuaire) est chargée dynamiquement pour garder la première charge légère.
 
 > Les captures d'écran ne sont pas versionnées dans ce dépôt : à produire depuis `bun run start` (voir `docs/ENVIRONNEMENTS.md` pour le plan de tournage).
 
@@ -49,8 +49,8 @@ Tout ce qui suit **existe aujourd'hui dans ce dépôt** (rien n'est repris de la
   réponse acceptée, `+2` réponse votée, `−1` question downvotée, versées à **l'auteur du contenu
   voté** (jamais au votant). Elle apparaît sur le profil de l'annuaire et à côté de l'auteur de
   chaque réponse ; elle est aussi relisible via `GET /api/profiles/[username]`.
-- Le filtre « non résolu » existe en API (`GET /api/threads?solved=false`) **sans sélecteur correspondant dans l'interface**.
-- Le chiffre affiché en home pour « Développeurs » (`12,400+`) et « Pays représentés » (`54`) est **figé côté client** : seuls discussions, offres, projets et mentors viennent réellement de `/api/stats`.
+- Le filtre « non résolu » existe en API (`GET /api/threads?solved=false`) et un sélecteur est présent dans le fil d'accueil (pas encore dans la liste du forum).
+- **Tous les compteurs affichés sont lus en base** : la colonne de droite de l'accueil n'affiche que ce que renvoie `GET /api/stats`, aucun chiffre n'est codé en dur côté client.
 
 ---
 

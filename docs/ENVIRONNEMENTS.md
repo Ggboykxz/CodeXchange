@@ -92,13 +92,15 @@ privée (`kwame.mensah@codexchange.dev` / `codexchange2026`), visiter Forum et A
 le cache du service worker), DevTools → **Application → Service workers** : vérifier que
 `codexchange` est **activated**.
 
-### Plan 1 — Accroche + home (≈ 1 min)
+### Plan 1 — Accroche + fil (≈ 1 min)
 
 1. Enregistrer à partir de l'onglet vide → taper `localhost:3000` → Entrée.
-2. Laisser la home se charger : hero `Le code africain prend sa place.`, les compteurs
-   (discussions, offres, projets, mentors issus de `/api/stats`), les 3 profils vedettes.
-3. Survoler la navigation : Forum, Jobs, Projets, Mentorat, Tutos & Events, Annuaire.
-4. **Ce qu'on dit** (voir §3) : le problème, puis la promesse en une phrase.
+2. Laisser le **fil d'accueil** se charger : tri `Récents / Populaires / Actifs`, cartes avec
+   vote `↑↓`, auteur et temps relatif, puis la colonne de droite — CTA, **compteurs réels**
+   (membres, discussions, offres, pays, issus de `/api/stats`), modules.
+3. Cliquer `Populaires` → le fil se retricote ; cliquer `Charger plus` → la suite arrive.
+4. Survoler la navigation : Forum, Jobs, Projets, Mentorat, Tutos & Events, Annuaire.
+5. **Ce qu'on dit** (voir §3) : le problème, puis la promesse en une phrase.
 
 ### Plan 2 — Le cœur Q&R (≈ 1 min 30)
 
@@ -125,7 +127,7 @@ le cache du service worker), DevTools → **Application → Service workers** : 
 2. **Recharger** : la page s'affiche depuis le cache (`codexchange-pages-v1`).
 3. Naviguer vers une page jamais vue → `/offline.html`.
 4. **Décocher `Offline`** → recharger → le site revient.
-5. Revenir sur la home, laisser le hero à l'écran, **couper l'enregistrement**.
+5. Revenir sur le fil d'accueil, le laisser à l'écran, **couper l'enregistrement**.
 
 ### Ce qu'on lit si le réseau tombe (texte de secours, à dire tel quel)
 

@@ -39,20 +39,21 @@
 | C1 | Création de question (titre, catégorie, tags, corps) | ✅ | `POST /api/threads`, slug unique généré serveur, taux limite 30/min |
 | C2 | Rendu Markdown + blocs de code | ✅ | `react-markdown` + `remark-gfm` + PrismLight (12 langages), bouton copier, **pas de HTML brut** |
 | C3 | Réponses | ✅ | `POST /api/threads/[slug]/posts`, tri meilleure réponse → upvotes → ancienneté |
-| C4 | Votes `+1 / -1 / 0` | ✅ | API complète (recount, anti-auto-upvote 422) **et** UI : ↑ / ↓ / ré-cliquer annule, `myVote` renvoyé par la session au chargement de la question |
+| C4 | Votes `+1 / -1 / 0` | ✅ | API complète (recount, anti-auto-upvote 422) **et** UI : ↑ / ↓ / ré-cliquer annule. `myVote` renvoyé par **la liste et le détail** : les flèches de la liste savent donc si le visiteur a déjà voté |
 | C5 | Meilleure réponse + statut `Résolu` | ✅ | `PATCH /api/posts/[id]`, transaction (une seule acceptée), auteur **ou** modérateur |
 | C6 | Recherche plein-texte (titre, corps, tags) | ✅ | `GET /api/threads?q=`, debounce 250 ms côté UI |
 | C7 | Filtres catégorie / tag | ✅ | `?category=&tag=` + sélecteurs dans l'interface |
-| C8 | Filtre « non résolu » | ⏳ | API `?solved=false` ✅, badge `Résolu` affiché ✅, **aucun sélecteur** dans la liste |
+| C8 | Filtre « non résolu » | ✅ | API `?solved=false` + badge `Résolu` + **sélecteur `Non résolus`** dans le fil d'accueil (le forum garde son sélecteur de statut) |
 | C9 | Compteur de vues | ✅ | Incrémentation non bloquante à l'ouverture du détail |
 | C10 | Édition / suppression / épinglage d'une question | ⬜ | `threadUpdateSchema` existe dans `validate.ts` mais **aucune route ne l'utilise** (seul le tri `pinned` est codé) |
+| C11 | Tri du fil (récents / populaires / actifs) | ✅ | `GET /api/threads` avec `sort` = `new` (défaut) / `top` / `active` — `new` = chronologique, `top` = upvotes, `active` = nombre de réponses ; épinglées toujours en tête |
 
 ## EPIC D — Expérience
 
 | ID | Item | Statut | Note |
 |---|---|---|---|
 | D1 | Dark mode | ✅ | `next-themes`, clair par défaut, bascule dans le header |
-| D2 | i18n 4 locales (fr, en, sw, ar) | ⏳ | Cadre complet, **232 clés** en fr et en en ; `sw` et `ar` = `{ ...en }` → **0 clé traduite** |
+| D2 | i18n 4 locales (fr, en, sw, ar) | ⏳ | Cadre complet, **280 clés** en fr et en (test `tests/i18n.test.ts` : les deux dictionnaires doivent rester identiques clé à clé) ; `sw` et `ar` = `{ ...en }` → **0 clé traduite** |
 | D3 | RTL pour l'arabe | ⬜ | `<html lang="fr">` en dur, aucun attribut `dir` ; manifest `"dir": "ltr"` |
 | D4 | PWA installable + hors-ligne | ✅ | Manifest, icônes 192/512/maskable, `offline.html`, service worker maison (SWR / network-first, `/api` non caché) — **en production uniquement** |
 | D5 | Chargement à la demande (poids) | ✅ | 6 sections en `next/dynamic`, PrismLight allégé ; objectif **< 150 Ko** affiché dans le code, **non mesuré** en CI |
@@ -60,6 +61,9 @@
 | D7 | Filtres annuaire (pays, ville, stack, niveau, dispo) | ✅ | pays/stack/niveau/dispo envoyés à l'API, ville filtrée côté client sur la page chargée. **Limite** : les listes de valeurs sont codées en dur alors que le seed en compte **21 pays** (liste corrigée de 10 à 21, mais elle ne suivra pas les pays réels tant qu'il n'y a pas de `SELECT DISTINCT country`) |
 | D8 | Menu & grilles responsives | ✅ | Header collant, `Sheet` de navigation mobile, grilles `sm:/lg:` |
 | D9 | Recherche globale (tout module) | ⬜ | Le champ global `nav.search` existe dans le dictionnaire mais aucune implémentation de recherche transverse |
+| D10 | Fil d'accueil (flux social) | ✅ | `FeedSection` : tri Récents/Populaires/Actifs, filtre non résolus, **votes ↑↓ optimistes** avec retour serveur, composeur `Publier` (formulaire partagé `CreateThreadForm`), `Charger plus`, colonne de droite = CTA + **compteurs réels** (`/api/stats`) + modules. Carte `ThreadCard` réutilisée par la liste du forum |
+| D11 | Navigation du navigateur | ✅ | Nav et logo en **vrais liens** `<a href="#…">` (clic médiant, ouvrir dans un onglet), `pushState` au lieu de `replaceState` + écouteurs `hashchange`/`popstate` → boutons **Retour/Avant opérationnels** |
+| D12 | Header mobile sans débordement | ✅ | `Connexion`/`Rejoindre` masqués sous `sm` (déjà en bas de la feuille) : le bouton menu reste visible sur un écran de 390 px (contrôlé en audit Playwright) |
 
 ## EPIC E — Démo & livrables Sprint 0
 
