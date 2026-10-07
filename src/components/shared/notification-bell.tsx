@@ -27,6 +27,7 @@ type Notification = {
 
 export function NotificationBell() {
   const t = useT();
+  const locale = useAppStore((s) => s.locale);
   const user = useAuthStore((s) => s.user);
   const navigate = useAppStore((s) => s.navigate);
   const [items, setItems] = useState<Notification[]>([]);
@@ -167,7 +168,7 @@ export function NotificationBell() {
                     </span>
                   )}
                   <span className="block text-[10px] font-mono text-muted-foreground mt-0.5">
-                    {timeAgo(n.createdAt)}
+                    {timeAgo(n.createdAt, locale)}
                   </span>
                 </span>
                 {!n.read && (

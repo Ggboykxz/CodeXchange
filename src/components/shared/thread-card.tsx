@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/avatar";
 import { Tag, tagColors } from "@/components/shared/tag";
 import { timeAgo, timeAgoLong } from "@/lib/time";
-import { useT } from "@/store/app-store";
+import { useAppStore, useT } from "@/store/app-store";
 import { cn } from "@/lib/utils";
 import {
   ChevronUp,
@@ -73,6 +73,7 @@ interface ThreadCardProps {
  */
 export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProps) {
   const t = useT();
+  const locale = useAppStore((s) => s.locale);
   const myVote = thread.myVote ?? 0;
   const comments = thread._count?.posts ?? 0;
   const username = thread.author.profile?.username ?? thread.author.name;
@@ -150,8 +151,11 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
                   </span>
                 )}
               <span aria-hidden="true">·</span>
-              <time dateTime={thread.createdAt} title={timeAgoLong(thread.createdAt)}>
-                {timeAgo(thread.createdAt)}
+              <time
+                dateTime={thread.createdAt}
+                title={timeAgoLong(thread.createdAt, locale)}
+              >
+                {timeAgo(thread.createdAt, locale)}
               </time>
               {thread.pinned && (
                 <span className="inline-flex items-center gap-1">

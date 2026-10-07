@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Tag, tagColors } from "@/components/shared/tag";
 import { ThreadCard } from "@/components/shared/thread-card";
+import { timeAgoLong } from "@/lib/time";
 import {
   CreateThreadForm,
   categories,
@@ -111,6 +112,7 @@ type ThreadDetail = Thread & {
 
 export function ForumSection() {
   const t = useT();
+  const locale = useAppStore((s) => s.locale);
   const navigate = useAppStoreNav();
   const sectionParam = useAppStore((s) => s.sectionParam);
   const user = useAuthStore((s) => s.user);
@@ -402,6 +404,14 @@ export function ForumSection() {
                     {selectedThread.author.profile.city}, {selectedThread.author.profile.country}
                   </span>
                 )}
+                <time
+                  dateTime={selectedThread.createdAt}
+                  className="text-muted-foreground/70"
+                  title={new Date(selectedThread.createdAt).toLocaleString(locale)}
+                >
+                  {" · "}
+                  {timeAgoLong(selectedThread.createdAt, locale)}
+                </time>
               </span>
             </div>
           </header>
@@ -530,6 +540,14 @@ export function ForumSection() {
                           {t("annuaire.reputation")}
                         </span>
                       </span>
+                      <time
+                        dateTime={post.createdAt}
+                        className="text-xs text-muted-foreground"
+                        title={new Date(post.createdAt).toLocaleString(locale)}
+                      >
+                        {" · "}
+                        {timeAgoLong(post.createdAt, locale)}
+                      </time>
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
