@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
@@ -172,7 +173,7 @@ export async function POST(req: NextRequest) {
     const upvotes = await recount(target, targetId);
     return NextResponse.json({ value, upvotes });
   } catch (e) {
-    console.error("Vote error:", e instanceof Error ? e.message : e);
+    logger.route("Vote error", e);
     return NextResponse.json({ error: "Failed to vote" }, { status: 500 });
   }
 }

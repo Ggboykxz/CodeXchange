@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import {
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
     if (!user) return NextResponse.json({ user: null });
     return NextResponse.json({ user });
   } catch (e) {
-    console.error("Me error:", e instanceof Error ? e.message : e);
+    logger.route("Me error", e);
     return NextResponse.json({ user: null }, { status: 500 });
   }
 }
@@ -31,7 +32,7 @@ export async function DELETE(req: NextRequest) {
   try {
     await revokeSession(req.cookies.get(SESSION_COOKIE)?.value);
   } catch (e) {
-    console.error("Logout error:", e instanceof Error ? e.message : e);
+    logger.route("Logout error", e);
   }
   const response = NextResponse.json({ success: true });
   clearSessionCookie(response);

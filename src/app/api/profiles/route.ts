@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { publicUserSelect } from "@/lib/selects";
@@ -70,7 +71,7 @@ export async function GET(req: NextRequest) {
       hasMore: skip + profiles.length < total,
     });
   } catch (e) {
-    console.error("List profiles error:", e instanceof Error ? e.message : e);
+    logger.route("List profiles error", e);
     return NextResponse.json({ error: "Failed to list profiles" }, { status: 500 });
   }
 }

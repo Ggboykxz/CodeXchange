@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -73,7 +74,7 @@ export async function GET(
       },
     });
   } catch (e) {
-    console.error("Get thread error:", e instanceof Error ? e.message : e);
+    logger.route("Get thread error", e);
     return NextResponse.json({ error: "Failed to load thread" }, { status: 500 });
   }
 }
@@ -154,7 +155,7 @@ export async function PATCH(
 
     return NextResponse.json({ thread: updated });
   } catch (e) {
-    console.error("Edit thread error:", e instanceof Error ? e.message : e);
+    logger.route("Edit thread error", e);
     return NextResponse.json({ error: "Failed to edit thread" }, { status: 500 });
   }
 }
@@ -201,7 +202,7 @@ export async function DELETE(
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("Delete thread error:", e instanceof Error ? e.message : e);
+    logger.route("Delete thread error", e);
     return NextResponse.json({ error: "Failed to delete thread" }, { status: 500 });
   }
 }

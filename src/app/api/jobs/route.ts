@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authorSelect } from "@/lib/selects";
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ jobs, total, limit, hasMore: skip + jobs.length < total });
   } catch (e) {
-    console.error("List jobs error:", e instanceof Error ? e.message : e);
+    logger.route("List jobs error", e);
     return NextResponse.json({ error: "Failed to list jobs" }, { status: 500 });
   }
 }
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ job }, { status: 201 });
   } catch (e) {
-    console.error("Create job error:", e instanceof Error ? e.message : e);
+    logger.route("Create job error", e);
     return NextResponse.json({ error: "Failed to publish job" }, { status: 500 });
   }
 }

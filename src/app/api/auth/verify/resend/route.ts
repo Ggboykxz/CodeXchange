@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, AUTH_EMAIL_POLICY } from "@/lib/rate-limit";
 import { verifyResendSchema } from "@/lib/validate";
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ sent: true });
   } catch (e) {
-    console.error("Verify resend error:", e instanceof Error ? e.message : e);
+    logger.route("Verify resend error", e);
     return NextResponse.json({ error: "Failed to resend link" }, { status: 500 });
   }
 }

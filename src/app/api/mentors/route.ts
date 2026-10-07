@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { publicUserSelect } from "@/lib/selects";
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ mentors, total, limit, hasMore: skip + mentors.length < total });
   } catch (e) {
-    console.error("List mentors error:", e instanceof Error ? e.message : e);
+    logger.route("List mentors error", e);
     return NextResponse.json({ error: "Failed to list mentors" }, { status: 500 });
   }
 }

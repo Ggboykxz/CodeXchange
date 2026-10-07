@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -83,7 +84,7 @@ export async function POST(
 
     return NextResponse.json({ post }, { status: 201 });
   } catch (e) {
-    console.error("Create post error:", e instanceof Error ? e.message : e);
+    logger.route("Create post error", e);
     return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
   }
 }

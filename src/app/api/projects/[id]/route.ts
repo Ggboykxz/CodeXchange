@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -34,7 +35,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
     return NextResponse.json({ project: updated });
   } catch (e) {
-    console.error("Update project error:", e instanceof Error ? e.message : e);
+    logger.route("Update project error", e);
     return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
   }
 }
@@ -62,7 +63,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
     await db.project.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("Delete project error:", e instanceof Error ? e.message : e);
+    logger.route("Delete project error", e);
     return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });
   }
 }

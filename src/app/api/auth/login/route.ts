@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import {
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
     setSessionCookie(response, token);
     return response;
   } catch (e) {
-    console.error("Login error:", e instanceof Error ? e.message : e);
+    logger.route("Login error", e);
     return NextResponse.json({ error: "Failed to login" }, { status: 500 });
   }
 }

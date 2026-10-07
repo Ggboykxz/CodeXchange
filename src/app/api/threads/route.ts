@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
@@ -151,7 +152,7 @@ export async function GET(req: NextRequest) {
       hasMore: skip + page.length < pageTotal,
     });
   } catch (e) {
-    console.error("List threads error:", e instanceof Error ? e.message : e);
+    logger.route("List threads error", e);
     return NextResponse.json({ error: "Failed to list threads" }, { status: 500 });
   }
 }
@@ -194,7 +195,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ thread }, { status: 201 });
   } catch (e) {
-    console.error("Create thread error:", e instanceof Error ? e.message : e);
+    logger.route("Create thread error", e);
     return NextResponse.json({ error: "Failed to create thread" }, { status: 500 });
   }
 }

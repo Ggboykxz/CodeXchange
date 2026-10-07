@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -34,7 +35,7 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
 
     return NextResponse.json({ tutorial });
   } catch (e) {
-    console.error("Get tutorial error:", e instanceof Error ? e.message : e);
+    logger.route("Get tutorial error", e);
     return NextResponse.json({ error: "Failed to load tutorial" }, { status: 500 });
   }
 }
@@ -70,7 +71,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
     return NextResponse.json({ tutorial: updated });
   } catch (e) {
-    console.error("Update tutorial error:", e instanceof Error ? e.message : e);
+    logger.route("Update tutorial error", e);
     return NextResponse.json({ error: "Failed to update tutorial" }, { status: 500 });
   }
 }
@@ -99,7 +100,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
     await db.tutorial.delete({ where: { id: tutorial.id } });
     return NextResponse.json({ ok: true });
   } catch (e) {
-    console.error("Delete tutorial error:", e instanceof Error ? e.message : e);
+    logger.route("Delete tutorial error", e);
     return NextResponse.json({ error: "Failed to delete tutorial" }, { status: 500 });
   }
 }

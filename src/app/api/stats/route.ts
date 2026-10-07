@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -40,7 +41,7 @@ export async function GET() {
       { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } }
     );
   } catch (e) {
-    console.error("Stats error:", e instanceof Error ? e.message : e);
+    logger.route("Stats error", e);
     return NextResponse.json({ error: "Failed to load stats" }, { status: 500 });
   }
 }

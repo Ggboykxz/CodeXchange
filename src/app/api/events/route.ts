@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authorSelect } from "@/lib/selects";
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ events, total, limit, hasMore: skip + events.length < total });
   } catch (e) {
-    console.error("List events error:", e instanceof Error ? e.message : e);
+    logger.route("List events error", e);
     return NextResponse.json({ error: "Failed to list events" }, { status: 500 });
   }
 }
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ event }, { status: 201 });
   } catch (e) {
-    console.error("Create event error:", e instanceof Error ? e.message : e);
+    logger.route("Create event error", e);
     return NextResponse.json({ error: "Failed to publish event" }, { status: 500 });
   }
 }

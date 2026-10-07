@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -106,7 +107,7 @@ export async function PATCH(
 
     return NextResponse.json({ post: updated });
   } catch (e) {
-    console.error("Accept answer error:", e instanceof Error ? e.message : e);
+    logger.route("Accept answer error", e);
     return NextResponse.json({ error: "Failed to update answer" }, { status: 500 });
   }
 }

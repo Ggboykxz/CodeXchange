@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authorSelect } from "@/lib/selects";
@@ -40,7 +41,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ projects, total, limit, hasMore: skip + projects.length < total });
   } catch (e) {
-    console.error("List projects error:", e instanceof Error ? e.message : e);
+    logger.route("List projects error", e);
     return NextResponse.json({ error: "Failed to list projects" }, { status: 500 });
   }
 }
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ project }, { status: 201 });
   } catch (e) {
-    console.error("Create project error:", e instanceof Error ? e.message : e);
+    logger.route("Create project error", e);
     return NextResponse.json({ error: "Failed to publish project" }, { status: 500 });
   }
 }

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { publicUserSelect } from "@/lib/selects";
@@ -31,7 +32,7 @@ export async function GET(
 
     return NextResponse.json({ profile });
   } catch (e) {
-    console.error("Get profile error:", e instanceof Error ? e.message : e);
+    logger.route("Get profile error", e);
     return NextResponse.json({ error: "Failed to load profile" }, { status: 500 });
   }
 }

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentUser, unauthorized } from "@/lib/auth";
@@ -76,7 +77,7 @@ export async function POST(
 
     return NextResponse.json({ mentorship }, { status: 201 });
   } catch (e) {
-    console.error("Mentorship request error:", e instanceof Error ? e.message : e);
+    logger.route("Mentorship request error", e);
     return NextResponse.json(
       { error: "Failed to create mentorship request" },
       { status: 500 }

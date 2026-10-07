@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validate";
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
     setSessionCookie(response, token);
     return response;
   } catch (e) {
-    console.error("Register error:", e instanceof Error ? e.message : e);
+    logger.route("Register error", e);
     return NextResponse.json({ error: "Failed to create account" }, { status: 500 });
   }
 }

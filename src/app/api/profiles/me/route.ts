@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authUserSelect } from "@/lib/selects";
@@ -45,7 +46,7 @@ export async function PATCH(req: NextRequest) {
 
     return json({ profile, user: { ...user, name: name ?? user.name } });
   } catch (e) {
-    console.error("Update profile error:", e instanceof Error ? e.message : e);
+    logger.route("Update profile error", e);
     return json({ error: "Failed to update profile" }, { status: 500 });
   }
 }

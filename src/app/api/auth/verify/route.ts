@@ -1,3 +1,4 @@
+import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, AUTH_POLICY } from "@/lib/rate-limit";
 import { verifySchema } from "@/lib/validate";
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   } catch (e) {
-    console.error("Verify error:", e instanceof Error ? e.message : e);
+    logger.route("Verify error", e);
     return NextResponse.json({ error: "Failed to verify email" }, { status: 500 });
   }
 }
