@@ -352,6 +352,14 @@ Le service worker **ne s'enregistre qu'en production** (`sw-register.tsx` vérif
 
 ### Déploiement Vercel
 
+**État** : en production sur `https://code-xchange-nine.vercel.app` — base **Neon**
+(PostgreSQL 18), les 4 variables ci-dessous sont posées et les routes `/api/*` répondent
+avec les données du seed. Vérifier de l'extérieur :
+
+```bash
+curl -s https://code-xchange-nine.vercel.app/api/stats   # {"stats":{"users":30,…}}
+```
+
 Le projet est relié à GitHub : tout `push` sur `main` déclenche un déploiement.
 
 `vercel.json` impose `npx prisma generate && next build`. Sans cette étape explicite,

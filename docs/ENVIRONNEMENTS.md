@@ -8,7 +8,7 @@
 | **Local (prod-like)** | vérifier le build, **PWA et hors-ligne** (le service worker est désactivé en dev) | même base locale | `bun run build` puis `bun run start` | `http://localhost:3000` |
 | **CI (preview)** | lint, tests, typecheck, build à chaque push et PR | service **`postgres:16`** éphémère monté par GitHub Actions | étapes de `.github/workflows/ci.yml` | — |
 | **Staging** | pré-production, tests de migration et de seed | PostgreSQL dédié | `bunx prisma db push`, seed, `bun run build`, `bun run start` | domaine interne, HTTPS |
-| **Production (Vercel)** | service public, déployé à chaque push sur `main` | **PostgreSQL managé** (Neon / Supabase / Vercel Postgres) | `npx prisma generate && next build` (imposé par `vercel.json`) | `https://code-xchange-nine.vercel.app` |
+| **Production (Vercel)** | service public, déployé à chaque push sur `main` | **Neon** (PostgreSQL 18, managé) | `npx prisma generate && next build` (imposé par `vercel.json`) | `https://code-xchange-nine.vercel.app` |
 
 **Base locale — à faire une seule fois** (en tant que superutilisateur, ex.
 `sudo -u postgres psql` ; sur ce conteneur, `sudo sh -c "su postgres -c 'psql'"`):
