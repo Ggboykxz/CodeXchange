@@ -13,13 +13,13 @@ export async function GET(req: NextRequest) {
 
     const where: Record<string, unknown> = {};
     if (status && status !== "all") where.status = status;
-    if (stack && stack !== "all") where.stack = { contains: stack };
+    if (stack && stack !== "all") where.stack = { contains: stack, mode: "insensitive" };
     if (q) {
       where.OR = [
-        { name: { contains: q } },
-        { tagline: { contains: q } },
-        { description: { contains: q } },
-        { stack: { contains: q } },
+        { name: { contains: q, mode: "insensitive" } },
+        { tagline: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+        { stack: { contains: q, mode: "insensitive" } },
       ];
     }
 

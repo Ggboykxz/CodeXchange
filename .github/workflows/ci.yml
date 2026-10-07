@@ -16,6 +16,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
+    # PostgreSQL : le provider Prisma est `postgresql` (SQLite ne fonctionne
+    # pas sur Vercel — disque des fonctions en lecture seule). Le service est
+    # en bonne santé avant l'étape `prisma db push` grâce au health check.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cx
+          POSTGRES_PASSWORD: cx_local_dev
+          POSTGRES_DB: codexchange
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://cx:cx_local_dev@127.0.0.1:5432/codexchange
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +56,8 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # DATABASE_URL (SQLite) doit exister pour `next build`
+      # DATABASE_URL doit exister pour `next build` (l'URL Postgres du service
+      # ci-dessus prime sur .env : Next et Prisma ne l'écrasent jamais)
       - name: Create .env
         run: cp .env.example .env
 

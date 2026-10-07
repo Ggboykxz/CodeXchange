@@ -17,13 +17,13 @@ export async function GET(req: NextRequest) {
     if (country && country !== "all") where.country = country;
     if (type && type !== "all") where.type = type;
     if (remote === "true") where.remote = true;
-    if (stack && stack !== "all") where.stack = { contains: stack };
+    if (stack && stack !== "all") where.stack = { contains: stack, mode: "insensitive" };
     if (q) {
       where.OR = [
-        { title: { contains: q } },
-        { company: { contains: q } },
-        { description: { contains: q } },
-        { stack: { contains: q } },
+        { title: { contains: q, mode: "insensitive" } },
+        { company: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+        { stack: { contains: q, mode: "insensitive" } },
       ];
     }
 

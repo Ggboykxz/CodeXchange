@@ -63,7 +63,7 @@ Vérifiée dans `package.json` :
 | **Next.js** (App Router) | `^16.1.1` | Route handlers, `output: "standalone"`, proxy de sécurité |
 | **React** | `^19.0.0` | UI, Server/Client components |
 | **TypeScript** | `^5` | Typage strict, `tsc --noEmit` en CI |
-| **Prisma + SQLite** | `^6.11.1` | ORM + base locale (`prisma/dev.db`) |
+| **Prisma + PostgreSQL** | `^6.11.1` | ORM, `provider = "postgresql"` (PostgreSQL 16) |
 | **Tailwind CSS** | `^4` | Styling (via `@tailwindcss/postcss`) |
 | **Zod** | `^4.0.2` | Validation de toutes les payloads d'entrée |
 | **react-markdown + remark-gfm** | `^10.1.0` / `^4.0.1` | Rendu Markdown des questions/réponses |
@@ -73,17 +73,26 @@ Vérifiée dans `package.json` :
 | **Radix UI / shadcn** | plusieurs | Dialogs, selects, menus, switches… |
 | **ESLint** | `^9` + `eslint-config-next` | `bun run lint` |
 
-### Écart avec la fiche technique du projet (PostgreSQL / Supabase)
+### PostgreSQL (aligné sur la fiche technique)
 
-La fiche technique du projet cible **PostgreSQL/Supabase** ; ce dépôt tourne sur **SQLite** :
-c'est le choix retenu pour le hackathon (base unique, zéro service externe, `db push` instantané).
-**Passer en PostgreSQL/Supabase** se résume à deux changements : le `provider` du bloc `datasource db`
-dans `prisma/schema.prisma` (`"sqlite"` → `"postgresql"`) et la valeur de `DATABASE_URL` dans `.env`
-(`file:./dev.db` → `postgresql://user:pass@host:5432/codexchange`, ou l'URL Supabase du projet).
-Ensuite : `bunx prisma migrate dev --name init` (les migrations PostgreSQL sont à créer, elles
-n'existent pas encore — seul `db push` a été utilisé jusqu'ici), `bunx prisma generate`, puis relancer
-`bun run scripts/seed.ts`. Aucune requête SQL brute n'est écrite dans le code : seule l'écriture Prisma
-change.
+La fiche technique du projet cible **PostgreSQL/Supabase** : c'est désormais ce
+qui tourne, `provider = "postgresql"` dans `prisma/schema.prisma`. Deux raisons
+de ne plus revenir en arrière :
+
+1. **c'est une obligation Vercel** — le disque des fonctions est en lecture seule
+   et chaque instance a le sien : `file:./dev.db` ne survivrait pas à la
+   première écriture, et rien ne serait partagé entre les instances ;
+2. c'est ce que demande la fiche technique.
+
+Aucune requête SQL brute n'est écrite dans le code (zéro `$queryRaw`) : seule
+l'écriture Prisma a changé, les 13 modèles sont intacts. Un point de vigilance :
+les filtres de recherche portent maintenant `mode: "insensitive"` — SQLite
+compare déjà en insensible à la casse (`LIKE` ASCII), PostgreSQL non, et sans
+ce marqueur la recherche serait devenue sensible à la casse.
+
+Base locale : rôle `cx` + base `codexchange` sur `localhost:5432`
+(création et commandes dans [docs/ENVIRONNEMENTS.md](./docs/ENVIRONNEMENTS.md)) ;
+en CI, un service `postgres:16` est monté par `.github/workflows/ci.yml`.
 
 ---
 
@@ -157,8 +166,8 @@ bun install                       # lockfile canonique : bun.lock
 # 2. Environnement
 cp .env.example .env              # DATABASE_URL, SESSION_SECRET, COOKIE_SECURE
 
-# 3. Base SQLite (crée prisma/dev.db)
-bun run db:push                   # prisma db push --accept-data-loss
+# 3. Base PostgreSQL (rôle `cx` + base `codexchange`, cf. docs/ENVIRONNEMENTS.md)
+bun run db:push                   # prisma db push (schéma)
 bun run db:generate               # client Prisma
 
 # 4. Données de démonstration
@@ -226,7 +235,7 @@ si `passwordHash`, `email` ou `role` venait à figurer dans un select public —
 le rate limiting (fenêtre glissante, clés isolées, `Retry-After`) et la liste de pays partagée
 (doublons, tri, cohérence formulaire/filtre).
 
-**Ce que la suite ne couvre pas** : aucun test n'importe `lib/db`, donc le seed et le `dev.db` ne
+**Ce que la suite ne couvre pas** : aucun test n'importe `lib/db`, donc le seed et la base ne
 sont jamais touchés — mais aucun parcours n'est non plus exécuté dans un vrai navigateur. Le test
 E2E Playwright du parcours Q&R est prévu en M1 (`docs/ROADMAP.md`).
 
@@ -289,7 +298,8 @@ déclare `"dir": "ltr"`. Activer l'arabe correctement demandera de poser `lang`/
 - **Anti-fraude applicative** : `authorId`, `role`, `isAnswer` ne sont jamais lus dans la payload
   client ; on ne peut pas upvoter sa propre contribution ; une seule meilleure réponse par question
   (transaction) ; demande de mentorat en double refusée.
-- **SQLite** : journal et `dev.db` sont `.gitignore` ; le log SQL Prisma n'est activé qu'en dev
+- **Base de données** : `DATABASE_URL`, `SESSION_SECRET` et `.env` sont `.gitignore` (seul
+  `.env.example` est versionné, sans secret réel) ; le log SQL Prisma n'est activé qu'en dev
   (sinon les hash de mot de passe partiraient dans les `tee dev.log` / `server.log`).
 - À noter : `SESSION_SECRET` sert de **sel** au hash du jeton (`sha256(SECRET:jeton)`) : le
   changer invalide instantanément toutes les sessions en base, ce qui fait office de bouton
@@ -302,8 +312,7 @@ déclare `"dir": "ltr"`. Activer l'arabe correctement demandera de poser `lang`/
 
 ```
 ├── prisma/
-│   ├── schema.prisma           # 13 modèles, datasource sqlite
-│   └── dev.db                  # base locale (non versionnée)
+│   └── schema.prisma           # 13 modèles, datasource postgresql (schéma poussé par `db push`)
 ├── public/
 │   ├── sw.js                   # service worker (écrit à la main)
 │   ├── manifest.webmanifest    # PWA installable
@@ -358,15 +367,13 @@ Variables à poser dans Vercel (*Settings → Environment Variables*) :
 | `SESSION_SECRET` | `openssl rand -hex 32` — sel du hash des jetons de session |
 | `COOKIE_SECURE` | `true` (HTTPS) |
 | `NEXT_PUBLIC_SITE_URL` | `https://…` domaine réel (repli `VERCEL_URL`) |
-| `DATABASE_URL` | URL **PostgreSQL** — voir l'encadré ci-dessous |
+| `DATABASE_URL` | URL PostgreSQL du service managé (Neon, Supabase, Vercel Postgres) |
 
-> ⚠️ **SQLite ne fonctionne pas sur Vercel** : le disque des fonctions est en
-> lecture seule et chaque instance a le sien — `file:./dev.db` ne survivrait pas
-> au premier écrit. Il faut passer `provider = "postgresql"` dans
-> `prisma/schema.prisma` (procédure dans [docs/ENVIRONNEMENTS.md](./docs/ENVIRONNEMENTS.md))
-> et brancher une base managée (Vercel Postgres, Neon, Supabase). C'est l'étape
-> **M2** de la feuille de route — en attente, l'UI s'affiche mais toutes les
-> routes `/api/*` qui lisent la base renvoient une erreur.
+> ✅ **Le `provider` est passé à `postgresql`** : SQLite ne pouvait pas fonctionner
+> sur Vercel (disque des fonctions en lecture seule, éphémérique par instance).
+> Il reste à poser les variables ci-dessus dans *Settings → Environment Variables*
+> — sans `DATABASE_URL`, l'UI s'affiche mais toutes les routes `/api/*` qui lisent
+> la base renvoient `{"error":"…"}` en 500.
 
 ---
 

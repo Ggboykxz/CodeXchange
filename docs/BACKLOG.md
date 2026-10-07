@@ -10,7 +10,7 @@
 | ID | Item | Statut | Note |
 |---|---|---|---|
 | A1 | Schéma Prisma (13 modèles) | ✅ | `prisma/schema.prisma` : User, Session, Profile, Thread, Post, Vote, Job, Project, Tutorial, Event, Mentor, Mentorship, Notification |
-| A2 | Base de données + scripts `db:*` | ✅ | SQLite (`provider = "sqlite"`), scripts `db:push` / `db:generate` / `db:migrate` / `db:reset` |
+| A2 | Base de données + scripts `db:*` | ✅ | PostgreSQL (`provider = "postgresql"`, même base en dev, CI et prod), scripts `db:push` / `db:generate` / `db:migrate` / `db:reset` |
 | A3 | Seed de données réalistes | ✅ | `scripts/seed.ts` : 30 comptes, 40 questions, 100 réponses, 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors, votes recalculés |
 | A4 | Charte visuelle (monospace, palette, grain) | ✅ | IBM Plex Mono en variable `--font-mono`, tokens Tailwind 4, `paper-grain` |
 | A5 | CI (lint → typecheck → build) | ✅ | `.github/workflows/ci.yml`, Bun + Node 22, `bun install --frozen-lockfile`, badge en tête du README |
@@ -125,7 +125,7 @@
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
 | J7 | Tests unitaires / E2E | ⏳ | **Unitaires livrés** : Vitest, 75 tests / 6 fichiers (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays), étape `bun run test` en CI. **E2E (Playwright) à venir** — prévu en M1 |
 | J8 | Journalisation & monitoring | ⬜ | `console.error` + logs `tee` ; log SQL Prisma en dev uniquement (volontaire) |
-| J9 | Sauvegardes / réplication de base | ⬜ | SQLite local, aucun plan de backup |
+| J9 | Sauvegardes / réplication de base | ⬜ | PostgreSQL managé en prod : les backups (PITR) relèvent du fournisseur (Neon / Supabase) — il reste à écrire la procédure de restauration et à la tester |
 
 ---
 

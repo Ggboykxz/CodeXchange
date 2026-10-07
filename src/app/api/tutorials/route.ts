@@ -14,10 +14,10 @@ export async function GET(req: NextRequest) {
     if (category && category !== "all") where.category = category;
     if (q) {
       where.OR = [
-        { title: { contains: q } },
-        { excerpt: { contains: q } },
-        { body: { contains: q } },
-        { tags: { contains: q } },
+        { title: { contains: q, mode: "insensitive" } },
+        { excerpt: { contains: q, mode: "insensitive" } },
+        { body: { contains: q, mode: "insensitive" } },
+        { tags: { contains: q, mode: "insensitive" } },
       ];
     }
 

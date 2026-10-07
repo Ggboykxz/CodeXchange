@@ -11,9 +11,9 @@
 **Durée :** 3 min (une seule fois) · **Prérequis :** Bun installé.
 
 ```bash
-bun install                 # dépendances
-cp .env.example .env        # DATABASE_URL="file:./dev.db"
-bun run db:push             # crée prisma/dev.db
+bun install                 # dépendances (postinstall = prisma generate)
+cp .env.example .env        # DATABASE_URL PostgreSQL locale
+bun run db:push             # pousse le schéma sur la base `codexchange`
 bun run scripts/seed.ts     # ⚠️ `bunx prisma db seed` ne sait pas quoi exécuter (pas de `prisma.seed`)
 bun run dev                 # http://localhost:3000
 ```
@@ -180,7 +180,7 @@ réputation.
 > vérifiés, donc aucun n'affiche d'état vide.
 
 **Bilan du parcours :** inscription → profil éditable → e-mail vérifié (badge) → contenu Markdown →
- réponse → vote → meilleure réponse → réputation serveur. **Tout est persisté en base SQLite, révocable, et relisible au
+ réponse → vote → meilleure réponse → réputation serveur. **Tout est persisté en base PostgreSQL, révocable, et relisible au
  prochain démarrage.**
 
 ---

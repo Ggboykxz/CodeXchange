@@ -4,17 +4,31 @@
 
 | Environnement | But | Base de données | Commandes | URL |
 |---|---|---|---|---|
-| **Local (dev)** | développement quotidien, démo live | **SQLite** `prisma/dev.db` | `bun run dev` | `http://localhost:3000` |
-| **Local (prod-like)** | vérifier le build, **PWA et hors-ligne** (le service worker est désactivé en dev) | SQLite `prisma/dev.db` | `bun run build` puis `bun run start` | `http://localhost:3000` |
-| **Preview** | branche / pull request : build + lint + types, base jetable | SQLite éphémère créée par `prisma db push` | étapes de `.github/workflows/ci.yml` | URL de déploiement du forge (à brancher) |
-| **Staging** | pré-production, tests de migration et de seed | **PostgreSQL** (voir « Passer en PostgreSQL/Supabase » du README) | `bunx prisma migrate deploy` puis `bun run scripts/seed.ts`, `bun run build`, `bun run start` | domaine interne, HTTPS |
-| **Production** | service public | **PostgreSQL / Supabase** + backups | `bun run build` puis `bun run start` derrière un reverse proxy HTTPS | `https://codexchange.dev` |
+| **Local (dev)** | développement quotidien, démo live | **PostgreSQL 16** local — base `codexchange`, rôle `cx` | `bun run dev` | `http://localhost:3000` |
+| **Local (prod-like)** | vérifier le build, **PWA et hors-ligne** (le service worker est désactivé en dev) | même base locale | `bun run build` puis `bun run start` | `http://localhost:3000` |
+| **CI (preview)** | lint, tests, typecheck, build à chaque push et PR | service **`postgres:16`** éphémère monté par GitHub Actions | étapes de `.github/workflows/ci.yml` | — |
+| **Staging** | pré-production, tests de migration et de seed | PostgreSQL dédié | `bunx prisma db push`, seed, `bun run build`, `bun run start` | domaine interne, HTTPS |
+| **Production (Vercel)** | service public, déployé à chaque push sur `main` | **PostgreSQL managé** (Neon / Supabase / Vercel Postgres) | `npx prisma generate && next build` (imposé par `vercel.json`) | `https://code-xchange-nine.vercel.app` |
+
+**Base locale — à faire une seule fois** (en tant que superutilisateur, ex.
+`sudo -u postgres psql` ; sur ce conteneur, `sudo sh -c "su postgres -c 'psql'"`):
+
+```sql
+CREATE ROLE cx LOGIN PASSWORD 'cx_local_dev' CREATEDB;
+CREATE DATABASE codexchange OWNER cx;
+```
+
+Puis `bun run db:push` (le schéma est poussé, il n'y a **pas** de dossier
+`migrations/` : le projet utilise `db push` partout — CI, local et prod).
+
+SQLite n'est plus utilisé du tout : `file:./dev.db` ne peut pas fonctionner sur
+Vercel (disque des fonctions en lecture seule, éphémérique par instance).
 
 ### Variables d'environnement (`.env`, jamais versionné)
 
 | Variable | Valeur dev | Valeur prod | Rôle réel dans le code |
 |---|---|---|---|
-| `DATABASE_URL` | `file:./dev.db` | `postgresql://user:pass@host:5432/codexchange` (ou URL Supabase) | **Seule variable obligatoire** : lue par `prisma/schema.prisma` (`env("DATABASE_URL")`) |
+| `DATABASE_URL` | `postgresql://cx:cx_local_dev@127.0.0.1:5432/codexchange` | URL du service managé (Neon / Supabase / Vercel Postgres) | **Seule variable obligatoire** : lue par `prisma/schema.prisma` (`env("DATABASE_URL")`). Sans elle, toutes les routes `/api/*` qui lisent la base répondent 500 |
 | `COOKIE_SECURE` | `false` | `true` (uniquement derrière HTTPS) | `src/lib/auth.ts` : ajoute `secure` au cookie `cx_session`. **À `true` sur un site en HTTP, le cookie n'est jamais stocké → connexion « acceptée » mais reste déconnecté** |
 | `SESSION_SECRET` | `change-me-…` | `openssl rand -hex 32` | Sert de **sel** au hash du jeton de session : `sha256(SECRET:jeton)`. Le changer invalide **toutes les sessions** d'un coup — le geste à faire en cas de suspicion de compromission. Absente en dev local ⇒ valeur de repli utilisée |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://…` (domaine réel) | `src/lib/site.ts` : `metadataBase` (aperçus Open Graph), `robots.ts` et `sitemap.xml`. Repli `VERCEL_URL`, puis `localhost:3000` |
@@ -26,33 +40,32 @@
   l'IP de session (`clientIp()`).
 - **HTTPS** : condition de `COOKIE_SECURE=true` et déclencheur du header
   `Strict-Transport-Security` (posé seulement si `NODE_ENV === "production"`).
-- **CI** : `.github/workflows/ci.yml` équivaut à l'environnement « preview » aujourd'hui —
-  elle ne fait que lint + typecheck + build (pas de déploiement).
+- **CI** : `.github/workflows/ci.yml` monte un service `postgres:16` (base jetable) et tourne
+  lint → tests → typecheck → build. Elle ne déploie rien : Vercel se déploie de son côté, à chaque
+  push sur `main`.
 
 ### Commandes par environnement
 
 ```bash
-# --- local dev
+# --- local dev (base PostgreSQL locale, cf. « à faire une seule fois » ci-dessus)
 cp .env.example .env
-bun install
-bun run db:push          # schéma SQLite
-bun run scripts/seed.ts  # données de démo (destructif)
-bun run dev              # port 3000
+bun install               # postinstall = prisma generate
+bun run db:push           # schéma PostgreSQL
+bun run scripts/seed.ts   # données de démo (destructif)
+bun run dev               # port 3000
 
 # --- local prod-like (obligatoire pour la PWA / hors-ligne)
-bun run build            # next build + copie static/ et public/ dans .next/standalone/
-bun run start            # NODE_ENV=production bun .next/standalone/server.js
+bun run build             # next build + copie static/ et public/ dans .next/standalone/
+bun run start             # NODE_ENV=production bun .next/standalone/server.js
 
-# --- staging / prod PostgreSQL
-# 1. provider = "postgresql" dans prisma/schema.prisma
-# 2. DATABASE_URL=postgresql://…
-bunx prisma migrate deploy   # migrations versionnées (à créer : db push seul n'est pas versionné)
-bunx prisma generate
-bun run scripts/seed.ts      # optionnel : jeu de démonstration
-bun run build && bun run start
+# --- production Vercel
+# 1. poser dans Settings → Environment Variables :
+#    DATABASE_URL (service managé), SESSION_SECRET, COOKIE_SECURE=true, NEXT_PUBLIC_SITE_URL
+# 2. pousser le schéma sur cette base :  npx prisma db push
+# 3. git push origin main  →  build Vercel (vercel.json : generate + next build)
 
 # --- vérifications (avant toute mise en ligne)
-bun run check               # lint + typecheck + build
+bun run check             # lint + tests + typecheck + build
 ```
 
 ---
@@ -116,14 +129,14 @@ le cache du service worker), DevTools → **Application → Service workers** : 
 
 ### Ce qu'on lit si le réseau tombe (texte de secours, à dire tel quel)
 
-> « CodeXchange tourne **entièrement en local** : la base est SQLite dans le dépôt et le serveur de
-> production démarre avec `bun run build` puis `bun run start`. Ce que vous venez de voir n'a donc
+> « CodeXchange tourne **entièrement en local** : une PostgreSQL locale (base `codexchange`) et le
+> serveur de production démarre avec `bun run build` puis `bun run start`. Ce que vous venez de voir n'a donc
 > **aucune dépendance au réseau** — c'est exactement le cas d'usage visé : des développeurs en
 > connexion instable qui lisent le forum hors-ligne grâce au service worker, puis reprennent leurs
 > écritures dès le retour du réseau. Les chiffres affichés sur la page d'accueil sont lus en direct
 > dans la base, pas codés en dur — sauf « Développeurs » et « Pays représentés », qui sont des
 > valeurs de communication. La suite est documentée dans `docs/ROADMAP.md` : traductions swahili et
-> arabe, RTL, création de contenus, puis bascule PostgreSQL. Je reprends la démonstration dès que le
+> arabe, RTL, création de contenus. Je reprends la démonstration dès que le
 > réseau revient. »
 
 Si c'est **l'application** qui plante (pas le réseau) : lire à la place le paragraphe suivant

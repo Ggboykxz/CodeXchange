@@ -70,14 +70,14 @@
 ## Slide 6 — Architecture technique
 
 - **Next.js 16 (App Router)** + **React 19** + **TypeScript 5** : une seule application, route handlers en API, build `standalone` prêt pour la prod.
-- **Prisma + SQLite** en dev/hackathon, `provider` et `DATABASE_URL` à basculer en **PostgreSQL/Supabase** pour la production (démarche documentée dans le README).
+- **Prisma + PostgreSQL** : `provider = "postgresql"` en local, en CI (service `postgres:16`) et en prod — la base de la fiche technique, sans exception. Zéro requête SQL brute dans le code.
 - **Auth maison** : sessions en base (révocables), hash SHA-256 du jeton, PBKDF2 100k itérations, vérification constant-time, anti-énumération.
 - **Sécurité en un point** : `src/proxy.ts` (ex-middleware) pose rate limiting (auth 10/min/IP, écritures 30/min), CSP et en-têtes de sécurité sur chaque réponse.
 - **Validation zod** sur toutes les entrées, sélecteurs Prisma publics : pas un seul `passwordHash` exposé.
 - **État client** : Zustand (navigation par hash + locale + utilisateur), rendu Markdown par `react-markdown`, sections chargées dynamiquement pour alléger le premier octet.
 - **Qualité** : ESLint + `tsc --noEmit` + build sur chaque push/PR (une seule exécution annulée par branche, timeout 20 min).
 
-**À dire à voix haute :** « Le choix SQLite est un choix de hackathon, pas un choix d'architecture : le chemin PostgreSQL est écrit et ne change aucune ligne de requête. »
+**À dire à voix haute :** « PostgreSQL partout, du poste de dev jusqu'à Vercel : le même provider, la même base, aucune requête SQL écrite à la main — et la recherche qui ne perd pas la casse, elle garde son `mode: insensitive`. »
 
 ---
 

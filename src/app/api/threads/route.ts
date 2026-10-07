@@ -22,15 +22,15 @@ export async function GET(req: NextRequest) {
 
     const where: Record<string, unknown> = {};
     if (category && category !== "all") where.category = category;
-    if (tag && tag !== "all") where.tags = { contains: tag };
+    if (tag && tag !== "all") where.tags = { contains: tag, mode: "insensitive" };
     if (solved === "true") where.solved = true;
     if (solved === "false") where.solved = false;
     if (q) {
       // Recherche sur titre, corps ET tags (cf. cahier des charges §3.2).
       where.OR = [
-        { title: { contains: q } },
-        { body: { contains: q } },
-        { tags: { contains: q } },
+        { title: { contains: q, mode: "insensitive" } },
+        { body: { contains: q, mode: "insensitive" } },
+        { tags: { contains: q, mode: "insensitive" } },
       ];
     }
 

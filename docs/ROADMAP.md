@@ -7,9 +7,10 @@
 
 | Phase | Contenu | Statut |
 |---|---|---|
-| **Hackathon J1–J2** | Fondations (Prisma 13 modèles, SQLite, seed), auth par session serveur, Q&R Markdown, votes + meilleure réponse, annuaire + édition de profil, lecture jobs/projets/tutos/events, mentorat, notifications in-app, i18n fr/en, dark mode, PWA hors-ligne, CI | ✅ **livré** (détail ligne par ligne ci-dessous) |
+| **Hackathon J1–J2** | Fondations (Prisma 13 modèles, seed), auth par session serveur, Q&R Markdown, votes + meilleure réponse, annuaire + édition de profil, lecture jobs/projets/tutos/events, mentorat, notifications in-app, i18n fr/en, dark mode, PWA hors-ligne, CI | ✅ **livré** (détail ligne par ligne ci-dessous) |
+| **Bascule PostgreSQL** | `provider = "postgresql"` en local, CI (service `postgres:16`) et Vercel ; `mode: "insensitive"` sur les 24 filtres de recherche (SQLite les rendait insensibles à la casse par défaut) ; `.env.example`, README et docs alignés | ✅ **livré** — bloquait le déploiement Vercel (disque des fonctions en lecture seule) |
 | **Beta privée S1–S4** | Traductions sw/ar, RTL arabe, filtre « non résolu » en UI, création de contenus (jobs/projets/tutos/events), messagerie privée, e-mails transactionnels, tests E2E | ⏳ **en cours / partiel** — voir le détail |
-| **Beta publique M2–M3** | Bascule PostgreSQL/Supabase, OAuth GitHub/Google, modération communautaire, compteurs de home fiables, landings SEO par module | ⬜ à venir |
+| **Beta publique M2–M3** | OAuth GitHub/Google, modération communautaire, compteurs de home fiables, landings SEO par module | ⬜ à venir |
 | **Croissance M4–M6** | Paiement mobile money, offres sponsorisées, programme de mentorat structuré (acceptation/refus côté mentor), API publique | ⬜ à venir |
 | **Consolidation M7–M12** | Applications mobiles légères, analytics communauté, gouvernance open-source, extension diaspora | ⬜ à venir |
 
@@ -67,7 +68,7 @@
 | **Envoi d'e-mails** | Aucune dépendance ni route d'envoi (bienvenue, reset de mot de passe, digest) |
 | **RTL arabe** | `lang`/`dir` sont maintenant pilotés par `LocaleSync`, mais `dir` reste `"ltr"` : le layout s'appuie encore sur des propriétés physiques (`pl-`/`pr-`/`left`) qui casserait le rendu |
 | **Traduction sw/ar** | 0 clé propre (voir ci-dessus) |
-| **PostgreSQL / Supabase** | `provider = "sqlite"`, aucune migration versionnée (utilisation de `db push`) |
+| **Migrations versionnées** | Le schéma est poussé par `db push` partout (local, CI, Vercel) : aucun dossier `prisma/migrations/` n'est versionné |
 | **Tests E2E (Playwright)** | Les **unitaires** sont là (Vitest, 75 tests sur hash, validation, sélecteurs, rate limit) — mais aucun parcours n'est exécuté dans un vrai navigateur |
 | **SEO / pages par module** | Application mono-page : une seule route `src/app/page.tsx`, navigation par hash |
 

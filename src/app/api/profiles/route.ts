@@ -38,16 +38,16 @@ export async function GET(req: NextRequest) {
     const where: Record<string, unknown> = {};
     if (country && country !== "all") where.country = country;
     if (city && city !== "all") where.city = city;
-    if (stack && stack !== "all") where.stack = { contains: stack };
+    if (stack && stack !== "all") where.stack = { contains: stack, mode: "insensitive" };
     if (level && level !== "all") where.level = level;
     if (available === "true") where.available = true;
     if (q) {
       where.OR = [
-        { username: { contains: q } },
-        { headline: { contains: q } },
-        { bio: { contains: q } },
-        { city: { contains: q } },
-        { stack: { contains: q } },
+        { username: { contains: q, mode: "insensitive" } },
+        { headline: { contains: q, mode: "insensitive" } },
+        { bio: { contains: q, mode: "insensitive" } },
+        { city: { contains: q, mode: "insensitive" } },
+        { stack: { contains: q, mode: "insensitive" } },
       ];
     }
 
