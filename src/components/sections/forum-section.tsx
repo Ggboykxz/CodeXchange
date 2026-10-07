@@ -483,6 +483,45 @@ export function ForumSection() {
         </Button>
 
         <article className="space-y-6">
+          {/* Deux colonnes sur desktop : rail de vote vertical à gauche (la
+              « colonne grise » de Reddit), contenu à droite. Sous `sm`, le
+              rail devient une barre horizontale, à l'inverse (`order`). */}
+          <div className="flex gap-4">
+            <div className="hidden sm:flex shrink-0 flex-col items-center gap-0.5 self-start rounded-md border border-border bg-muted/40 px-1.5 py-2 text-sm">
+              <button
+                type="button"
+                onClick={() =>
+                  handleVote("thread", selectedThread.id, selectedThread.myVote === 1 ? 0 : 1)
+                }
+                aria-label={selectedThread.myVote === 1 ? t("forum.cancel_vote") : t("forum.upvote_question")}
+                aria-pressed={selectedThread.myVote === 1}
+                className={cn("rounded p-1 transition hover:bg-background", selectedThread.myVote === 1 ? "text-chart-1" : "text-muted-foreground hover:text-chart-1")}
+              >
+                <ChevronUp className="h-5 w-5" />
+              </button>
+              <span className={cn("font-mono text-sm font-semibold tabular-nums", selectedThread.myVote === 1 && "text-chart-1", selectedThread.myVote === -1 && "text-destructive")}>
+                {selectedThread.upvotes}
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  handleVote("thread", selectedThread.id, selectedThread.myVote === -1 ? 0 : -1)
+                }
+                aria-label={selectedThread.myVote === -1 ? t("forum.cancel_vote") : t("forum.downvote_question")}
+                aria-pressed={selectedThread.myVote === -1}
+                className={cn("rounded p-1 transition hover:bg-background", selectedThread.myVote === -1 ? "text-destructive" : "text-muted-foreground hover:text-destructive")}
+              >
+                <ChevronDown className="h-5 w-5" />
+              </button>
+              <span className="mt-1 flex items-center gap-1 border-t border-border pt-1 text-xs text-muted-foreground">
+                <Eye className="h-3 w-3" /> {selectedThread.views}
+              </span>
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <MessageSquare className="h-3 w-3" /> {selectedThread.posts.length}
+              </span>
+            </div>
+
+            <div className="min-w-0 flex-1">
           {/* Thread meta */}
           <header>
             <div className="flex items-center gap-2 mb-3">
@@ -622,7 +661,9 @@ export function ForumSection() {
             </div>
           )}
 
-          <div className="flex items-center gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
+          {/* Sous `sm`, le rail vertical n'existe pas : on garde une barre de
+              vote horizontale, masquée dès `sm` où le rail prend le relais. */}
+          <div className="flex sm:hidden items-center justify-between gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
             <span className="flex items-center gap-1">
               <button
                 type="button"
@@ -721,6 +762,9 @@ export function ForumSection() {
             busy={busy}
             onConfirm={handleDelete}
           />
+
+          </div>{/* /min-w-0 */}
+          </div>{/* /flex */}
 
           {/* Fil de commentaires : imbriqué, triable et repliable, à la
               façon de Reddit. Le composant reconstruit l'arbre à partir de
