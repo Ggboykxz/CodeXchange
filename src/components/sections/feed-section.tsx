@@ -5,6 +5,7 @@ import { useAppStore, useT } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,7 @@ import {
   MessageSquare,
   Plus,
   RefreshCw,
+  Search,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -81,18 +83,22 @@ export function FeedSection() {
   const [threads, setThreads] = useState<ThreadCardData[]>([]);
   const [sort, setSort] = useState<Sort>("new");
   const [unsolved, setUnsolved] = useState(false);
+  /** Saisie instantanée de la barre de recherche… */
+  const [searchInput, setSearchInput] = useState("");
+  /** …et requête réellement envoyée, différée de 300 ms (debounce). */
+  const [q, setQ] = useState("");
   const [error, setError] = useState(false);
   /**
-   * Clé réellement chargée (`tri|filtre`). Tant qu'elle diffère de la clé
-   * courante, on affiche le squelette : pas besoin d'un état « loading » posé
-   * dans un effet (ce qui provoquerait un rendu en cascade).
+   * Clé réellement chargée (`tri|filtre|recherche`). Tant qu'elle diffère de
+   * la clé courante, on affiche le squelette : pas besoin d'un état « loading »
+   * posé dans un effet (ce qui provoquerait un rendu en cascade).
    */
   const [loadedKey, setLoadedKey] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
 
-  const key = `${sort}|${unsolved}`;
+  const key = `${sort}|${unsolved}|${q}`;
   const pending = loadedKey !== key;
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -106,6 +112,13 @@ export function FeedSection() {
   }, [threads.length]);
   /** Numéro de requête : une réponse tardive ne doit pas écraser la nouvelle. */
   const reqRef = useRef(0);
+
+  // Recherche : on ne repasse le fil en mode « chargement » qu'après 300 ms
+  // sans frappe, sinon chaque caractère provoquerait un squelette.
+  useEffect(() => {
+    const id = setTimeout(() => setQ(searchInput.trim()), 300);
+    return () => clearTimeout(id);
+  }, [searchInput]);
 
   const askSignIn = (mode: "login" | "register") => {
     setAuthMode(mode);
@@ -128,6 +141,7 @@ export function FeedSection() {
           sort,
         });
         if (unsolved) params.set("solved", "false");
+        if (q) params.set("q", q);
 
         const res = await fetch(`/api/threads?${params.toString()}`);
         if (!res.ok) throw new Error(String(res.status));
@@ -154,7 +168,7 @@ export function FeedSection() {
         if (id === reqRef.current) setLoadingMore(false);
       }
     },
-    [key, sort, unsolved, t]
+    [key, sort, unsolved, q, t]
   );
 
   // Recharge à chaque changement de tri/filtre (et au premier rendu), ainsi
@@ -311,10 +325,25 @@ export function FeedSection() {
               {t("feed.filter.unsolved")}
             </button>
 
+            <div className="relative min-w-0 flex-1 sm:ml-auto sm:max-w-64">
+              <Search
+                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <Input
+                type="search"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                aria-label={t("common.search")}
+                placeholder={t("nav.search")}
+                className="h-9 pl-8 text-sm"
+              />
+            </div>
+
             <Button
               size="sm"
               onClick={openCreate}
-              className="ml-auto bg-foreground text-background hover:bg-foreground/90"
+              className="bg-foreground text-background hover:bg-foreground/90"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               {t("feed.compose")}
@@ -346,7 +375,9 @@ export function FeedSection() {
                 className="mx-auto mb-3 h-8 w-8 text-muted-foreground"
                 aria-hidden="true"
               />
-              <p className="text-muted-foreground">{t("feed.empty")}</p>
+              <p className="text-muted-foreground">
+                {q ? t("forum.empty") : t("feed.empty")}
+              </p>
               <Button
                 className="mt-4 bg-foreground text-background hover:bg-foreground/90"
                 onClick={openCreate}
