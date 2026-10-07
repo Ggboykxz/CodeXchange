@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
+import { useFeedPrefsStore } from "@/store/feed-prefs-store";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Tag, tagColors } from "@/components/shared/tag";
 import { ThreadCard } from "@/components/shared/thread-card";
@@ -122,6 +123,10 @@ export function ForumSection() {
 
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
+  // Publications masquées depuis la barre d'actions : même store que le fil
+  // d'accueil, donc une question masquée l'est partout dans l'app.
+  const hiddenIds = useFeedPrefsStore((s) => s.hidden);
+  const visible = threads.filter((th) => !hiddenIds.includes(th.id));
   const [category, setCategory] = useState("all");
   const [tag, setTag] = useState("all");
   const [q, setQ] = useState("");
@@ -520,11 +525,14 @@ export function ForumSection() {
   // LIST VIEW
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-      <div className="flex items-start justify-between gap-4 mb-8">
+      {/* Empilé sous `sm` : en ligne, le bouton `shrink-0` écrase le bloc
+          titre et la description tombe à un mot par ligne. */}
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <SectionHeader
           eyebrow={t("nav.forum")}
           title={t("forum.title")}
           subtitle={t("forum.subtitle")}
+          className="w-full sm:min-w-0 sm:flex-1"
         />
         <Button
           onClick={() => {
@@ -599,14 +607,14 @@ export function ForumSection() {
             <div key={i} className="h-24 rounded-lg bg-muted animate-pulse" />
           ))}
         </div>
-      ) : threads.length === 0 ? (
+      ) : visible.length === 0 ? (
         <Card className="p-12 text-center border-dashed">
           <MessageSquare className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
           <p className="text-muted-foreground">{t("forum.empty")}</p>
         </Card>
       ) : (
         <div className="space-y-3">
-          {threads.map((thread) => (
+          {visible.map((thread) => (
             <ThreadCard
               key={thread.id}
               thread={thread}

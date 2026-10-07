@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore, useT } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
+import { useFeedPrefsStore } from "@/store/feed-prefs-store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ import {
   BookOpen,
   Briefcase,
   Clock,
+  EyeOff,
   Flame,
   FolderGit2,
   Loader2,
@@ -38,6 +40,7 @@ import {
   MessageSquare,
   Plus,
   RefreshCw,
+  RotateCcw,
   Search,
   Sparkles,
   TrendingUp,
@@ -132,6 +135,12 @@ export function FeedSection() {
   const pending = loadedKey !== key;
 
   const [createOpen, setCreateOpen] = useState(false);
+
+  // Masquages (« ⋯ → Masquer ») : le fil **filtre** dessus, donc « Annuler »
+  // et « Tout réafficher » agissent instantanément, sans rechargement.
+  const hiddenIds = useFeedPrefsStore((s) => s.hidden);
+  const restoreAll = useFeedPrefsStore((s) => s.restoreAll);
+  const visible = threads.filter((th) => !hiddenIds.includes(th.id));
 
   /** Longueur courante : nécessaire pour calculer la page suivante. */
   const countRef = useRef(0);
@@ -441,10 +450,28 @@ export function FeedSection() {
                 {t("feed.compose")}
               </Button>
             </Card>
+          ) : visible.length === 0 ? (
+            /* Tout a été masqué : on le dit et on propose de revenir en
+               arrière, plutôt que de laisser un fil vide sans explication. */
+            <Card className="p-10 text-center border-dashed">
+              <EyeOff
+                className="mx-auto mb-3 h-8 w-8 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <p className="text-muted-foreground">{t("feed.all_hidden")}</p>
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={restoreAll}
+              >
+                <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                {t("feed.show_hidden")}
+              </Button>
+            </Card>
           ) : (
             <>
               <div className="space-y-3">
-                {threads.map((thread) => (
+                {visible.map((thread) => (
                   <ThreadCard
                     key={thread.id}
                     thread={thread}
