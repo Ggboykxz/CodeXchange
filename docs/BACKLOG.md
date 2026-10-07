@@ -128,7 +128,7 @@
 | J4 | Non-fuite de `passwordHash` / `email` | ✅ | Sélecteurs Prisma publics + filtre récursif `json()` |
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
-| J7 | Tests unitaires / E2E | ⏳ | **Unitaires livrés** : Vitest, **197 tests / 11 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod — dont les 45 de la couche d'écriture —, rate limit, pays, `ranking` 43, `comments` 22, i18n), étape `bun run test` en CI. **E2E Playwright exécuté à chaque livraison** (connexion, publication des 4 contenus, votes, réponse imbriquée + pliage + tri, audit 390 px) mais via des scripts hors CI : il reste à les versionner et à les lancer en workflow |
+| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **202 tests / 12 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (8 scénarios — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px), lancés par le workflow GitHub après seed + Chromium + `next start` |
 | J8 | Journalisation & monitoring | ⬜ | `console.error` + logs `tee` ; log SQL Prisma en dev uniquement (volontaire) |
 | J9 | Sauvegardes / réplication de base | ⬜ | PostgreSQL managé en prod : les backups (PITR) relèvent du fournisseur (Neon / Supabase) — il reste à écrire la procédure de restauration et à la tester |
 
@@ -136,10 +136,10 @@
 
 ### Top 5 des correctifs prioritaires (issus de la lecture du code)
 
-1. **C10** — édition / suppression / épinglage d'une question (`threadUpdateSchema` est écrit dans `validate.ts`, aucune route ne l'utilise encore).
-2. **D2** — traduire les dictionnaires `sw`/`ar` (les 356 clés fr/en sont déjà alignées par le test, le `lang`/`dir` est piloté par `LocaleSync`).
-3. **J7** — versionner les scénarios Playwright et les lancer en CI : ils sont aujourd'hui exécutés à la main avant chaque livraison.
-4. **B7** — e-mails de bienvenue et de réinitialisation de mot de passe.
-5. **E5** — produire les captures d'écran depuis `bun run start` pour le README.
+1. **D2** — traduire les dictionnaires `sw`/`ar` (les 356 clés fr/en sont déjà alignées par le test, le `lang`/`dir` est piloté par `LocaleSync`).
+2. **B7** — e-mails de bienvenue et de réinitialisation de mot de passe.
+3. **E5** — produire les captures d'écran depuis `bun run start` pour le README.
+4. **J8** — journalisation structurée et monitoring.
+5. **J9** — procédure de restauration Neon testée.
 
-> Livré entre-temps : **G — création de contenus** (API d'écriture + `ContentDialog`), les **5 tris de Reddit**, les **réponses imbriquées** et la **modale d'auth unique**.
+> Livré entre-temps : **G**, **C10** (édition/suppression/épinglage + API), les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).
