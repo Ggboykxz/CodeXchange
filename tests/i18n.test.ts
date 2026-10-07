@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { dictionaries, translate } from "@/i18n/dictionaries";
 
 /**
- * Garde-fou i18n : le site est bilingue, donc une clé ajoutée en français et
+ * Garde-fou i18n : le site est quadrilingue, donc une clé ajoutée en français et
  * oubliée en anglais afficherait littéralement « feed.compose » dans la
  * version anglaise. Rien de plus visible qu'une clé brute dans l'interface.
  */
@@ -30,9 +30,13 @@ describe("dictionnaires", () => {
     }
   });
 
-  it("sw et ar tombent en anglais (framework déjà posé)", () => {
-    expect(dictionaries.sw["feed.compose"]).toBe(en["feed.compose"]);
-    expect(dictionaries.ar["feed.compose"]).toBe(en["feed.compose"]);
+  // sw et ar sont désormais traduits : ils ne retombent plus sur l'anglais.
+  it("sw et ar sont traduits (plus de fallback vers EN)", () => {
+    expect(dictionaries.sw["feed.compose"]).not.toBe(en["feed.compose"]);
+    expect(dictionaries.ar["feed.compose"]).not.toBe(en["feed.compose"]);
+    // Valeurs caractéristiques concrètes
+    expect(dictionaries.sw["common.loading"]).toBe("Inapakia...");
+    expect(dictionaries.ar["common.loading"]).toBe("جارٍ التحميل...");
   });
 
   it("aucun chiffre de communication fabriqué dans les textes de la home", () => {
