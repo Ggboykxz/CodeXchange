@@ -28,7 +28,7 @@
 | B4 | Édition de son profil | ✅ | `PATCH /api/profiles/me`, champs whitelistés zod, identité depuis la session |
 | B5 | Page profil publique + activités récentes | ✅ | `GET /api/profiles/[username]` : réputation, 5 dernières questions, 5 projets, 3 tutos |
 | B6 | OAuth GitHub / Google | ⬜ | L'implémentation d'origine transportait `next-auth` **sans jamais l'importer** : dépendance retirée, il faudra l'intégrer pour de bon |
-| B7 | E-mail de bienvenue / réinitialisation | ⬜ | Aucune dépendance ni route d'envoi |
+| B7 | E-mail de bienvenue / réinitialisation | ✅ | `lib/mailer` (nodemailer : SMTP réel si `SMTP_HOST`, aperçu journal sinon — l'envoi ne bloque jamais la requête) ; e-mail de bienvenue à l'inscription ; reset : `resetTokenHash`/`resetExpiresAt` (30 min, usage unique, purge à la consommation, révocation des sessions), `POST /api/auth/forgot` (réponse identique quelle que soit l'adresse — anti-énumération, rate-limit IP+email) et `POST /api/auth/reset` (`400`/`410`) ; UI : panneau « Mot de passe oublié ? » dans la modale d'auth unique + page `/reset` ; i18n 16 clés × 4 locales ; `.env.example` documente les variables SMTP ; **vérifié bout en bout** (reset réel → login nouveau 200 / ancien 401 / réutilisation jeton 400) |
 | B8 | Rôles & permissions (member / moderator / admin) | ⏳ | Champ `role` + contrôle serveur à l'acceptation d'une réponse ; **aucun outil** de gestion des rôles dans l'UI |
 | B9 | Vérification d'e-mail | ✅ | **Absente du backlog initial**, ajoutée et livrée : `emailVerifiedAt` + jeton hashé (24 h), `POST /api/auth/verify` (`200`/`410`/`400`), `/verify` en page, badge `profil vérifié`, renvoi toujours `200`. 18 tests bout en bout |
 
@@ -74,7 +74,7 @@
 | E2 | Deck de pitch 10 slides | ✅ | `docs/PITCH.md` (avec la ligne « à dire à voix haute » par slide) |
 | E3 | Environnements documentés (local / staging / preview / prod) | ✅ | `docs/ENVIRONNEMENTS.md` (variables, commandes) |
 | E4 | Plan de tournage d'une vidéo de secours (5 min) | ✅ | `docs/ENVIRONNEMENTS.md`, section « Plan de tournage » |
-| E5 | Captures d'écran du produit | ⬜ | Aucune image versionnée ; à produire depuis `bun run start` |
+| E5 | Captures d'écran du produit | ✅ | `scripts/screenshots.mjs` (lance `next start`, capture 7 vues en 1280 px → `docs/screenshots/*.png`, versionnées) ; le README s'ouvre sur la galerie (accueil, forum, fiche question avec rail de vote, jobs, projets, tutos, annuaire) |
 
 ## EPIC F — Réputation
 
@@ -129,16 +129,13 @@
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
 | J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **202 tests / 12 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (8 scénarios — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px), lancés par le workflow GitHub après seed + Chromium + `next start` |
-| J8 | Journalisation & monitoring | ⬜ | `console.error` + logs `tee` ; log SQL Prisma en dev uniquement (volontaire) |
-| J9 | Sauvegardes / réplication de base | ⬜ | PostgreSQL managé en prod : les backups (PITR) relèvent du fournisseur (Neon / Supabase) — il reste à écrire la procédure de restauration et à la tester |
+| J8 | Journalisation & monitoring | ✅ | `lib/log` : événements JSON une ligne (`ts`/`level`/`message`/ctx) en production, lisibles en dev ; les **23 routes** (35 appels) sont passées de `console.error` à `logger.route` ; `GET /api/health` (`{ok, db, latencyMs, uptime}`, 503 si DB down) pour les sondes ; 3 tests unitaires |
+| J9 | Sauvegardes / réplication de base | ✅ | PostgreSQL managé : la PITR reste chez Neon (documentée). `docs/RUNBOOK.md` : restauration PITR, bascule `DATABASE_URL` Vercel, dump/restauration locale, vérification ; `scripts/db-backup.sh` (`pg_dump -Fc` par défaut, `--plain` pour SQL) vers `./backups/` (gitignoré) — **exécuté et prouvé** sur le PG local (dump 263 K) |
 
 ---
 
 ### Top 5 des correctifs prioritaires (issus de la lecture du code)
 
-1. **B7** — e-mails de bienvenue et de réinitialisation de mot de passe.
-2. **E5** — produire les captures d'écran depuis `bun run start` pour le README.
-3. **J8** — journalisation structurée et monitoring.
-4. **J9** — procédure de restauration Neon testée.
+> **Tous les 5 sont livrés** : **B7** (e-mails), **E5** (captures), **J8** (logging/santé), **J9** (runbook Neon + backup), et **D2** (sw/ar traduits, livré juste avant). Voir les sections par épique pour le reste (B6 OAuth, B8 gestion des rôles, …).
 
-> Livré entre-temps : **G**, **C10**, **D2** (sw/ar traduits ✅), les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).
+> Livré entre-temps : **G**, **C10**, **D2**, **B7**, **E5**, **J8**, **J9**, les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).
