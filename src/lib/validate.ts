@@ -163,6 +163,12 @@ export const threadUpdateSchema = z.object({
 
 export const postCreateSchema = z.object({
   body: text(1, 40_000),
+  /**
+   * Commentaire auquel on répond. Optionnel (une réponse de racine l'est),
+   * mais borné comme tout identifiant : c'est un id Prisma, pas un champ
+   * de texte libre à exécuter.
+   */
+  parentId: z.string().trim().min(1).max(40).optional().nullable(),
 });
 
 export const voteSchema = z.object({

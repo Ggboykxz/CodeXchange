@@ -121,11 +121,16 @@ model Post {
   body        String
   upvotes     Int      @default(0)
   isAnswer    Boolean  @default(false)
+  /// Réponse **à un commentaire** (fil imbriqué façon Reddit) ; `null` = racine.
+  parentId    String?
+  parent      Post?    @relation("PostReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Post[]   @relation("PostReplies")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([threadId])
   @@index([authorId])
+  @@index([parentId])
 }
 
 /// Vote +1 / -1 sur une question (thread) ou une réponse (post).

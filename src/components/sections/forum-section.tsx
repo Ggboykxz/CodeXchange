@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Tag, tagColors } from "@/components/shared/tag";
 import { ThreadCard } from "@/components/shared/thread-card";
+import { CommentThread } from "@/components/shared/comment-thread";
 import { timeAgoLong } from "@/lib/time";
 import {
   CreateThreadForm,
@@ -102,6 +103,8 @@ type Post = {
   upvotes: number;
   myVote?: number;
   isAnswer: boolean;
+  /** Commentaire parent (fil imbriqué) — `null` = racine. */
+  parentId: string | null;
   createdAt: string;
   author: Author;
 };
@@ -128,8 +131,6 @@ export function ForumSection() {
   // Detail is cached by slug so we never have to reset it from an effect.
   const [detail, setDetail] = useState<{ slug: string; thread: ThreadDetail | null } | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
-  const [answerBody, setAnswerBody] = useState("");
-  const [postingAnswer, setPostingAnswer] = useState(false);
 
   // Derived view state — no setState inside effects needed.
   const selectedThread =
@@ -229,19 +230,23 @@ export function ForumSection() {
     }
   };
 
-  const handleAnswer = async () => {
-    if (!user || !selectedThread || !answerBody.trim()) return;
-    setPostingAnswer(true);
+  /**
+   * Publie une réponse — en racine (`parentId: null`) ou sous un
+   * commentaire. La liste reste plate côté état : c'est `CommentThread`
+   * qui la transforme en arbre à chaque rendu.
+   */
+  const handleReply = async (parentId: string | null, body: string) => {
+    if (!user || !selectedThread || !body.trim()) return false;
     try {
       const res = await fetch(`/api/threads/${selectedThread.slug}/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: answerBody }),
+        body: JSON.stringify({ body, parentId }),
       });
       const data = await res.json();
       if (!res.ok) {
         toast.error(data.error || "Erreur");
-        return;
+        return false;
       }
       setDetail({
         slug: selectedThread.slug,
@@ -250,12 +255,11 @@ export function ForumSection() {
           posts: [...selectedThread.posts, data.post],
         },
       });
-      setAnswerBody("");
       toast.success(t("forum.answer_published"));
+      return true;
     } catch {
       toast.error(t("common.network_error"));
-    } finally {
-      setPostingAnswer(false);
+      return false;
     }
   };
 
@@ -496,162 +500,18 @@ export function ForumSection() {
             </span>
           </div>
 
-          {/* Answers */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-xl">
-              {selectedThread.posts.length} {t("forum.answers")}
-            </h3>
-            {selectedThread.posts.map((post) => (
-              <Card
-                key={post.id}
-                className={cn(
-                  "p-5",
-                  post.isAnswer && "border-border bg-muted/30"
-                )}
-              >
-                {post.isAnswer && (
-                  <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-foreground mb-2">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    {t("forum.solved")}
-                  </div>
-                )}
-                <Markdown content={post.body} />
-                <div className="flex items-center justify-between gap-3 mt-4 pt-3 border-t border-border/60">
-                  <div className="flex items-center gap-2">
-                    <Avatar
-                      name={post.author.name}
-                      color={post.author.profile?.avatarColor}
-                      size="xs"
-                    />
-                    <span className="text-sm">
-                      <button
-                        onClick={() => navigate("annuaire", post.author.profile?.username)}
-                        className="font-medium hover:text-foreground transition"
-                      >
-                        {post.author.name}
-                      </button>
-                      <span
-                        className="ml-1 font-mono text-[11px] text-muted-foreground"
-                        title={t("annuaire.reputation_hint")}
-                      >
-                        ★ {post.author.reputation ?? 0}
-                        <span className="sr-only">
-                          {" "}
-                          {t("annuaire.reputation")}
-                        </span>
-                      </span>
-                      <time
-                        dateTime={post.createdAt}
-                        className="text-xs text-muted-foreground"
-                        title={new Date(post.createdAt).toLocaleString(locale)}
-                      >
-                        {" · "}
-                        {timeAgoLong(post.createdAt, locale)}
-                      </time>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* Accepter / retirer la meilleure réponse — visible pour
-                        l'auteur de la question et les modérateurs. */}
-                    {(selectedThread.author.id === user?.id || user?.role === "admin" || user?.role === "moderator") && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant={post.isAnswer ? "default" : "outline"}
-                        onClick={() => handleAccept(post.id, !post.isAnswer)}
-                        aria-pressed={post.isAnswer}
-                        className={cn(
-                          "h-7 px-2 text-[11px]",
-                          post.isAnswer && "bg-foreground text-background"
-                        )}
-                      >
-                        <CheckCircle2 className="h-3 w-3 mr-1" />
-                        {post.isAnswer ? t("forum.accepted") : t("forum.accept")}
-                      </Button>
-                    )}
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleVote("post", post.id, post.myVote === 1 ? 0 : 1)
-                        }
-                        aria-label={
-                          post.myVote === 1
-                            ? t("forum.cancel_vote")
-                            : t("forum.upvote_answer")
-                        }
-                        aria-pressed={post.myVote === 1}
-                        className={cn(
-                          "flex items-center gap-1 rounded border px-2 py-1 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
-                          post.myVote === 1
-                            ? "border-chart-1 text-chart-1"
-                            : "border-border text-muted-foreground hover:border-chart-1 hover:text-chart-1"
-                        )}
-                      >
-                        <ChevronUp className="h-3.5 w-3.5" />
-                        {post.upvotes}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleVote("post", post.id, post.myVote === -1 ? 0 : -1)
-                        }
-                        aria-label={
-                          post.myVote === -1
-                            ? t("forum.cancel_vote")
-                            : t("forum.downvote_answer")
-                        }
-                        aria-pressed={post.myVote === -1}
-                        title={t("forum.downvote_hint")}
-                        className={cn(
-                          "flex items-center rounded border px-2 py-1 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
-                          post.myVote === -1
-                            ? "border-chart-1 text-chart-1"
-                            : "border-border text-muted-foreground hover:border-chart-1 hover:text-chart-1"
-                        )}
-                      >
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          {/* Answer form */}
-          {user ? (
-            <div className="space-y-3 pt-4">
-              <Label className="text-xs font-mono uppercase tracking-widest">
-                {t("forum.answer.submit")}
-              </Label>
-              <Textarea
-                value={answerBody}
-                onChange={(e) => setAnswerBody(e.target.value)}
-                placeholder={t("forum.answer.placeholder")}
-                rows={5}
-                className="resize-y"
-              />
-              <Button
-                onClick={handleAnswer}
-                disabled={!answerBody.trim() || postingAnswer}
-                className="bg-foreground text-background hover:bg-foreground/90"
-              >
-                {postingAnswer ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4 mr-2" />
-                )}
-                {t("forum.answer.submit")}
-              </Button>
-            </div>
-          ) : (
-            <Card className="p-6 text-center border-dashed">
-              <p className="text-sm text-muted-foreground">
-                Connecte-toi pour répondre à cette discussion.
-              </p>
-            </Card>
-          )}
+          {/* Fil de commentaires : imbriqué, triable et repliable, à la
+              façon de Reddit. Le composant reconstruit l'arbre à partir de
+              la liste plate fournie par l'API. */}
+          <CommentThread
+            posts={selectedThread.posts}
+            threadAuthorId={selectedThread.author.id}
+            user={user ? { id: user.id, role: user.role } : null}
+            onVote={(postId, value) => handleVote("post", postId, value)}
+            onAccept={handleAccept}
+            onReply={handleReply}
+            onOpenProfile={(username) => navigate("annuaire", username)}
+          />
         </article>
       </div>
     );

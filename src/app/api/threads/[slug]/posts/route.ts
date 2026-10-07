@@ -44,14 +44,36 @@ export async function POST(
       return NextResponse.json({ error: "Thread not found" }, { status: 404 });
     }
 
+    // Réponse à un commentaire : la cible doit appartenir à CETTE question,
+    // sinon on pourrait imbriquer un fil dans un autre en devinant les ids.
+    const parentId = parsed.data.parentId ?? null;
+    let parentAuthorId: string | null = null;
+    if (parentId) {
+      const parent = await db.post.findUnique({
+        where: { id: parentId },
+        select: { id: true, threadId: true, authorId: true },
+      });
+      if (!parent || parent.threadId !== thread.id) {
+        return NextResponse.json({ error: "Comment not found" }, { status: 404 });
+      }
+      parentAuthorId = parent.authorId;
+    }
+
     const post = await db.post.create({
-      data: { threadId: thread.id, authorId: user.id, body: parsed.data.body },
+      data: {
+        threadId: thread.id,
+        authorId: user.id,
+        body: parsed.data.body,
+        parentId,
+      },
       include: { author: { select: authorSelect } },
     });
 
-    // Notification à l'auteur de la question (jamais à soi-même : `notify` le gère).
+    // On notifie la personne à qui l'on répond (l'auteur du commentaire
+    // parent), sinon l'auteur de la question — jamais soi-même : `notify`
+    // le gère.
     notify({
-      recipientId: thread.authorId,
+      recipientId: parentAuthorId ?? thread.authorId,
       actorId: user.id,
       type: "reply",
       title: `${user.name} a répondu à « ${thread.title} »`,
