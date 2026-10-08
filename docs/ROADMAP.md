@@ -1,6 +1,6 @@
 # Feuille de route — CodeXchange
 
-> **Statut honnête au 06/10/2026**, lu dans le code de ce dépôt (pas dans une intention de roadmap).
+> **Statut honnête au 08/10/2026** (mis à jour après commit `4ab914d`), lu dans le code de ce dépôt (pas dans une intention de roadmap).
 > Légende : ✅ fait et vérifiable ici · ⏳ partiellement fait · ⬜ rien de fait pour l'instant.
 
 ## Vue d'ensemble par phase
@@ -35,6 +35,9 @@
 | Édition de son propre profil (champs whitelistés zod) | `PATCH /api/profiles/me` |
 | Jobs, projets, tutos, events : **lecture** + filtres + détail | `GET /api/{jobs,projects,tutorials,events}` |
 | Mentorat : liste des mentors + demande (message/objectif) avec garde-fous (doublon, complétude, soi-même) | `src/app/api/mentors/**` |
+| **Mentorat : inbox complète** — `GET /api/mentorships` (listes `incoming`/`mine`), `PATCH /api/mentorships/[id]` (accepter/refuser/terminer avec garde de capacité et libération du slot), visio Jitsi intégrée, bouton depuis le profil public | `src/app/api/mentorships/**`, `mentorat-section.tsx`, `annuaire-section.tsx` |
+| **Jobs : filtre devise + offres épinglées** — `?currency=` sur `salary`, `Job.featured` avec garde-fou staff-only sur le PATCH, tri « à la une » dans la liste | `src/app/api/jobs/**`, `prisma/schema.prisma` |
+| **Badges, paliers, classement** — cœur pur `lib/badges.ts` (paliers Novice→Légende sur la réputation, 5 badges de jalons sur compteurs réels), `stats` agrégées sur `GET /api/profiles/[username]`, `GET /api/leaderboard` top 10, UI badges+palier sur le profil et carte « Top contributeurs » dans l'annuaire | `src/lib/badges.ts`, `src/app/api/leaderboard/**` |
 | Notifications in-app : création (réponse, acceptation, mentorat), listing, lecture, tout-lu, cloche avec badge | `src/lib/notify.ts`, `src/app/api/notifications/**`, `notification-bell.tsx` |
 | i18n : 4 locales typées, FR et EN **280 clés** chacun (test de parité `tests/i18n.test.ts`), sélecteur à drapeaux, locale persistée | `src/i18n/dictionaries.ts` |
 | PWA : manifest + icônes 192/512/maskable + `offline.html` + service worker maison (SWR assets, network-first pages, `/api` jamais caché) | `public/manifest.webmanifest`, `public/sw.js` |
@@ -57,7 +60,6 @@
 | **i18n sw / ar** | Cadre prêt (`Locale`, drapeaux, `sw`/`ar` exposés) mais **0 clé traduite** : `const sw = { ...en }`, `const ar = { ...en }` → l'anglais s'affiche |
 | **Création de contenus** | Questions/réponses ✅ ; jobs, projets, tutos, events : **API en lecture seule** (`GET`), pas de formulaire |
 | **Modération** | Champs `role` (`member`/`moderator`/`admin`) et contrôle auteur/modérateur à l'acceptation ✅ ; **aucun outil** (dashboard, épinglage, signalement) |
-| **Mentorat** | Côté menté ✅ ; **aucune interface pour le mentor** (accepter/refuser/planifier) et 0 statut géré dans l'UI |
 | **Poids bundle** | Découpage dynamique en place, objectif affiché **< 150 Ko** ; le CDC annonce **< 100 Ko** — non mesuré automatiquement en CI |
 
 ### ⬜ Rien de fait pour l'instant
@@ -81,7 +83,7 @@
 | Milestone | Fenêtre | Critères de sortie (définissables, vérifiables) |
 |---|---|---|
 | **M0 — Démo stable** ✅ | J1–J2 | `bun install` → `db:push` → `scripts/seed.ts` → `dev` en 4 commandes ; les 3 parcours de `docs/DEMO.md` passent sans erreur ; `bun run check` vert ; CI verte sur `main`. **Atteint.** |
-| **M1 — Produit complet en lecture/écriture** ⏳ | S1–S4 | Formulaires de création jobs/projets/tutos/events ; mentor peut répondre à une demande ; au moins 1 test E2E Playwright sur le parcours Q&R |
+| **M1 — Produit complet en lecture/écriture** ✅ | S1–S4 | Formulaires de création jobs/projets/tutos/events ; mentor peut répondre à une demande ; au moins 1 test E2E Playwright sur le parcours Q&R |
 | **M2 — Multilingue + portabilité** ⬜ | M1–M2 | 100 % des 280 clés traduites en sw et ar ; `lang`/`dir` pilotés par la locale (`dir="rtl"` pour `ar`) ; bascule PostgreSQL effectuée avec `prisma migrate` versionné et seed ré-exécuté sans erreur |
 | **M3 — Confiance & ouverture** ⬜ | M2–M3 | OAuth GitHub/Google opérationnel ; e-mail de bienvenue + réinitialisation ; outils de modération (signalement, rôles, épinglage) ; compteurs home tous issus de `/api/stats` ; budget de poids vérifié en CI (≤ 100 Ko ou décision explicite) |
 | **M4 — Monétisation & échelle** ⬜ | M4–M6 | Paiement mobile money sur un flux réel (abonnement mentor ou boosting d'offre) avec reçus ; 100 offres et 100 binômes atteints ; API publique documentée ; rate limiting distribué (Redis/Upstash) derrière une instance multi-nœuds |

@@ -1,6 +1,6 @@
 # Backlog CodeXchange (A → J) — statut réel
 
-> Statuts vérifiés dans le dépôt au 08/10/2026 : ✅ fait · ⏳ partiel · ⬜ à venir.
+> Statuts vérifiés dans le dépôt au 08/10/2026 (mise à jour après commit `4ab914d`) : ✅ fait · ⏳ partiel · ⬜ à venir.
 > Les intitulés sont reformulés d'après le backlog source (les libellés d'origine n'étaient pas
 > disponibles dans le contexte de rédaction) ; les **identifiants d'épic et les lettres sont conservés**.
 > Chaque note dit ce qui existe **réellement** ici, pas ce qui est prévu.
@@ -84,7 +84,7 @@
 | F2 | +2 sur réponse votée | ✅ | `applyReputation()` crédite l'**auteur de la réponse** (vérifié : auteur 50 → 52, votant inchangé) |
 | F3 | −1 sur question downvotée | ✅ | Branché sur la transition (-1 posé / levé) ; l'upvote de question ne rapporte rien, conformément au barème |
 | F4 | Affichage de la réputation dans l'UI | ✅ | Badge sur le profil de l'annuaire + `★ n` à côté de l'auteur de chaque réponse (`reputation` ajoutée à `publicUserSelect`) |
-| F5 | Badges, classements, niveaux | ⬜ | Rien |
+| F5 | Badges, classements, niveaux | ✅ | Cœur pur `lib/badges.ts` : **paliers de réputation** (`reputationLevel` — Novice 0 / Contributeur 50 / Expert 200 / Légende 500, distincts de l'expérience déclarée `junior→lead`) + **badges de jalons** (`computeBadges` sur 4 compteurs réels : première question, première réponse, réponse acceptée, plume ≥ 25 réponses, mentor certifié) — 17 tests. `GET /api/profiles/[username]` sert maintenant `stats` (4 `COUNT`) ; `GET /api/leaderboard` (top 10 par réputation, départage ancenneté, cache 60 s). UI : badges + palier sur le profil public, carte « Top contributeurs » cliquable dans l'annuaire |
 
 ## EPIC G — Jobs
 
@@ -93,9 +93,9 @@
 | G1 | Liste d'offres + filtres (pays, type, stack, remote) | ✅ | `GET /api/jobs` + sélecteurs de l'UI |
 | G2 | Fiche détaillée + « Postuler » | ✅ | Panneau détail avec description et lien `applyUrl` |
 | G3 | Création / modification d'offre | ✅ | `POST /api/jobs` + `PATCH`/`DELETE /api/jobs/[id]` (droits auteur/staff, rate-limit), et l'**écran** : `ContentDialog` — un composant générique pour les 4 contenus (offres, projets, tutos, événements) qui choisit endpoint / formulaire / libellé selon `kind`, gère 401 → modale de connexion, 400 → erreur sous le champ en `role="alert"`, 429 → rate-limit. Bouton « Publier » dans Jobs, Projets et les deux onglets de Tutos & Events |
-| G4 | Recherche plein-texte des offres | ⏳ | `?q=` supporté côté serveur, **aucun champ de recherche** dans l'UI |
-| G5 | Multi-devises & salaires | ⏳ | Champ `salary` simple (`"3-5K EUR / month"`), aucune logique de devise |
-| G6 | Offres sponsorisées / boosting | ⬜ | Rien |
+| G4 | Recherche plein-texte des offres | ✅ | `?q=` supporté côté serveur (title, company, description, stack), **UI branchée** : champ de recherche en tête des filtres Jobs (debounce 150 ms via l'effet `load`, état vide dédié) + recherche globale du header sur 6 modules (D9) |
+| G5 | Multi-devises & salaires | ✅ | Cœur pur `lib/salary.ts` : extraction du code devise écrit dans `salary` (littéraux 21 codes, `FCFA`⇄`XOF` normalisé, `$`/`€` en secours) — 8 tests. `GET /api/jobs?currency=` filtre (AND propre avec `?q=`, alias couverts), `currencies` renvoyées dans le contexte de filtres, **puces de devise** dans l'UI (affichées seulement si ≥ 2 codes réels). Pas de taux de change inventé : sans fournisseur FX, aucune conversion fictive |
+| G6 | Offres sponsorisées / boosting | ✅ | `Job.featured` (bool, index composite `[featured, createdAt]`) — le staff (admin/modérateur) peut épingler une offre via `PATCH /api/jobs/[id]` (garde-fou `isStaff` : 403 pour les membres), trié avant les non-épinglés dans `GET /api/jobs` ; badge UI dédié |
 
 ## EPIC H — Mentorat
 
@@ -104,9 +104,9 @@
 | H1 | Annuaire de mentors (note, avis, places, tarif, langues) | ✅ | `GET /api/mentors` + cartes |
 | H2 | Demande de mentorat (message + objectif) | ✅ | `POST /api/mentors/[id]/request` : 10 à 1000 caractères, garde-fous doublon/complet/soi-même |
 | H3 | Notification au mentor | ✅ | `notify()` fire-and-forget, type `mentorship`, lien `#mentorat` |
-| H4 | Bouton « Demander un mentorat » depuis l'annuaire | ⬜ | Absent du profil : il faut passer par la section Mentorat |
-| H5 | Réponse du mentor (accepter / refuser / planifier) | ⬜ | Modèle `Mentorship.status` prêt (`pending/accepted/declined/active/completed`), **aucune interface** |
-| H6 | Visio de mentorat (Jitsi) | ⬜ | La CSP autorise déjà `frame-src https://meet.jit.si`, **aucune UI** |
+| H4 | Bouton « Demander un mentorat » depuis l'annuaire | ✅ | `annuaire-section.tsx` : carte dédiée sur le profil public d'un mentor (condition : `mentorProfile` present, connecté, pas soi-même) avec expertise, tarif, bouton qui navigue vers `#mentorat/<mentorId>` |
+| H5 | Réponse du mentor (accepter / refuser / terminer) | ✅ | `GET /api/mentorships` (listes `incoming`/`mine` éclatées par rôle) + `PATCH /api/mentorships/[id]` (action `accept`/`decline`/`complete`, matrice des rôles, garde de capacité à l'acceptation, libération du slot à la completion, notifications à l'autre partie). UI : `MentorshipCard` avec statut coloré, boutons selon le rôle |
+| H6 | Visio de mentorat (Jitsi) | ✅ | La CSP autorise déjà `frame-src https://meet.jit.si` — **UI intégrée** : bouton `Rejoindre la visio` (icône `Video`) dans chaque carte de mentorat actif, iframe Jitsi avec salle par `mentorship.id`, `allow="camera; microphone; fullscreen"`, masquable |
 
 ## EPIC I — Messagerie
 
@@ -128,7 +128,7 @@
 | J4 | Non-fuite de `passwordHash` / `email` | ✅ | Sélecteurs Prisma publics + filtre récursif `json()` |
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
-| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **323 tests / 19 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`, mailer, log, reset, **rôles 40**, **oauth 30**, **newsletter 12**, **search 8**), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (**15 scénarios** — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px, **gestion des rôles B8**, **newsletter I5**, **recherche D9**, **RTL D3**), lancés par le workflow GitHub après seed + Chromium + `next start` |
+| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **341 tests / 21 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`, mailer, log, reset, **rôles 40**, **oauth 30**, **newsletter 12**, **search 8**, **salary 10**, **badges 8**), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (**20 scénarios** — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px, **gestion des rôles B8**, **newsletter I5**, **recherche D9**, **RTL D3**, **jobs/classement G4-G6+F5**), lancés par le workflow GitHub après seed + Chromium + `next start` |
 | J8 | Journalisation & monitoring | ✅ | `lib/log` : événements JSON une ligne (`ts`/`level`/`message`/ctx) en production, lisibles en dev ; les **23 routes** (35 appels) sont passées de `console.error` à `logger.route` ; `GET /api/health` (`{ok, db, latencyMs, uptime}`, 503 si DB down) pour les sondes ; 3 tests unitaires |
 | J9 | Sauvegardes / réplication de base | ✅ | PostgreSQL managé : la PITR reste chez Neon (documentée). `docs/RUNBOOK.md` : restauration PITR, bascule `DATABASE_URL` Vercel, dump/restauration locale, vérification ; `scripts/db-backup.sh` (`pg_dump -Fc` par défaut, `--plain` pour SQL) vers `./backups/` (gitignoré) — **exécuté et prouvé** sur le PG local (dump 263 K) |
 

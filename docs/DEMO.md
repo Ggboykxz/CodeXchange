@@ -251,8 +251,7 @@ connectée sur `kwame.mensah@codexchange.dev` (**lui est mentor** du seed).
 **Ce qu'on montre :** `GET /api/profiles/[username]` renvoie le profil **avec** `reputation` et les
 activités, mais **jamais** `passwordHash` (sélecteur Prisma explicite + filtre `json()`).
 
-> À signaler : le bouton **`Demander un mentorat`** n'existe **pas encore sur le profil** (backlog H) :
-> on bascule sur la section **Mentorat**.
+> À signaler : le bouton **`Demander un mentorat`** est disponible directement depuis le profil public d'un mentor (carte dédiée avec expertise et tarif) : on peut aussi bien y accéder depuis la section **Mentorat**.
 
 ### C. Demander un mentorat (1 min 30)
 

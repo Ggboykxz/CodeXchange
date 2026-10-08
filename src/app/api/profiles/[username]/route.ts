@@ -30,7 +30,20 @@ export async function GET(
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ profile });
+    // F5 — compteurs réels derrière les badges : 4 COUNT au lieu de
+    // renvoyer des listes complètes (les slices `take: 5` ci-dessus ne
+    // donnent jamais un total honnête).
+    const [threads, posts, accepted, mentorships] = await Promise.all([
+      db.thread.count({ where: { authorId: profile.userId } }),
+      db.post.count({ where: { authorId: profile.userId } }),
+      db.post.count({ where: { authorId: profile.userId, isAnswer: true } }),
+      db.mentorship.count({ where: { mentorId: profile.userId, status: "completed" } }),
+    ]);
+
+    return NextResponse.json({
+      profile,
+      stats: { threads, posts, accepted, mentorships },
+    });
   } catch (e) {
     logger.route("Get profile error", e);
     return NextResponse.json({ error: "Failed to load profile" }, { status: 500 });

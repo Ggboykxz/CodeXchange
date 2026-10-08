@@ -1,6 +1,13 @@
 "use client";
 
 import { AFRICAN_COUNTRIES } from "@/lib/countries";
+import {
+  badgeKey,
+  computeBadges,
+  reputationLevel,
+  type BadgeId,
+  type BadgeStats,
+} from "@/lib/badges";
 import { useEffect, useState, useCallback } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
@@ -43,6 +50,7 @@ import {
   Loader2,
   Pencil,
   BadgeCheck,
+  Trophy,
 } from "lucide-react";
 
 type Profile = {
@@ -62,6 +70,23 @@ type Profile = {
   avatarColor: string | null;
   userId: string;
   user: { id: string; name: string };
+};
+
+/** F5 — emojis des badges (thème-safe, pas de couleurs codées en dur). */
+const BADGE_ICONS: Record<BadgeId, string> = {
+  question: "💬",
+  reponse: "✍️",
+  acceptee: "✅",
+  plume: "📝",
+  mentor: "🎓",
+};
+
+/** Ligne du classement (`GET /api/leaderboard`). */
+type LeaderRow = {
+  id: string;
+  name: string;
+  reputation: number;
+  profile: { username: string; avatarColor: string | null; level: string | null } | null;
 };
 
 type ProfileDetail = Profile & {
@@ -126,7 +151,10 @@ export function AnnuaireSection() {
   const [detail, setDetail] = useState<{
     username: string;
     profile: ProfileDetail | null;
+    stats: BadgeStats | null;
   } | null>(null);
+  // F5 — classement des contributeurs (top 10 par réputation réelle).
+  const [top, setTop] = useState<LeaderRow[]>([]);
 
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
@@ -257,6 +285,15 @@ export function AnnuaireSection() {
   const loadingProfile =
     !!sectionParam && (!detail || detail.username !== sectionParam);
 
+  // F5 — un seul appel, mis en cache côté état : le classement vit dans la
+  // vue liste, il n'a pas besoin d'être refetché à chaque profil ouvert.
+  useEffect(() => {
+    fetch("/api/leaderboard")
+      .then((r) => r.json())
+      .then((d) => setTop(Array.isArray(d.top) ? d.top : []))
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (!sectionParam) return;
     if (detail?.username === sectionParam) return;
@@ -265,12 +302,17 @@ export function AnnuaireSection() {
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return;
-        if (d.profile) setDetail({ username: sectionParam, profile: d.profile });
+        if (d.profile)
+          setDetail({
+            username: sectionParam,
+            profile: d.profile,
+            stats: d.stats ?? null,
+          });
         else navigate("annuaire");
       })
       .catch(() => {
         if (cancelled) return;
-        setDetail({ username: sectionParam, profile: null });
+        setDetail({ username: sectionParam, profile: null, stats: null });
       });
     return () => {
       cancelled = true;
@@ -360,10 +402,32 @@ export function AnnuaireSection() {
                     {t("annuaire.reputation")}
                   </span>
                 </span>
+                <span
+                  className="inline-flex items-center rounded border border-foreground/30 bg-foreground/5 px-2 py-0.5 font-mono text-xs font-medium"
+                >
+                  {t(reputationLevel(selectedProfile.user.reputation ?? 0).key)}
+                </span>
                 <span className="font-mono text-xs text-muted-foreground">
                   @{selectedProfile.username}
                 </span>
               </div>
+              {/* F5 — jalons réellement mérités (compteurs servis par l'API). */}
+              {detail?.stats && computeBadges(detail.stats).length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5 mb-4">
+                  <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground me-1">
+                    {t("annuaire.badges")}
+                  </span>
+                  {computeBadges(detail.stats).map((id) => (
+                    <span
+                      key={id}
+                      className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 text-xs"
+                    >
+                      <span aria-hidden="true">{BADGE_ICONS[id]}</span>
+                      {t(badgeKey(id))}
+                    </span>
+                  ))}
+                </div>
+              )}
               {selectedProfile.stack && (
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {selectedProfile.stack
@@ -755,6 +819,53 @@ export function AnnuaireSection() {
           </Label>
         </div>
       </Card>
+
+      {/* F5 — classement : top 10 par réputation réellement cumulée. */}
+      {top.length > 0 && (
+        <Card className="p-4 mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Trophy className="h-4 w-4 text-chart-2" aria-hidden="true" />
+            <h2 className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+              {t("annuaire.leaderboard")}
+            </h2>
+          </div>
+          <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {top.map((row, i) => (
+              <li key={row.id}>
+                <button
+                  onClick={() =>
+                    row.profile?.username &&
+                    navigate("annuaire", row.profile.username)
+                  }
+                  className="flex w-full items-center gap-2 rounded border border-border/60 px-2 py-1.5 text-start hover:border-foreground/40 transition-colors"
+                >
+                  <span className="font-mono text-xs text-muted-foreground w-6 shrink-0">
+                    #{i + 1}
+                  </span>
+                  <Avatar
+                    name={row.name}
+                    color={row.profile?.avatarColor ?? null}
+                    size="xs"
+                  />
+                  <span className="text-sm font-medium truncate flex-1">
+                    {row.name}
+                  </span>
+                  {row.profile?.level && (
+                    <Tag
+                      label={t(`annuaire.level.${row.profile.level}`)}
+                      variant="outline"
+                    />
+                  )}
+                  <span className="font-mono text-xs flex items-center gap-1 shrink-0">
+                    <Star className="h-3 w-3 text-chart-2" aria-hidden="true" />
+                    {row.reputation}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

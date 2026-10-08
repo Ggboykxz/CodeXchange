@@ -6,6 +6,7 @@ import { badRequest, rateLimited } from "@/lib/api";
 import { currentUser, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { jobCreateSchema, pagination } from "@/lib/validate";
+import { salaryCurrencies, currencyTerms } from "@/lib/salary";
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,33 +24,59 @@ export async function GET(req: NextRequest) {
     if (type && type !== "all") where.type = type;
     if (remote === "true") where.remote = true;
     if (stack && stack !== "all") where.stack = { contains: stack, mode: "insensitive" };
-    // G5 — filtrer par devise : la chaîne salary contient toujours son
-    // code (seed + normalisation client de la saisie), LIKE aveugle géne
-    // un faux positif seulement sur des codes diamétralement improbables.
-    if (currency && currency !== "ALL") {
-      where.salary = { contains: currency, mode: "insensitive" };
-    }
+    // Recherche et devise sont deux axes distincts : chacun reste un OR
+    // interne, l'ensemble est un AND — jamais un `OR` écrasé par l'autre.
+    const and: Record<string, unknown>[] = [];
     if (q) {
-      where.OR = [
-        { title: { contains: q, mode: "insensitive" } },
-        { company: { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-        { stack: { contains: q, mode: "insensitive" } },
-      ];
+      and.push({
+        OR: [
+          { title: { contains: q, mode: "insensitive" } },
+          { company: { contains: q, mode: "insensitive" } },
+          { description: { contains: q, mode: "insensitive" } },
+          { stack: { contains: q, mode: "insensitive" } },
+        ],
+      });
     }
+    // G5 — filtre par devise : LIKE sur les graphies du code (alias
+    // compris, cf. `currencyTerms` : « 150K FCFA » matche la puce XOF).
+    // On fige le contexte AVANT le filtre pour que les puces restent
+    // stables même quand une devise est déjà sélectionnée.
+    const whereInContext = { ...where, ...(and.length ? { AND: [...and] } : {}) };
+    if (currency && currency !== "ALL") {
+      and.push({
+        OR: currencyTerms(currency).map((term) => ({
+          salary: { contains: term, mode: "insensitive" },
+        })),
+      });
+    }
+    if (and.length) where.AND = and;
 
-    const [jobs, total] = await Promise.all([
+    const [jobs, total, salaries] = await Promise.all([
       db.job.findMany({
         where,
         include: { author: { select: authorSelect } },
-        orderBy: { createdAt: "desc" },
+        // G6 — les offres « À la une » passent d'abord, puis chrono.
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
         take: limit,
         skip,
       }),
       db.job.count({ where }),
+      db.job.findMany({
+        where: whereInContext,
+        select: { salary: true },
+        distinct: ["salary"],
+        take: 300,
+      }),
     ]);
 
-    return NextResponse.json({ jobs, total, limit, hasMore: skip + jobs.length < total });
+    return NextResponse.json({
+      jobs,
+      total,
+      limit,
+      hasMore: skip + jobs.length < total,
+      // G5 — codes réellement présents dans ce contexte de filtres.
+      currencies: salaryCurrencies(salaries.map((s) => s.salary)),
+    });
   } catch (e) {
     logger.route("List jobs error", e);
     return NextResponse.json({ error: "Failed to list jobs" }, { status: 500 });

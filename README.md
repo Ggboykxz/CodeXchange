@@ -134,11 +134,14 @@ en CI, un service `postgres:16` est monté par `.github/workflows/ci.yml`.
 | PATCH | `/api/posts/[id]` | Marquer/démarquer la meilleure réponse (auteur de la question ou modérateur) — **session requise** |
 | POST | `/api/votes` | Voter `1` / `-1` / `0` sur une question ou une réponse — **session requise** |
 | GET | `/api/profiles` | Annuaire : `?country=&city=&stack=&level=&available=&q=&limit=` — public |
-| GET | `/api/profiles/[username]` | Profil détaillé (inclut `reputation`, activités récentes) — public |
+| GET | `/api/profiles/[username]` | Profil détaillé (inclut `reputation`, activités récentes + `stats` pour les badges) — public |
+| GET | `/api/leaderboard` | Top 10 des contributeurs par réputation — public (cache 60 s) |
 | PATCH | `/api/profiles/me` | Éditer son profil — **session requise** |
 | GET | `/api/mentors` | Liste des mentors — public |
 | POST | `/api/mentors/[id]/request` | Demande de mentorat (message + objectif) — **session requise** |
-| GET | `/api/jobs` | Offres : `?country=&type=&remote=&stack=&q=` — public |
+| GET | `/api/mentorships` | Mes mentorats éclatés par rôle (`incoming` = reçues en tant que mentor, `mine` = envoyées) — session (listes vides sinon) |
+| PATCH | `/api/mentorships/[id]` | Décision `accept`/`decline` (mentor, `pending`) ou `complete` (les deux parties) — **session requise** |
+| GET | `/api/jobs` | Offres : `?country=&type=&remote=&stack=&q=&currency=` — public (renvoie aussi `currencies` présentes) |
 | GET | `/api/projects` | Projets : `?status=&stack=&q=` — public |
 | GET | `/api/tutorials` | Tutos : `?category=&q=` — public |
 | GET | `/api/tutorials/[slug]` | Détail d'un tuto — public |
