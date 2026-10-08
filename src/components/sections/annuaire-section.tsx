@@ -498,7 +498,7 @@ export function AnnuaireSection() {
             <div className="flex gap-2 shrink-0">
               <Button
                 size="sm"
-                className="shrink-0 bg-foreground text-background hover:bg-foreground/90"
+                className="shrink-0 bg-brand text-brand-foreground hover:bg-brand/90"
                 onClick={() => navigate("mentorat", selectedProfile.user.mentorProfile!.id)}
               >
                 {t("mentorat.request")}

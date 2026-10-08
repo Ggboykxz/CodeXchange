@@ -258,7 +258,7 @@ export function MessagesSection() {
                       </span>
                       {c.unread > 0 && (
                         <span
-                          className="min-w-5 h-5 shrink-0 rounded-full bg-foreground text-background text-[10px] font-mono flex items-center justify-center px-1"
+                          className="min-w-5 h-5 shrink-0 rounded-full bg-brand text-brand-foreground text-[10px] font-mono flex items-center justify-center px-1"
                           aria-label={String(c.unread)}
                         >
                           {c.unread}
@@ -327,7 +327,7 @@ export function MessagesSection() {
                   <div
                     className={cn(
                       "max-w-[80%] rounded-lg px-3 py-2 text-sm",
-                      mine ? "bg-foreground text-background" : "bg-muted"
+                      mine ? "bg-brand text-brand-foreground" : "bg-muted"
                     )}
                   >
                     <p className="whitespace-pre-wrap break-words">{m.body}</p>
@@ -374,7 +374,7 @@ export function MessagesSection() {
               type="submit"
               size="sm"
               disabled={sending || !draft.trim()}
-              className="bg-foreground text-background hover:bg-foreground/90 shrink-0"
+              className="bg-brand text-brand-foreground hover:bg-brand/90 shrink-0"
             >
               {sending ? (
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden />

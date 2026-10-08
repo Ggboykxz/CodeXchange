@@ -100,7 +100,7 @@ export function ReportDialog({
                   className={cn(
                     "rounded-full border px-3 py-1 text-xs font-medium transition",
                     reason === r
-                      ? "border-foreground bg-foreground text-background"
+                      ? "border-brand bg-brand text-brand-foreground"
                       : "border-border bg-muted/50 text-muted-foreground hover:bg-muted"
                   )}
                 >

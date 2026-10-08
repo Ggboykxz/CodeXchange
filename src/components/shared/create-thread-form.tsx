@@ -125,7 +125,7 @@ export function CreateThreadForm({
       <Button
         type="submit"
         disabled={submitting || !title || !body}
-        className="w-full bg-foreground text-background hover:bg-foreground/90"
+        className="w-full bg-brand text-brand-foreground hover:bg-brand/90"
       >
         {t("forum.create.submit")}
       </Button>

@@ -115,7 +115,7 @@ export function ResetForm({ token }: { token: string | null }) {
             <Button
               type="submit"
               disabled={status === "saving"}
-              className="w-full bg-foreground text-background hover:bg-foreground/90 mt-2"
+              className="w-full bg-brand text-brand-foreground hover:bg-brand/90 mt-2"
             >
               {status === "saving" ? (
                 <Loader2 className="h-4 w-4 me-2 animate-spin" />

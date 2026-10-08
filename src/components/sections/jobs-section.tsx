@@ -160,7 +160,7 @@ export function JobsSection() {
           <Button
             onClick={() => (user ? setCreateOpen(true) : openAuth("login"))}
             size="sm"
-            className="bg-foreground text-background hover:bg-foreground/90"
+            className="bg-brand text-brand-foreground hover:bg-brand/90"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             {t("create.job")}
@@ -264,7 +264,7 @@ export function JobsSection() {
               className={cn(
                 "rounded border px-2 py-0.5 font-mono text-xs transition-colors",
                 currency === "all"
-                  ? "border-foreground bg-foreground text-background"
+                  ? "border-brand bg-brand text-brand-foreground"
                   : "border-border text-muted-foreground hover:border-foreground/50"
               )}
             >
@@ -278,7 +278,7 @@ export function JobsSection() {
                 className={cn(
                   "rounded border px-2 py-0.5 font-mono text-xs transition-colors",
                   currency === code
-                    ? "border-foreground bg-foreground text-background"
+                    ? "border-brand bg-brand text-brand-foreground"
                     : "border-border text-muted-foreground hover:border-foreground/50"
                 )}
               >
@@ -465,7 +465,7 @@ export function JobsSection() {
                 )}
                 <Button
                   asChild
-                  className="bg-foreground text-background hover:bg-foreground/90"
+                  className="bg-brand text-brand-foreground hover:bg-brand/90"
                   size="sm"
                 >
                   <a

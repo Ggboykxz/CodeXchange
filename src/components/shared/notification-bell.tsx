@@ -167,7 +167,7 @@ export function NotificationBell() {
         >
           <Bell className="h-4 w-4" />
           {visibleUnread > 0 && (
-            <span className="absolute -top-0.5 -end-0.5 min-w-4 h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-mono font-bold flex items-center justify-center">
+            <span className="absolute -top-0.5 -end-0.5 min-w-4 h-4 px-1 rounded-full bg-brand text-brand-foreground text-[10px] font-mono font-bold flex items-center justify-center">
               {visibleUnread > 9 ? "9+" : visibleUnread}
             </span>
           )}

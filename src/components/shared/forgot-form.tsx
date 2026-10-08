@@ -80,7 +80,7 @@ export function ForgotForm({ onBack }: { onBack: () => void }) {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-foreground text-background hover:bg-foreground/90 mt-2"
+        className="w-full bg-brand text-brand-foreground hover:bg-brand/90 mt-2"
       >
         {loading ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : null}
         {t("auth.forgot.submit")}

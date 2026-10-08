@@ -435,7 +435,7 @@ function ReplyBox({
           aria-label={t("forum.comment.send")}
           disabled={!body.trim() || sending}
           onClick={submit}
-          className="bg-foreground text-background hover:bg-foreground/90"
+          className="bg-brand text-brand-foreground hover:bg-brand/90"
         >
           {sending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
@@ -468,7 +468,7 @@ function SendButton({ body, onSend }: { body: string; onSend: () => Promise<void
           setSending(false);
         }
       }}
-      className="bg-foreground text-background hover:bg-foreground/90"
+      className="bg-brand text-brand-foreground hover:bg-brand/90"
     >
       {sending ? (
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />

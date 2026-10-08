@@ -251,7 +251,7 @@ export function TutosSection() {
             <Button
               onClick={() => publish(() => setTutoCreateOpen(true))}
               size="sm"
-              className="ms-auto bg-foreground text-background hover:bg-foreground/90"
+              className="ms-auto bg-brand text-brand-foreground hover:bg-brand/90"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               {t("create.tutorial")}
@@ -316,7 +316,7 @@ export function TutosSection() {
             <Button
               onClick={() => publish(() => setEventCreateOpen(true))}
               size="sm"
-              className="bg-foreground text-background hover:bg-foreground/90"
+              className="bg-brand text-brand-foreground hover:bg-brand/90"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               {t("create.event")}
@@ -383,7 +383,7 @@ export function TutosSection() {
                     </div>
 
                     {evt.url && (
-                      <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90 shrink-0">
+                      <Button asChild size="sm" className="bg-brand text-brand-foreground hover:bg-brand/90 shrink-0">
                         <a href={evt.url} target="_blank" rel="noopener noreferrer">
                           {evt.online ? <Video className="h-3.5 w-3.5 me-1" /> : null}
                           {t("events.rsvp")}

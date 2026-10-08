@@ -155,7 +155,7 @@ export function PaymentDialog({
               <Button
                 disabled={busy || phone.trim().length < 8}
                 onClick={(e) => { e.preventDefault(); void pay(); }}
-                className="bg-foreground text-background hover:bg-foreground/90"
+                className="bg-brand text-brand-foreground hover:bg-brand/90"
               >
                 {busy ? t("common.sending") : `${t("payment.pay")} — ${amount} ${currency}`}
               </Button>

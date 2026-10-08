@@ -821,7 +821,7 @@ export function ForumSection() {
             }
             setCreateOpen(true);
           }}
-          className="bg-foreground text-background hover:bg-foreground/90 shrink-0"
+          className="bg-brand text-brand-foreground hover:bg-brand/90 shrink-0"
         >
           <Plus className="h-4 w-4 me-2" />
           {t("forum.new")}

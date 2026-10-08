@@ -138,7 +138,7 @@ function MentorshipCard({
                   size="sm"
                   disabled={acting === m.id}
                   onClick={() => onAct(m.id, "accept")}
-                  className="bg-foreground text-background hover:bg-foreground/90"
+                  className="bg-brand text-brand-foreground hover:bg-brand/90"
                 >
                   {t("mentorat.accept")}
                 </Button>
@@ -435,7 +435,7 @@ export function MentoratSection() {
                     setSelectedMentor(m);
                   }}
                   disabled={slotsLeft === 0}
-                  className="w-full bg-foreground text-background hover:bg-foreground/90"
+                  className="w-full bg-brand text-brand-foreground hover:bg-brand/90"
                   variant="default"
                 >
                   {slotsLeft === 0 ? "Complet" : t("mentorat.request")}
@@ -516,7 +516,7 @@ export function MentoratSection() {
                 <Button
                   onClick={handleRequest}
                   disabled={!requestMessage.trim() || sending}
-                  className="w-full bg-foreground text-background hover:bg-foreground/90"
+                  className="w-full bg-brand text-brand-foreground hover:bg-brand/90"
                 >
                   {sending ? (
                     <Loader2 className="h-4 w-4 me-2 animate-spin" />

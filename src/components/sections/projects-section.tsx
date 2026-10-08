@@ -108,7 +108,7 @@ export function ProjectsSection() {
           <Button
             onClick={() => (user ? setCreateOpen(true) : openAuth("login"))}
             size="sm"
-            className="bg-foreground text-background hover:bg-foreground/90"
+            className="bg-brand text-brand-foreground hover:bg-brand/90"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             {t("create.project")}
@@ -300,7 +300,7 @@ export function ProjectsSection() {
                     </Button>
                   )}
                   {selected.demoUrl && (
-                    <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90">
+                    <Button asChild size="sm" className="bg-brand text-brand-foreground hover:bg-brand/90">
                       <a href={selected.demoUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4 me-1.5" />
                         {t("projects.demo")}

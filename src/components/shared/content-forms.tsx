@@ -126,7 +126,7 @@ function SubmitButton({ pending }: { pending: boolean }) {
     <Button
       type="submit"
       disabled={pending}
-      className="w-full bg-foreground text-background hover:bg-foreground/90"
+      className="w-full bg-brand text-brand-foreground hover:bg-brand/90"
     >
       {pending ? (
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
