@@ -87,6 +87,10 @@ jobs:
       - name: Build
         run: bun run build
 
+      # B1 — garde-fou sur le poids du premier chargement (CDC < 150 Ko gzip).
+      - name: Check bundle size
+        run: npx tsx scripts/check-bundle-size.ts
+
       # ---------------------------------------------------------------- #
       # E2E Playwright (J7) : on seed la base du service, on sert le build  #
       # de production (`next start`) et on exécute les scénarios de tests/e2e.#
