@@ -19,6 +19,10 @@ const SECTIONS = [
   "tutos",
   "annuaire",
   "dashboard",
+  // B8 — outil de gestion des rôles. Le lien de navigation n'apparaît que
+  // pour un admin, mais l'ancre existe : `#admin` partageable, et un
+  // non-admin qui l'ouvre voit un refus net plutôt qu'un écran vide.
+  "admin",
 ];
 
 /** `#forum/slug` → `{ section: "forum", param: "slug" }` ; absolu → accueil. */

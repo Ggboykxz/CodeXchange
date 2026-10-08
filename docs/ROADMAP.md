@@ -23,7 +23,7 @@
 | Élément | Preuve dans le dépôt |
 |---|---|
 | Schéma Prisma 13 modèles (User, Session, Profile, Thread, Post, Vote, Job, Project, Tutorial, Event, Mentor, Mentorship, Notification) | `prisma/schema.prisma` |
-| Seed de démonstration (30 comptes, 40 questions, 100 réponses, 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors) | `scripts/seed.ts` |
+| Seed de démonstration (31 comptes, 40 questions, 100 réponses, 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors) | `scripts/seed.ts` |
 | Auth par sessions serveur : inscription, connexion, déconnexion révocable, `/api/auth/me` | `src/app/api/auth/*`, `src/lib/auth.ts` |
 | Mots de passe PBKDF2-SHA512 100k itérations + anti-énumération temporelle | `src/lib/password.ts` |
 | Cookie `cx_session` httpOnly, TTL 30 jours, hash SHA-256 du jeton en base | `src/lib/auth.ts`, modèle `Session` |

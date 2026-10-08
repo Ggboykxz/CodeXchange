@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAppStore, useT } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
+import { canAssignRoles } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -52,6 +53,13 @@ export function Header() {
     setMobileOpen(false);
   };
 
+  // B8 — l'entrée « Admin » n'existe que pour un administrateur. Derivée à
+  // chaque rendu (et non au module) : `user` arrive du store, et se remplit
+  // après le montage quand le cache local est vide.
+  const items: NavItem[] = canAssignRoles(user)
+    ? [...navItems, { section: "admin", labelKey: "nav.admin" }]
+    : navItems;
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur">
@@ -72,7 +80,7 @@ export function Header() {
             {/* Desktop nav — de vrais liens : clic médian, clic droit →
                 « ouvrir dans un onglet », URL copiable, Retour du navigateur. */}
             <nav className="hidden md:flex items-center gap-0">
-              {navItems.map((item) => {
+              {items.map((item) => {
                 const active = currentSection === item.section;
                 return (
                   <a
@@ -176,7 +184,7 @@ export function Header() {
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-1 mt-6">
-                    {navItems.map((item) => (
+                    {items.map((item) => (
                       <a
                         key={item.section}
                         href={`#${item.section}`}

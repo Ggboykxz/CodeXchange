@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { authUserSelect, authorSelect, publicUserSelect } from "@/lib/selects";
+import {
+  adminUserSelect,
+  authUserSelect,
+  authorSelect,
+  publicUserSelect,
+} from "@/lib/selects";
 
 /**
  * Les sélecteurs sont le point unique où l'on décide ce qui sort d'une API.
@@ -52,6 +57,25 @@ describe("authorSelect — sélecteur d'auteur des contenus", () => {
     "n'expose pas `%s`",
     (champ) => {
       expect(authorSelect).not.toHaveProperty(champ);
+    }
+  );
+});
+
+describe("adminUserSelect — sélecteur de l'outil de gestion des rôles (B8)", () => {
+  it("porte `role` : c'est l'objet même de l'écran", () => {
+    expect(adminUserSelect).toHaveProperty("role");
+    expect(adminUserSelect).toHaveProperty("id");
+    expect(adminUserSelect).toHaveProperty("name");
+    // Le username sert d'identifiant affiché (u/…), pas l'e-mail.
+    expect(adminUserSelect.profile).toEqual({
+      select: { username: true, avatarColor: true },
+    });
+  });
+
+  it.each(["passwordHash", "email", "verificationTokenHash", "resetTokenHash"])(
+    "n'expose pas `%s` — même à un admin",
+    (champ) => {
+      expect(adminUserSelect).not.toHaveProperty(champ);
     }
   );
 });

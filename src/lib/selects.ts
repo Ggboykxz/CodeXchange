@@ -32,5 +32,23 @@ export const authUserSelect = {
 /** Auteur embarqué dans une ressource (question, offre, projet, tuto…). */
 export const authorSelect = publicUserSelect satisfies Prisma.UserSelect;
 
+/**
+ * Utilisateur vu par l'outil d'administration (B8).
+ *
+ * `role` y figure — c'est l'objet même de l'écran, qui n'existe que pour
+ * le changer — mais ni `passwordHash`, ni `email`, ni les jetons. Le
+ * rechercher par e-mail reste possible côté serveur sans jamais le
+ * renvoyer : `json()` le retire de toute façon.
+ */
+export const adminUserSelect = {
+  id: true,
+  name: true,
+  role: true,
+  reputation: true,
+  createdAt: true,
+  profile: { select: { username: true, avatarColor: true } },
+} satisfies Prisma.UserSelect;
+
 export type PublicUser = Prisma.UserGetPayload<{ select: typeof publicUserSelect }>;
 export type AuthUser = Prisma.UserGetPayload<{ select: typeof authUserSelect }>;
+export type AdminUser = Prisma.UserGetPayload<{ select: typeof adminUserSelect }>;

@@ -486,6 +486,23 @@ const fr: Dict = {
   "notif.mark_all": "Tout marquer comme lu",
   "notif.unread": "non lues",
   "notif.login_required": "Connecte-toi pour voir tes notifications",
+
+  // Outil de gestion des rôles (B8) — visible uniquement pour un admin
+  "nav.admin": "Admin",
+  "admin.title": "Gestion des rôles",
+  "admin.subtitle":
+    "Membre, modérateur, administrateur : chaque rôle ouvre des droits différents sur la plateforme. Un administrateur ne peut pas modifier son propre rôle.",
+  "admin.search": "Rechercher un membre (nom, u/… ou e-mail)…",
+  "admin.empty": "Aucun membre trouvé.",
+  "admin.members": "membres",
+  "admin.you": "toi",
+  "admin.role.member": "Membre",
+  "admin.role.moderator": "Modérateur",
+  "admin.role.admin": "Administrateur",
+  "admin.updated": "Rôle mis à jour.",
+  "admin.error": "Impossible de changer le rôle.",
+  "admin.forbidden": "Accès réservé aux administrateurs.",
+  "admin.login_required": "Connecte-toi avec un compte administrateur pour gérer les rôles.",
 };
 
 const en: Dict = {
@@ -937,6 +954,23 @@ const en: Dict = {
   "notif.mark_all": "Mark all as read",
   "notif.unread": "unread",
   "notif.login_required": "Sign in to see your notifications",
+
+  // Role management tool (B8) — visible to admins only
+  "nav.admin": "Admin",
+  "admin.title": "Role management",
+  "admin.subtitle":
+    "Member, moderator, administrator: each role unlocks different powers on the platform. An administrator cannot change their own role.",
+  "admin.search": "Search a member (name, u/… or email)…",
+  "admin.empty": "No members found.",
+  "admin.members": "members",
+  "admin.you": "you",
+  "admin.role.member": "Member",
+  "admin.role.moderator": "Moderator",
+  "admin.role.admin": "Administrator",
+  "admin.updated": "Role updated.",
+  "admin.error": "Could not change the role.",
+  "admin.forbidden": "Admins only.",
+  "admin.login_required": "Sign in with an administrator account to manage roles.",
 };
 
 const sw: Dict = {
@@ -1336,6 +1370,23 @@ const sw: Dict = {
   "notif.mark_all": "Weka yote kama yaliyosomwa",
   "notif.unread": "haijasomwa",
   "notif.login_required": "Ingia ili uone vijulishi vyako",
+
+  // Usimamizi wa majukumu (B8) — unaonekana kwa msimamizi mkuu pekee
+  "nav.admin": "Msimamizi",
+  "admin.title": "Usimamizi wa Majukumu",
+  "admin.subtitle":
+    "Mwanachama, msimamizi na msimamizi mkuu: kila jukumu hufungua madaraja tofauti kwenye jukwaa. Msimamizi mkuu hawezi kubadilisha jukumu lake mwenyewe.",
+  "admin.search": "Tafuta mwanachama (jina, u/… au barua pepe)…",
+  "admin.empty": "Hakuna wanachama walopatikana.",
+  "admin.members": "wanachama",
+  "admin.you": "wewe",
+  "admin.role.member": "Mwanachama",
+  "admin.role.moderator": "Msimamizi",
+  "admin.role.admin": "Msimamizi Mkuu",
+  "admin.updated": "Jukumu limebadilishwa.",
+  "admin.error": "Imeshindikana kubadilisha jukumu.",
+  "admin.forbidden": "Kwa wasimamizi wakuu pekee.",
+  "admin.login_required": "Ingia kwa akaunti ya msimamizi mkuu ili kusimamisha majukumu.",
 };
 
 const ar: Dict = {
@@ -1735,6 +1786,23 @@ const ar: Dict = {
   "notif.mark_all": "تعيين الكل كمقروء",
   "notif.unread": "غير مقروء",
   "notif.login_required": "سجّل الدخول لرؤية إشعاراتك",
+
+  // إدارة الأدوار (B8) — يظهر للمسؤولين فقط
+  "nav.admin": "الإدارة",
+  "admin.title": "إدارة الأدوار",
+  "admin.subtitle":
+    "عضو ومشرف ومسؤول: لكل دور صلاحيات مختلفة على المنصة. لا يمكن للمسؤول تغيير دوره بنفسه.",
+  "admin.search": "ابحث عن عضو (الاسم أو u/… أو البريد)…",
+  "admin.empty": "لم يتم العثور على أعضاء.",
+  "admin.members": "أعضاء",
+  "admin.you": "أنت",
+  "admin.role.member": "عضو",
+  "admin.role.moderator": "مشرف",
+  "admin.role.admin": "مسؤول",
+  "admin.updated": "تم تحديث الدور.",
+  "admin.error": "تعذر تغيير الدور.",
+  "admin.forbidden": "الوصول مقصور على المسؤولين.",
+  "admin.login_required": "سجّل الدخول بحساب مسؤول لإدارة الأدوار.",
 };
 
 export const dictionaries: Record<Locale, Dict> = { fr, en, sw, ar };

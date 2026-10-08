@@ -434,6 +434,23 @@ const users = [
     github: "nourhassan",
     available: true,
   },
+  {
+    // B8 — le seul `admin` du seed : c'est avec ce compte qu'on découvre
+    // l'outil de gestion des rôles (`admin@codexchange.dev`). Les comptes
+    // démo Aïcha et Kwame restent en `member` — l'E2E `auth-edit.spec.ts`
+    // affirme qu'Aïcha n'a pas les pouvoirs staff.
+    name: "Équipe CodeXchange",
+    email: "admin@codexchange.dev",
+    username: "codex.admin",
+    role: "admin",
+    headline: "Staff · Modération et gestion des rôles",
+    bio: "Compte de l'équipe : modération générale, gestion des rôles et contact pour la plateforme.",
+    country: "Sénégal",
+    city: "Dakar",
+    stack: "TypeScript,Node,PostgreSQL",
+    level: "lead",
+    available: false,
+  },
 ];
 
 const threads = [
@@ -2175,7 +2192,9 @@ async function main() {
         name: u.name,
         email: u.email,
         passwordHash: sharedPasswordHash,
-        role: "member",
+        // B8 : seul le compte d'équipe porte `role: "admin"` dans le
+        // tableau ; tout le monde naît `member`.
+        role: u.role ?? "member",
         // B1 : comptes de démo déjà vérifiés, sinon le badge « profil
         // vérifié » serait vide partout et le parcours de démonstration
         // se terminerait sur un compte non confirmé.

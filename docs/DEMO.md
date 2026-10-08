@@ -18,7 +18,7 @@ bun run scripts/seed.ts     # ⚠️ `bunx prisma db seed` ne sait pas quoi exé
 bun run dev                 # http://localhost:3000
 ```
 
-Le seed se termine par `✅ Seed complete!` et `📊 Counts: { users: 30, threads: 40, posts: 100,
+Le seed se termine par `✅ Seed complete!` et `📊 Counts: { users: 31, threads: 40, posts: 100,
 jobs: 10, projects: 8, tutorials: 8, events: 6, mentors: 8, … }` (les votes sont aléatoires, les
 compteurs `upvotes` sont recalculés).
 

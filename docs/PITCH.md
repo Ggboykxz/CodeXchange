@@ -61,7 +61,7 @@
 - **Lecture des 4 autres modules** : jobs (filtres pays/type/stack/remote + fiche détaillée), projets (statuts, repo/demo), tutos & events (onglets, RSVP), mentorat (8 mentors, demande avec message et objectif).
 - **Notifications in-app** : cloche avec badge, compteur de non-lues, « Tout marquer comme lu », navigation au clic.
 - **i18n 4 locales + dark mode + PWA installable + service worker hors-ligne + CI GitHub Actions** (lint → typecheck → build).
-- Données de démo réalistes injectées : **30 comptes, 40 questions, 100 réponses, 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors**.
+- Données de démo réalistes injectées : **31 comptes, 40 questions, 100 réponses, 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors**.
 
 **À dire à voix haute :** « En deux jours de hackathon, c'est un produit utilisable, pas une coquille. »
 

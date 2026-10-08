@@ -3,6 +3,7 @@ import {
   loginSchema,
   pagination,
   registerSchema,
+  roleUpdateSchema,
   verifySchema,
   voteSchema,
 } from "@/lib/validate";
@@ -151,5 +152,31 @@ describe("pagination", () => {
   it("retombe sur les valeurs par défaut quand la query est vide", () => {
     expect(pagination(new URLSearchParams())).toMatchObject({ limit: 20, page: 1, skip: 0 });
     expect(pagination(new URLSearchParams(), 50)).toMatchObject({ limit: 50 });
+  });
+});
+
+describe("roleUpdateSchema — B8, changement de rôle", () => {
+  it.each(["member", "moderator", "admin"])("accepte `%s`", (role) => {
+    expect(roleUpdateSchema.safeParse({ role }).success).toBe(true);
+  });
+
+  it.each([
+    ["root", "rôle inventé"],
+    ["Admin", "la casse ne passe pas"],
+    ["member ", "espace parasite"],
+    ["", "chaine vide"],
+    ["superuser", "rôle hors barème"],
+  ])("refuse `%s` (%s)", (role) => {
+    expect(roleUpdateSchema.safeParse({ role }).success).toBe(false);
+  });
+
+  it("exige `role` et écarte les champs inconnus de la payload", () => {
+    // zod retire les clés non déclarées par défaut : un `id` envoyé par
+    // le client ne peut pas dévier l'écriture, seule la route choisit la cible.
+    const out = roleUpdateSchema.safeParse({ role: "admin", id: "u_evil" });
+    expect(out.success).toBe(true);
+    expect(out.success && out.data).toEqual({ role: "admin" });
+    expect(roleUpdateSchema.safeParse({}).success).toBe(false);
+    expect(roleUpdateSchema.safeParse(null).success).toBe(false);
   });
 });

@@ -68,3 +68,29 @@ restauration.
 - Regénère le client Prisma si le code/schéma a changé (`npx prisma generate`).
 - Des écritures postérieures au point de restauration sont perdues : préviens
   l'équipe avant bascule.
+
+## 6. Compte administrateur (B8)
+
+L'outil de gestion des rôles (`#admin`, entrée `Admin` du menu) suppose
+qu'au moins **un** compte porte `role = admin`. Le seed en crée un
+(`admin@codexchange.dev`) ; sur une base **déjà peuplée** — production, ou
+dump restauré depuis un point antérieur à B8 — on le pose sans
+réinitialiser quoi que ce soit :
+
+```bash
+# dev / CI : mot de passe de démo (celui du seed)
+npx tsx scripts/create-admin.ts
+
+# production : mot de passe fort, jamais commité dans le dépôt
+ADMIN_PASSWORD='…' npx tsx scripts/create-admin.ts
+```
+
+Le script est **idempotent** : si l'adresse existe déjà, il force
+`role = admin` et ne réinitialise le mot de passe **que** si
+`ADMIN_PASSWORD` est fourni — relancer le script en dev ne peut donc pas
+écraser le mdp de prod. Variables : `ADMIN_EMAIL`, `ADMIN_USERNAME`,
+`ADMIN_PASSWORD`.
+
+> Invariant : un admin ne peut pas se rétrograder lui-même (`lib/roles.ts`),
+> donc tant qu'un admin agit, il en reste toujours au moins un. En cas de
+> base orpheline (0 admin), ce script est le seul remède.

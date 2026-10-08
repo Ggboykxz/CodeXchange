@@ -61,6 +61,10 @@ const AnnuaireSection = dynamic(
   () => import("@/components/sections/annuaire-section").then((m) => m.AnnuaireSection),
   { ssr: false, loading: SectionLoading }
 );
+const AdminSection = dynamic(
+  () => import("@/components/sections/admin-section").then((m) => m.AdminSection),
+  { ssr: false, loading: SectionLoading }
+);
 
 export default function Page() {
   const section = useAppStore((s) => s.section);
@@ -108,6 +112,10 @@ export default function Page() {
       case "dashboard":
         // Le "dashboard" ouvre pour l'instant l'annuaire (voir roadmap).
         return <AnnuaireSection />;
+      case "admin":
+        // B8 — l'écran fait sa propre garde (déconnecté / non-admin) :
+        // le serveur refuse de toute façon, l'UI ne fait que le dire.
+        return <AdminSection />;
       case "home":
       default:
         // L'accueil EST le fil : on arrive sur du contenu vivant, pas sur une

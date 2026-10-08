@@ -187,7 +187,7 @@ bun run dev                       # http://localhost:3000 (port 3000, log dans d
 
 ### Comptes de démo
 
-Le seed crée **30 comptes** qui partagent **le même mot de passe**, constante `SEED_PASSWORD`
+Le seed crée **31 comptes** qui partagent **le même mot de passe**, constante `SEED_PASSWORD`
 de `scripts/seed.ts` :
 
 ```
@@ -199,14 +199,14 @@ mot de passe : codexchange2026
 | `aicha.diallo@codexchange.dev` | Aïcha Diallo | `aicha.dev` — Senior Frontend, Dakar (Sénégal) |
 | `kwame.mensah@codexchange.dev` | Kwame Mensah | `kwame.codes` — Backend Go, Accra (Ghana) |
 | `fatou.ndiaye@codexchange.dev` | Fatou Ndiaye | `fatou.nb` — Mobile Flutter, Abidjan (Côte d'Ivoire) |
+| `admin@codexchange.dev` | Équipe CodeXchange | `codex.admin` — **administrateur** : seul compte qui voit l'entrée `Admin` (gestion des rôles) |
+
+Sur une base déjà peuplée (production), ce compte se crée sans toucher au
+données : `npx tsx scripts/create-admin.ts` (voir `docs/RUNBOOK.md`).
 
 Le seed insère aussi : **40 questions**, **100 réponses**, **10 offres**, **8 projets**, **8 tutos**,
 **6 événements**, **8 mentors** (les votes sont générés aléatoirement puis les compteurs `upvotes`
 recalculés à partir des votes réels).
-
-> ⚠️ Le texte d'aide affiché dans la modale de connexion (`auth.demo_note`) indique
-> `… / password` : c'est un **restant à corriger** dans `src/i18n/dictionaries.ts`, le mot de passe
-> réel est `codexchange2026`.
 
 ---
 

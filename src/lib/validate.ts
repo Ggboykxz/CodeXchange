@@ -3,9 +3,13 @@
  *
  * Règle : aucun `req.json()` ne touche Prisma sans passer par ici.
  * Un schéma décrit aussi la *forme* de la payload : les champs d'identité
- * (`authorId`, `isAnswer`, `role`…) n'y figurent pas, ils sont fixés serveur.
+ * (`authorId`, `isAnswer`…) n'y figurent pas, ils sont fixés serveur.
+ * Exception B8 : `roleUpdateSchema` — l'entrée est un rôle, mais seule
+ * la route `PATCH /api/admin/users/[id]` l'accepte, après vérification
+ * des droits dans `lib/roles.ts` (un schéma ne prouve pas qui écrit).
  */
 import { z } from "zod";
+import { ROLES } from "@/lib/roles";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -136,6 +140,16 @@ export const resetSchema = z.object({
     .trim()
     .regex(/^[0-9a-f]{64}$/i, "Invalid reset token"),
   password: passwordSchema,
+});
+
+/**
+ * B8 — changement de rôle par un administrateur. L'énumération vit dans
+ * `lib/roles.ts` : l'UI, la règle de droit et la validation partagent la
+ * même source, et le refus des valeurs hors barème arrive avant toute
+ * écriture en base.
+ */
+export const roleUpdateSchema = z.object({
+  role: z.enum(ROLES),
 });
 
 export const registerSchema = z.object({
