@@ -74,9 +74,10 @@ export function Header() {
               className="flex items-center gap-2 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1 rounded"
             >
               <span className="text-base font-bold tracking-tight">
-                <span className="text-muted-foreground">$</span>{" "}
+                <span className="text-brand">$</span>{" "}
                 <span className="text-foreground">codexchange</span>
                 <span className="text-muted-foreground">.dev</span>
+                <span className="text-brand cursor-blink">▍</span>
               </span>
             </a>
 
@@ -99,7 +100,7 @@ export function Header() {
                   >
                     {t(item.labelKey)}
                     {active && (
-                      <span className="absolute -bottom-px start-3 end-3 h-px bg-foreground" />
+                      <span className="absolute -bottom-px start-3 end-3 h-px bg-brand" />
                     )}
                   </a>
                 );
@@ -158,7 +159,7 @@ export function Header() {
                   <Button
                     size="sm"
                     onClick={() => openAuth("register")}
-                    className="hidden sm:inline-flex bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
+                    className="hidden sm:inline-flex text-sm font-medium"
                   >
                     {t("nav.register")}
                   </Button>
@@ -198,7 +199,7 @@ export function Header() {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2 rounded text-start hover:bg-muted transition text-sm",
                           currentSection === item.section &&
-                            "bg-muted font-medium"
+                            "bg-brand/10 text-brand font-medium"
                         )}
                       >
                         <span className="text-muted-foreground rtl:-scale-x-100">→</span>
@@ -237,7 +238,7 @@ export function Header() {
                           {t("nav.login")}
                         </Button>
                         <Button
-                          className="w-full bg-foreground text-background hover:bg-foreground/90"
+                          className="w-full"
                           onClick={() => {
                             openAuth("register");
                             setMobileOpen(false);
