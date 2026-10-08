@@ -69,3 +69,6 @@ export function resetRateLimit(key: string): void {
 export const AUTH_POLICY = { limit: 10, windowMs: 60_000 } as const;
 export const AUTH_EMAIL_POLICY = { limit: 5, windowMs: 5 * 60_000 } as const;
 export const WRITE_POLICY = { limit: 30, windowMs: 60_000 } as const;
+// Recherche à la volée : debounce 300 ms côté client, 60/min laisse passer
+// une saisie entière tout en freinant le scraping sur 6 requêtes ILIKE.
+export const SEARCH_POLICY = { limit: 60, windowMs: 60_000 } as const;

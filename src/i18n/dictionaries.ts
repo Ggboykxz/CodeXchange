@@ -36,6 +36,8 @@ const fr: Dict = {
   "nav.logout": "Déconnexion",
   "nav.dashboard": "Mon espace",
   "nav.search": "Rechercher...",
+  "search.events": "Agenda",
+  "search.no_results": "Aucun résultat.",
 
   // Hero / Landing
   "hero.eyebrow": "Plateforme des développeurs africains",
@@ -525,6 +527,8 @@ const en: Dict = {
   "nav.logout": "Sign out",
   "nav.dashboard": "My space",
   "nav.search": "Search...",
+  "search.events": "Events",
+  "search.no_results": "No results.",
 
   "hero.eyebrow": "African developers' platform",
   "hero.title": "African code takes its place.",
@@ -1000,6 +1004,8 @@ const sw: Dict = {
   "nav.logout": "Ondoka",
   "nav.dashboard": "Nafasi yangu",
   "nav.search": "Tafuta...",
+  "search.events": "Matukio",
+  "search.no_results": "Hakuna matokeo.",
   "hero.eyebrow": "Jukwaa la wanahisabati wa Afrika",
   "hero.title": "Msimbo wa Afrika unachukua nafasi.",
   "hero.subtitle": "CodeXchange hukusanya wanahisabati wa Afrika na ukantamko: jukwaa, ajira, miradi ya open-source, ushauri, mafunzo, matukio na orodha. Jukwaa moja, kwa wafanasubiri, kwa wanahisabati.",
@@ -1423,6 +1429,8 @@ const ar: Dict = {
   "nav.logout": "تسجيل الخروج",
   "nav.dashboard": "مساحتي",
   "nav.search": "ابحث...",
+  "search.events": "فعاليات",
+  "search.no_results": "لا نتائج.",
   "hero.eyebrow": "منصة المطورين الأفارقة",
   "hero.title": "للكود الأفريقي مكانه.",
   "hero.subtitle": "يجمع CodeXchange مطوري أفريقيا والمغتربين: منتدى، وظائف، مشاريع مفتوحة المصدر، إرشاد، دروس، فعاليات ودليل. منصة واحدة، من المطورين ولهم.",

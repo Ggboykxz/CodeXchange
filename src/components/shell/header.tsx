@@ -16,6 +16,7 @@ import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Avatar } from "@/components/shared/avatar";
 import { NotificationBell } from "@/components/shared/notification-bell";
+import { GlobalSearch } from "@/components/shell/global-search";
 import {
   Menu,
   LogOut,
@@ -248,6 +249,14 @@ export function Header() {
                 </SheetContent>
               </Sheet>
             </div>
+          </div>
+        </div>
+        {/* Recherche transverse (D9) : une boîte, tout le site — questions, offres,
+            projets, tutos, agenda, membres. Ligne dédiée pour ne pas compresser
+            la barre principale sur aucun breakpoint. */}
+        <div className="border-t border-border">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 py-2">
+            <GlobalSearch />
           </div>
         </div>
       </header>

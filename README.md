@@ -126,6 +126,7 @@ en CI, un service `postgres:16` est monté par `.github/workflows/ci.yml`.
 | POST | `/api/newsletter` | Abonnement digest mensuel — public (rate-limit ; réponse identique que l'adresse soit neuve, déjà abonnée ou réabonnée) |
 | GET | `/api/newsletter/unsubscribe` | Désinscription un-clic via `?token=` dérivé de l'e-mail (digest stocké hashé) — public |
 | GET | `/api/cron/newsletter` | Digest mensuel : cron Vercel (1er du mois, 06:00 UTC), `Authorization: Bearer $CRON_SECRET` exigé (`401` sinon), `?dryRun=1` pour compter sans envoyer — admin système |
+| GET | `/api/search` | Recherche globale `?q=` : threads, offres, projets, tutos, agenda, membres — public (rate-limit 60/min), `no-store` |
 | GET | `/api/threads` | Questions : `?q=&category=&tag=&solved=&page=&limit=` — public |
 | POST | `/api/threads` | Créer une question — **session requise** |
 | GET | `/api/threads/[slug]` | Détail + réponses (tri : meilleure réponse, puis upvotes) + incrémente les vues — public |
