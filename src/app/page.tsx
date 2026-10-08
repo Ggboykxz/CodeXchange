@@ -78,30 +78,41 @@ export default function Page() {
   }, [fetchMe]);
 
   /**
-   * B6 — erreur d'aller-retour OAuth. Le serveur renvoie
-   * `/?oauth_error=code` : on traduit en toast puis on nettoie l'URL,
-   * sinon le message reviendrait à chaque rafraîchissement.
-   * `silent` = l'utilisateur a annulé chez le fournisseur : rien.
+   * B6/I5 — erreurs remontées par le serveur via l'URL : aller-retour
+   * OAuth (`?oauth_error=`) et désinscription newsletter (`?nl=`). On
+   * traduit en toast puis on nettoie l'URL, sinon le message
+   * reviendrait à chaque rafraîchissement. Valeur `silent` = l'utilisateur
+   * a annulé chez le fournisseur : rien à afficher.
    */
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const code = params.get("oauth_error");
-    if (!code) return;
+    const oauthCode = params.get("oauth_error");
+    const nlCode = params.get("nl");
+    if (!oauthCode && !nlCode) return;
     params.delete("oauth_error");
+    params.delete("nl");
     const qs = params.toString();
     window.history.replaceState(
       null,
       "",
       window.location.pathname + (qs ? `?${qs}` : "") + window.location.hash
     );
-    if (code === "silent") return;
-    toast.error(
-      code === "state"
-        ? t("auth.oauth.error_state")
-        : code === "email"
-          ? t("auth.oauth.error_email")
-          : t("auth.oauth.error")
-    );
+    if (oauthCode && oauthCode !== "silent") {
+      toast.error(
+        oauthCode === "state"
+          ? t("auth.oauth.error_state")
+          : oauthCode === "email"
+            ? t("auth.oauth.error_email")
+            : t("auth.oauth.error")
+      );
+    }
+    if (nlCode) {
+      toast[nlCode === "unsubscribed" ? "success" : "error"](
+        nlCode === "unsubscribed"
+          ? t("footer.newsletter_unsubscribed")
+          : t("footer.newsletter_unsubscribe_error")
+      );
+    }
   }, [t]);
 
   /**

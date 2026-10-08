@@ -285,3 +285,24 @@ model Notification {
 
   @@index([recipientId, read, createdAt])
 }
+
+/**
+ * I5 — abonnés à la newsletter (digest mensuel).
+ *
+ * Opt-in simple : pas de double opt-in, car sans SMTP en prod (I4) la
+ * confirmation ne reviendrait jamais et l'abonnement resterait bloqué.
+ * Chaque envoi porte un lien de désinscription.
+ *
+ * `tokenHash` — le jeton de désinscription est **dérivé** de l'e-mail
+ * (`nlToken`, déterministe : récupérable au moment d'éditer le digest)
+ * mais stocké hashé (`sha256(SECRET:nl:<jeton>)`) : comme pour les
+ * sessions, la vérification et la réinitialisation, une extraction de la
+ * base ne donne aucun lien valide.
+ */
+model NewsletterSubscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  tokenHash      String    @unique
+  createdAt      DateTime  @default(now())
+  unsubscribedAt DateTime?
+}

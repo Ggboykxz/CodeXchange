@@ -452,6 +452,9 @@ const fr: Dict = {
   "mentorat.sign_in": "Connecte-toi pour demander un mentorat",
   "mentorat.request_sent": "Demande envoyée ! Le mentor te répondra sous 48h.",
   "footer.newsletter_done": "C'est fait. On revient vers toi.",
+  "footer.newsletter_error": "Impossible de s'abonner, réessaie dans un instant.",
+  "footer.newsletter_unsubscribed": "Désinscription confirmée. À bientôt !",
+  "footer.newsletter_unsubscribe_error": "Lien de désinscription invalide.",
 
   // Fil d'accueil (le réseau)
   "feed.sort_label": "Trier le fil",
@@ -924,6 +927,9 @@ const en: Dict = {
   "mentorat.sign_in": "Sign in to request a mentor",
   "mentorat.request_sent": "Request sent! The mentor will reply within 48h.",
   "footer.newsletter_done": "Done. You'll hear from us.",
+  "footer.newsletter_error": "Couldn't subscribe, please try again shortly.",
+  "footer.newsletter_unsubscribed": "Unsubscribed. See you around!",
+  "footer.newsletter_unsubscribe_error": "Invalid unsubscribe link.",
 
   // Home feed (the network)
   "feed.sort_label": "Sort the feed",
@@ -1350,6 +1356,9 @@ const sw: Dict = {
   "mentorat.sign_in": "Ingia ili kuomba mshauri",
   "mentorat.request_sent": "Ombi limetumwa! Mshauri atajibu ndani ya saa 48.",
   "footer.newsletter_done": "Tayari. Utapata hisabati yetu.",
+  "footer.newsletter_error": "Imeshindikana kujiandikisha, jaribu tena baada ya muda.",
+  "footer.newsletter_unsubscribed": "Umejiondolewa. Tukutane tena!",
+  "footer.newsletter_unsubscribe_error": "Kiungo cha kujiondoa si sahihi.",
   "feed.sort_label": "Panda feed",
   "feed.sort.hot": "Moto",
   "feed.sort.new": "Mpya",
@@ -1770,6 +1779,9 @@ const ar: Dict = {
   "mentorat.sign_in": "سجّل الدخول لطلب مرشد",
   "mentorat.request_sent": "تم إرسال الطلب! سيرد المرشد خلال ٤٨ ساعة.",
   "footer.newsletter_done": "تم. ستسمعوننا.",
+  "footer.newsletter_error": "تعذّر الاشتراك، حاول بعد قليل.",
+  "footer.newsletter_unsubscribed": "تم إلغاء الاشتراك. إلى اللقاء!",
+  "footer.newsletter_unsubscribe_error": "رابط إلغاء الاشتراك غير صالح.",
   "feed.sort_label": "ترتيب الخلاصة",
   "feed.sort.hot": "شائع",
   "feed.sort.new": "الأحدث",

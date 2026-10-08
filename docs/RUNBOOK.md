@@ -94,3 +94,25 @@ Le script est **idempotent** : si l'adresse existe déjà, il force
 > Invariant : un admin ne peut pas se rétrograder lui-même (`lib/roles.ts`),
 > donc tant qu'un admin agit, il en reste toujours au moins un. En cas de
 > base orpheline (0 admin), ce script est le seul remède.
+
+## 7. Cron newsletter & secrets (I5)
+
+`vercel.json` déclare un cron mensuel (`0 6 1 * *`) vers
+`/api/cron/newsletter`. La route exige `Authorization: Bearer
+${CRON_SECRET}` (Vercel l'injecte automatiquement si la variable est
+posée — sinon elle répond `401` pour tout, y compris les appels manuels
+non signés).
+
+```bash
+# Déclencher / vérifier à la main — dryRun ne propose rien en base ni
+# aucun envoi, il compte seulement ce que le prochain digest ferait :
+curl -H "Authorization: Bearer $CRON_SECRET" \
+  "https://code-xchange-nine.vercel.app/api/cron/newsletter?dryRun=1"
+
+# Envoi réel (sans dryRun) — sans SMTP_HOST, chaque e-mail devient un
+# aperçu dans les logs Vercel ; avec SMTP_HOST, envoi effectif.
+```
+
+`CRON_SECRET` n'a jamais besoin de changer (rotation possible : en
+générer un nouveau et mettre à jour Vercel + `vercel env`). Le prochain
+cron mensuel prend le nouveau à son prochain appel.

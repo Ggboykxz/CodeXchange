@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ import { Github, Twitter } from "lucide-react";
 export function Footer() {
   const t = useT();
   const navigate = useAppStore((s) => s.navigate);
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlBusy, setNlBusy] = useState(false);
 
   const exploreLinks = [
     { section: "forum", label: t("nav.forum") },
@@ -20,9 +23,32 @@ export function Footer() {
     { section: "annuaire", label: t("nav.annuaire") },
   ];
 
-  const subscribe = (e: React.FormEvent) => {
+  /**
+   * I5 — l'abonnement écrit réellement en base (`POST /api/newsletter`).
+   * La route répond pareil que l'adresse soit neuve ou déjà inscrite :
+   * même toast, pas d'information sur la liste.
+   */
+  const subscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(t("footer.newsletter_done"));
+    if (nlBusy) return;
+    setNlBusy(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: nlEmail }),
+      });
+      if (!res.ok) {
+        toast.error(t("footer.newsletter_error"));
+        return;
+      }
+      setNlEmail("");
+      toast.success(t("footer.newsletter_done"));
+    } catch {
+      toast.error(t("footer.newsletter_error"));
+    } finally {
+      setNlBusy(false);
+    }
   };
 
   return (
@@ -53,9 +79,11 @@ export function Footer() {
                   type="email"
                   placeholder={t("footer.newsletter_placeholder")}
                   className="text-sm bg-card"
+                  value={nlEmail}
+                  onChange={(e) => setNlEmail(e.target.value)}
                   required
                 />
-                <Button type="submit" size="sm" variant="default">
+                <Button type="submit" size="sm" variant="default" disabled={nlBusy}>
                   {t("footer.newsletter_subscribe")}
                 </Button>
               </form>

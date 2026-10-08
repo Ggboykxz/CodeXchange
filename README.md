@@ -123,6 +123,9 @@ en CI, un service `postgres:16` est monté par `.github/workflows/ci.yml`.
 | GET | `/api/oauth/providers` | Fournisseurs OAuth activés (`{ providers: ["github", …] }` — vide sans credentials) — public |
 | GET | `/api/oauth/[provider]` | Départ vers GitHub/Google : pose `state` + `next` en cookies, 302 — public (rate limit) |
 | GET | `/api/oauth/[provider]/callback` | Retour : `state` en temps constant, échange du code, rattachement par e-mail vérifié, session, 302 — public |
+| POST | `/api/newsletter` | Abonnement digest mensuel — public (rate-limit ; réponse identique que l'adresse soit neuve, déjà abonnée ou réabonnée) |
+| GET | `/api/newsletter/unsubscribe` | Désinscription un-clic via `?token=` dérivé de l'e-mail (digest stocké hashé) — public |
+| GET | `/api/cron/newsletter` | Digest mensuel : cron Vercel (1er du mois, 06:00 UTC), `Authorization: Bearer $CRON_SECRET` exigé (`401` sinon), `?dryRun=1` pour compter sans envoyer — admin système |
 | GET | `/api/threads` | Questions : `?q=&category=&tag=&solved=&page=&limit=` — public |
 | POST | `/api/threads` | Créer une question — **session requise** |
 | GET | `/api/threads/[slug]` | Détail + réponses (tri : meilleure réponse, puis upvotes) + incrémente les vues — public |

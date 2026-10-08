@@ -116,7 +116,7 @@
 | I2 | Messagerie privée entre membres | ⬜ | Aucun modèle `Message` / `Conversation` |
 | I3 | Temps réel (websocket / SSE) | ⬜ | Seul le polling 60 s de la cloche existe |
 | I4 | E-mails transactionnels | ⏳ | `lib/mailer` (nodemailer) : bienvenue (**porteur du lien de vérification**), réinitialisation du mot de passe et vérification d'adresse, aperçu en journal sans `SMTP_HOST`, envoi jamais bloquant ; UI panneau oublié + page `/reset`. **Reste** : `SMTP_HOST/PORT/USER/PASS` non renseignés dans l'environnement Vercel → en prod les e-mails restent des aperçus journal ; dès que les identifiants SMTP sont posés, les trois envois deviennent réels sans toucher au code |
-| I5 | Digest / newsletter | ⬜ | Le formulaire existe dans le footer mais `subscribe()` n'écrit **rien** : il affiche juste le toast `C'est fait. On revient vers toi.` |
+| I5 | Digest / newsletter | ✅ | Formulaire footer enfin réel : `POST /api/newsletter` (zod `newsletterSchema`, rate-limit IP, réponse identique neuf/déjà abonné/réabonné, `P2002` absorbé). Modèle `NewsletterSubscriber` (jeton **dérivé** de l'e-mail via `lib/newsletter`, stocké hashé `SECRET:nl:` comme sessions/vérif/reset — extraction ⇒ aucun lien valide) ; mail de bienvenue porteur du lien de désinscription. Désinscription un-clic `GET /api/newsletter/unsubscribe` (idempotent, 302 `?nl=`). `GET /api/cron/newsletter` : digest mensuel (contenu réel : top questions, jobs, projets, tutos, events à venir, nouveaux membres — HTML inline-styles + texte brut, **tout contenu échappé**), `Authorization: Bearer $CRON_SECRET` exigé (401 sinon), `?dryRun=1` comptage sans envoi ; cron Vercel `0 6 1 * *` ; sans SMTP, aperçu journal. i18n 3 clés × 4 locales, E2E 2 scénarios (abonnement footer réel + désinscription invalide → toast) |
 
 ## EPIC J — Robustesse & sécurité
 
@@ -128,7 +128,7 @@
 | J4 | Non-fuite de `passwordHash` / `email` | ✅ | Sélecteurs Prisma publics + filtre récursif `json()` |
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
-| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **273 tests / 16 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`, mailer, log, reset, **rôles 40**), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (10 scénarios — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px, **gestion des rôles B8**), lancés par le workflow GitHub après seed + Chromium + `next start` |
+| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **315 tests / 18 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`, mailer, log, reset, **rôles 40**, **oauth 30**, **newsletter 12**), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (**12 scénarios** — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px, **gestion des rôles B8**, **newsletter I5**), lancés par le workflow GitHub après seed + Chromium + `next start` |
 | J8 | Journalisation & monitoring | ✅ | `lib/log` : événements JSON une ligne (`ts`/`level`/`message`/ctx) en production, lisibles en dev ; les **23 routes** (35 appels) sont passées de `console.error` à `logger.route` ; `GET /api/health` (`{ok, db, latencyMs, uptime}`, 503 si DB down) pour les sondes ; 3 tests unitaires |
 | J9 | Sauvegardes / réplication de base | ✅ | PostgreSQL managé : la PITR reste chez Neon (documentée). `docs/RUNBOOK.md` : restauration PITR, bascule `DATABASE_URL` Vercel, dump/restauration locale, vérification ; `scripts/db-backup.sh` (`pg_dump -Fc` par défaut, `--plain` pour SQL) vers `./backups/` (gitignoré) — **exécuté et prouvé** sur le PG local (dump 263 K) |
 
@@ -136,6 +136,6 @@
 
 ### Top 5 des correctifs prioritaires (issus de la lecture du code)
 
-> **Tous les 5 sont livrés** : **B7** (e-mails), **E5** (captures), **J8** (logging/santé), **J9** (runbook Neon + backup), et **D2** (sw/ar traduits, livré juste avant). Voir les sections par épique pour le reste (I5 digest, D9 recherche, …).
+> **Tous les 5 sont livrés** : **B7** (e-mails), **E5** (captures), **J8** (logging/santé), **J9** (runbook Neon + backup), et **D2** (sw/ar traduits, livré juste avant). Voir les sections par épique pour le reste (D9 recherche, …).
 
-> Livré entre-temps : **G**, **C10**, **D2**, **B7**, **B8**, **E5**, **J8**, **J9**, les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).
+> Livré entre-temps : **G**, **C10**, **D2**, **B7**, **B8**, **E5**, **J8**, **J9**, **B6** (OAuth maison), **I5** (newsletter + cron mensuel), les **5 tris de Reddit**, les **réponses imbriquées**, la **modale d'auth unique**, la **barre d'actions Reddit** et **J7** (E2E Playwright en CI ✅).

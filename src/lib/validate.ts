@@ -130,6 +130,14 @@ export const forgotSchema = z.object({
 });
 
 /**
+ * Abonnement newsletter (I5). Forme seulement : la route répond de
+ * façon identique que l'adresse soit déjà abonnée ou non.
+ */
+export const newsletterSchema = z.object({
+  email,
+});
+
+/**
  * Confirmation de la réinitialisation. Le jeton suit le même format
  * 32 octets hexadécimaux que la vérification : refusé avant tout
  * hash en base.

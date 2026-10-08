@@ -225,3 +225,37 @@ ton mot de passe actuel reste valable.</p>
 <hr/><p style="font-size:11px;color:#888">Lien à usage unique, valable 30 minutes.</p>`,
   });
 }
+
+/**
+ * Confirmation d'abonnement newsletter (I5) — envoyée dès l'inscription,
+ * avec le lien de désinscription : l'abonné dispose d'un moyen de retrait
+ * **avant** le premier digest, même si celui-ci n'arrive que le mois
+ * prochain.
+ */
+export function sendNewsletterWelcomeEmail(input: {
+  email: string;
+  unsubscribeUrl: string;
+}): Promise<"sent" | "preview"> {
+  return sendMail({
+    to: input.email,
+    subject: "Abonnement confirmé — newsletter CodeXchange",
+    text:
+      `Abonnement confirmé.
+
+Tu recevras le digest mensuel de CodeXchange (${input.email}) : les
+meilleures questions du forum, les offres d'emploi, les projets ouverts
+et l'agenda, une fois par mois.
+
+Désinscription en un clic :
+  ${input.unsubscribeUrl}
+
+—
+l'équipe CodeXchange`,
+    html: `<p>Abonnement confirmé.</p>
+<p>Tu recevras le digest mensuel de CodeXchange (<strong>${input.email}</strong>) :
+les meilleures questions du forum, les offres d'emploi, les projets ouverts
+et l'agenda, une fois par mois.</p>
+<p><a href="${input.unsubscribeUrl}" style="color:#0b6bcb">Se désabonner en un clic</a></p>
+<hr/><p style="font-size:11px;color:#888">Cet e-mail est automatique.</p>`,
+  });
+}
