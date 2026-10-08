@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore, useT } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { SectionHeader } from "@/components/shared/section-header";
@@ -78,36 +78,59 @@ export function MessagesSection() {
     if (user) refreshList();
   }, [user, refreshList]);
 
-  // Fil : un fetch par interlocuteur. Le serveur marque « lu » à l'ouverture,
-  // donc on rafraîchit la liste derrière pour virer la pastille d'inédit.
+  // Numéro de requête : un basculement de fil rapide ne doit pas laisser
+  // une réponse périmée écraser le dernier (même garde que l'admin B8).
+  const threadReq = useRef(0);
+  const loadThread = useCallback(
+    (peerId: string) => {
+      const req = ++threadReq.current;
+      setThreadLoading(true);
+      fetch(`/api/messages/thread?peer=${encodeURIComponent(peerId)}`, {
+        cache: "no-store",
+      })
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((d) => {
+          if (threadReq.current !== req) return;
+          setThread({ peer: d.peer, messages: d.messages || [] });
+          refreshList(); // lu côté serveur → la pastille de la liste suit
+        })
+        .catch(() => {
+          if (threadReq.current !== req) return;
+          setThread(null);
+          toast.error(t("common.network_error"));
+        })
+        .finally(() => {
+          if (threadReq.current === req) setThreadLoading(false);
+        });
+    },
+    [refreshList, t]
+  );
+
+  // Fil : un fetch par interlocuteur. Le serveur marque « lu » à
+  // l'ouverture, donc on rafraîchit la liste derrière pour virer la
+  // pastille d'inédit.
   useEffect(() => {
     if (!user || !sectionParam) {
       setThread(null);
       return;
     }
-    let cancelled = false;
-    setThreadLoading(true);
-    fetch(`/api/messages/thread?peer=${encodeURIComponent(sectionParam)}`, {
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((d) => {
-        if (cancelled) return;
-        setThread({ peer: d.peer, messages: d.messages || [] });
-        refreshList();
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setThread(null);
-        toast.error(t("common.network_error"));
-      })
-      .finally(() => {
-        if (!cancelled) setThreadLoading(false);
-      });
-    return () => {
-      cancelled = true;
+    loadThread(sectionParam);
+  }, [user, sectionParam, loadThread]);
+
+  // I3 — un message arrive par SSE (rediffusé par la cloche) : la liste se
+  // rafraîchit toujours ; le fil ne bouge que si l'émetteur EST celui qui
+  // est ouvert (sinon on ne fait que compter la pastille).
+  useEffect(() => {
+    const onMessage = (e: Event) => {
+      refreshList();
+      const detail = (e as CustomEvent).detail as { senderId?: string } | null;
+      if (sectionParam && (!detail || detail.senderId === sectionParam)) {
+        loadThread(sectionParam);
+      }
     };
-  }, [user, sectionParam, refreshList, t]);
+    window.addEventListener("cx:message", onMessage);
+    return () => window.removeEventListener("cx:message", onMessage);
+  }, [sectionParam, refreshList, loadThread]);
 
   const send = async () => {
     const body = draft.trim();

@@ -115,4 +115,66 @@ test.describe("Messagerie privée (I2)", () => {
       await ctxB.close();
     }
   });
+
+  test("réception en temps réel sans rechargement (SSE, I3)", async ({
+    browser,
+  }) => {
+    // Le sondage serveur pousse toutes les 8 s : 20 s laissent une
+    // large marge (connexion EventSource + rafraîchissement du fil).
+    test.setTimeout(60_000);
+    const ctxA = await browser.newContext();
+    const ctxB = await browser.newContext();
+    const a = await ctxA.newPage();
+    const b = await ctxB.newPage();
+    const body = "Temps réel, zéro rechargement.";
+
+    try {
+      /* --- Kwame ouvre SON fil vers Aïcha AVANT tout envoi --- */
+      await login(b, KWAME, PW);
+      const profA = await b.request.get("/api/profiles?limit=50");
+      const aichaId = (
+        (await profA.json()).profiles as Array<{ userId: string; username: string }>
+      ).find((p) => p.username === "aicha.dev")!.userId;
+      await b.goto(`/#messages/${aichaId}`);
+      await expect(b.getByLabel("Écrire un message…")).toBeVisible();
+
+      /* --- Aïcha envoie : le fil de Kwame se remplit SANS action --- */
+      await login(a, AICHA, PW);
+      const profK = await a.request.get("/api/profiles?limit=50");
+      const kwameId = (
+        (await profK.json()).profiles as Array<{ userId: string; username: string }>
+      ).find((p) => p.username === KWAME_USERNAME)!.userId;
+      await a.goto(`/#messages/${kwameId}`);
+      await expect(a.getByLabel("Écrire un message…")).toBeVisible();
+
+      await a.getByLabel("Écrire un message…").fill(body);
+      await a.getByRole("button", { name: "Envoyer" }).click();
+      await expect(
+        a.getByTestId("thread-messages").getByText(body)
+      ).toBeVisible();
+
+      // Aucun rechargement ni clic côté Kwame : SSE → évènement `cx:message`
+      // → rechargement du fil ouvert.
+      await expect(
+        b.getByTestId("thread-messages").getByText(body)
+      ).toBeVisible({ timeout: 20_000 });
+    } finally {
+      try {
+        // Seul Aïcha a envoyé : nettoyage depuis sa session vers Kwame.
+        const prof = await ctxA.request.get(`/api/profiles/${KWAME_USERNAME}`);
+        const peerId = (await prof.json()).profile.userId;
+        const th = await ctxA.request.get(`/api/messages/thread?peer=${peerId}`);
+        const data = await th.json();
+        for (const m of data.messages ?? []) {
+          if (String(m.body).startsWith(body)) {
+            await ctxA.request.delete(`/api/messages/${m.id}`);
+          }
+        }
+      } catch {
+        /* nettoyage best-effort */
+      }
+      await ctxA.close();
+      await ctxB.close();
+    }
+  });
 });

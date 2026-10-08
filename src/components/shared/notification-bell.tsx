@@ -46,6 +46,9 @@ export function NotificationBell() {
     }
   }, [user]);
 
+  // Polling 60 s : le **secours** du temps réel (SSE bloqué, proxy…).
+  // Le `setState` reste enfermé dans le `.then` (règle
+  // `set-state-in-effect`) : l'effet ne déclenche aucun rendu synchrone.
   useEffect(() => {
     if (!user) return;
     let alive = true;
@@ -58,7 +61,7 @@ export function NotificationBell() {
           setUnread(data.unread || 0);
         })
         .catch(() => {
-          /* silent: the bell degrades to an empty list */
+          /* la cloche dégrade en liste vide */
         });
     };
     pull();
@@ -68,6 +71,48 @@ export function NotificationBell() {
       clearInterval(timer);
     };
   }, [user]);
+
+  // I3 — temps réel : une connexion SSE tant que l'onglet est visible
+  // (fermeture à la mise en arrière-plan : une connexion maintenue dort
+  // coûteux). `notification` → on re-télécharge (l'API reste la source de
+  // vérité) ; `message` → on rediffuse un `CustomEvent` page pour la
+  // section Messagerie, qui écoute le même évènement.
+  useEffect(() => {
+    if (!user || typeof EventSource === "undefined") return;
+    let source: EventSource | null = null;
+    const connect = () => {
+      if (source || document.hidden) return;
+      source = new EventSource("/api/events");
+      source.addEventListener("notification", () => load());
+      source.addEventListener("message", (e) => {
+        let detail: unknown = null;
+        try {
+          detail = JSON.parse((e as MessageEvent).data);
+        } catch {
+          /* payload illisible : simple déclencheur de rafraîchissement */
+        }
+        window.dispatchEvent(new CustomEvent("cx:message", { detail }));
+      });
+      // `onerror` : EventSource se reconnecte tout seul (backoff natif) ;
+      // on ne referme que sur visibilité ou déconnexion.
+    };
+    const onVisibility = () => {
+      if (document.hidden) {
+        source?.close();
+        source = null;
+      } else {
+        connect();
+        load(); // rattrapage : l'onglet masqué a pu manquer du contenu
+      }
+    };
+    connect();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      source?.close();
+      source = null;
+    };
+  }, [user, load]);
 
   // Logged-out state is derived, never written from an effect.
   const visibleItems = user ? items : [];

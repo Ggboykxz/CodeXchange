@@ -152,6 +152,7 @@ en CI, un service `postgres:16` est monté par `.github/workflows/ci.yml`.
 | GET | `/api/messages/thread` | `?peer=<userId>` : fil complet (marque lu à l'ouverture) — **session requise** |
 | POST | `/api/messages` | Envoyer `{ to, body }` (upsert de la paire normalisée) — **session requise** |
 | DELETE | `/api/messages/[id]` | Supprimer **son propre** message (conv vidée ⇒ supprimée) — **session requise** |
+| GET | `/api/events` | Flux **SSE** temps réel (notifications + messages, sondage 8 s, coupure ~55 s) — **session requise** |
 | POST | `/api/notifications/read-all` | Tout marquer comme lu — **session requise** |
 
 Les réponses publiques passent par `json()` (`src/lib/api.ts`), qui retire systématiquement `passwordHash`
