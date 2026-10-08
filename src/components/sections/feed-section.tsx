@@ -324,6 +324,43 @@ export function FeedSection() {
         {/* Fil                                                         */}
         {/* ---------------------------------------------------------- */}
         <div className="min-w-0">
+          {/* Hero — visiteurs non connectés. Copie i18n existante (hero.*),
+              accent de marque, fond pointillé « terminal ». Un seul message
+              clé, un CTA principal, un secondaire. */}
+          {!user && (
+            <div className="mb-5 overflow-hidden rounded-xl border border-border bg-card">
+              <div className="relative p-6 sm:p-8">
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:16px_16px]"
+                />
+                <div className="relative">
+                  <p className="eyebrow mb-2 flex items-center gap-1.5">
+                    <span className="text-brand">$</span> {t("hero.eyebrow")}
+                  </p>
+                  <h1 className="display text-2xl text-balance sm:text-3xl">
+                    {t("hero.title")}
+                  </h1>
+                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground text-pretty">
+                    {t("hero.subtitle")}
+                  </p>
+                  <div className="mt-5 flex flex-wrap items-center gap-2">
+                    <Button onClick={() => askSignIn("register")}>
+                      {t("hero.cta.join")}
+                      <ArrowRight
+                        className="h-4 w-4 rtl:-scale-x-100"
+                        aria-hidden="true"
+                      />
+                    </Button>
+                    <Button variant="outline" onClick={() => navigate("annuaire")}>
+                      {t("hero.cta.explore")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <div
               className="flex items-center gap-1 rounded-lg border bg-muted/40 p-1"
@@ -341,7 +378,7 @@ export function FeedSection() {
                   className={cn(
                     "flex items-center gap-1.5 rounded px-2.5 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
                     sort === o.value
-                      ? "bg-background text-foreground shadow-sm"
+                      ? "bg-brand/10 text-brand shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -382,7 +419,7 @@ export function FeedSection() {
               className={cn(
                 "rounded-lg border px-3 py-2 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
                 unsolved
-                  ? "border-foreground bg-foreground text-background"
+                  ? "border-brand bg-brand text-brand-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -404,11 +441,7 @@ export function FeedSection() {
               />
             </div>
 
-            <Button
-              size="sm"
-              onClick={openCreate}
-              className="bg-foreground text-background hover:bg-foreground/90"
-            >
+            <Button size="sm" onClick={openCreate}>
               <Plus className="h-4 w-4" aria-hidden="true" />
               {t("feed.compose")}
             </Button>
@@ -442,10 +475,7 @@ export function FeedSection() {
               <p className="text-muted-foreground">
                 {q ? t("forum.empty") : t("feed.empty")}
               </p>
-              <Button
-                className="mt-4 bg-foreground text-background hover:bg-foreground/90"
-                onClick={openCreate}
-              >
+              <Button className="mt-4" onClick={openCreate}>
                 <Plus className="h-4 w-4" aria-hidden="true" />
                 {t("feed.compose")}
               </Button>
@@ -516,10 +546,7 @@ export function FeedSection() {
               <h2 className="text-lg font-bold">{t("cta.title")}</h2>
               <p className="mt-2 text-sm text-muted-foreground">{t("cta.subtitle")}</p>
               <div className="mt-4 flex flex-col gap-2">
-                <Button
-                  onClick={() => askSignIn("register")}
-                  className="w-full bg-foreground text-background hover:bg-foreground/90"
-                >
+                <Button onClick={() => askSignIn("register")} className="w-full">
                   {t("cta.button")}
                   <ArrowRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
                 </Button>
