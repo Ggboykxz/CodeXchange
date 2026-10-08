@@ -26,11 +26,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const parsed = verifyResendSchema.safeParse(body);
 
-    let email: string | undefined = parsed.success ? parsed.data.email : undefined;
-    if (!email) {
-      const user = await currentUser(req);
-      email = user?.email;
-    }
+    // Renvoi UNIQUEMENT vers la propre adresse du appelant connecté. Un
+    // e-mail fourni dans le body sans session (ou pour un autre compte)
+    // est ignoré : sinon l'endpoint servait à bombarder une boîte tierce
+    // depuis un domaine de confiance ET à invalider le lien de
+    // vérification en cours de la victime. Réponse identique dans les
+    // deux cas (`sent: true`), pour ne pas révéler si un mail est parti.
+    const user = await currentUser(req);
+    const bodyEmail = parsed.success ? parsed.data.email : undefined;
+    const email = user && (!bodyEmail || bodyEmail === user.email) ? user.email : undefined;
 
     // Sans adresse : on répond comme si le mail était parti, sinon
     // « pas connecté » deviendrait un signal d'existence de compte.

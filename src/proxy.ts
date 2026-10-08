@@ -16,9 +16,17 @@ const AUTH_PATHS = /^\/api\/auth\/(login|register)$/;
 const WRITE_PATHS = /^\/api\/(threads|posts|votes|mentors|profiles)/;
 
 function ipOf(req: NextRequest): string {
-  const fwd = req.headers.get("x-forwarded-for");
-  if (fwd) return fwd.split(",")[0]!.trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
+  // Voir lib/auth.ts#clientIp : on n'honore les en-têtes de proxy que
+  // derrière un reverse-proxy de confiance. `TRUST_PROXY=false` ignore
+  // les en-têtes forgeables et retombe sur "unknown" (bucket partagé —
+  // moins granulaire, mais non contournable).
+  if (process.env.TRUST_PROXY !== "false") {
+    const fwd = req.headers.get("x-forwarded-for");
+    if (fwd) return fwd.split(",")[0]!.trim();
+    const real = req.headers.get("x-real-ip");
+    if (real) return real;
+  }
+  return "unknown";
 }
 
 const SECURITY_HEADERS: Record<string, string> = {

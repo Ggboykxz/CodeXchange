@@ -459,9 +459,9 @@ export function AnnuaireSection() {
                     </a>
                   </Button>
                 )}
-                {selectedProfile.website && (
+                {/^https?:\/\//i.test(selectedProfile.website ?? "") && (
                   <Button variant="outline" size="sm" asChild>
-                    <a href={selectedProfile.website} target="_blank" rel="noopener noreferrer">
+                    <a href={selectedProfile.website ?? ""} target="_blank" rel="noopener noreferrer">
                       <Globe className="h-3.5 w-3.5 me-1" />
                       Site
                     </a>

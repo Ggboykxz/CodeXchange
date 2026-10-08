@@ -17,6 +17,18 @@
  * inscription réussit même si le mail de bienvenue ne part pas).
  */
 import nodemailer from "nodemailer";
+import { escapeHtml } from "@/lib/newsletter";
+
+/**
+ * Un `name`/`email` fourni par le membre (inscription, profil OAuth) finit
+ * en clair dans un sujet (ligne d'en-tête SMTP) et dans le corps HTML.
+ * On neutralise les sauts de ligne du sujet (injection d'en-tête) et on
+ * échappe le HTML du corps — un nom comme `"><a href=…>` ne doit pas
+ * produire de balise dans la boîte du destinataire.
+ */
+function headerSafe(value: string): string {
+  return value.replace(/[\r\n\t]+/g, " ").trim().slice(0, 80);
+}
 
 export type MailInput = {
   to: string;
@@ -114,13 +126,13 @@ Ce lien est valable 24 heures.
     : "";
   const verifyHtml = input.verifyUrl
     ? `<p>Confirme ton adresse pour obtenir le badge <strong>profil vérifié</strong> :</p>
-<p><a href="${input.verifyUrl}" style="color:#0b6bcb">${input.verifyUrl}</a></p>
+<p><a href="${escapeHtml(input.verifyUrl)}" style="color:#0b6bcb">${escapeHtml(input.verifyUrl)}</a></p>
 <p style="font-size:11px;color:#888">Ce lien est valable 24 heures.</p>
 `
     : "";
   return sendMail({
     to: input.email,
-    subject: `Bienvenue sur CodeXchange, ${input.name} 🇦🇫`,
+    subject: `Bienvenue sur CodeXchange, ${headerSafe(input.name)} 🇦🇫`,
     text:
       `Bienvenue ${input.name},
 
@@ -136,7 +148,7 @@ l'équipe CodeXchange
 
 —
 Cet e-mail est automatique. Pour te désabonner, supprime ton compte.`,
-    html: `<p>Bienvenue ${input.name},</p>
+    html: `<p>Bienvenue ${escapeHtml(input.name)},</p>
 <p>Ton compte CodeXchange est prêt. Tu peux dès maintenant :</p>
 <ul>
   <li>poser une question sur le <strong>forum</strong></li>
@@ -179,12 +191,12 @@ Si tu n'es pas à l'origine de cette demande, ignore ce message.
 
 —
 l'équipe CodeXchange`,
-    html: `<p>Bonjour ${input.name},</p>
+    html: `<p>Bonjour ${escapeHtml(input.name)},</p>
 <p>On nous a demandé de confirmer ton adresse e-mail pour ton compte
-CodeXchange (${input.email}).</p>
+CodeXchange (${escapeHtml(input.email)}).</p>
 <p>Ouvre ce lien — valable <strong>24 heures</strong> — pour valider ton
 adresse :</p>
-<p><a href="${input.verifyUrl}" style="color:#0b6bcb">${input.verifyUrl}</a></p>
+<p><a href="${escapeHtml(input.verifyUrl)}" style="color:#0b6bcb">${escapeHtml(input.verifyUrl)}</a></p>
 <p>Si tu n'es pas à l'origine de cette demande, ignore ce message.</p>
 <hr/><p style="font-size:11px;color:#888">Lien de vérification valable 24 heures.</p>`,
   });
@@ -214,12 +226,12 @@ ton mot de passe actuel reste valable.
 
 —
 l'équipe CodeXchange`,
-    html: `<p>Bonjour ${input.name},</p>
+    html: `<p>Bonjour ${escapeHtml(input.name)},</p>
 <p>Une réinitialisation de mot de passe a été demandée pour ton compte
-CodeXchange (${input.email}).</p>
+CodeXchange (${escapeHtml(input.email)}).</p>
 <p>Ouvre ce lien — valable <strong>30 minutes</strong> — pour choisir un
 nouveau mot de passe :</p>
-<p><a href="${input.resetUrl}" style="color:#0b6bcb">${input.resetUrl}</a></p>
+<p><a href="${escapeHtml(input.resetUrl)}" style="color:#0b6bcb">${escapeHtml(input.resetUrl)}</a></p>
 <p>Si tu n'es pas à l'origine de cette demande, ignore ce message :
 ton mot de passe actuel reste valable.</p>
 <hr/><p style="font-size:11px;color:#888">Lien à usage unique, valable 30 minutes.</p>`,
@@ -252,10 +264,10 @@ Désinscription en un clic :
 —
 l'équipe CodeXchange`,
     html: `<p>Abonnement confirmé.</p>
-<p>Tu recevras le digest mensuel de CodeXchange (<strong>${input.email}</strong>) :
+<p>Tu recevras le digest mensuel de CodeXchange (<strong>${escapeHtml(input.email)}</strong>) :
 les meilleures questions du forum, les offres d'emploi, les projets ouverts
 et l'agenda, une fois par mois.</p>
-<p><a href="${input.unsubscribeUrl}" style="color:#0b6bcb">Se désabonner en un clic</a></p>
+<p><a href="${escapeHtml(input.unsubscribeUrl)}" style="color:#0b6bcb">Se désabonner en un clic</a></p>
 <hr/><p style="font-size:11px;color:#888">Cet e-mail est automatique.</p>`,
   });
 }

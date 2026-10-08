@@ -3,8 +3,24 @@ import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { pagination, threadUpdateSchema } from "@/lib/validate";
-import { currentUser, unauthorized, canManage, isStaff } from "@/lib/auth";
+import { currentUser, unauthorized, canManage, isStaff, clientIp } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
+
+// Compteur de vues : une seule incrémentation par (fil, visiteur) toutes
+// les 10 minutes. Sans ce frein, chaque GET — y compris anonyme, bouclé
+// par un script — déclenche un UPDATE « views += 1 » sur la table Thread
+// (write amplification). En mémoire : l'objectif est un amortisseur, pas
+// une limite dure (cf. note rate-limit pour le passage à Redis).
+const VIEW_THROTTLE_MS = 10 * 60 * 1000;
+const recentViews = new Map<string, number>();
+function shouldCountView(threadId: string, ip: string | null): boolean {
+  const key = `${threadId}:${ip ?? "anon"}`;
+  const now = Date.now();
+  if (now - (recentViews.get(key) ?? 0) < VIEW_THROTTLE_MS) return false;
+  if (recentViews.size > 20_000) recentViews.clear();
+  recentViews.set(key, now);
+  return true;
+}
 
 
 export async function GET(
@@ -56,12 +72,14 @@ export async function GET(
       }
     }
 
-    // Incrémentation des vues : non bloquante. Le `await` précédent ajoutait
-    // la latence d'écriture au chemin de lecture et faisait échouer tout le GET
-    // si l'écriture échouait — alors que le commentaire disait "fire-and-forget".
-    db.thread
-      .update({ where: { id: thread.id }, data: { views: { increment: 1 } } })
-      .catch(() => undefined);
+    // Incrémentation des vues : non bloquante ET amortie (une fois par
+    // visiteur / 10 min, cf. shouldCountView) pour éviter la write
+    // amplification d'un GET bouclé.
+    if (shouldCountView(thread.id, clientIp(req))) {
+      db.thread
+        .update({ where: { id: thread.id }, data: { views: { increment: 1 } } })
+        .catch(() => undefined);
+    }
 
     return NextResponse.json({
       thread: {

@@ -61,10 +61,31 @@ export async function PATCH(
             { status: 409 }
           );
         }
-        await db.$transaction([
-          db.mentorship.update({ where: { id }, data: { status: "accepted" } }),
-          db.mentor.update({ where: { id: mentor.id }, data: { slotsTaken: mentor.slotsTaken + 1 } }),
-        ]);
+        // Occupation ATOMIQUE d'une place : on n'incrémente `slotsTaken`
+        // que si la limite tient encore au moment de l'UPDATE. Deux
+        // acceptations concurrentes ne peuvent donc pas dépasser
+        // `capacity` (le `findUnique`+`if` au-dessus n'est qu'un refus
+        // rapide ; celui-ci est le vrai verrou anti-TOCTOU).
+        const claimed = await db.mentor.updateMany({
+          where: { id: mentor.id, slotsTaken: { lt: mentor.capacity } },
+          data: { slotsTaken: { increment: 1 } },
+        });
+        if (claimed.count === 0) {
+          return NextResponse.json(
+            { error: "This mentor has no free slot right now" },
+            { status: 409 }
+          );
+        }
+        try {
+          await db.mentorship.update({ where: { id }, data: { status: "accepted" } });
+        } catch (e) {
+          // Place rendue si le changement de statut échoue — sinon une
+          // acceptation ratée consumerait définitivement un slot.
+          await db.mentor
+            .update({ where: { id: mentor.id }, data: { slotsTaken: { decrement: 1 } } })
+            .catch(() => undefined);
+          throw e;
+        }
         notify({
           recipientId: mentorship.menteeId,
           actorId: user.id,

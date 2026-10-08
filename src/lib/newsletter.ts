@@ -13,8 +13,7 @@
  *     ne sort pas cru dans la boîte aux lettres.
  */
 import { sha256 } from "@/lib/password";
-
-const SECRET = process.env.SESSION_SECRET || "codexchange-dev-session-secret";
+import { SERVER_SECRET as SECRET } from "@/lib/digest";
 
 /**
  * Jeton de désinscription — `sha256(SECRET:nllink:<e-mail>)`.

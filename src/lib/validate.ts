@@ -48,6 +48,19 @@ const email = z
   .max(254)
   .email("Invalid email address");
 
+/**
+ * URL http(s) — seule forme acceptée pour les liens des membres. Un
+ * `javascript:` ou un `data:` collé dans un `href` s'exécuterait chez le
+ * visiteur (XSS stocké, cf. `profile.website`). Déclaré ici, avant les
+ * schémas, car `profileUpdateSchema` et les schémas de contenu s'en
+ * servent.
+ */
+const httpUrl = z
+  .string()
+  .trim()
+  .max(300)
+  .refine((v) => /^https?:\/\/[^\s/$.?#][^\s]*$/i.test(v), "Invalid URL");
+
 /** Politique de mot de passe : 8+ avec au moins une lettre ET un chiffre. */
 export const passwordSchema = z
   .string()
@@ -193,7 +206,7 @@ export const profileUpdateSchema = z.object({
   github: z.string().trim().max(60).nullable().optional(),
   twitter: z.string().trim().max(60).nullable().optional(),
   linkedin: z.string().trim().max(80).nullable().optional(),
-  website: z.string().trim().max(255).nullable().optional(),
+  website: httpUrl.nullable().optional(),
   available: z.boolean().optional(),
 });
 
@@ -280,11 +293,15 @@ export const reportUpdateSchema = z.object({
   resolution: z.string().trim().max(500).optional().nullable(),
 });
 
-/** P1 — initiation d'un paiement mobile money. */
+/** P1 — initiation d'un paiement mobile money.
+ *
+ * `amount` et `currency` ne sont PAS acceptés du client : le montant est
+ * résolu côté serveur (`lib/payments/pricing.ts`) à partir de
+ * `purpose` + `targetId`. Toute valeur envoyée par le client est ignorée
+ * (zod retire les clés non déclarées) — impossible de fixer son prix.
+ */
 export const paymentInitiateSchema = z.object({
   provider: z.enum(["mock", "orange_money", "mtn_momo", "wave"]),
-  amount: z.number().int().min(100).max(10_000_000),
-  currency: z.string().trim().min(3).max(3).default("XOF"),
   phoneNumber: z.string().trim().min(8).max(20),
   purpose: z.enum(["mentorship", "featured_job", "premium_profile"]),
   targetId: z.string().trim().min(1).max(40).optional(),
@@ -295,16 +312,8 @@ export const paymentInitiateSchema = z.object({
 /* ------------------------------------------------------------------ */
 
 /**
- * Seules les URL http(s) sont acceptées : un `javascript:` ou un `data:`
- * collé dans un lien de candidature s'exécuterait dans un onglet.
+ * Lien optionnel : `undefined` = absent (inchangé en PATCH), `null` = effacé.
  */
-const httpUrl = z
-  .string()
-  .trim()
-  .max(300)
-  .refine((v) => /^https?:\/\/[^\s/$.?#][^\s]*$/i.test(v), "Invalid URL");
-
-/** Lien optionnel : `undefined` = absent (inchangé en PATCH), `null` = effacé. */
 const link = httpUrl.optional().nullable();
 
 /** Couverture : un émoji saisi par l'auteur, jamais une image distante imposée. */

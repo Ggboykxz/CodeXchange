@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { z } from "zod";
 import { db } from "@/lib/db";
 import { json } from "@/lib/api";
 import { currentUser } from "@/lib/auth";
@@ -31,8 +32,10 @@ export async function PATCH(req: NextRequest) {
   const user = await currentUser(req);
   if (!user) return json({ error: "Authentication required" }, { status: 401 });
 
-  const { id } = await req.json().catch(() => ({ id: undefined }));
-  if (!id) return json({ error: "Missing id" }, { status: 400 });
+  const body = await req.json().catch(() => null);
+  const parsed = z.object({ id: z.string().min(1).max(64) }).safeParse(body);
+  if (!parsed.success) return json({ error: "Missing id" }, { status: 400 });
+  const { id } = parsed.data;
 
   // Scoped by recipient so a user can never mark someone else's feed read.
   const updated = await db.notification.updateMany({

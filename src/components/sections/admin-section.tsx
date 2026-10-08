@@ -69,7 +69,28 @@ export function AdminSection() {
   // réponse périmée écraser la dernière.
   const reqId = useRef(0);
 
-  const admin = canAssignRoles(user);
+  // L9 — le rôle doit découler du serveur, pas du store persisté
+  // (localStorage), qu'un membre pourrait forger (`role: "admin"`) pour
+  // faire apparaître la console. Chaque action 403 quoi qu'il arrive côté
+  // API, mais on ré-vérifie ici via /api/auth/me — seule autorité — avant
+  // d'afficher les outils staff. `null` = vérification en cours.
+  const [staff, setStaff] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { user?: unknown } | null) => {
+        if (!alive) return;
+        setStaff(canAssignRoles((d?.user ?? null) as Parameters<typeof canAssignRoles>[0]));
+      })
+      .catch(() => {
+        if (alive) setStaff(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const admin = staff === true;
 
   // Debounce 250 ms — la même cadence que la recherche du forum (C6).
   useEffect(() => {
@@ -194,8 +215,11 @@ export function AdminSection() {
   /* ---------------------------------------------------------------- */
 
   // `fetchMe` remplit le store après le montage : sans cet écran tampon,
-  // un admin au cache vide verrait « connecte-toi » clignoter.
-  if (authLoading && !user) {
+  // un admin au cache vide verrait « connecte-toi » clignoter. On attend
+  // aussi la vérification serveur du rôle (`staff`, cf. plus haut) avant
+  // de trancher — sinon un rôle forgé dans le store s'afficherait une
+  // fraction de seconde.
+  if ((authLoading && !user) || staff === null) {
     return (
       <div
         className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-4"

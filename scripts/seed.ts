@@ -11,7 +11,9 @@ import { hashPassword } from "../src/lib/password";
  * `/api/auth/login` rejettait toute tentative (le README promettait pourtant
  * un compte démo fonctionnel).
  */
-export const SEED_PASSWORD = "codexchange2026";
+// Surchargeable par SEED_PASSWORD ; le défaut n'est sûr que grâce au
+// garde-fou non-local de main() (voir plus bas).
+export const SEED_PASSWORD = process.env.SEED_PASSWORD || "codexchange2026";
 
 function slugify(s: string) {
   return s
@@ -2166,6 +2168,23 @@ const between = (from: number, to = Date.now()) =>
   new Date(from + Math.random() * Math.max(to - from, 0));
 
 async function main() {
+  // Garde-fou : ce seed ÉCRASE toutes les données et crée un compte admin
+  // au mot de passe connu. Il ne doit jamais tourner contre une base de
+  // production — on refuse donc tout `DATABASE_URL` non-local et tout
+  // `NODE_ENV=production`.
+  const dbUrl = process.env.DATABASE_URL ?? "";
+  const looksLocal =
+    dbUrl === "" ||
+    /@(127\.0\.0\.1|localhost|\[::1\]):/.test(dbUrl) ||
+    /^(file|sqlite):/i.test(dbUrl);
+  if (process.env.NODE_ENV === "production" || !looksLocal) {
+    throw new Error(
+      "Seed refusé : la base ciblée ne ressemble pas à une base locale de " +
+        "développement (DATABASE_URL non-local ou NODE_ENV=production). " +
+        "N'amorcez jamais une base de production — elle serait écrasée et " +
+        "un admin à mot de passe connu y serait créé."
+    );
+  }
   console.log("🗑️  Cleaning existing data...");
   await db.session.deleteMany();
   await db.vote.deleteMany();

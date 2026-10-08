@@ -2,6 +2,8 @@ import { logger } from "@/lib/log";
 import { NextRequest, NextResponse } from "next/server";
 import { resetSchema } from "@/lib/validate";
 import { completePasswordReset } from "@/lib/reset";
+import { AUTH_POLICY, rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/auth";
 
 /**
  * POST /api/auth/reset — confirme la réinitialisation (B7).
@@ -25,6 +27,22 @@ export async function POST(req: NextRequest) {
       );
     }
     const { token, password } = parsed.data;
+
+    // Le reset forçait un PBKDF2 (100k) + un UPDATE + une révocation de
+    // sessions par appel, sans aucune limite : chaque tentative coûte du
+    // CPU serveur et les codes 400/410 révélaient l'état du jeton. On
+    // limite par IP — même politique que le login/forgot/resend.
+    const limited = rateLimit(
+      `reset:ip:${clientIp(req) ?? "unknown"}`,
+      AUTH_POLICY.limit,
+      AUTH_POLICY.windowMs
+    );
+    if (!limited.ok) {
+      return NextResponse.json(
+        { error: "Too many attempts. Please retry later." },
+        { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } }
+      );
+    }
 
     const outcome = await completePasswordReset(token, password);
     if (outcome === "invalid") {

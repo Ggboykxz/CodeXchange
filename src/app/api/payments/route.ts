@@ -5,14 +5,16 @@ import { currentUser, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { paymentInitiateSchema } from "@/lib/validate";
 import { getProvider } from "@/lib/payments/mock";
+import { ALLOWED_CURRENCIES, resolvePrice } from "@/lib/payments/pricing";
 import { logger } from "@/lib/log";
 
 /**
  * POST /api/payments — initier un paiement mobile money.
  *
- * Crée une transaction `pending`, délègue l'initiation au provider
- * (mock en dev, vrai prestataire en prod), et renvoie les instructions
- * affichées à l'utilisateur (message ou checkoutUrl).
+ * Le montant et la devise sont résolus CÔTÉ SERVEUR (`resolvePrice`) à
+ * partir de `{ purpose, targetId }` : un client ne peut ni minorer son
+ * prix ni cibler l'objet d'un autre. Crée une transaction `pending`,
+ * délègue l'initiation au provider, et renvoie les instructions.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -28,7 +30,23 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return badRequest("Invalid payment payload", parsed.error.flatten().fieldErrors);
     }
-    const { provider, amount, currency, phoneNumber, purpose, targetId } = parsed.data;
+    const { provider, phoneNumber, purpose, targetId } = parsed.data;
+
+    // Prix AUTORITAIRE serveur — jamais de confiance dans un montant/ devise
+    // venu du client. `null` = cible absente, mauvais type de cible ou
+    // tarif gratuit/illisible : on refuse plutôt que de créer un paiement
+    // sans prix garanti.
+    const price = await resolvePrice(purpose, targetId);
+    if (!price) {
+      return badRequest(
+        "No price could be resolved for this purchase. Check the target or configure pricing."
+      );
+    }
+    if (!(ALLOWED_CURRENCIES as readonly string[]).includes(price.currency)) {
+      return badRequest(`Currency "${price.currency}" is not supported`);
+    }
+    const amount = price.amount;
+    const currency = price.currency;
 
     const paymentProvider = getProvider(provider);
     if (!paymentProvider) {

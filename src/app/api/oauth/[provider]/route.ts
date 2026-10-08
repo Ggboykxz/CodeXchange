@@ -67,13 +67,17 @@ export async function GET(
     res.cookies.set(STATE_COOKIE, state, opts);
 
     // Page d'origine, filtrée : ancre `#section/…` ou chemin `/section/…`.
+    // On refuse explicitement les valeurs à slash initial doublé
+    // (`//hôte.com`) : elles survivent au filtre de caractères pourtant et
+    // `new URL("//hôte.com", origin)` repartirait vers un domaine tiers.
     const rawNext = req.nextUrl.searchParams.get("next") ?? "";
     const next = rawNext.replace(/[^a-zA-Z0-9#/_\-.]/g, "").slice(0, 200);
-    res.cookies.set(
-      NEXT_COOKIE,
-      next.startsWith("#") || next.startsWith("/") ? next : "",
-      opts
-    );
+    const safeNext =
+      (next.startsWith("#") && next.length > 1) ||
+      (next.startsWith("/") && !next.startsWith("//") && next.length > 1)
+        ? next
+        : "";
+    res.cookies.set(NEXT_COOKIE, safeNext, opts);
 
     return res;
   } catch (e) {

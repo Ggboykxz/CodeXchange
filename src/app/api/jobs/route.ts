@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authorSelect } from "@/lib/selects";
 import { badRequest, rateLimited } from "@/lib/api";
-import { currentUser, unauthorized } from "@/lib/auth";
+import { currentUser, isStaff, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { jobCreateSchema, pagination } from "@/lib/validate";
 import { salaryCurrencies, currencyTerms } from "@/lib/salary";
@@ -102,8 +102,19 @@ export async function POST(req: NextRequest) {
       return badRequest("Invalid job payload", parsed.error.flatten().fieldErrors);
     }
 
+    // G6 — « À la une » est réservé au staff (et c'est un achat payant,
+    // cf. `purpose: "featured_job"`). `jobCreateSchema` hérite de
+    // `jobPatch`, qui porte `featured` : sans ce garde, n'importe quel
+    // membre poserait `featured: true` à la création. Le PATCH a déjà ce
+    // contrôle — on le réplique ici pour la création (champ retiré du
+    // spread, ré-ajouté seulement si l'appelant est staff).
+    const { featured, ...rest } = parsed.data;
     const job = await db.job.create({
-      data: { ...parsed.data, authorId: user.id },
+      data: {
+        ...rest,
+        authorId: user.id,
+        ...(featured !== undefined && isStaff(user) ? { featured } : {}),
+      },
       include: { author: { select: authorSelect } },
     });
 

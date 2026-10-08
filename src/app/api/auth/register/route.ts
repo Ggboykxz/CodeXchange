@@ -32,14 +32,19 @@ export async function POST(req: NextRequest) {
     const { name, email, password, username, country, city, stack, level } =
       parsed.data;
 
+    // Un seul 409, message identique, pour e-mail ET pseudo pris : deux
+    // libellés distincts (« Email already in use » / « Username already
+    // taken ») donneraient une oracle d'énumération à tout appelant
+    // anonyme — ce que le login et le « mot de passe oublié » évitent
+    // déjà. Le Détail reste visible côté client après vérification.
     const existing = await db.user.findUnique({ where: { email } });
     if (existing) {
-      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+      return NextResponse.json({ error: "Unable to create this account" }, { status: 409 });
     }
 
     const existingUsername = await db.profile.findUnique({ where: { username } });
     if (existingUsername) {
-      return NextResponse.json({ error: "Username already taken" }, { status: 409 });
+      return NextResponse.json({ error: "Unable to create this account" }, { status: 409 });
     }
 
     // Hash asynchrone : pbkdf2Sync bloquait l'event loop (~80 ms/requête).

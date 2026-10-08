@@ -50,6 +50,14 @@ export async function PATCH(
 
     const wantsAccept = parsed.data.isAnswer;
 
+    // Idempotent : réaccepter une réponse déjà acceptée (ou démarquer une
+    // réponse qui ne l'est pas) rejouait +/−10 de réputation sans rien
+    // changer d'autre — de quoi gonfler le classement à la répétition.
+    // On sort avant la transaction quand l'état demandé est déjà en place.
+    if (post.isAnswer === wantsAccept) {
+      return NextResponse.json({ post });
+    }
+
     await db.$transaction(async (tx) => {
       // Une seule meilleure réponse par question.
       if (wantsAccept) {

@@ -28,10 +28,15 @@ export async function POST(req: NextRequest) {
     }
     const { targetType, targetId, reason, details } = parsed.data;
 
-    // La cible doit exister — on vérifie selon son type.
-    const exists = await targetExists(targetType, targetId);
+    // La cible DOIT exister pour qu'un humain la traite, mais on ne renvoie
+    // PAS 404 selon son existence : un écart 201/404 laisserait sonder des
+    // cibles privées (messages, profils) et énumérer des identifiants. On
+    // crée le signalement dans tous les cas ; une cible introuvable sera
+    // simplement classée sans suite à la modération (journalisée ici,
+    // jamais renvoyée au client).
+    const exists = await targetExists(targetType, targetId).catch(() => false);
     if (!exists) {
-      return NextResponse.json({ error: "Target not found" }, { status: 404 });
+      logger.warn("Report on missing target", { targetType, targetId, userId: user.id });
     }
 
     // Un membre ne peut pas signaler deux fois la même cible.

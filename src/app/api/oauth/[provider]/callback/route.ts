@@ -78,6 +78,13 @@ export async function GET(
     if (!profile) return fail("email");
 
     const userId = await findOrCreateUser(profile);
+    // `null` : un compte local existe déjà à cette adresse mais n'a JAMAIS
+    // prouvé la possession de sa boîte. Y rattacher un e-mail certifié par
+    // le fournisseur laisserait un attaquant (qui a pré-enregistré
+    // l'adresse) hériter silencieusement de la connexion future de la
+    // victime. On refuse — le membre devra d'abord se connecter par mot de
+    // passe ou passer par « mot de passe oublié », qui vérifie la boîte.
+    if (userId === null) return fail("link-unverified");
 
     const sessionToken = await createSession(userId, {
       userAgent: req.headers.get("user-agent"),
@@ -90,8 +97,12 @@ export async function GET(
     let target = new URL("/", origin);
     if (next.startsWith("#") && next.length > 1) {
       target.hash = next;
-    } else if (next.startsWith("/") && next.length > 1) {
-      target = new URL(next, origin);
+    } else if (next.startsWith("/") && !next.startsWith("//") && next.length > 1) {
+      const resolved = new URL(next, origin);
+      // Ceinture de sécurité : la base est déjà filtrée au départ, mais
+      // on revérifie l'origine ici — une redirection ne doit JAMAIS sortir
+      // du site, surtout sur la réponse qui pose le cookie de session.
+      target = resolved.origin === origin ? resolved : new URL("/", origin);
     }
 
     const res = NextResponse.redirect(target, 302);
@@ -204,13 +215,22 @@ async function fetchProfile(
  * comptes sans hash (`login`), et le « mot de passe oublié » permet
  * d'en poser un plus tard. E-mail marqué vérifié : le fournisseur l'a
  * certifié, le badge B1 est immédiat.
+ *
+ * Retourne `null` si un compte existe à cette adresse SANS avoir été
+ * vérifié (`emailVerifiedAt` null) : le rattachement est refusé pour ne
+ * pas livrer la session d'un compte qu'un tiers aurait pu pré-enregistrer.
  */
-async function findOrCreateUser(profile: OAuthProfile): Promise<string> {
+async function findOrCreateUser(profile: OAuthProfile): Promise<string | null> {
   const existing = await db.user.findUnique({
     where: { email: profile.email },
-    select: { id: true },
+    select: { id: true, emailVerifiedAt: true },
   });
-  if (existing) return existing.id;
+  if (existing) {
+    // L'e-mail est certifié par le fournisseur, mais le compte local ne
+    // l'a jamais prouvé : il peut appartenir à quelqu'un d'autre
+    // (inscription non vérifiée). Rattacher ici = usurpation.
+    return existing.emailVerifiedAt ? existing.id : null;
+  }
 
   for (const username of usernameCandidates(profile.usernameHint)) {
     try {
@@ -236,11 +256,14 @@ async function findOrCreateUser(profile: OAuthProfile): Promise<string> {
       if ((e as { code?: string })?.code !== "P2002") throw e;
       // Conflit `@unique` : soit l'e-mail (deux callbacks simultanés — on
       // reprend le compte créé), soit le username (candidat suivant).
+      // Même garde qu'au-dessus : on ne reprend un compte existant par
+      // e-mail que s'il est déjà vérifié (course contre une inscription
+      // locale non vérifiée ⇒ on refuse).
       const again = await db.user.findUnique({
         where: { email: profile.email },
-        select: { id: true },
+        select: { id: true, emailVerifiedAt: true },
       });
-      if (again) return again.id;
+      if (again) return again.emailVerifiedAt ? again.id : null;
     }
   }
   throw new Error("OAuth: aucun candidat de nom d'utilisateur disponible");

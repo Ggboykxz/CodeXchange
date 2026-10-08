@@ -134,9 +134,18 @@ export function clearSessionCookie(res: NextResponse): void {
 
 /** IP cliente, en tenant compte des proxys de confiance. */
 export function clientIp(req: NextRequest): string | null {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]!.trim();
-  return req.headers.get("x-real-ip");
+  // `x-forwarded-for` / `x-real-ip` ne sont dignes de confiance que si un
+  // reverse-proxy de confiance (Caddy, Vercel) les a bien REMPLACÉS. Si
+  // l'app est exposée directement (standalone sans proxy), un client peut
+  // forger l'en-tête et contourner toutes les limites par IP. La variable
+  // `TRUST_PROXY=false` désactive cette confiance : on retombe alors sur
+  // `null` (limites globales, moins fines mais non contournables).
+  if (process.env.TRUST_PROXY !== "false") {
+    const forwarded = req.headers.get("x-forwarded-for");
+    if (forwarded) return forwarded.split(",")[0]!.trim();
+    return req.headers.get("x-real-ip");
+  }
+  return null;
 }
 
 /** 401 normalisé pour les endpoints protégés. */

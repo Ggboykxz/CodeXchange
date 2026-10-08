@@ -7,10 +7,14 @@ import { logger } from "@/lib/log";
 type Ctx = { params: Promise<{ id: string }> };
 
 /**
- * POST /api/payments/[id]/confirm — vérifie auprès du provider si le
- * paiement a été confirmé (mock : after 3 s) et met à jour la
- * transaction. Le client appelle cette route après avoir affiché les
- * instructions de paiement.
+ * POST /api/payments/[id]/confirm — DÉMO UNIQUEMENT.
+ *
+ * À n'utiliser qu'avec le provider `mock` (aucun prestataire réel) : il
+ * marque la transaction `completed` après 3 s. En production, le règlement
+ * passe EXCLUSIVEMENT par `POST /api/payments/webhook/[provider]`, qui
+ * vérifie la signature du prestataire — un client ne peut jamais
+ * auto-attester son paiement. Pour un provider réel, cette route reste
+ * présente mais ne fait que consulter `provider.verify()`.
  */
 export async function POST(req: NextRequest, { params }: Ctx) {
   try {
