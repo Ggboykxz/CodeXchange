@@ -160,6 +160,11 @@ export const roleUpdateSchema = z.object({
   role: z.enum(ROLES),
 });
 
+/** H5 — formulaires de décision sur une demande de mentorat. */
+export const mentorshipUpdateSchema = z.object({
+  action: z.enum(["accept", "decline", "complete"]),
+});
+
 export const registerSchema = z.object({
   name: text(2, 80),
   email,
@@ -278,6 +283,9 @@ const jobPatch = z.object({
   salary: z.string().trim().max(80).optional().nullable(),
   description: text(1, 8000).optional(),
   applyUrl: link,
+  // G6 — la pose n'est PAS validée partout : le PATCH rejette ce champ
+  // pour tout compte hors staff (cf. garde-fou dans la route).
+  featured: z.boolean().optional(),
 });
 
 const projectPatch = z.object({

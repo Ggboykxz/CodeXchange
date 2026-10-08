@@ -174,8 +174,13 @@ model Job {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime @updatedAt
 
+  /// G6 — « À la une » : trié d'abord dans GET /api/jobs, badge UI. Seul
+  /// le staff (admin/modérateur) peut le poser via PATCH /api/jobs/[id].
+  featured    Boolean   @default(false)
+
   @@index([country])
   @@index([type])
+  @@index([featured, createdAt])
 }
 
 model Project {

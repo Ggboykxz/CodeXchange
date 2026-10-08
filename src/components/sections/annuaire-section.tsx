@@ -416,6 +416,28 @@ export function AnnuaireSection() {
           )}
         </Card>
 
+        {/* H4b — un membre avec mentorat profilé peut être sollicité
+            directement depuis son profil, sans retour à la section. */}
+        {selectedProfile.user.mentorProfile && user && selectedProfile.userId !== user.id && (
+          <Card className="p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="font-semibold leading-tight">
+                {t("mentorat.title")} · {selectedProfile.user.mentorProfile.expertise}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {selectedProfile.user.mentorProfile.hourlyRate ?? "—"}
+              </p>
+            </div>
+            <Button
+              size="sm"
+              className="shrink-0 bg-foreground text-background hover:bg-foreground/90"
+              onClick={() => navigate("mentorat", selectedProfile.user.mentorProfile!.id)}
+            >
+              {t("mentorat.request")}
+            </Button>
+          </Card>
+        )}
+
         {/* Recent activity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {selectedProfile.user.threads.length > 0 && (

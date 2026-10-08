@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
     const remote = searchParams.get("remote");
     const stack = searchParams.get("stack");
     const q = searchParams.get("q")?.trim();
+    const currency = searchParams.get("currency")?.trim().toUpperCase();
     const { limit, skip } = pagination(searchParams, 30);
 
     const where: Record<string, unknown> = {};
@@ -22,6 +23,12 @@ export async function GET(req: NextRequest) {
     if (type && type !== "all") where.type = type;
     if (remote === "true") where.remote = true;
     if (stack && stack !== "all") where.stack = { contains: stack, mode: "insensitive" };
+    // G5 — filtrer par devise : la chaîne salary contient toujours son
+    // code (seed + normalisation client de la saisie), LIKE aveugle géne
+    // un faux positif seulement sur des codes diamétralement improbables.
+    if (currency && currency !== "ALL") {
+      where.salary = { contains: currency, mode: "insensitive" };
+    }
     if (q) {
       where.OR = [
         { title: { contains: q, mode: "insensitive" } },

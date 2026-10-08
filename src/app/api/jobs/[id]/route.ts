@@ -3,7 +3,7 @@ import { authorSelect } from "@/lib/selects";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { badRequest, rateLimited } from "@/lib/api";
-import { canManage, currentUser, unauthorized } from "@/lib/auth";
+import { canManage, currentUser, isStaff, unauthorized } from "@/lib/auth";
 import { rateLimit, WRITE_POLICY } from "@/lib/rate-limit";
 import { jobUpdateSchema } from "@/lib/validate";
 
@@ -28,6 +28,12 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     const parsed = jobUpdateSchema.safeParse(await req.json().catch(() => null));
     if (!parsed.success) {
       return badRequest("Invalid job payload", parsed.error.flatten().fieldErrors);
+    }
+
+    // G6 — « À la une » n'est pas un droit du propriétaire : seul le staff
+    // administre la vitrine (sinon chacun épinglerait sa propre annonce).
+    if (parsed.data.featured !== undefined && !isStaff(user)) {
+      return NextResponse.json({ error: "Only staff can feature offers" }, { status: 403 });
     }
 
     const updated = await db.job.update({
