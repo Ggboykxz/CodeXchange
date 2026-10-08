@@ -69,24 +69,51 @@ test.describe("Gestion des rôles (B8)", () => {
 
     // …l'écran liste les membres (31 comptes, 24 par page) : on cherche
     // pour cibler une ligne précise, ce qui exerce aussi la recherche.
+    // On attend la réponse au debounce (250 ms) + fetch avant d'ouvrir le
+    // menu : cibler une ligne « déjà visible » pendant que la recherche
+    // recharge la liste, c'est se faire démonter le portail sous le clic.
     const search = page.locator('input[placeholder^="Rechercher"]');
     await expect(search).toBeVisible();
+    const searched = page.waitForResponse(
+      (r) => r.url().includes("/api/admin/users") && r.request().method() === "GET"
+    );
     await search.fill("Nour");
+    await searched;
     const row = page
       .getByTestId("admin-row")
       .filter({ hasText: "Nour Hassan" });
     await expect(row).toBeVisible();
 
-    // Promotion : le Select Radix ouvre sa liste de portail.
+    // Promotion : on attend la réponse de NOTRE PATCH — jamais le toast
+    // pour synchroniser (celui d'une opération précédente peut encore être
+    // affiché). Et on vérifie le rôle renvoyé par le serveur, pas seulement
+    // la valeur optimiste du sélecteur.
+    const patchResponse = () =>
+      page.waitForResponse(
+        (r) =>
+          r.request().method() === "PATCH" &&
+          r.url().includes("/api/admin/users/")
+      );
+
+    const promoted = patchResponse();
     await row.getByRole("combobox").click();
     await page.getByRole("option", { name: "Modérateur", exact: true }).click();
+    const promotedRes = await promoted;
+    expect(promotedRes.status()).toBe(200);
+    expect((await promotedRes.json()).user.role).toBe("moderator");
     await expect(page.getByText("Rôle mis à jour.").first()).toBeVisible();
     await expect(row.getByRole("combobox")).toContainText("Modérateur");
 
-    // Restauration — la base repart comme elle est entrée.
+    // Restauration — la base repart comme elle est entrée. Idem : on attend
+    // la réponse de ce PATCH précis avant de conclure, sinon le test peut
+    // se terminer sur la valeur optimiste pendant que la requête est encore
+    // en vol (et avortée à la fermeture du contexte).
+    const restored = patchResponse();
     await row.getByRole("combobox").click();
     await page.getByRole("option", { name: "Membre", exact: true }).click();
-    await expect(page.getByText("Rôle mis à jour.").first()).toBeVisible();
+    const restoredRes = await restored;
+    expect(restoredRes.status()).toBe(200);
+    expect((await restoredRes.json()).user.role).toBe("member");
     await expect(row.getByRole("combobox")).toContainText("Membre");
   });
 });

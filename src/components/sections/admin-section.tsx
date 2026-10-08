@@ -75,7 +75,13 @@ export function AdminSection() {
   const load = useCallback(
     async (query: string, pageToLoad: number, append: boolean) => {
       const id = ++reqId.current;
-      if (!append) setList({ status: "loading" });
+      // Skeleton seulement à la première charge : sur une recherche
+      // suivante on garde les lignes affichées, sinon le rechargement
+      // démonte une ligne — et le menu ouvert qui y est rattaché.
+      if (!append)
+        setList((prev) =>
+          prev.status === "ready" ? prev : { status: "loading" }
+        );
       try {
         const params = new URLSearchParams({
           limit: String(PAGE_SIZE),
@@ -131,7 +137,18 @@ export function AdminSection() {
         : prev
     );
 
+  /**
+   * Verrou anti-doublon **synchrone** : Radix peut émettre `onValueChange`
+   * deux fois pour un même clic (pointerup + click). Un ref, et non l'état
+   * `saving`, car le double émission a lieu avant le re-rendu — l'état ne
+   * serait pas encore à jour. Sans ce verrou : deux PATCH (le second en
+   * no-op côté serveur) et deux toasts.
+   */
+  const savingRef = useRef<string | null>(null);
+
   const changeRole = async (row: AdminRow, role: Role) => {
+    if (savingRef.current === row.id) return;
+    savingRef.current = row.id;
     const previous = row.role;
     setSaving(row.id);
     // Optimiste : le sélecteur bouge tout de suite, on annule s'il faut.
@@ -162,6 +179,7 @@ export function AdminSection() {
       applyRole(row.id, previous);
       toast.error(t("admin.error"));
     } finally {
+      savingRef.current = null;
       setSaving(null);
     }
   };
