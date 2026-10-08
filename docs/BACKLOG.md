@@ -1,6 +1,6 @@
 # Backlog CodeXchange (A → J) — statut réel
 
-> Statuts vérifiés dans le dépôt au 06/10/2026 : ✅ fait · ⏳ partiel · ⬜ à venir.
+> Statuts vérifiés dans le dépôt au 08/10/2026 : ✅ fait · ⏳ partiel · ⬜ à venir.
 > Les intitulés sont reformulés d'après le backlog source (les libellés d'origine n'étaient pas
 > disponibles dans le contexte de rédaction) ; les **identifiants d'épic et les lettres sont conservés**.
 > Chaque note dit ce qui existe **réellement** ici, pas ce qui est prévu.
@@ -30,7 +30,7 @@
 | B6 | OAuth GitHub / Google | ⬜ | L'implémentation d'origine transportait `next-auth` **sans jamais l'importer** : dépendance retirée, il faudra l'intégrer pour de bon |
 | B7 | E-mail de bienvenue / réinitialisation | ✅ | `lib/mailer` (nodemailer : SMTP réel si `SMTP_HOST`, aperçu journal sinon — l'envoi ne bloque jamais la requête) ; e-mail de bienvenue à l'inscription ; reset : `resetTokenHash`/`resetExpiresAt` (30 min, usage unique, purge à la consommation, révocation des sessions), `POST /api/auth/forgot` (réponse identique quelle que soit l'adresse — anti-énumération, rate-limit IP+email) et `POST /api/auth/reset` (`400`/`410`) ; UI : panneau « Mot de passe oublié ? » dans la modale d'auth unique + page `/reset` ; i18n 16 clés × 4 locales ; `.env.example` documente les variables SMTP ; **vérifié bout en bout** (reset réel → login nouveau 200 / ancien 401 / réutilisation jeton 400) |
 | B8 | Rôles & permissions (member / moderator / admin) | ⏳ | Champ `role` + contrôle serveur à l'acceptation d'une réponse ; **aucun outil** de gestion des rôles dans l'UI |
-| B9 | Vérification d'e-mail | ✅ | **Absente du backlog initial**, ajoutée et livrée : `emailVerifiedAt` + jeton hashé (24 h), `POST /api/auth/verify` (`200`/`410`/`400`), `/verify` en page, badge `profil vérifié`, renvoi toujours `200`. 18 tests bout en bout |
+| B9 | Vérification d'e-mail | ✅ | **Absente du backlog initial**, ajoutée et livrée : `emailVerifiedAt` + jeton hashé (24 h), `POST /api/auth/verify` (`200`/`410`/`400`), `/verify` en page, badge `profil vérifié`, renvoi toujours `200`. **Le lien voyage par e-mail** (porté par le mail de bienvenue, et par `sendVerificationEmail` à chaque renvoi) : utilisable en production, pas seulement en dev. 18 tests bout en bout |
 
 ## EPIC C — Questions & réponses
 
@@ -45,7 +45,7 @@
 | C7 | Filtres catégorie / tag | ✅ | `?category=&tag=` + sélecteurs dans l'interface |
 | C8 | Filtre « non résolu » | ✅ | API `?solved=false` + badge `Résolu` + **sélecteur `Non résolus`** dans le fil d'accueil (le forum garde son sélecteur de statut) |
 | C9 | Compteur de vues | ✅ | Incrémentation non bloquante à l'ouverture du détail |
-| C10 | Édition / suppression / épinglage d'une question | ⬜ | `threadUpdateSchema` existe dans `validate.ts` mais **aucune route ne l'utilise** (seul le tri `pinned` est codé) |
+| C10 | Édition / suppression / épinglage d'une question | ✅ | `PATCH`/`DELETE /api/threads/[slug]` (droits auteur ou staff via `canManage`/`isStaff`), `threadUpdateSchema` consommé par le PATCH, `MAX_PINNED = 2`, purge des votes à la suppression ; menu ⋯ du fil (Modifier / Supprimer / Épingler, masqué pour un `member`) + scénario E2E `auth-edit.spec.ts` |
 | C11 | Tri du fil — les 5 tris de Reddit | ✅ | `GET /api/threads?sort=` = `hot` (défaut), `new`, `top`, `active`, `rising` + `?t=hour\|day\|week\|month\|year\|all` sur `top` ; moteur pur `lib/ranking.ts` (`hotScore` signé = log10 du score net + rang temporel), tris SQL paginés, `hot`/`rising` classés sur 500 candidats bornés ; barre d'icônes + sélecteur d'échéance dans le fil |
 
 ## EPIC D — Expérience
@@ -54,7 +54,7 @@
 |---|---|---|---|
 | D1 | Dark mode | ✅ | `next-themes`, clair par défaut, bascule dans le header |
 | D2 | i18n 4 locales (fr, en, sw, ar) | ✅ | Cadre complet avec **4 locales** réelles : fr et en étaient déjà alignées clé à clé (380 clés) ; `sw` et `ar` prodiguent à présent de vraies traductions (plus de `{ ...en }`), et le cas test i18n est inversé. `dir=rtl` géré par `LocaleSync` pour l'arabe. |
-| D3 | RTL pour l'arabe | ⬜ | `<html lang="fr">` en dur, aucun attribut `dir` ; manifest `"dir": "ltr"` |
+| D3 | RTL pour l'arabe | ⏳ | `LocaleSync` pose `lang="sw"`/`lang="ar"` **et** `dir="rtl"` pour l'arabe (alignements, flex, paragraphes suivent le sens d'écriture) ; reste le passage des **propriétés physiques CSS** (`pl-`/`pr-`/`ml-`/`mr-`/`left`/`right`) aux propriétés logiques (`ps-`/`pe-`/`ms-`/`me-`/`start`/`end`) — chantier séparé, hors D2. `manifest.webmanifest` garde `"dir": "ltr"` (figé, non piloté par la locale) |
 | D4 | PWA installable + hors-ligne | ✅ | Manifest, icônes 192/512/maskable, `offline.html`, service worker maison (SWR / network-first, `/api` non caché) — **en production uniquement** |
 | D5 | Chargement à la demande (poids) | ✅ | 6 sections en `next/dynamic`, PrismLight allégé ; objectif **< 150 Ko** affiché dans le code, **non mesuré** en CI |
 | D6 | Filtres jobs / projets / tutos / events | ✅ | pays, type, stack, remote · statut, stack · catégorie · onglets Tutos/Events |
@@ -115,7 +115,7 @@
 | I1 | Notifications in-app (cloche, badge, tout-lu) | ✅ | 3 endpoints + polling 60 s + navigation au clic ; déclenchées par réponse, acceptation, mentorat |
 | I2 | Messagerie privée entre membres | ⬜ | Aucun modèle `Message` / `Conversation` |
 | I3 | Temps réel (websocket / SSE) | ⬜ | Seul le polling 60 s de la cloche existe |
-| I4 | E-mails transactionnels | ⬜ | Aucun envoi |
+| I4 | E-mails transactionnels | ⏳ | `lib/mailer` (nodemailer) : bienvenue (**porteur du lien de vérification**), réinitialisation du mot de passe et vérification d'adresse, aperçu en journal sans `SMTP_HOST`, envoi jamais bloquant ; UI panneau oublié + page `/reset`. **Reste** : `SMTP_HOST/PORT/USER/PASS` non renseignés dans l'environnement Vercel → en prod les e-mails restent des aperçus journal ; dès que les identifiants SMTP sont posés, les trois envois deviennent réels sans toucher au code |
 | I5 | Digest / newsletter | ⬜ | Le formulaire existe dans le footer mais `subscribe()` n'écrit **rien** : il affiche juste le toast `C'est fait. On revient vers toi.` |
 
 ## EPIC J — Robustesse & sécurité
@@ -128,7 +128,7 @@
 | J4 | Non-fuite de `passwordHash` / `email` | ✅ | Sélecteurs Prisma publics + filtre récursif `json()` |
 | J5 | Cookies sécurisés pilotés par env | ✅ | `COOKIE_SECURE` (`secure` derrière HTTPS) ; `SESSION_SECRET` sert de sel au hash de session (rotation ⇒ révocation générale) |
 | J6 | CI bloquante (lint, types, build) | ✅ | `next build` échoue sur erreur de type (`ignoreBuildErrors: false`) |
-| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **202 tests / 12 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (8 scénarios — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px), lancés par le workflow GitHub après seed + Chromium + `next start` |
+| J7 | Tests unitaires / E2E | ✅ | **Unitaires** : Vitest, **219 tests / 15 fichiers** (hash+salt, digest salé, sélecteurs Prisma, zod, rate limit, pays, ranking 43, comments 22, i18n, `feed-prefs`, mailer, log, reset), étape `bun run test`. **E2E Playwright versionnés en CI** : `tests/e2e` (8 scénarios — action bar Reddit, sauvegarde, masquage, rail de vote desktop/mobile, édition C10, 0 débordement 390 px), lancés par le workflow GitHub après seed + Chromium + `next start` |
 | J8 | Journalisation & monitoring | ✅ | `lib/log` : événements JSON une ligne (`ts`/`level`/`message`/ctx) en production, lisibles en dev ; les **23 routes** (35 appels) sont passées de `console.error` à `logger.route` ; `GET /api/health` (`{ok, db, latencyMs, uptime}`, 503 si DB down) pour les sondes ; 3 tests unitaires |
 | J9 | Sauvegardes / réplication de base | ✅ | PostgreSQL managé : la PITR reste chez Neon (documentée). `docs/RUNBOOK.md` : restauration PITR, bascule `DATABASE_URL` Vercel, dump/restauration locale, vérification ; `scripts/db-backup.sh` (`pg_dump -Fc` par défaut, `--plain` pour SQL) vers `./backups/` (gitignoré) — **exécuté et prouvé** sur le PG local (dump 263 K) |
 
