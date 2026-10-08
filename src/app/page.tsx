@@ -62,6 +62,10 @@ const AnnuaireSection = dynamic(
   () => import("@/components/sections/annuaire-section").then((m) => m.AnnuaireSection),
   { ssr: false, loading: SectionLoading }
 );
+const MessagesSection = dynamic(
+  () => import("@/components/sections/messages-section").then((m) => m.MessagesSection),
+  { loading: () => <SectionLoading /> }
+);
 const AdminSection = dynamic(
   () => import("@/components/sections/admin-section").then((m) => m.AdminSection),
   { ssr: false, loading: SectionLoading }
@@ -148,6 +152,9 @@ export default function Page() {
         return <MentoratSection />;
       case "tutos":
         return <TutosSection />;
+      case "messages":
+        // I2 — la section fait sa propre garde (connecté / déconnecté).
+        return <MessagesSection />;
       case "annuaire":
       case "dashboard":
         // Le "dashboard" ouvre pour l'instant l'annuaire (voir roadmap).

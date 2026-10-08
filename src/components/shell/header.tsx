@@ -54,12 +54,14 @@ export function Header() {
     setMobileOpen(false);
   };
 
-  // B8 — l'entrée « Admin » n'existe que pour un administrateur. Derivée à
-  // chaque rendu (et non au module) : `user` arrive du store, et se remplit
-  // après le montage quand le cache local est vide.
-  const items: NavItem[] = canAssignRoles(user)
-    ? [...navItems, { section: "admin", labelKey: "nav.admin" }]
-    : navItems;
+  // B8/I2 — les entrées « Messages » (membre connecté) et « Admin »
+  // (administrateur) sont dérivées à chaque rendu (et non au module) :
+  // `user` arrive du store, et se remplit après le montage quand le cache
+  // local est vide.
+  const items: NavItem[] = [
+    ...(user ? [...navItems, { section: "messages", labelKey: "nav.messages" }] : navItems),
+    ...(canAssignRoles(user) ? [{ section: "admin", labelKey: "nav.admin" }] : []),
+  ];
 
   return (
     <>

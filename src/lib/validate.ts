@@ -137,6 +137,12 @@ export const newsletterSchema = z.object({
   email,
 });
 
+/** I2 — envoi d'un message privé (`to` = id du destinataire). */
+export const messageSendSchema = z.object({
+  to: z.string().trim().min(1).max(64),
+  body: text(1, 2000),
+});
+
 /**
  * Confirmation de la réinitialisation. Le jeton suit le même format
  * 32 octets hexadécimaux que la vérification : refusé avant tout

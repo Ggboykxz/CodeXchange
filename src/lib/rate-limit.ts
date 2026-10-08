@@ -72,3 +72,6 @@ export const WRITE_POLICY = { limit: 30, windowMs: 60_000 } as const;
 // Recherche à la volée : debounce 300 ms côté client, 60/min laisse passer
 // une saisie entière tout en freinant le scraping sur 6 requêtes ILIKE.
 export const SEARCH_POLICY = { limit: 60, windowMs: 60_000 } as const;
+// I2 — messagerie : 30 messages/min suffisent à une vraie conversation et
+// freinent le spam d'un compte compromis (clé par émetteur, pas par IP).
+export const CHAT_POLICY = { limit: 30, windowMs: 60_000 } as const;

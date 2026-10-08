@@ -18,6 +18,10 @@ const SECTIONS = [
   "mentorat",
   "tutos",
   "annuaire",
+  // I2 — messagerie privée. Le paramètre d'ancre est l'id de
+  // l'interlocuteur (`#messages/<userId>`) : un fil existe même
+  // sans conversation en base, donc pas d'id de conversation à inventer.
+  "messages",
   "dashboard",
   // B8 — outil de gestion des rôles. Le lien de navigation n'apparaît que
   // pour un admin, mais l'ancre existe : `#admin` partageable, et un

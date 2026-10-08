@@ -502,6 +502,24 @@ export function AnnuaireSection() {
           </Card>
         )}
 
+        {/* I2 — démarrer une conversation privée depuis le profil public
+            (même geste que le CTA mentorat ci-dessus, indépendant de lui). */}
+        {user && selectedProfile.userId !== user.id && (
+          <div className="flex justify-end mb-6">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate("messages", selectedProfile.userId)}
+            >
+              <MessageSquare
+                className="h-4 w-4 me-1 rtl:-scale-x-100"
+                aria-hidden="true"
+              />
+              {t("annuaire.send_message")}
+            </Button>
+          </div>
+        )}
+
         {/* Recent activity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {selectedProfile.user.threads.length > 0 && (

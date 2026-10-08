@@ -68,7 +68,7 @@
 |---|---|
 | **OAuth GitHub / Google** | Rien n'est branché : `next-auth` était présent sans être importé, il a été retiré de `package.json` |
 | **Paiement mobile money** | Aucun code de paiement, aucun prestataire, aucun modèle de transaction |
-| **Messagerie temps réel** | Aucun modèle `Message`/`Conversation`, aucun WebSocket (seules les notifications in-app existent) |
+| **Messagerie temps réel** | Modèles `Conversation`/`Message` livrés avec l'écran `#messages` (I2), **mais pas de WebSocket ni de SSE** : un fil ouvert ne reçoit pas les messages en direct (rafraîchissement à l'action, cloche toujours en polling 60 s) |
 | **Envoi d'e-mails** | Aucune dépendance ni route d'envoi (bienvenue, reset de mot de passe, digest) |
 | **RTL arabe** | `lang`/`dir` sont maintenant pilotés par `LocaleSync`, mais `dir` reste `"ltr"` : le layout s'appuie encore sur des propriétés physiques (`pl-`/`pr-`/`left`) qui casserait le rendu |
 | **Traduction sw/ar** | 0 clé propre (voir ci-dessus) |

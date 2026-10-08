@@ -10,7 +10,7 @@ import { db } from "@/lib/db";
 export type NotifyInput = {
   recipientId: string;
   actorId?: string | null;
-  type: "reply" | "answer" | "mentorship" | "follow" | "mention" | "system";
+  type: "reply" | "answer" | "mentorship" | "follow" | "mention" | "system" | "message";
   title: string;
   body?: string;
   href?: string;
