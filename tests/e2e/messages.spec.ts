@@ -12,7 +12,7 @@ import { test, expect } from "playwright/test";
  *    en cas d'échec via `finally`).
  */
 
-const PW = process.env.ADMIN_E2E_PASSWORD ?? "codexchange2026";
+const DEMO_PW = "codexchange2026";
 const AICHA = "aicha.diallo@codexchange.dev";
 const KWAME = "kwame.mensah@codexchange.dev";
 const KWAME_USERNAME = "kwame.codes";
@@ -59,7 +59,7 @@ test.describe("Messagerie privée (I2)", () => {
 
     try {
       /* --- Aïcha : envoie depuis le profil public de Kwame --- */
-      await login(a, AICHA, PW);
+      await login(a, AICHA, DEMO_PW);
       await a.goto(`/#annuaire/${KWAME_USERNAME}`);
       await a.getByRole("button", { name: "Envoyer un message" }).click();
       await expect(a).toHaveURL(/#messages\//);
@@ -72,7 +72,7 @@ test.describe("Messagerie privée (I2)", () => {
       ).toBeVisible();
 
       /* --- Kwame : la conversation arrive avec la pastille --- */
-      await login(b, KWAME, PW);
+      await login(b, KWAME, DEMO_PW);
       await b.goto("/#messages");
       const row = b.getByTestId("conv-list").locator("li").first();
       await expect(row).toContainText("Aïcha Diallo");
@@ -130,7 +130,7 @@ test.describe("Messagerie privée (I2)", () => {
 
     try {
       /* --- Kwame ouvre SON fil vers Aïcha AVANT tout envoi --- */
-      await login(b, KWAME, PW);
+      await login(b, KWAME, DEMO_PW);
       const profA = await b.request.get("/api/profiles?limit=50");
       const aichaId = (
         (await profA.json()).profiles as Array<{ userId: string; username: string }>
@@ -139,7 +139,7 @@ test.describe("Messagerie privée (I2)", () => {
       await expect(b.getByLabel("Écrire un message…")).toBeVisible();
 
       /* --- Aïcha envoie : le fil de Kwame se remplit SANS action --- */
-      await login(a, AICHA, PW);
+      await login(a, AICHA, DEMO_PW);
       const profK = await a.request.get("/api/profiles?limit=50");
       const kwameId = (
         (await profK.json()).profiles as Array<{ userId: string; username: string }>
