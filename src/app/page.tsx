@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useAppStore } from "@/store/app-store";
+import { toast } from "sonner";
+import { useAppStore, useT } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { Header } from "@/components/shell/header";
 import { Footer } from "@/components/shell/footer";
@@ -69,11 +70,39 @@ const AdminSection = dynamic(
 export default function Page() {
   const section = useAppStore((s) => s.section);
   const fetchMe = useAuthStore((s) => s.fetchMe);
+  const t = useT();
 
   // Try to fetch current user on mount
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
+
+  /**
+   * B6 — erreur d'aller-retour OAuth. Le serveur renvoie
+   * `/?oauth_error=code` : on traduit en toast puis on nettoie l'URL,
+   * sinon le message reviendrait à chaque rafraîchissement.
+   * `silent` = l'utilisateur a annulé chez le fournisseur : rien.
+   */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("oauth_error");
+    if (!code) return;
+    params.delete("oauth_error");
+    const qs = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + (qs ? `?${qs}` : "") + window.location.hash
+    );
+    if (code === "silent") return;
+    toast.error(
+      code === "state"
+        ? t("auth.oauth.error_state")
+        : code === "email"
+          ? t("auth.oauth.error_email")
+          : t("auth.oauth.error")
+    );
+  }, [t]);
 
   /**
    * L'URL est la source de vérité de la navigation.

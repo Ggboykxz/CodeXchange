@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { REGISTRATION_COUNTRIES } from "@/lib/countries";
+import { OAuthButtons } from "@/components/shared/oauth-buttons";
 import { Loader2, ArrowRight } from "lucide-react";
 
 interface AuthFormProps {
@@ -119,6 +120,9 @@ export function AuthForm({ mode, onSuccess, onSwitch, onForgot }: AuthFormProps)
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
+      {/* B6 — boutons OAuth (affichés seulement si configurés), puis
+          « ou », puis le formulaire e-mail/mot de passe. */}
+      <OAuthButtons />
       {mode === "register" && (
         <>
           <div className="grid grid-cols-2 gap-3">

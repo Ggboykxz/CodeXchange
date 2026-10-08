@@ -35,7 +35,7 @@ Tout ce qui suit **existe aujourd'hui dans ce dépôt** (rien n'est repris de la
 
 | Domaine | Ce qui marche |
 |---|---|
-| **Auth** | Inscription, connexion, déconnexion par **sessions serveur** en base (`cx_session`, cookie `httpOnly`), TTL 30 jours, révocation serveur immédiate à la déconnexion, **vérification d'e-mail** (jeton de 24 h, badge `profil vérifié` sur le profil public) |
+| **Auth** | Inscription, connexion, déconnexion par **sessions serveur** en base (`cx_session`, cookie `httpOnly`), TTL 30 jours, révocation serveur immédiate à la déconnexion, **vérification d'e-mail** (jeton de 24 h, badge `profil vérifié` sur le profil public), connexion **OAuth GitHub / Google** (flux code d'autorisation maison, `state` anti-CSRF, boutons affichés seulement si configurés) |
 | **Forum Q&R** | Questions avec titre/catégorie/tags, corps en **Markdown** (GFM, blocs de code colorés + bouton copier), réponses, **votes** (`+1` / `−1` / annulation, état rappelé au rechargement), **meilleure réponse** (→ badge « Résolu »), compteur de vues |
 | **Recherche & filtres** | Recherche plein-texte côté serveur (titre, corps, tags — `?q=`), filtres catégorie et tags, debounce 250 ms ; filtres pays/type/stack/remote côté jobs et statut/stack côté projets (**côté serveur**), catégorie côté tutos et ville côté annuaire (**filtre client**), pays/stack/niveau/disponibilité côté annuaire (serveur) |
 | **Annuaire** | Liste des profils, filtres, page profil publique (activité récente : discussions, projets, tutos), **édition de son propre profil** (`PATCH /api/profiles/me`) avec accroche, bio, pays, ville, stack, niveaux, réseaux, disponibilité |
@@ -120,6 +120,9 @@ en CI, un service `postgres:16` est monté par `.github/workflows/ci.yml`.
 | DELETE | `/api/auth/me` | Déconnexion : révocation serveur du jeton + cookie vidé — session |
 | POST | `/api/auth/verify` | Valide l'adresse par le jeton du lien (24 h, hashé en base) — public (rate limit) |
 | POST | `/api/auth/verify/resend` | Réémet un lien — **toujours `200`**, que l'adresse existe ou non — session ou `email` |
+| GET | `/api/oauth/providers` | Fournisseurs OAuth activés (`{ providers: ["github", …] }` — vide sans credentials) — public |
+| GET | `/api/oauth/[provider]` | Départ vers GitHub/Google : pose `state` + `next` en cookies, 302 — public (rate limit) |
+| GET | `/api/oauth/[provider]/callback` | Retour : `state` en temps constant, échange du code, rattachement par e-mail vérifié, session, 302 — public |
 | GET | `/api/threads` | Questions : `?q=&category=&tag=&solved=&page=&limit=` — public |
 | POST | `/api/threads` | Créer une question — **session requise** |
 | GET | `/api/threads/[slug]` | Détail + réponses (tri : meilleure réponse, puis upvotes) + incrémente les vues — public |
@@ -384,6 +387,8 @@ Variables à poser dans Vercel (*Settings → Environment Variables*) :
 | `COOKIE_SECURE` | `true` (HTTPS) |
 | `NEXT_PUBLIC_SITE_URL` | `https://…` domaine réel (repli `VERCEL_URL`) |
 | `DATABASE_URL` | URL PostgreSQL du service managé (Neon, Supabase, Vercel Postgres) |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | *optionnel* — bouton « GitHub » en connexion (B6) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | *optionnel* — bouton « Google » en connexion (B6) |
 
 > ✅ **Le `provider` est passé à `postgresql`** : SQLite ne pouvait pas fonctionner
 > sur Vercel (disque des fonctions en lecture seule, éphémérique par instance).
