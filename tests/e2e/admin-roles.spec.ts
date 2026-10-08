@@ -72,7 +72,7 @@ test.describe("Gestion des rôles (B8)", () => {
     // On attend la réponse au debounce (250 ms) + fetch avant d'ouvrir le
     // menu : cibler une ligne « déjà visible » pendant que la recherche
     // recharge la liste, c'est se faire démonter le portail sous le clic.
-    const search = page.locator('input[placeholder^="Rechercher"]');
+    const search = page.locator('input[aria-label^="Rechercher un membre"]');
     await expect(search).toBeVisible();
     const searched = page.waitForResponse(
       (r) => r.url().includes("/api/admin/users") && r.request().method() === "GET"

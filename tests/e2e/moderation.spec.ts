@@ -25,7 +25,19 @@ async function login(
     .first()
     .fill(email);
   await dialog.locator('input[type="password"]').fill(password);
-  await dialog.locator('button[type="submit"]').click();
+  // On attend la réponse de l'API avant de vérifier le dialog :
+  // sans cela, un 401/429 du serveur laisse le dialog ouvert et le test
+  // échoue sur un timeout générique.
+  const [loginRes] = await Promise.all([
+    page.waitForResponse(
+      (r) => r.url().includes("/api/auth/login"),
+      { timeout: 10_000 }
+    ),
+    dialog.locator('button[type="submit"]').click(),
+  ]);
+  if (!loginRes.ok()) {
+    throw new Error(`Login failed: ${loginRes.status()} ${await loginRes.text()}`);
+  }
   await expect(dialog).toBeHidden();
 }
 
