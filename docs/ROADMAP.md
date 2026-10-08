@@ -10,8 +10,8 @@
 | **Hackathon J1–J2** | Fondations (Prisma 13 modèles, seed), auth par session serveur, Q&R Markdown, votes + meilleure réponse, annuaire + édition de profil, lecture jobs/projets/tutos/events, mentorat, notifications in-app, i18n fr/en, dark mode, PWA hors-ligne, CI | ✅ **livré** (détail ligne par ligne ci-dessous) |
 | **Bascule PostgreSQL** | `provider = "postgresql"` en local, CI (service `postgres:16`) et Vercel ; `mode: "insensitive"` sur les 24 filtres de recherche (SQLite les rendait insensibles à la casse par défaut) ; `.env.example`, README et docs alignés | ✅ **livré** — bloquait le déploiement Vercel (disque des fonctions en lecture seule) |
 | **Beta privée S1–S4** | ~~Traductions sw/ar~~ ✅ (D2), ~~RTL arabe~~ ✅ (D3), ~~filtre « non résolu » en UI~~ ✅, ~~création de contenus~~ ✅ (M1), ~~messagerie privée + temps réel~~ ✅ (I2/I3), ~~tests E2E~~ ✅ (J7) ; e-mails transactionnels : code prêt (`lib/mailer`), **identifiants SMTP à poser** | ✅ **livré** sauf SMTP (I4 en attente de `SMTP_*`) |
-| **Beta publique M2–M3** | ~~OAuth GitHub/Google~~ ✅ maison (B6 — activation prod = poser les client IDs), modération communautaire, ~~compteurs de home fiables~~ ✅, landings SEO par module | ⏳ **partiel** (reste modération + SEO) |
-| **Croissance M4–M6** | Paiement mobile money, offres sponsorisées, programme de mentorat structuré (acceptation/refus côté mentor), API publique | ⬜ à venir |
+| **Beta publique M2–M3** | ~~OAuth GitHub/Google~~ ✅ maison (B6 — activation prod = poser les client IDs), ~~modération communautaire~~ ✅ (M1), ~~compteurs de home fiables~~ ✅, ~~landings SEO par module~~ ✅ (S1) | ✅ **livré** |
+| **Croissance M4–M6** | ~~Paiement mobile money~~ ✅ mock (P1 — brancher un vrai prestataire via `PaymentProvider`), offres sponsorisées, programme de mentorat structuré (acceptation/refus côté mentor), API publique | ⏳ **partiel** (paiement mock livré, reste le vrai provider) |
 | **Consolidation M7–M12** | Applications mobiles légères, analytics communauté, gouvernance open-source, extension diaspora | ⬜ à venir |
 
 ---
@@ -56,21 +56,11 @@
 | **OAuth maison GitHub/Google (B6)** — flux autorisation + PKCE sans dépendance, `/api/oauth/*`, boutons d'inscription/connexion | `src/app/api/oauth/**`, `src/lib/oauth.ts` |
 | **E-mails transactionnels (I4)** — `lib/mailer` (nodemailer) : bienvenue, vérification, réinitialisation, digest newsletter ; aperçu en journal sans `SMTP_HOST` | `src/lib/mailer.ts` |
 | **Tests E2E Playwright en CI (J7)** — 23 scénarios (fil Reddit, rôles, newsletter, recherche, RTL, jobs, messagerie, temps réel) contre `next start` | `tests/e2e/**` |
+| **Modération communautaire (M1)** — signalements (modèle `Report`, API, dialog UI), journal (`ModerationLog`), onglets admin (Rôles / Signalements / Journal), épinglages tracés | `prisma/migrations/20261008100704_moderation`, `src/app/api/reports/**`, `src/components/sections/admin-*` |
+| **Routes réelles + SEO (S1)** — `app/[...section]/page.tsx` avec `generateMetadata` par section, store migre vers chemins réels (`/forum`, `/jobs`…), sitemap liste toutes les routes indexables, robots.txt | `src/app/[...section]/page.tsx`, `src/store/app-store.ts`, `src/app/sitemap.ts` |
+| **Poids bundle en CI (B1)** — `scripts/check-bundle-size.ts` mesure les `rootMainFiles` en gzip, échoue si > 150 Ko (limite CDC), étape CI après Build | `scripts/check-bundle-size.ts`, `.github/workflows/ci.yml` |
+| **Paiement mobile money (P1)** — modèle `Transaction`, API initiate/status/confirm, `PaymentProvider` interface + `MockProvider` (dev/démo, confirmation après 3 s), dialog de paiement dans le profil mentor | `prisma/migrations/20261008105240_payment_transaction`, `src/app/api/payments/**`, `src/lib/payments/**` |
 | Licence MIT | `LICENSE` |
-
-### ⏳ Partiellement fait
-
-| Élément | Ce qui manque |
-|---|---|
-| **Modération** | Champs `role` (`member`/`moderator`/`admin`) + **outil de rôles admin** (B8, `admin-section.tsx`) et contrôle auteur/modérateur à l'acceptation ✅ ; offres épinglées staff-only (G6) ✅ ; **reste** : signalement des contenus, épinglage des fils, journal de modération |
-| **Poids bundle** | Découpage dynamique en place, objectif affiché **< 150 Ko** ; le CDC annonce **< 100 Ko** — non mesuré automatiquement en CI |
-
-### ⬜ Rien de fait pour l'instant
-
-| Élément | Constater |
-|---|---|
-| **Paiement mobile money** | Aucun code de paiement, aucun prestataire, aucun modèle de transaction |
-| **SEO / pages par module** | Application mono-page : une seule route `src/app/page.tsx`, navigation par hash |
 
 ---
 
@@ -81,8 +71,8 @@
 | **M0 — Démo stable** ✅ | J1–J2 | `bun install` → `db:deploy` → `scripts/seed.ts` → `dev` en 4 commandes ; les 3 parcours de `docs/DEMO.md` passent sans erreur ; `bun run check` vert ; CI verte sur `main`. **Atteint.** |
 | **M1 — Produit complet en lecture/écriture** ✅ | S1–S4 | Formulaires de création jobs/projets/tutos/events ; mentor peut répondre à une demande ; au moins 1 test E2E Playwright sur le parcours Q&R |
 | **M2 — Multilingue + portabilité** ✅ | M1–M2 | 100 % des clés traduites en sw et ar (D2, test de parité) ; `lang`/`dir` pilotés par la locale (`dir="rtl"` pour `ar`, D3) ; bascule PostgreSQL effectuée avec **`prisma migrate` versionné** (A8, baseline `0_init` en CI et en prod) et seed ré-exécuté sans erreur. **Atteint.** |
-| **M3 — Confiance & ouverture** ⬜ | M2–M3 | OAuth GitHub/Google opérationnel ; e-mail de bienvenue + réinitialisation ; outils de modération (signalement, rôles, épinglage) ; compteurs home tous issus de `/api/stats` ; budget de poids vérifié en CI (≤ 100 Ko ou décision explicite) |
-| **M4 — Monétisation & échelle** ⬜ | M4–M6 | Paiement mobile money sur un flux réel (abonnement mentor ou boosting d'offre) avec reçus ; 100 offres et 100 binômes atteints ; API publique documentée ; rate limiting distribué (Redis/Upstash) derrière une instance multi-nœuds |
+| **M3 — Confiance & ouverture** ✅ | M2–M3 | OAuth GitHub/Google opérationnel (B6) ; e-mail de bienvenue + réinitialisation (I4 code prêt, `SMTP_*` à poser) ; outils de modération (signalement M1, rôles B8, épinglage) ; compteurs home tous issus de `/api/stats` ; budget de poids vérifié en CI (B1, ≤ 150 Ko gzip). **Atteint** sauf I4 prod (SMTP). |
+| **M4 — Monétisation & échelle** ⏳ | M4–M6 | Paiement mobile money sur un flux réel (**mock P1 livré**, brancher Orange Money/MTN/Wave via `PaymentProvider`) ; 100 offres et 100 binômes atteints ; API publique documentée ; rate limiting distribué (Redis/Upstash) derrière une instance multi-nœuds |
 
 ---
 

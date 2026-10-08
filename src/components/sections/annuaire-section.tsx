@@ -14,6 +14,7 @@ import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
 import { SectionHeader } from "@/components/shared/section-header";
+import { PaymentDialog } from "@/components/shared/payment-dialog";
 import { Tag } from "@/components/shared/tag";
 import { Avatar } from "@/components/shared/avatar";
 import { Button } from "@/components/ui/button";
@@ -161,6 +162,8 @@ export function AnnuaireSection() {
 
   // Edition du profil (B4) — formulaire contrôlé, rempli à l'ouverture.
   const [editOpen, setEditOpen] = useState(false);
+  // P1 — dialogue paiement mobile money depuis le profil mentor.
+  const [payOpen, setPayOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -492,15 +495,55 @@ export function AnnuaireSection() {
                 {selectedProfile.user.mentorProfile.hourlyRate ?? "—"}
               </p>
             </div>
-            <Button
-              size="sm"
-              className="shrink-0 bg-foreground text-background hover:bg-foreground/90"
-              onClick={() => navigate("mentorat", selectedProfile.user.mentorProfile!.id)}
-            >
-              {t("mentorat.request")}
-            </Button>
+            <div className="flex gap-2 shrink-0">
+              <Button
+                size="sm"
+                className="shrink-0 bg-foreground text-background hover:bg-foreground/90"
+                onClick={() => navigate("mentorat", selectedProfile.user.mentorProfile!.id)}
+              >
+                {t("mentorat.request")}
+              </Button>
+              {selectedProfile.user.mentorProfile.hourlyRate &&
+                selectedProfile.user.mentorProfile.hourlyRate !== "Free" &&
+                selectedProfile.user.mentorProfile.hourlyRate !== "—" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="shrink-0"
+                    onClick={() => setPayOpen(true)}
+                  >
+                    {t("payment.pay_session")}
+                  </Button>
+                )}
+            </div>
           </Card>
         )}
+
+        {/* P1 — dialogue paiement mobile money */}
+        <PaymentDialog
+          open={payOpen}
+          onOpenChange={setPayOpen}
+          targetId={selectedProfile.user.mentorProfile?.id ?? ""}
+          targetLabel={
+            selectedProfile.user.mentorProfile
+              ? `${t("mentorat.title")} · ${selectedProfile.user.mentorProfile.expertise}`
+              : ""
+          }
+          amount={
+            parseInt(
+              (selectedProfile.user.mentorProfile?.hourlyRate ?? "0").replace(
+                /[^0-9]/g,
+                ""
+              ),
+              10
+            ) || 0
+          }
+          currency={
+            (selectedProfile.user.mentorProfile?.hourlyRate ?? "")
+              .replace(/[0-9\s,.-]/g, "")
+              .trim() || "XOF"
+          }
+        />
 
         {/* I2 — démarrer une conversation privée depuis le profil public
             (même geste que le CTA mentorat ci-dessus, indépendant de lui). */}

@@ -191,6 +191,16 @@ const fr: Dict = {
   "mentorat.subtitle":
     "Des seniors africains qui partagent leur savoir. Sessions gratuites pour les devs locaux.",
   "mentorat.request": "Demander un mentorat",
+
+  /* P1 — paiement mobile money */
+  "payment.title": "Paiement mobile money",
+  "payment.phone": "Numéro mobile money",
+  "payment.pay": "Payer",
+  "payment.pay_session": "Payer la session",
+  "payment.waiting": "En attente de confirmation sur votre téléphone…",
+  "payment.success": "Paiement confirmé !",
+  "payment.success_message": "Votre paiement a été confirmé. Vous recevrez une confirmation.",
+  "payment.failed": "Le paiement a échoué. Réessaie.",
   "mentorat.my_mentorships": "Mes mentorats",
   "mentorat.requests_incoming": "Reçues — à répondre",
   "mentorat.requests_sent": "Demandes envoyées",
@@ -763,6 +773,16 @@ const en: Dict = {
   "mentorat.subtitle":
     "African seniors sharing their knowledge. Free sessions for local devs.",
   "mentorat.request": "Request mentorship",
+
+  /* P1 — mobile money payment */
+  "payment.title": "Mobile money payment",
+  "payment.phone": "Mobile money number",
+  "payment.pay": "Pay",
+  "payment.pay_session": "Pay for session",
+  "payment.waiting": "Waiting for confirmation on your phone…",
+  "payment.success": "Payment confirmed!",
+  "payment.success_message": "Your payment has been confirmed. You will receive a confirmation.",
+  "payment.failed": "Payment failed. Please retry.",
   "mentorat.my_mentorships": "My mentorships",
   "mentorat.requests_incoming": "Received — to answer",
   "mentorat.requests_sent": "Sent requests",
@@ -1304,6 +1324,16 @@ const sw: Dict = {
   "mentorat.title": "Ushauri",
   "mentorat.subtitle": "Wahisabati wa senior wa Afrika wakishiriki ujuzi wao. Vipindi vya bure kwa wahisabati wa hapa.",
   "mentorat.request": "Omba ushauri",
+
+  /* P1 — malipo ya simu kwa fedha */
+  "payment.title": "Malipo ya simu kwa fedha",
+  "payment.phone": "Nambari ya simu kwa fedha",
+  "payment.pay": "Lipa",
+  "payment.pay_session": "Lipa kikao",
+  "payment.waiting": "Tunasubiri uthibitisho kwenye simu yako…",
+  "payment.success": "Malipo yamehakikishwa!",
+  "payment.success_message": "Malipo yako yamehakikishwa. Utapokea uthibitisho.",
+  "payment.failed": "Malipo yameshindwa. Jaribu tena.",
   "mentorat.my_mentorships": "Ushauri wangu",
   "mentorat.requests_incoming": "Zilizopokelewa — zinajibiwa",
   "mentorat.requests_sent": "Ombi zilizotumwa",
@@ -1818,6 +1848,16 @@ const ar: Dict = {
   "mentorat.title": "الإرشاد",
   "mentorat.subtitle": "كبار المطورين الأفارقة يشاركون معارفهم. جلسات مجانية للمطورين المحليين.",
   "mentorat.request": "طلب إرشاد",
+
+  /* P1 — الدفع عبر الهاتف المحمول */
+  "payment.title": "الدفع عبر الهاتف المحمول",
+  "payment.phone": "رقم الهاتف للدفع",
+  "payment.pay": "ادفع",
+  "payment.pay_session": "ادفع الجلسة",
+  "payment.waiting": "في انتظار التأكيد على هاتفك…",
+  "payment.success": "تم تأكيد الدفع!",
+  "payment.success_message": "تم تأكيد دفعك. ستتلقى تأكيدًا.",
+  "payment.failed": "فشل الدفع. حاول مجددًا.",
   "mentorat.my_mentorships": "إرشاداتي",
   "mentorat.requests_incoming": "الواردة — للرد",
   "mentorat.requests_sent": "الطلبات المرسلة",

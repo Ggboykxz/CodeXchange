@@ -56,6 +56,7 @@ model User {
   reportsFiled       Report[]       @relation("ReportReporter")
   reportsResolved    Report[]       @relation("ReportResolver")
   moderationLogs     ModerationLog[] @relation("ModerationActor")
+  transactions       Transaction[]  @relation("PaymentPayer")
 }
 
 /// Session serveur : le jeton brut n'est JAMAIS stocké, seul son hash SHA-256.
@@ -392,4 +393,34 @@ model ModerationLog {
 
   @@index([createdAt])
   @@index([actorId])
+}
+
+/**
+ * P1 — transaction de paiement mobile money (Orange Money, MTN MoMo, Wave).
+ *
+ * Le flux est asynchrone : l'utilisateur initie → provider renvoie une
+ * référence → confirmation via callback ou UI. En désév/démo, le
+ * `MockProvider` simule une confirmation immédiate.
+ *
+ * `purpose` + `targetId` identifient l'objet acheté (session mentorat,
+ * offre à la une…) : `provider` + `providerTxId` identifient le côté
+ * prestataire. Le montant est en unités entières (ex. 5000 = 5000 FCFA).
+ */
+model Transaction {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation("PaymentPayer", fields: [userId], references: [id], onDelete: Cascade)
+  provider      String // orange_money | mtn_momo | wave | mock
+  providerTxId  String? // identifiant côté prestataire
+  amount        Int // montant en unités (FCFA, EUR…)
+  currency      String   @default("XOF")
+  status        String   @default("pending") // pending | completed | failed | cancelled
+  purpose       String // mentorship | featured_job | …
+  targetId      String? // id de l'objet concerné (Mentor.id, Job.id…)
+  phoneNumber   String? // numéro mobile money utilisé
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([provider, providerTxId])
 }

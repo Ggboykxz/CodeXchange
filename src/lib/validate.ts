@@ -280,6 +280,16 @@ export const reportUpdateSchema = z.object({
   resolution: z.string().trim().max(500).optional().nullable(),
 });
 
+/** P1 — initiation d'un paiement mobile money. */
+export const paymentInitiateSchema = z.object({
+  provider: z.enum(["mock", "orange_money", "mtn_momo", "wave"]),
+  amount: z.number().int().min(100).max(10_000_000),
+  currency: z.string().trim().min(3).max(3).default("XOF"),
+  phoneNumber: z.string().trim().min(8).max(20),
+  purpose: z.enum(["mentorship", "featured_job", "premium_profile"]),
+  targetId: z.string().trim().min(1).max(40).optional(),
+});
+
 /* ------------------------------------------------------------------ */
 /* Contenus publiés par les membres (offres, projets, tutos, events)   */
 /* ------------------------------------------------------------------ */
