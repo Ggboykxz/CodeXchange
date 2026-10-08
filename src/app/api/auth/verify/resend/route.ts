@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, AUTH_EMAIL_POLICY } from "@/lib/rate-limit";
 import { verifyResendSchema } from "@/lib/validate";
 import { clientIp, currentUser } from "@/lib/auth";
+import { sendVerificationEmail } from "@/lib/mailer";
 import {
   exposesVerificationLink,
   issueVerificationForEmail,
@@ -57,11 +58,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = await issueVerificationForEmail(email);
-    if (token && exposesVerificationLink()) {
-      // Pas d'envoi d'e-mail dans le projet (B7) : en dev, le lien part
-      // dans le journal du serveur.
-      console.info(`[verify] ${email} → ${verificationUrl(token)}`);
+    const issued = await issueVerificationForEmail(email);
+    if (issued) {
+      const url = verificationUrl(issued.token);
+      if (exposesVerificationLink()) {
+        // En dev, le lien part aussi dans le journal du serveur pour
+        // éviter d'ouvrir la boîte à chaque test.
+        console.info(`[verify] ${email} → ${url}`);
+      }
+      // En production c'est l'e-mail qui porte le lien : c'est lui qui
+      // prouve la possession de la boîte. L'envoi ne bloque pas la
+      // réponse (`sent: true` reste identique quelle que soit l'adresse).
+      void sendVerificationEmail({
+        name: issued.name,
+        email,
+        verifyUrl: url,
+      }).catch((e) => logger.route("Verify email error", e, { email }));
     }
 
     return NextResponse.json({ sent: true });

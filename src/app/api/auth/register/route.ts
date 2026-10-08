@@ -75,25 +75,27 @@ export async function POST(req: NextRequest) {
       ip: clientIp(req),
     });
 
-    // Hors production uniquement : renvoyer le lien à celui qui vient de
-    // saisir l'adresse neutraliserait la preuve de possession de la
-    // boîte mail — voir `exposesVerificationLink()` dans lib/verify.ts.
-    const devLink = exposesVerificationLink()
-      ? verificationUrl(verifyToken)
-      : null;
+    // Le lien part **par e-mail** vers la boîte que le lien est censé
+    // prouver : la preuve de possession reste donc intacte. C'est son
+    // renvoi dans la réponse HTTP qui est interdit en production —
+    // voir `exposesVerificationLink()` dans lib/verify.ts.
+    const verifyUrl = verificationUrl(verifyToken);
+    const devLink = exposesVerificationLink() ? verifyUrl : null;
     if (devLink) {
-      // Pas d'envoi d'e-mail dans le projet (B7) : en dev, le lien part
-      // dans le journal du serveur.
+      // En dev, le lien apparaît aussi dans le journal pour éviter
+      // d'ouvrir la boîte de réception à chaque test.
       console.info(`[verify] ${user.email} → ${devLink}`);
     }
 
-    // B7 — e-mail de bienvenue. Envoi réel si `SMTP_HOST` est
-    // configuré, aperçu dans le journal sinon. L'envoi ne
-    // bloque pas la réponse : l'inscription réussit même si le
-    // mail ne part pas (l'erreur est journalisée).
-    void sendWelcomeEmail({ name: user.name, email: user.email }).catch(
-      (e) => logger.route("Welcome email error", e, { userId: user.id })
-    );
+    // B7 — e-mail de bienvenue, porteur du lien de vérification.
+    // Envoi réel si `SMTP_HOST` est configuré, aperçu dans le journal
+    // sinon. L'envoi ne bloque pas la réponse : l'inscription réussit
+    // même si le mail ne part pas (l'erreur est journalisée).
+    void sendWelcomeEmail({
+      name: user.name,
+      email: user.email,
+      verifyUrl,
+    }).catch((e) => logger.route("Welcome email error", e, { userId: user.id }));
 
     const response = NextResponse.json(
       { user, ...(devLink ? { verificationUrl: devLink } : {}) },

@@ -11,15 +11,16 @@ const TOKEN_RE = /^[0-9a-f]{64}$/i;
 export type VerificationOutcome = "ok" | "expired" | "invalid";
 
 /**
- * Lien de vérification : utile en dev, **jamais** en production.
+ * Renvoyer le lien de vérification **dans la réponse HTTP** : utile en
+ * dev, **jamais** en production.
  *
- * Le projet n'a pas d'envoi d'e-mail (voir B7 dans `docs/BACKLOG.md`) :
- * sans boîte mail à alimenter, le seul moyen de montrer la fonction est
- * de rendre le lien visible. On le fait uniquement hors production, parce
- * que renvoyer le jeton à celui qui vient de saisir l'adresse **détruit
- * la preuve qu'il en est propriétaire** — c'est exactement ce que la
- * vérification doit établir. Un attaquant pourrait donc enregistrer
- * `victim@exemple.com` et valider lui-même le compte.
+ * Le lien part désormais par e-mail (B7) vers la boîte qu'il s'agit de
+ * prouver — c'est le canal correct. Le renvoyer aussi à celui qui vient
+ * de saisir l'adresse détruirait cette preuve : un attaquant pourrait
+ * enregistrer `victim@exemple.com` et récupérer lui-même le lien dans la
+ * réponse. On se contente donc de l'e-mail en production, et on ajoute
+ * le lien en clair en dev pour ne pas ouvrir une boîte mail à chaque
+ * test local.
  */
 export function exposesVerificationLink(): boolean {
   return process.env.NODE_ENV !== "production";
@@ -82,17 +83,24 @@ export async function consumeVerification(token: string): Promise<VerificationOu
 }
 
 /**
- * Émet un lien si l'adresse existe, `null` sinon.
+ * Émet un lien si l'adresse existe, `null` sinon — en renvoyant aussi le
+ * nom, pour que le mail de vérification soit personnalisé sans requête
+ * supplémentaire.
  *
  * L'appelant doit répondre de façon **identique** dans les deux cas :
  * renvoyer un message distinct « adresse inconnue » rendrait possible
- * l'énumération des comptes (le même piège que le login).
+ * l'énumération des comptes (le même piège que le login). L'e-mail part
+ * seulement si le compte existe, mais il arrive dans la boîte de la
+ * victime, pas sous les yeux de l'appelant : la réponse ne bouge pas.
  */
-export async function issueVerificationForEmail(email: string): Promise<string | null> {
+export async function issueVerificationForEmail(
+  email: string
+): Promise<{ token: string; name: string } | null> {
   const user = await db.user.findUnique({
     where: { email },
-    select: { id: true },
+    select: { id: true, name: true },
   });
   if (!user) return null;
-  return issueVerification(user.id);
+  const token = await issueVerification(user.id);
+  return { token, name: user.name };
 }

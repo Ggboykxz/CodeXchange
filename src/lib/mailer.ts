@@ -90,11 +90,34 @@ export async function sendMail(mail: MailInput): Promise<"sent" | "preview"> {
   return "sent";
 }
 
-/** E-mail de bienvenue — envoyé juste après l'inscription. */
+/**
+ * E-mail de bienvenue — envoyé juste après l'inscription.
+ *
+ * `verifyUrl` est **le seul canal** qui porte le lien de vérification en
+ * production : il part vers la boîte que le lien est censé prouver, donc la
+ * preuve de possession reste intacte (contrairement au renvoi dans la
+ * réponse HTTP, voir `exposesVerificationLink()`).
+ */
 export function sendWelcomeEmail(input: {
   name: string;
   email: string;
+  verifyUrl?: string;
 }): Promise<"sent" | "preview"> {
+  const verifyBlock = input.verifyUrl
+    ? `
+Confirme ton adresse pour obtenir le badge « profil vérifié » :
+
+  ${input.verifyUrl}
+
+Ce lien est valable 24 heures.
+`
+    : "";
+  const verifyHtml = input.verifyUrl
+    ? `<p>Confirme ton adresse pour obtenir le badge <strong>profil vérifié</strong> :</p>
+<p><a href="${input.verifyUrl}" style="color:#0b6bcb">${input.verifyUrl}</a></p>
+<p style="font-size:11px;color:#888">Ce lien est valable 24 heures.</p>
+`
+    : "";
   return sendMail({
     to: input.email,
     subject: `Bienvenue sur CodeXchange, ${input.name} 🇦🇫`,
@@ -107,7 +130,7 @@ Ton compte CodeXchange est prêt. Tu peux dès maintenant :
   • chercher un job vérifié (#jobs) ;
   • rejoindre un projet open source (#projects) ;
   • trouver un mentor ou en devenir un (#mentorat).
-
+${verifyBlock}
 À très vite sur le réseau des développeurs africains,
 l'équipe CodeXchange
 
@@ -121,8 +144,49 @@ Cet e-mail est automatique. Pour te désabonner, supprime ton compte.`,
   <li>rejoindre un projet open source</li>
   <li>trouver un mentor ou en devenir un</li>
 </ul>
-<p>À très vite sur le réseau des développeurs africains,<br/>l'équipe CodeXchange</p>
+${verifyHtml}<p>À très vite sur le réseau des développeurs africains,<br/>l'équipe CodeXchange</p>
 <hr/><p style="font-size:11px;color:#888">Cet e-mail est automatique.</p>`,
+  });
+}
+
+/**
+ * E-mail de vérification d'adresse — envoyé à l'inscription via le
+ * mail de bienvenue, et à chaque relance (`/api/auth/verify/resend`).
+ *
+ * C'est le renvoi de ce lien qui rendait B9 inutilisable en production :
+ * sans envoi, un membre jamais vérifié ne voyait qu'un avertissement
+ * perpétuel et un bouton « Renvoyer » sans effet.
+ */
+export function sendVerificationEmail(input: {
+  name: string;
+  email: string;
+  verifyUrl: string;
+}): Promise<"sent" | "preview"> {
+  return sendMail({
+    to: input.email,
+    subject: "Confirme ton adresse e-mail — CodeXchange",
+    text:
+      `Bonjour ${input.name},
+
+On nous a demandé de confirmer ton adresse e-mail pour ton compte
+CodeXchange (${input.email}).
+
+Ouvre ce lien (valable 24 heures) pour valider ton adresse :
+
+  ${input.verifyUrl}
+
+Si tu n'es pas à l'origine de cette demande, ignore ce message.
+
+—
+l'équipe CodeXchange`,
+    html: `<p>Bonjour ${input.name},</p>
+<p>On nous a demandé de confirmer ton adresse e-mail pour ton compte
+CodeXchange (${input.email}).</p>
+<p>Ouvre ce lien — valable <strong>24 heures</strong> — pour valider ton
+adresse :</p>
+<p><a href="${input.verifyUrl}" style="color:#0b6bcb">${input.verifyUrl}</a></p>
+<p>Si tu n'es pas à l'origine de cette demande, ignore ce message.</p>
+<hr/><p style="font-size:11px;color:#888">Lien de vérification valable 24 heures.</p>`,
   });
 }
 
