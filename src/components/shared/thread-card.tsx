@@ -185,7 +185,7 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
                   {t("forum.solved")}
                 </span>
               )}
-              <span className="ml-auto inline-flex items-center gap-1">
+              <span className="ms-auto inline-flex items-center gap-1">
                 <Eye className="h-3 w-3" aria-hidden="true" />
                 {thread.views}
               </span>

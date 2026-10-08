@@ -83,7 +83,7 @@ function Field({
       <Label htmlFor={id} className="text-xs font-mono uppercase">
         {label}
         {optional && (
-          <span className="ml-1.5 font-sans normal-case text-muted-foreground">
+          <span className="ms-1.5 font-sans normal-case text-muted-foreground">
             ({t("create.optional")})
           </span>
         )}

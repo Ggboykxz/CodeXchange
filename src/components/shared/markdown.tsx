@@ -67,7 +67,7 @@ function CopyButton({ code }: { code: string }) {
       type="button"
       onClick={copy}
       aria-label={copied ? "Code copié" : "Copier le code"}
-      className="absolute right-2 top-2 rounded border border-border bg-background/80 px-2 py-1 text-[10px] font-mono text-muted-foreground opacity-0 transition hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100"
+      className="absolute end-2 top-2 rounded border border-border bg-background/80 px-2 py-1 text-[10px] font-mono text-muted-foreground opacity-0 transition hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100"
     >
       {copied ? "copié ✓" : "copier"}
     </button>
@@ -116,7 +116,9 @@ export function Markdown({ content, className }: MarkdownProps) {
             // Bloc de code (fourni par le plugin `language-*`).
             if (match) {
               return (
-                <div className="relative">
+                // dir="ltr" inline : un bloc de code reste anglophone et
+                // doit toujours aligner à gauche, même dans une page RTL.
+                <div className="relative" dir="ltr">
                   <CopyButton code={raw} />
                   <SyntaxHighlighter
                     language={match[1]}
@@ -140,6 +142,7 @@ export function Markdown({ content, className }: MarkdownProps) {
             return (
               <code
                 {...props}
+                dir="ltr"
                 className="rounded bg-muted px-1.5 py-0.5 text-[13px] text-foreground"
               >
                 {children}
@@ -155,7 +158,7 @@ export function Markdown({ content, className }: MarkdownProps) {
           },
           th({ children }) {
             return (
-              <th className="border border-border bg-muted/50 px-3 py-2 text-left font-semibold">
+              <th className="border border-border bg-muted/50 px-3 py-2 text-start font-semibold">
                 {children}
               </th>
             );
@@ -165,7 +168,7 @@ export function Markdown({ content, className }: MarkdownProps) {
           },
           blockquote({ children }) {
             return (
-              <blockquote className="my-4 border-l-2 border-chart-1 pl-4 text-muted-foreground italic">
+              <blockquote className="my-4 border-s-2 border-chart-1 ps-4 text-muted-foreground italic">
                 {children}
               </blockquote>
             );
@@ -180,10 +183,10 @@ export function Markdown({ content, className }: MarkdownProps) {
             return <h4 className="display mt-4 mb-2 text-lg">{children}</h4>;
           },
           ul({ children }) {
-            return <ul className="my-3 list-disc space-y-1 pl-6">{children}</ul>;
+            return <ul className="my-3 list-disc space-y-1 ps-6">{children}</ul>;
           },
           ol({ children }) {
-            return <ol className="my-3 list-decimal space-y-1 pl-6">{children}</ol>;
+            return <ol className="my-3 list-decimal space-y-1 ps-6">{children}</ol>;
           },
           li({ children }) {
             return <li className="leading-relaxed">{children}</li>;

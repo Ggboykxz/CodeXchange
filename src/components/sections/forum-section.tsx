@@ -475,10 +475,10 @@ export function ForumSection() {
         <Button
           variant="ghost"
           size="sm"
-          className="mb-6 -ml-2"
+          className="mb-6 -ms-2"
           onClick={() => navigate("forum")}
         >
-          <ArrowLeft className="h-4 w-4 mr-1" />
+          <ArrowLeft className="h-4 w-4 me-1 rtl:-scale-x-100" />
           {t("forum.back_to_list")}
         </Button>
 
@@ -527,12 +527,12 @@ export function ForumSection() {
             <div className="flex items-center gap-2 mb-3">
               {selectedThread.pinned && (
                 <Tag label={t("forum.pinned")} variant="solid">
-                  <Pin className="h-3 w-3 mr-1 inline" />
+                  <Pin className="h-3 w-3 me-1 inline" />
                 </Tag>
               )}
               {selectedThread.solved && (
                 <Tag label={t("forum.solved")} variant="outline">
-                  <CheckCircle2 className="h-3 w-3 mr-1 inline" />
+                  <CheckCircle2 className="h-3 w-3 me-1 inline" />
                 </Tag>
               )}
               <Tag label={t(`forum.category.${selectedThread.category}`)} />
@@ -807,7 +807,7 @@ export function ForumSection() {
           }}
           className="bg-foreground text-background hover:bg-foreground/90 shrink-0"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 me-2" />
           {t("forum.new")}
         </Button>
       </div>
@@ -815,12 +815,12 @@ export function ForumSection() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("forum.search.placeholder")}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
         <Select value={category} onValueChange={setCategory}>

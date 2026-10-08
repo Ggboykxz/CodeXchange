@@ -53,7 +53,7 @@ export function ForgotForm({ onBack }: { onBack: () => void }) {
         <MailCheck className="h-10 w-10 mx-auto text-muted-foreground" />
         <p className="text-sm text-muted-foreground">{t("auth.forgot.sent")}</p>
         <Button variant="outline" onClick={onBack} className="w-full">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-4 w-4 me-2 rtl:-scale-x-100" />
           {t("auth.forgot.back")}
         </Button>
       </div>
@@ -82,7 +82,7 @@ export function ForgotForm({ onBack }: { onBack: () => void }) {
         disabled={loading}
         className="w-full bg-foreground text-background hover:bg-foreground/90 mt-2"
       >
-        {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+        {loading ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : null}
         {t("auth.forgot.submit")}
       </Button>
       <div className="text-center">
@@ -91,7 +91,7 @@ export function ForgotForm({ onBack }: { onBack: () => void }) {
           onClick={onBack}
           className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition"
         >
-          <ArrowLeft className="h-3 w-3" />
+          <ArrowLeft className="h-3 w-3 rtl:-scale-x-100" />
           {t("auth.forgot.back")}
         </button>
       </div>

@@ -11,9 +11,11 @@ import type { Locale } from "@/i18n/dictionaries";
  * Depuis D2, les clés `sw` et `ar` sont traduites, donc on annonce honnêtement
  * `lang="sw"` / `lang="ar"`. Pour l'arabe on active aussi `dir="rtl"` :
  * l'alignement des paragraphes et les flex suivent le sens d'écriture.
- * (Les classes physiques du layout — `pl-/pr-/ml-/mr-/left/right` — restent
- * physiques ; le passage intégral en propriétés logiques est un chantier
- * séparé.)
+ * Les classes du layout sont passées en propriétés logiques (`ps-/pe-/ms-/me-/
+ * start-/end-`, `text-start`) à la migration D3 — elles se retournent donc
+ * d'elles-mêmes quand `dir` bascule. Les animations de panneaux Radix
+ * (`slide-in-from-*`) et le côté ancré du tiroir restent physiques : un
+ * contenu positionné à droite est déjà conforme à la convention RTL.)
  *
  * Composant séparé de `layout.tsx` (serveur) : `<html lang>` est rendu côté
  * serveur en `fr`, la synchronisation se fait à la montée du client, donc

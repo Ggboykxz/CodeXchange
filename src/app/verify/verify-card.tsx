@@ -110,7 +110,7 @@ export function VerifyCard({ token }: { token: string | null }) {
           )}
           <Button variant="outline" asChild>
             <a href="/">
-              <Home className="h-4 w-4 mr-2" />
+              <Home className="h-4 w-4 me-2" />
               {t("verify.home")}
             </a>
           </Button>

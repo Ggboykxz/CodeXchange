@@ -217,7 +217,7 @@ export function JobsSection() {
             <button
               key={job.id}
               onClick={() => setSelected(job)}
-              className="text-left group"
+              className="text-start group"
             >
               <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                 <div className="flex items-start gap-3 mb-3">
@@ -367,7 +367,7 @@ export function JobsSection() {
                     rel="noopener noreferrer"
                   >
                     {t("jobs.apply")}
-                    <ArrowUpRight className="h-4 w-4 ml-1" />
+                    <ArrowUpRight className="h-4 w-4 ms-1" />
                   </a>
                 </Button>
               </div>

@@ -116,7 +116,7 @@ export function NotificationBell() {
         >
           <Bell className="h-4 w-4" />
           {visibleUnread > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-mono font-bold flex items-center justify-center">
+            <span className="absolute -top-0.5 -end-0.5 min-w-4 h-4 px-1 rounded-full bg-foreground text-background text-[10px] font-mono font-bold flex items-center justify-center">
               {visibleUnread > 9 ? "9+" : visibleUnread}
             </span>
           )}
@@ -127,7 +127,7 @@ export function NotificationBell() {
           <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
             {t("notif.title")}
             {visibleUnread > 0 && (
-              <span className="ml-2 text-foreground">
+              <span className="ms-2 text-foreground">
                 {visibleUnread} {t("notif.unread")}
               </span>
             )}
@@ -155,7 +155,7 @@ export function NotificationBell() {
                 key={n.id}
                 onClick={() => onItemClick(n)}
                 className={
-                  "flex w-full gap-3 px-3 py-2.5 text-left hover:bg-muted/60 transition border-b border-border/50 last:border-0 " +
+                  "flex w-full gap-3 px-3 py-2.5 text-start hover:bg-muted/60 transition border-b border-border/50 last:border-0 " +
                   (n.read ? "opacity-60" : "")
                 }
               >

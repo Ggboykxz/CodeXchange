@@ -327,9 +327,9 @@ export function MentoratSection() {
                   className="w-full bg-foreground text-background hover:bg-foreground/90"
                 >
                   {sending ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="h-4 w-4 me-2 animate-spin" />
                   ) : (
-                    <Send className="h-4 w-4 mr-2" />
+                    <Send className="h-4 w-4 me-2" />
                   )}
                   {t("mentorat.send")}
                 </Button>

@@ -213,7 +213,7 @@ export function AdminSection() {
           <div className="flex gap-2">
             <Button onClick={() => openAuth("login")}>{t("nav.login")}</Button>
             <Button variant="outline" onClick={() => navigate("home")}>
-              <ArrowLeft className="h-4 w-4" aria-hidden />
+              <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
               {t("nav.home")}
             </Button>
           </div>
@@ -229,7 +229,7 @@ export function AdminSection() {
           <ShieldAlert className="h-6 w-6 text-muted-foreground" aria-hidden />
           <p className="text-sm text-muted-foreground">{t("admin.forbidden")}</p>
           <Button variant="outline" onClick={() => navigate("home")}>
-            <ArrowLeft className="h-4 w-4" aria-hidden />
+            <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
             {t("nav.home")}
           </Button>
         </Card>
@@ -248,7 +248,7 @@ export function AdminSection() {
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden
           />
           <Input
@@ -256,7 +256,7 @@ export function AdminSection() {
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("admin.search")}
             aria-label={t("admin.search")}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
         {list.status === "ready" && (

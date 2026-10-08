@@ -259,7 +259,7 @@ export function AuthForm({ mode, onSuccess, onSwitch, onForgot }: AuthFormProps)
         className="w-full bg-foreground text-background hover:bg-foreground/90 mt-2"
       >
         {loading ? (
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          <Loader2 className="h-4 w-4 me-2 animate-spin" />
         ) : null}
         {mode === "login" ? t("auth.login.submit") : t("auth.register.submit")}
       </Button>
@@ -285,7 +285,7 @@ export function AuthForm({ mode, onSuccess, onSwitch, onForgot }: AuthFormProps)
           {mode === "login"
             ? t("auth.switch.to_register")
             : t("auth.switch.to_login")}
-          <ArrowRight className="h-3 w-3" />
+          <ArrowRight className="h-3 w-3 rtl:-scale-x-100" />
         </button>
       </div>
 

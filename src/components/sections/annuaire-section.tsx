@@ -293,10 +293,10 @@ export function AnnuaireSection() {
         <Button
           variant="ghost"
           size="sm"
-          className="mb-6 -ml-2"
+          className="mb-6 -ms-2"
           onClick={() => navigate("annuaire")}
         >
-          <ArrowLeft className="h-4 w-4 mr-1" />
+          <ArrowLeft className="h-4 w-4 me-1 rtl:-scale-x-100" />
           {t("annuaire.back")}
         </Button>
 
@@ -322,7 +322,7 @@ export function AnnuaireSection() {
                       size="sm"
                       onClick={() => openEdit(selectedProfile)}
                     >
-                      <Pencil className="h-3.5 w-3.5 mr-1" />
+                      <Pencil className="h-3.5 w-3.5 me-1" />
                       {t("annuaire.edit_profile")}
                     </Button>
                   )}
@@ -379,7 +379,7 @@ export function AnnuaireSection() {
                 {selectedProfile.github && (
                   <Button variant="outline" size="sm" asChild>
                     <a href={`https://github.com/${selectedProfile.github}`} target="_blank" rel="noopener noreferrer">
-                      <Github className="h-3.5 w-3.5 mr-1" />
+                      <Github className="h-3.5 w-3.5 me-1" />
                       GitHub
                     </a>
                   </Button>
@@ -387,7 +387,7 @@ export function AnnuaireSection() {
                 {selectedProfile.twitter && (
                   <Button variant="outline" size="sm" asChild>
                     <a href={`https://twitter.com/${selectedProfile.twitter}`} target="_blank" rel="noopener noreferrer">
-                      <Twitter className="h-3.5 w-3.5 mr-1" />
+                      <Twitter className="h-3.5 w-3.5 me-1" />
                       Twitter
                     </a>
                   </Button>
@@ -395,7 +395,7 @@ export function AnnuaireSection() {
                 {selectedProfile.website && (
                   <Button variant="outline" size="sm" asChild>
                     <a href={selectedProfile.website} target="_blank" rel="noopener noreferrer">
-                      <Globe className="h-3.5 w-3.5 mr-1" />
+                      <Globe className="h-3.5 w-3.5 me-1" />
                       Site
                     </a>
                   </Button>
@@ -429,7 +429,7 @@ export function AnnuaireSection() {
                   <li key={th.id}>
                     <button
                       onClick={() => navigate("forum", th.slug)}
-                      className="text-sm text-left hover:text-foreground transition line-clamp-2"
+                      className="text-sm text-start hover:text-foreground transition line-clamp-2"
                     >
                       {th.title}
                     </button>
@@ -477,7 +477,7 @@ export function AnnuaireSection() {
                   <li key={tu.id}>
                     <button
                       onClick={() => navigate("tutos", tu.slug)}
-                      className="text-sm text-left hover:text-foreground transition line-clamp-2 flex items-start gap-1.5"
+                      className="text-sm text-start hover:text-foreground transition line-clamp-2 flex items-start gap-1.5"
                     >
                       <span>{tu.coverEmoji}</span>
                       <span className="line-clamp-2">{tu.title}</span>
@@ -626,7 +626,7 @@ export function AnnuaireSection() {
                     onClick={() => saveProfile(selectedProfile)}
                     disabled={saving || !form.name.trim()}
                   >
-                    {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    {saving && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
                     {t("annuaire.save")}
                   </Button>
                 </div>
@@ -753,7 +753,7 @@ export function AnnuaireSection() {
               <button
                 key={p.id}
                 onClick={() => navigate("annuaire", p.username)}
-                className="text-left group"
+                className="text-start group"
               >
                 <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                   <div className="flex items-start gap-3 mb-3">

@@ -169,7 +169,7 @@ export function ProjectsSection() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((p) => (
-            <button key={p.id} onClick={() => setSelected(p)} className="text-left group">
+            <button key={p.id} onClick={() => setSelected(p)} className="text-start group">
               <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="h-12 w-12 rounded-md bg-muted border border-border flex items-center justify-center text-2xl shrink-0">
@@ -285,7 +285,7 @@ export function ProjectsSection() {
                     size="xs"
                   />
                   <span>{t("projects.by")} {selected.author.name}</span>
-                  <span className="flex items-center gap-0.5 ml-2">
+                  <span className="flex items-center gap-0.5 ms-2">
                     <Star className="h-3 w-3" />
                     {selected.stars}
                   </span>
@@ -294,7 +294,7 @@ export function ProjectsSection() {
                   {selected.repoUrl && (
                     <Button asChild variant="outline" size="sm">
                       <a href={selected.repoUrl} target="_blank" rel="noopener noreferrer">
-                        <GitBranch className="h-4 w-4 mr-1.5" />
+                        <GitBranch className="h-4 w-4 me-1.5" />
                         {t("projects.repo")}
                       </a>
                     </Button>
@@ -302,7 +302,7 @@ export function ProjectsSection() {
                   {selected.demoUrl && (
                     <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90">
                       <a href={selected.demoUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-1.5" />
+                        <ExternalLink className="h-4 w-4 me-1.5" />
                         {t("projects.demo")}
                       </a>
                     </Button>

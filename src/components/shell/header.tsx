@@ -97,7 +97,7 @@ export function Header() {
                   >
                     {t(item.labelKey)}
                     {active && (
-                      <span className="absolute -bottom-px left-3 right-3 h-px bg-foreground" />
+                      <span className="absolute -bottom-px start-3 end-3 h-px bg-foreground" />
                     )}
                   </a>
                 );
@@ -128,14 +128,14 @@ export function Header() {
               {user ? (
                 <button
                   onClick={() => go("dashboard")}
-                  className="flex items-center gap-2 ml-1 pl-2 pr-1 py-1 rounded border border-border hover:bg-muted/50 transition text-sm"
+                  className="flex items-center gap-2 ms-1 ps-2 pe-1 py-1 rounded border border-border hover:bg-muted/50 transition text-sm"
                 >
                   <Avatar
                     name={user.name}
                     color={user.profile?.avatarColor}
                     size="xs"
                   />
-                  <span className="hidden sm:block text-sm font-medium pr-1">
+                  <span className="hidden sm:block text-sm font-medium pe-1">
                     {user.profile?.username || user.name}
                   </span>
                   <ChevronDown className="h-3 w-3 opacity-50" />
@@ -194,17 +194,17 @@ export function Header() {
                         }
                         onClick={() => setMobileOpen(false)}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2 rounded text-left hover:bg-muted transition text-sm",
+                          "flex items-center gap-3 px-3 py-2 rounded text-start hover:bg-muted transition text-sm",
                           currentSection === item.section &&
                             "bg-muted font-medium"
                         )}
                       >
-                        <span className="text-muted-foreground">→</span>
+                        <span className="text-muted-foreground rtl:-scale-x-100">→</span>
                         <span>{t(item.labelKey)}</span>
                       </a>
                     ))}
                   </nav>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border space-y-2">
+                  <div className="absolute bottom-0 start-0 end-0 p-4 border-t border-border space-y-2">
                     {/* Contrôles masqués en petit écran : repris ici. */}
                     <div className="flex items-center gap-2">
                       <LanguageSwitcher />
@@ -219,7 +219,7 @@ export function Header() {
                           setMobileOpen(false);
                         }}
                       >
-                        <LogOut className="h-4 w-4 mr-2" />
+                        <LogOut className="h-4 w-4 me-2" />
                         {t("nav.logout")}
                       </Button>
                     ) : (

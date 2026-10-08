@@ -389,9 +389,9 @@ export function FeedSection() {
               {t("feed.filter.unsolved")}
             </button>
 
-            <div className="relative min-w-0 flex-1 sm:ml-auto sm:max-w-64">
+            <div className="relative min-w-0 flex-1 sm:ms-auto sm:max-w-64">
               <Search
-                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                className="pointer-events-none absolute start-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                 aria-hidden="true"
               />
               <Input
@@ -400,7 +400,7 @@ export function FeedSection() {
                 onChange={(e) => setSearchInput(e.target.value)}
                 aria-label={t("common.search")}
                 placeholder={t("nav.search")}
-                className="h-9 pl-8 text-sm"
+                className="h-9 ps-8 text-sm"
               />
             </div>
 
@@ -521,7 +521,7 @@ export function FeedSection() {
                   className="w-full bg-foreground text-background hover:bg-foreground/90"
                 >
                   {t("cta.button")}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  <ArrowRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
                 </Button>
                 <Button
                   variant="outline"

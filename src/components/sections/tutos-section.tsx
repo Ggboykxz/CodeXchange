@@ -152,10 +152,10 @@ export function TutosSection() {
         <Button
           variant="ghost"
           size="sm"
-          className="mb-6 -ml-2"
+          className="mb-6 -ms-2"
           onClick={() => navigate("tutos")}
         >
-          <ArrowLeft className="h-4 w-4 mr-1" />
+          <ArrowLeft className="h-4 w-4 me-1 rtl:-scale-x-100" />
           {t("tutos.back_to_list")}
         </Button>
 
@@ -251,7 +251,7 @@ export function TutosSection() {
             <Button
               onClick={() => publish(() => setTutoCreateOpen(true))}
               size="sm"
-              className="ml-auto bg-foreground text-background hover:bg-foreground/90"
+              className="ms-auto bg-foreground text-background hover:bg-foreground/90"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               {t("create.tutorial")}
@@ -274,7 +274,7 @@ export function TutosSection() {
                   <button
                     key={tut.id}
                     onClick={() => navigate("tutos", tut.slug)}
-                    className="text-left group"
+                    className="text-start group"
                   >
                     <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
                       <div className="flex items-start gap-3 mb-3">
@@ -385,9 +385,9 @@ export function TutosSection() {
                     {evt.url && (
                       <Button asChild size="sm" className="bg-foreground text-background hover:bg-foreground/90 shrink-0">
                         <a href={evt.url} target="_blank" rel="noopener noreferrer">
-                          {evt.online ? <Video className="h-3.5 w-3.5 mr-1" /> : null}
+                          {evt.online ? <Video className="h-3.5 w-3.5 me-1" /> : null}
                           {t("events.rsvp")}
-                          <ArrowUpRight className="h-3 w-3 ml-1" />
+                          <ArrowUpRight className="h-3 w-3 ms-1" />
                         </a>
                       </Button>
                     )}

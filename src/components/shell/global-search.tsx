@@ -73,7 +73,7 @@ export function GlobalSearch() {
     <div className="relative">
       <div className="relative">
         <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+          className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
           aria-hidden
         />
         <input
@@ -96,11 +96,11 @@ export function GlobalSearch() {
           }}
           placeholder={t("nav.search")}
           aria-label={t("nav.search")}
-          className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-9 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-chart-1"
+          className="h-9 w-full rounded-md border border-border bg-background ps-9 pe-9 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-chart-1"
         />
         {busy && (
           <Loader2
-            className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground"
+            className="absolute end-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground"
             aria-hidden
           />
         )}
@@ -112,7 +112,7 @@ export function GlobalSearch() {
           // l'input : sans ça, un clic de résultat fermerait le panneau
           // avant que le lien ne soit suivi.
           onMouseDown={(e) => e.preventDefault()}
-          className="absolute left-0 right-0 top-full z-50 mt-1 max-h-[60vh] overflow-auto rounded-md border border-border bg-background p-1 shadow-lg"
+          className="absolute start-0 end-0 top-full z-50 mt-1 max-h-[60vh] overflow-auto rounded-md border border-border bg-background p-1 shadow-lg"
         >
           {visible.groups.length === 0 ? (
             <p className="px-3 py-4 text-sm text-muted-foreground">

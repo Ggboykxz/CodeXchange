@@ -200,13 +200,13 @@ export function PostActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-56">
           <DropdownMenuItem onClick={() => void copyLink()}>
-            <Link2 className="mr-2 h-4 w-4" aria-hidden="true" />
+            <Link2 className="me-2 h-4 w-4" aria-hidden="true" />
             {t("common.copy_link")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => window.open(permalink(), "_blank", "noopener")}
           >
-            <ExternalLink className="mr-2 h-4 w-4" aria-hidden="true" />
+            <ExternalLink className="me-2 h-4 w-4" aria-hidden="true" />
             {t("post.open_tab")}
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -227,18 +227,18 @@ export function PostActions({
             type="button"
             aria-label={t("post.more")}
             title={t("post.more")}
-            className="ml-auto inline-flex items-center rounded-md px-2 py-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+            className="ms-auto inline-flex items-center rounded-md px-2 py-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
           >
             <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuItem onClick={onHide}>
-            <EyeOff className="mr-2 h-4 w-4" aria-hidden="true" />
+            <EyeOff className="me-2 h-4 w-4" aria-hidden="true" />
             {t("post.hide")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => void copyLink()}>
-            <Link2 className="mr-2 h-4 w-4" aria-hidden="true" />
+            <Link2 className="me-2 h-4 w-4" aria-hidden="true" />
             {t("common.copy_link")}
           </DropdownMenuItem>
 
@@ -248,16 +248,16 @@ export function PostActions({
               {canPin && (
                 <DropdownMenuItem onSelect={() => management.onTogglePin?.()}>
                   {management.pinned ? (
-                    <PinOff className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <PinOff className="me-2 h-4 w-4" aria-hidden="true" />
                   ) : (
-                    <Pin className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <Pin className="me-2 h-4 w-4" aria-hidden="true" />
                   )}
                   {management.pinned ? t("post.unpin") : t("post.pin")}
                 </DropdownMenuItem>
               )}
               {canEdit && (
                 <DropdownMenuItem onSelect={() => management.onEdit?.()}>
-                  <Pencil className="mr-2 h-4 w-4" aria-hidden="true" />
+                  <Pencil className="me-2 h-4 w-4" aria-hidden="true" />
                   {t("post.edit")}
                 </DropdownMenuItem>
               )}
@@ -266,7 +266,7 @@ export function PostActions({
                   variant="destructive"
                   onSelect={() => management.onDelete?.()}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                  <Trash2 className="me-2 h-4 w-4" aria-hidden="true" />
                   {t("post.delete")}
                 </DropdownMenuItem>
               )}

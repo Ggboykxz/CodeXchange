@@ -155,8 +155,8 @@ export function CommentThread({
       <div
         key={node.id}
         className={cn(
-          depth > 0 && "ml-2 border-l border-border pl-3 sm:ml-4 sm:pl-4",
-          depth >= MAX_DEPTH && "border-l-0 pl-0 sm:border-l sm:pl-4"
+          depth > 0 && "ms-2 border-s border-border ps-3 sm:ms-4 sm:ps-4",
+          depth >= MAX_DEPTH && "border-s-0 ps-0 sm:border-s sm:ps-4"
         )}
       >
         {/* En-tête replié : Reddit affiche auteur + nombre de réponses. */}
@@ -165,7 +165,7 @@ export function CommentThread({
             type="button"
             onClick={() => toggleFold(node.id)}
             aria-expanded={false}
-            className="flex w-full items-center gap-2 rounded px-1 py-1.5 text-left text-xs text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+            className="flex w-full items-center gap-2 rounded px-1 py-1.5 text-start text-xs text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
           >
             <Plus className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <span className="truncate">{node.author.name}</span>
@@ -231,12 +231,12 @@ export function CommentThread({
                 )}
               </div>
 
-              <div className="mt-1.5 pl-5 text-sm leading-relaxed text-foreground/90">
+              <div className="mt-1.5 ps-5 text-sm leading-relaxed text-foreground/90">
                 <Markdown content={node.body} />
               </div>
 
               {/* Actions : vote horizontal façon Reddit, réponse, acceptation. */}
-              <div className="mt-1.5 flex flex-wrap items-center gap-2 pl-5">
+              <div className="mt-1.5 flex flex-wrap items-center gap-2 ps-5">
                 <span className="inline-flex items-center rounded border border-border">
                   <button
                     type="button"
@@ -307,7 +307,7 @@ export function CommentThread({
 
               {/* Réponse en ligne sous le commentaire visé. */}
               {replyingTo === node.id && (
-                <div className="mt-2 pl-5">
+                <div className="mt-2 ps-5">
                   <ReplyBox
                     placeholder={t("forum.answer.placeholder")}
                     onCancel={() => setReplyingTo(null)}

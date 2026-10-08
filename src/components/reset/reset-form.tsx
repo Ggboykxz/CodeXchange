@@ -84,7 +84,7 @@ export function ResetForm({ token }: { token: string | null }) {
             </p>
             <Button variant="outline" asChild className="w-full">
               <a href="/">
-                <Home className="h-4 w-4 mr-2" />
+                <Home className="h-4 w-4 me-2" />
                 {t("auth.reset.home")}
               </a>
             </Button>
@@ -118,7 +118,7 @@ export function ResetForm({ token }: { token: string | null }) {
               className="w-full bg-foreground text-background hover:bg-foreground/90 mt-2"
             >
               {status === "saving" ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="h-4 w-4 me-2 animate-spin" />
               ) : null}
               {t("auth.reset.submit")}
             </Button>
