@@ -9,6 +9,7 @@ import {
   PostActions,
   DeleteThreadDialog,
 } from "@/components/shared/post-actions";
+import { ReportDialog } from "@/components/shared/report-dialog";
 import { SectionHeader } from "@/components/shared/section-header";
 import { Tag, tagColors } from "@/components/shared/tag";
 import { ThreadCard } from "@/components/shared/thread-card";
@@ -147,6 +148,8 @@ export function ForumSection() {
   const [editTags, setEditTags] = useState("");
   const [editCategory, setEditCategory] = useState("general");
   const [deleting, setDeleting] = useState(false);
+  // M1 — signalement de la question affichée.
+  const [reportOpen, setReportOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
   // Derived view state — no setState inside effects needed.
@@ -750,6 +753,11 @@ export function ForumSection() {
                   }
                 : undefined
             }
+            onReport={
+              user && user.id !== selectedThread.author.id
+                ? () => setReportOpen(true)
+                : undefined
+            }
           />
 
           <DeleteThreadDialog
@@ -761,6 +769,14 @@ export function ForumSection() {
             cancelLabel={t("forum.cancel")}
             busy={busy}
             onConfirm={handleDelete}
+          />
+
+          <ReportDialog
+            open={reportOpen}
+            onOpenChange={setReportOpen}
+            targetType="thread"
+            targetId={selectedThread.id}
+            targetLabel={selectedThread.title}
           />
 
           </div>{/* /min-w-0 */}

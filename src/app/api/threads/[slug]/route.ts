@@ -153,6 +153,18 @@ export async function PATCH(
       },
     });
 
+    // M1 — tracer l'épinglage dans le journal de modération.
+    if (data.pinned !== undefined) {
+      await db.moderationLog.create({
+        data: {
+          actorId: user.id,
+          action: data.pinned ? "pin" : "unpin",
+          targetType: "thread",
+          targetId: thread.id,
+        },
+      });
+    }
+
     return NextResponse.json({ thread: updated });
   } catch (e) {
     logger.route("Edit thread error", e);

@@ -53,6 +53,9 @@ model User {
   conversationsA     Conversation[] @relation("ConvUserA")
   conversationsB     Conversation[] @relation("ConvUserB")
   messagesSent       Message[]      @relation("MessageSender")
+  reportsFiled       Report[]       @relation("ReportReporter")
+  reportsResolved    Report[]       @relation("ReportResolver")
+  moderationLogs     ModerationLog[] @relation("ModerationActor")
 }
 
 /// Session serveur : le jeton brut n'est JAMAIS stocké, seul son hash SHA-256.
@@ -344,4 +347,49 @@ model NewsletterSubscriber {
   tokenHash      String    @unique
   createdAt      DateTime  @default(now())
   unsubscribedAt DateTime?
+}
+
+/**
+ * M1 — signalement d'un contenu par un membre. Un signalement pointe une
+ * cible polymorphique (`targetType` + `targetId`) : fil, réponse, offre,
+ * projet, tuto, événement, message ou profil. Le staff le résout ou le
+ * rejette ; la décision est horodatée et tracée dans `ModerationLog`.
+ */
+model Report {
+  id           String    @id @default(cuid())
+  reporterId   String
+  reporter     User      @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType   String // thread | post | job | project | tutorial | event | message | profile
+  targetId     String
+  reason       String // spam | abuse | harassment | misinformation | other
+  details      String?
+  status       String    @default("pending") // pending | resolved | dismissed
+  resolution   String?
+  resolvedById String?
+  resolvedBy   User?     @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([status, createdAt])
+  @@index([targetType, targetId])
+  @@index([reporterId])
+}
+
+/**
+ * M1 — journal de modération : chaque action du staff (épinglage,
+ * résolution de signalement, suppression…) est tracée avec son auteur,
+ * sa cible et une note optionnelle. Historique consultable dans l'admin.
+ */
+model ModerationLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actor      User     @relation("ModerationActor", fields: [actorId], references: [id], onDelete: Cascade)
+  action     String // pin | unpin | resolve_report | dismiss_report | delete_content | feature | unfeature
+  targetType String
+  targetId   String
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId])
 }

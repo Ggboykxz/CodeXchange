@@ -34,6 +34,7 @@ import {
   Share2,
   Trash2,
   ExternalLink,
+  Flag,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -61,6 +62,8 @@ interface PostActionsProps {
   /** Ouvre la discussion — le « Commenter » de Reddit. */
   onOpen?: () => void;
   management?: ManagementActions;
+  /** Signaler le contenu (M1) — affiché à tout membre connecté. */
+  onReport?: () => void;
   className?: string;
 }
 
@@ -127,6 +130,7 @@ export function PostActions({
   comments,
   onOpen,
   management,
+  onReport,
   className,
 }: PostActionsProps) {
   const t = useT();
@@ -237,6 +241,12 @@ export function PostActions({
             <EyeOff className="me-2 h-4 w-4" aria-hidden="true" />
             {t("post.hide")}
           </DropdownMenuItem>
+          {onReport && (
+            <DropdownMenuItem onSelect={onReport}>
+              <Flag className="me-2 h-4 w-4" aria-hidden="true" />
+              {t("post.report")}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => void copyLink()}>
             <Link2 className="me-2 h-4 w-4" aria-hidden="true" />
             {t("common.copy_link")}

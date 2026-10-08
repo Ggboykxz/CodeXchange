@@ -239,6 +239,47 @@ export const mentorRequestSchema = z.object({
   goal: z.string().trim().max(300).optional().nullable(),
 });
 
+/**
+ * M1 — signalement d'un contenu. `targetType` + `targetId` forment une
+ * cible polymorphique (fil, réponse, offre, projet, tuto, événement,
+ * message, profil) : pas de clé étrangère, la cible est vérifiée par
+ * l'appelant selon son type. `reason` est borné, `details` optionnel.
+ */
+export const REPORT_TARGETS = [
+  "thread",
+  "post",
+  "job",
+  "project",
+  "tutorial",
+  "event",
+  "message",
+  "profile",
+] as const;
+
+export const REPORT_REASONS = [
+  "spam",
+  "abuse",
+  "harassment",
+  "misinformation",
+  "other",
+] as const;
+
+export const reportCreateSchema = z.object({
+  targetType: z.enum(REPORT_TARGETS),
+  targetId: z.string().trim().min(1).max(40),
+  reason: z.enum(REPORT_REASONS),
+  details: z.string().trim().max(1000).optional().nullable(),
+});
+
+/**
+ * M1 — décision du staff sur un signalement : résolution (avec note) ou
+ * rejet. `status` borné, `resolution` obligatoire si résolu.
+ */
+export const reportUpdateSchema = z.object({
+  status: z.enum(["resolved", "dismissed"]),
+  resolution: z.string().trim().max(500).optional().nullable(),
+});
+
 /* ------------------------------------------------------------------ */
 /* Contenus publiés par les membres (offres, projets, tutos, events)   */
 /* ------------------------------------------------------------------ */

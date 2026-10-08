@@ -19,6 +19,9 @@ import {
 } from "@/components/ui/select";
 import { ROLES, canAssignRoles, type Role } from "@/lib/roles";
 import { ArrowLeft, Lock, Search, ShieldAlert } from "lucide-react";
+import { AdminReports } from "@/components/sections/admin-reports";
+import { AdminLog } from "@/components/sections/admin-log";
+import { cn } from "@/lib/utils";
 
 /**
  * B8 — l'outil de gestion des rôles.
@@ -60,6 +63,8 @@ export function AdminSection() {
   const [page, setPage] = useState(1);
   const [list, setList] = useState<ListState>({ status: "loading" });
   const [saving, setSaving] = useState<string | null>(null);
+  // M1 — onglets de l'admin : rôles (B8), signalements, journal.
+  const [tab, setTab] = useState<"roles" | "reports" | "log">("roles");
   // Numéro de requête : une recherche rapide ne doit pas laisser une
   // réponse périmée écraser la dernière.
   const reqId = useRef(0);
@@ -245,6 +250,34 @@ export function AdminSection() {
     <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-6">
       <SectionHeader title={t("admin.title")} subtitle={t("admin.subtitle")} />
 
+      {/* M1 — onglets : rôles (B8), signalements, journal de modération */}
+      <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1" role="tablist">
+        {(
+          [
+            { id: "roles", label: t("admin.tab_roles") },
+            { id: "reports", label: t("admin.tab_reports") },
+            { id: "log", label: t("admin.tab_log") },
+          ] as const
+        ).map((tb) => (
+          <button
+            key={tb.id}
+            role="tab"
+            aria-selected={tab === tb.id}
+            onClick={() => setTab(tb.id)}
+            className={cn(
+              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition",
+              tab === tb.id
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {tb.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "roles" && (
+      <>
       <div className="flex items-center gap-3">
         <div className="relative flex-1">
           <Search
@@ -363,6 +396,11 @@ export function AdminSection() {
           )}
         </>
       )}
+      </>
+      )}
+
+      {tab === "reports" && <AdminReports />}
+      {tab === "log" && <AdminLog />}
     </div>
   );
 }
