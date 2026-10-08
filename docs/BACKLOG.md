@@ -10,13 +10,13 @@
 | ID | Item | Statut | Note |
 |---|---|---|---|
 | A1 | Schéma Prisma (13 modèles) | ✅ | `prisma/schema.prisma` : User, Session, Profile, Thread, Post, Vote, Job, Project, Tutorial, Event, Mentor, Mentorship, Notification |
-| A2 | Base de données + scripts `db:*` | ✅ | PostgreSQL (`provider = "postgresql"`, même base en dev, CI et prod), scripts `db:push` / `db:generate` / `db:migrate` / `db:reset` |
+| A2 | Base de données + scripts `db:*` | ✅ | PostgreSQL (`provider = "postgresql"`, même base en dev, CI et prod), scripts `db:push` / `db:generate` / `db:migrate` / `db:deploy` / `db:reset` |
 | A3 | Seed de données réalistes | ✅ | `scripts/seed.ts` : 31 comptes (dont **1 admin**, voir B8), 40 questions, **126 réponses dont 26 imbriquées** (fil visible), chronologie réaliste (questions étalées sur ~3 mois, réponses et votes datés entre les deux), downvotes réels sur 1/3 des questions (−1 de réputation), **2 épinglées** (limite Reddit), 10 offres, 8 projets, 8 tutos, 6 events, 8 mentors |
 | A4 | Charte visuelle (monospace, palette, grain) | ✅ | IBM Plex Mono en variable `--font-mono`, tokens Tailwind 4, `paper-grain` |
 | A5 | CI (lint → typecheck → build) | ✅ | `.github/workflows/ci.yml`, Bun + Node 22, `bun install --frozen-lockfile`, badge en tête du README |
 | A6 | README + documentation | ✅ | README complet réécrit + `docs/` (DEMO, PITCH, ROADMAP, BACKLOG, ENVIRONNEMENTS) |
 | A7 | Licence | ✅ | `LICENSE` (MIT, 2026) |
-| A8 | Migration PostgreSQL / Supabase | ⬜ | Aucune migration versionnée : uniquement `db push`. Démarche documentée dans le README |
+| A8 | Migration PostgreSQL / Supabase | ✅ | **Migrations versionnées** `prisma/migrations/` : baseline `0_init` (450 lignes, générée `--from-empty --to-schema-datamodel`, 16 tables = 16 modèles) + `migration_lock.toml`. Baseline marquée appliquée sur la base locale **et** Neon (`migrate resolve --applied 0_init`, `migrate status` = up to date des deux côtés) ; chemin « de zéro » éprouvé sur une base jetable (`migrate deploy` → 16 tables). Parcours : dev `bun run db:migrate` (`migrate dev`, shadow DB possible — rôle `cx` `CREATEDB`), CI `bunx prisma migrate deploy` sur Postgres 16 **avant** generate/lint/test/build (les migrations repartent de zéro à chaque run = preuve continue), prod `migrate deploy` **inclus dans le build Vercel** (`vercel.json`) — un build cassé laisse l'ancienne version en ligne, un changement ajouté (colonne nullable / défaut) reste toléré par l'ancien code. `db push` relégué à l'expérimentation jetable. Docs README / ENVIRONNEMENTS / DEMO à jour |
 
 ## EPIC B — Auth & profils
 

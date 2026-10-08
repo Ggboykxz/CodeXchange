@@ -46,7 +46,7 @@ psql "$DATABASE_URL_LOCAL" -f backups/*.sql
 ```
 
 Le schéma et les données sont contenus dans le dump : inutile de refaire
-`prisma db push` ni le seed. Si le schéma a entre-temps changé, regénère
+`prisma migrate deploy` ni le seed. Si le schéma a entre-temps changé, regénère
 alors le client avec `npx prisma generate`.
 
 ## 4. Vérification (à refaire si le runbook change)

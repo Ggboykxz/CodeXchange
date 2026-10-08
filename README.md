@@ -190,7 +190,7 @@ bun install                       # lockfile canonique : bun.lock
 cp .env.example .env              # DATABASE_URL, SESSION_SECRET, COOKIE_SECURE
 
 # 3. Base PostgreSQL (rôle `cx` + base `codexchange`, cf. docs/ENVIRONNEMENTS.md)
-bun run db:push                   # prisma db push (schéma)
+bun run db:deploy                # prisma migrate deploy (migrations versionnées)
 bun run db:generate               # client Prisma
 
 # 4. Données de démonstration
@@ -237,15 +237,16 @@ recalculés à partir des votes réels).
 | `bun run test:watch` | `vitest` en mode watch (développement) |
 | `bun run typecheck` | `tsc --noEmit` |
 | `bun run check` | lint + tests + typecheck + build (une seule commande) |
-| `bun run db:push` | `prisma db push --accept-data-loss` |
+| `bun run db:push` | `prisma db push` — push direct **sans** migration (expérimentation jetable) |
 | `bun run db:generate` | `prisma generate` |
-| `bun run db:migrate` | `prisma migrate dev` |
+| `bun run db:migrate` | `prisma migrate dev` — crée + applique une migration versionnée (dev) |
+| `bun run db:deploy` | `prisma migrate deploy` — applique les migrations sans génération (CI, prod) |
 | `bun run db:reset` | `prisma migrate reset` |
 | `bun run scripts/seed.ts` | Seed de démonstration (destructif : purge puis réécrit tout) |
 
 **CI** (`.github/workflows/ci.yml`, badge en haut de page) : déclenchée sur `push` vers `main` et sur
 les pull requests, une exécution par branche (annulation des runs en cours). Étapes : Bun (latest) +
-Node 22 → `bun install --frozen-lockfile` → `cp .env.example .env` → `prisma db push` →
+Node 22 → `bun install --frozen-lockfile` → `cp .env.example .env` → `prisma migrate deploy` →
 `prisma generate` → `bun run lint` → `bun run test` → `bunx next typegen` → `bun run typecheck` →
 `bun run build`. Les tests sont posés avant typecheck/build : ils durent moins d'une seconde et ne
 dépendent ni de `next typegen` ni de la base, donc autant échouer tôt.
@@ -335,7 +336,8 @@ déclare `"dir": "ltr"`. Activer l'arabe correctement demandera de poser `lang`/
 
 ```
 ├── prisma/
-│   └── schema.prisma           # 13 modèles, datasource postgresql (schéma poussé par `db push`)
+│   ├── migrations/             # migrations versionnées (baseline 0_init + évolutions)
+│   └── schema.prisma           # 16 modèles, datasource postgresql
 ├── public/
 │   ├── sw.js                   # service worker (écrit à la main)
 │   ├── manifest.webmanifest    # PWA installable

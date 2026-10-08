@@ -7,7 +7,7 @@
 | **Local (dev)** | développement quotidien, démo live | **PostgreSQL 16** local — base `codexchange`, rôle `cx` | `bun run dev` | `http://localhost:3000` |
 | **Local (prod-like)** | vérifier le build, **PWA et hors-ligne** (le service worker est désactivé en dev) | même base locale | `bun run build` puis `bun run start` | `http://localhost:3000` |
 | **CI (preview)** | lint, tests, typecheck, build à chaque push et PR | service **`postgres:16`** éphémère monté par GitHub Actions | étapes de `.github/workflows/ci.yml` | — |
-| **Staging** | pré-production, tests de migration et de seed | PostgreSQL dédié | `bunx prisma db push`, seed, `bun run build`, `bun run start` | domaine interne, HTTPS |
+| **Staging** | pré-production, tests de migration et de seed | PostgreSQL dédié | `bunx prisma migrate deploy`, seed, `bun run build`, `bun run start` | domaine interne, HTTPS |
 | **Production (Vercel)** | service public, déployé à chaque push sur `main` | **Neon** (PostgreSQL 18, managé) | `npx prisma generate && next build` (imposé par `vercel.json`) | `https://code-xchange-nine.vercel.app` |
 
 **Base locale — à faire une seule fois** (en tant que superutilisateur, ex.
@@ -18,8 +18,9 @@ CREATE ROLE cx LOGIN PASSWORD 'cx_local_dev' CREATEDB;
 CREATE DATABASE codexchange OWNER cx;
 ```
 
-Puis `bun run db:push` (le schéma est poussé, il n'y a **pas** de dossier
-`migrations/` : le projet utilise `db push` partout — CI, local et prod).
+Puis `bun run db:deploy` (les migrations versionnées de `prisma/migrations/`
+s'appliquent — baseline `0_init` puis les évolutions, même parcours que la CI
+et la production).
 
 SQLite n'est plus utilisé du tout : `file:./dev.db` ne peut pas fonctionner sur
 Vercel (disque des fonctions en lecture seule, éphémérique par instance).
@@ -50,7 +51,7 @@ Vercel (disque des fonctions en lecture seule, éphémérique par instance).
 # --- local dev (base PostgreSQL locale, cf. « à faire une seule fois » ci-dessus)
 cp .env.example .env
 bun install               # postinstall = prisma generate
-bun run db:push           # schéma PostgreSQL
+bun run db:deploy        # migrations versionnées PostgreSQL
 bun run scripts/seed.ts   # données de démo (destructif)
 bun run dev               # port 3000
 
@@ -61,7 +62,7 @@ bun run start             # NODE_ENV=production bun .next/standalone/server.js
 # --- production Vercel
 # 1. poser dans Settings → Environment Variables :
 #    DATABASE_URL (service managé), SESSION_SECRET, COOKIE_SECURE=true, NEXT_PUBLIC_SITE_URL
-# 2. pousser le schéma sur cette base :  npx prisma db push
+# 2. le build applique les migrations :  npx prisma migrate deploy (inclus dans vercel.json)
 # 3. git push origin main  →  build Vercel (vercel.json : generate + next build)
 
 # --- vérifications (avant toute mise en ligne)
@@ -81,7 +82,7 @@ micro coupé du système.
 ```bash
 bun install
 cp .env.example .env
-bun run db:push
+bun run db:deploy
 bun run scripts/seed.ts     # vérifier "✅ Seed complete!"
 bun run build               # ← indispensable : le service worker ne s'enregistre qu'en prod
 bun run start               # http://localhost:3000

@@ -13,7 +13,7 @@
 ```bash
 bun install                 # dépendances (postinstall = prisma generate)
 cp .env.example .env        # DATABASE_URL PostgreSQL locale
-bun run db:push             # pousse le schéma sur la base `codexchange`
+bun run db:deploy          # applique les migrations versionnées sur la base `codexchange`
 bun run scripts/seed.ts     # ⚠️ `bunx prisma db seed` ne sait pas quoi exécuter (pas de `prisma.seed`)
 bun run dev                 # http://localhost:3000
 ```

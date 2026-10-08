@@ -18,7 +18,7 @@ jobs:
 
     # PostgreSQL : le provider Prisma est `postgresql` (SQLite ne fonctionne
     # pas sur Vercel — disque des fonctions en lecture seule). Le service est
-    # en bonne santé avant l'étape `prisma db push` grâce au health check.
+    # en bonne santé avant l'étape `prisma migrate deploy` grâce au health check.
     services:
       postgres:
         image: postgres:16
@@ -61,8 +61,8 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
 
-      - name: Prisma db push
-        run: bunx prisma db push
+      - name: Prisma migrate deploy
+        run: bunx prisma migrate deploy
 
       - name: Prisma generate
         run: bunx prisma generate
