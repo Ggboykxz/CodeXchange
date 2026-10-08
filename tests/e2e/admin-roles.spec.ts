@@ -2,7 +2,7 @@ import { test, expect } from "playwright/test";
 
 /**
  * B8 — l'outil de gestion des rôles, vérifié de bout en bout :
- * le lien n'existe que pour un admin, l'ancre `#admin` refuse les autres,
+ * le lien n'existe que pour un admin, le chemin `/admin` refuse les autres,
  * et un admin change réellement un rôle… puis le restaure (l'E2E laisse la
  * base dans son état d'origine, comme `auth-edit` le fait pour les titres).
  */
@@ -39,17 +39,17 @@ async function login(
 }
 
 test.describe("Gestion des rôles (B8)", () => {
-  test("un member ne voit pas l'entrée Admin et #admin le refuse", async ({
+  test("un member ne voit pas l'entrée Admin et /admin le refuse", async ({
     page,
   }) => {
     await login(page, "aicha.diallo@codexchange.dev", "codexchange2026");
 
     // Aucune entrée « Admin » dans la navigation (desktop rendu à 1280 px).
-    await expect(page.locator('nav a[href="#admin"]')).toHaveCount(0);
+    await expect(page.locator('nav a[href="/admin"]')).toHaveCount(0);
 
     // Attaque directe par l'ancre : refus net plutôt qu'un écran vide.
     await page.evaluate(() => {
-      window.location.hash = "#admin";
+      window.location.href = "/admin";
     });
     await expect(
       page.getByText("Accès réservé aux administrateurs.")
@@ -62,10 +62,10 @@ test.describe("Gestion des rôles (B8)", () => {
     await login(page, ADMIN_EMAIL, ADMIN_PASSWORD);
 
     // L'entrée apparaît dans la navigation desktop…
-    const navLink = page.locator('nav a[href="#admin"]');
+    const navLink = page.locator('nav a[href="/admin"]');
     await expect(navLink).toBeVisible();
     await navLink.click();
-    await expect(page).toHaveURL(/#admin$/);
+    await expect(page).toHaveURL(/admin$/);
 
     // …l'écran liste les membres (31 comptes, 24 par page) : on cherche
     // pour cibler une ligne précise, ce qui exerce aussi la recherche.

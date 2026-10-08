@@ -49,7 +49,7 @@ export function toResult(query: string, rows: SearchRows): SearchResult {
         kind: "threads" as const,
         title: t.title,
         sub: t.upvotes > 0 ? `${t.category} · ${t.upvotes} upvote${t.upvotes > 1 ? "s" : ""}` : t.category,
-        href: `#forum/${t.slug}`,
+        href: `/forum/${t.slug}`,
       })),
     });
   }
@@ -61,7 +61,7 @@ export function toResult(query: string, rows: SearchRows): SearchResult {
         kind: "jobs" as const,
         title: j.title,
         sub: j.company,
-        href: "#jobs",
+        href: "/jobs",
       })),
     });
   }
@@ -73,7 +73,7 @@ export function toResult(query: string, rows: SearchRows): SearchResult {
         kind: "projects" as const,
         title: p.name,
         sub: p.tagline,
-        href: "#projects",
+        href: "/projects",
       })),
     });
   }
@@ -85,7 +85,7 @@ export function toResult(query: string, rows: SearchRows): SearchResult {
         kind: "tutorials" as const,
         title: t.title,
         sub: `${t.readTime} min de lecture`,
-        href: "#tutos",
+        href: "/tutos",
       })),
     });
   }
@@ -98,7 +98,7 @@ export function toResult(query: string, rows: SearchRows): SearchResult {
         kind: "events" as const,
         title: e.title,
         sub: `${dateFmt.format(e.date)} · ${e.online ? "en ligne" : (e.location ?? "sur place")}`,
-        href: "#tutos",
+        href: "/tutos",
       })),
     });
   }
@@ -110,7 +110,7 @@ export function toResult(query: string, rows: SearchRows): SearchResult {
         kind: "people" as const,
         title: p.name,
         sub: `@${p.username}`,
-        href: `#annuaire/${p.username}`,
+        href: `/annuaire/${p.username}`,
       })),
     });
   }

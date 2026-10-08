@@ -71,7 +71,7 @@ export async function PATCH(
           type: "mentorship",
           title: "Demande acceptée ✅",
           body: "Le mentor a accepté ta demande — la visio est prête dès que vous l'êtes.",
-          href: "#mentorat",
+          href: "/mentorat",
         }).catch(() => undefined);
       } else {
         await db.mentorship.update({ where: { id }, data: { status: "declined" } });
@@ -81,7 +81,7 @@ export async function PATCH(
           type: "mentorship",
           title: "Demande déclinée",
           body: "Le mentor n'est pas disponible pour le moment — ta demande est close.",
-          href: "#mentorat",
+          href: "/mentorat",
         }).catch(() => undefined);
       }
       return NextResponse.json({ ok: true });
@@ -109,7 +109,7 @@ export async function PATCH(
       type: "mentorship",
       title: "Mentorat terminé 🎓",
       body: "La place a été libérée pour un prochain mentoré.",
-      href: "#mentorat",
+      href: "/mentorat",
     }).catch(() => undefined);
 
     return NextResponse.json({ ok: true });

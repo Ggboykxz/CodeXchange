@@ -32,7 +32,7 @@ async function login(
 
 test.describe("Jobs : recherche et devise (G4/G5)", () => {
   test("la recherche texte filtre la liste, état vide dédié", async ({ page }) => {
-    await page.goto("/#jobs");
+    await page.goto("/jobs");
     const box = page.getByPlaceholder("Rechercher titre, entreprise, stack…");
     await expect(box).toBeVisible();
 
@@ -48,7 +48,7 @@ test.describe("Jobs : recherche et devise (G4/G5)", () => {
   });
 
   test("la puce XOF ne laisse passer que les offres en FCFA", async ({ page }) => {
-    await page.goto("/#jobs");
+    await page.goto("/jobs");
     const all = page.getByRole("button", { name: "Toutes devises" });
     await expect(all).toBeVisible();
 
@@ -65,7 +65,7 @@ test.describe("Jobs : recherche et devise (G4/G5)", () => {
 test.describe("Vitrine « à la une » (G6)", () => {
   test("le staff épingle puis retire une offre", async ({ page }) => {
     await login(page, ADMIN_EMAIL, ADMIN_PASSWORD);
-    await page.goto("/#jobs");
+    await page.goto("/jobs");
 
     await page
       .getByRole("heading", { name: "Senior Frontend Engineer (React)" })
@@ -105,13 +105,13 @@ test.describe("Vitrine « à la une » (G6)", () => {
 
 test.describe("Classement et badges (F5)", () => {
   test("le top contributeurs est réel et mène au profil", async ({ page }) => {
-    await page.goto("/#annuaire");
+    await page.goto("/annuaire");
     await expect(page.getByText("Top contributeurs")).toBeVisible();
 
     const firstRow = page.locator("main ol > li button").first();
     await expect(firstRow).toBeVisible();
     await firstRow.click();
-    await expect(page).toHaveURL(/#annuaire\//);
+    await expect(page).toHaveURL(/annuaire\//);
 
     // Le profil expose les jalons calculés sur ses compteurs réels.
     await expect(page.getByText("Badges")).toBeVisible();
@@ -125,7 +125,7 @@ test.describe("Classement et badges (F5)", () => {
 
   test("le palier de réputation suit le score du membre", async ({ page }) => {
     // eric.m : seed déterministe — 91 de réputation → palier Contributeur.
-    await page.goto("/#annuaire/eric.m");
+    await page.goto("/annuaire/eric.m");
     await expect(page.getByText("Contributeur", { exact: true })).toBeVisible();
     await expect(page.getByText("Réponse acceptée")).toBeVisible();
   });

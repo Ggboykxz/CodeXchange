@@ -154,7 +154,7 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
                 size="xs"
               />
               <a
-                href={`#annuaire/${username}`}
+                href={`/annuaire/${username}`}
                 onClick={stop}
                 className="font-medium text-foreground decoration-underline underline-offset-2 hover:underline"
               >
@@ -193,7 +193,7 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
 
             <h3 className="text-base font-bold leading-snug sm:text-lg">
               <a
-                href={`#forum/${thread.slug}`}
+                href={`/forum/${thread.slug}`}
                 onClick={(e) => {
                   // Laisse le lien natif faire son travail (onglet, copie)
                   // tout en pilotant le store : un seul chemin de navigation.

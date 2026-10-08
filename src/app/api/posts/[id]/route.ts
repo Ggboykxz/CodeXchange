@@ -96,7 +96,7 @@ export async function PATCH(
         type: "answer",
         title: "Ta réponse a été acceptée",
         body: post.body.slice(0, 160),
-        href: "#forum",
+        href: "/forum",
       });
     }
 

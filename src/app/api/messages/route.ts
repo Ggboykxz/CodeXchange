@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
       type: "message",
       title: `Message de ${user.name}`,
       body: messagePreview(body),
-      href: `#messages/${user.id}`,
+      href: `/messages/${user.id}`,
     }).catch(() => undefined);
 
     return NextResponse.json({ message, conversationId: conv.id }, { status: 201 });

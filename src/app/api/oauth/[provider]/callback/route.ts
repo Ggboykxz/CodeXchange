@@ -84,10 +84,15 @@ export async function GET(
       ip: clientIp(req),
     });
 
-    // Retour à l'ancre d'où l'on venait (`#forum/…`), filtrée au départ.
+    // Retour à la page d'où l'on venait (`#forum/…` ou `/forum/…`),
+    // filtré au départ. Les deux formats convergent vers une URL réelle.
     const next = req.cookies.get(NEXT_COOKIE)?.value ?? "";
-    const target = new URL("/", origin);
-    if (next.startsWith("#") && next.length > 1) target.hash = next;
+    let target = new URL("/", origin);
+    if (next.startsWith("#") && next.length > 1) {
+      target.hash = next;
+    } else if (next.startsWith("/") && next.length > 1) {
+      target = new URL(next, origin);
+    }
 
     const res = NextResponse.redirect(target, 302);
     setSessionCookie(res, sessionToken);

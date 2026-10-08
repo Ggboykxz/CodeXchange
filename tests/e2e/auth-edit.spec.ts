@@ -24,12 +24,12 @@ test.describe("Édition d'une question (C10)", () => {
   }) => {
     await login(page);
     // Première question de la liste écrite par Aïcha (compte démo).
-    await page.goto("/#forum");
+    await page.goto("/forum");
     const mine = page
       .locator("article")
       .filter({ hasText: "u/aicha.dev" })
       .first();
-    await mine.locator("a[href^='#forum/']").first().click();
+    await mine.locator("a[href^='/forum/']").first().click();
     // Menu ⋯ de la question (le premier « ⋯ » est celui de PostActions).
     await page
       .getByRole("button", { name: "Plus d'actions" })

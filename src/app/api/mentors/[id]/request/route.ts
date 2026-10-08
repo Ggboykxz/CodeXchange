@@ -72,7 +72,7 @@ export async function POST(
       type: "mentorship",
       title: `${user.name} demande un mentorat`,
       body: parsed.data.message.slice(0, 160),
-      href: "#mentorat",
+      href: "/mentorat",
     });
 
     return NextResponse.json({ mentorship }, { status: 201 });

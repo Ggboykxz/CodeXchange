@@ -34,7 +34,7 @@ describe("toResult — groupes formés, sections vides écartées", () => {
     expect(r.query).toBe("kubernetes");
   });
 
-  it("les href portent les vraies ancres (détail forum, sections sinon)", () => {
+  it("les href portent les vraies routes (détail forum, sections sinon)", () => {
     const r = toResult("api", {
       ...emptyRows,
       threads: [{ title: "Comment structurer une API ?", slug: "comment-structurer-une-api", category: "backend", upvotes: 7 }],
@@ -48,12 +48,12 @@ describe("toResult — groupes formés, sections vides écartées", () => {
     expect(r.total).toBe(6);
     const hrefs = r.groups.flatMap((g) => g.items.map((i) => i.href));
     expect(hrefs).toEqual([
-      "#forum/comment-structurer-une-api",
-      "#jobs",
-      "#projects",
-      "#tutos",
-      "#tutos",
-      "#annuaire/aicha.diallo",
+      "/forum/comment-structurer-une-api",
+      "/jobs",
+      "/projects",
+      "/tutos",
+      "/tutos",
+      "/annuaire/aicha.diallo",
     ]);
   });
 

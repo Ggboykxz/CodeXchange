@@ -66,10 +66,14 @@ export async function GET(
     };
     res.cookies.set(STATE_COOKIE, state, opts);
 
-    // Ancre d'origine, filtrée : elle ne doit ressembler qu'à `#section/…`.
+    // Page d'origine, filtrée : ancre `#section/…` ou chemin `/section/…`.
     const rawNext = req.nextUrl.searchParams.get("next") ?? "";
     const next = rawNext.replace(/[^a-zA-Z0-9#/_\-.]/g, "").slice(0, 200);
-    res.cookies.set(NEXT_COOKIE, next.startsWith("#") ? next : "", opts);
+    res.cookies.set(
+      NEXT_COOKIE,
+      next.startsWith("#") || next.startsWith("/") ? next : "",
+      opts
+    );
 
     return res;
   } catch (e) {

@@ -90,23 +90,23 @@ export async function GET(req: NextRequest) {
       month: monthLabel(now),
       threads: threads.map((t) => ({
         title: t.title,
-        url: `${origin}/#forum/${t.slug}`,
+        url: `${origin}/forum/${t.slug}`,
         meta: t.upvotes > 0 ? `${t.upvotes} upvote${t.upvotes > 1 ? "s" : ""}` : undefined,
       })),
-      jobs: jobs.map((j) => ({ title: j.title, url: `${origin}/#jobs`, meta: j.company })),
+      jobs: jobs.map((j) => ({ title: j.title, url: `${origin}/jobs`, meta: j.company })),
       projects: projects.map((p) => ({
         title: p.name,
-        url: `${origin}/#projects`,
+        url: `${origin}/projects`,
         meta: p.tagline,
       })),
       tutorials: tutorials.map((t) => ({
         title: t.title,
-        url: `${origin}/#tutos`,
+        url: `${origin}/tutos`,
         meta: `${t.readTime} min de lecture`,
       })),
       events: events.map((e) => ({
         title: e.title,
-        url: `${origin}/#tutos`,
+        url: `${origin}/tutos`,
         meta: `${dateLabel.format(e.date)} · ${e.online ? "en ligne" : e.location ?? "sur place"}`,
       })),
       newMembers,

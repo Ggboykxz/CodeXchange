@@ -42,10 +42,10 @@ test.describe("Modération (M1)", () => {
     try {
       /* --- Aïcha signale un fil --- */
       await login(a, AICHA, DEMO_PW);
-      await a.goto("/#forum");
+      await a.goto("/forum");
       // Ouvre le premier fil de la liste (lien de titre)
-      await a.locator('a[href^="#forum/"]').first().click();
-      await expect(a).toHaveURL(/#forum\//);
+      await a.locator('a[href^="/forum/"]').first().click();
+      await expect(a).toHaveURL(/forum\//);
       // Menu ⋯ → Signaler
       await a.getByRole("button", { name: "Plus d'actions" }).click();
       await a.getByRole("menuitem", { name: "Signaler" }).click();
@@ -58,7 +58,7 @@ test.describe("Modération (M1)", () => {
 
       /* --- Admin : onglet Signalements --- */
       await login(admin, ADMIN, PW);
-      await admin.goto("/#admin");
+      await admin.goto("/admin");
       await admin.getByRole("tab", { name: "Signalements" }).click();
       const reportCard = admin.getByText("Contenu de spam évident.");
       await expect(reportCard).toBeVisible();

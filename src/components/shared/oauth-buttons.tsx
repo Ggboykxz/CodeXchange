@@ -79,10 +79,10 @@ export function OAuthButtons() {
 
   const go = (provider: Provider) => (e: React.MouseEvent) => {
     e.preventDefault();
-    // On garde l'ancre courante pour y revenir après connexion.
-    const next = window.location.hash;
+    // On garde le chemin + l'ancre courante pour y revenir après connexion.
+    const next = window.location.pathname + window.location.hash;
     window.location.assign(
-      `/api/oauth/${provider}${next ? `?next=${encodeURIComponent(next)}` : ""}`
+      `/api/oauth/${provider}${next && next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`
     );
   };
 

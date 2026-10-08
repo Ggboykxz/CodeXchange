@@ -15,13 +15,13 @@ test.describe("Recherche globale", () => {
 
     const result = page
       .locator("header")
-      .locator('a[href^="#forum/"]')
+      .locator('a[href^="/forum/"]')
       .first();
     await expect(result).toBeVisible();
     await expect(result).toContainText("Kubernetes");
 
     await result.click();
-    await expect(page).toHaveURL(/#forum\//);
+    await expect(page).toHaveURL(/forum\//);
   });
 
   test("état vide dédié quand rien ne matche", async ({ page }) => {

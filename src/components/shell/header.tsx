@@ -70,7 +70,7 @@ export function Header() {
           <div className="flex h-14 items-center justify-between gap-4">
             {/* Logo */}
             <a
-              href="#home"
+              href="/"
               className="flex items-center gap-2 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1 rounded"
             >
               <span className="text-base font-bold tracking-tight">
@@ -88,7 +88,7 @@ export function Header() {
                 return (
                   <a
                     key={item.section}
-                    href={`#${item.section}`}
+                    href={item.section === "home" ? "/" : `/${item.section}`}
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       "px-3 py-1.5 text-sm transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
@@ -190,7 +190,7 @@ export function Header() {
                     {items.map((item) => (
                       <a
                         key={item.section}
-                        href={`#${item.section}`}
+                        href={item.section === "home" ? "/" : `/${item.section}`}
                         aria-current={
                           currentSection === item.section ? "page" : undefined
                         }

@@ -46,7 +46,7 @@ test.describe("Fil d'accueil", () => {
   test("l'auteur est cliquable vers sa page profil", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.locator("article a[href^='#annuaire/']").first()
+      page.locator("article a[href^='/annuaire/']").first()
     ).toBeVisible();
   });
 });
@@ -54,7 +54,7 @@ test.describe("Fil d'accueil", () => {
 test.describe("Fiche question", () => {
   test("rail de vote vertical visible sur desktop", async ({ page }) => {
     await page.goto("/");
-    await page.locator("article a[href^='#forum/']").first().click();
+    await page.locator("article a[href^='/forum/']").first().click();
     await expect(page.getByTestId("vote-rail")).toBeVisible();
     await expect(page.getByTestId("vote-bar")).toBeHidden();
   });
@@ -66,7 +66,7 @@ test.describe("Mobile (390 px)", () => {
   test("aucun débordement horizontal sur le fil, le forum et la fiche", async ({
     page,
   }) => {
-    for (const path of ["/", "/#forum"]) {
+    for (const path of ["/", "/forum"]) {
       await page.goto(path);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - window.innerWidth
@@ -74,8 +74,8 @@ test.describe("Mobile (390 px)", () => {
       expect(overflow, `débordement sur ${path}`).toBeLessThanOrEqual(0);
     }
     // La fiche question elle-même
-    await page.goto("/#forum");
-    await page.locator("article a[href^='#forum/']").first().click();
+    await page.goto("/forum");
+    await page.locator("article a[href^='/forum/']").first().click();
     const detailOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth
     );
@@ -85,8 +85,8 @@ test.describe("Mobile (390 px)", () => {
   test("le vote est une barre horizontale, le rail vertical masqué", async ({
     page,
   }) => {
-    await page.goto("/#forum");
-    await page.locator("article a[href^='#forum/']").first().click();
+    await page.goto("/forum");
+    await page.locator("article a[href^='/forum/']").first().click();
     await expect(page.getByTestId("vote-bar")).toBeVisible();
     await expect(page.getByTestId("vote-rail")).toBeHidden();
   });

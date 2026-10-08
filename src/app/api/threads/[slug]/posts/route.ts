@@ -79,7 +79,7 @@ export async function POST(
       type: "reply",
       title: `${user.name} a répondu à « ${thread.title} »`,
       body: parsed.data.body.slice(0, 160),
-      href: `#forum/${thread.slug}`,
+      href: `/forum/${thread.slug}`,
     });
 
     return NextResponse.json({ post }, { status: 201 });

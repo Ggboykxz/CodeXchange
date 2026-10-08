@@ -559,7 +559,7 @@ export function FeedSection() {
               {modules.map(({ section, labelKey, titleKey, Icon }) => (
                 <li key={section}>
                   <a
-                    href={`#${section}`}
+                    href={section === "home" ? "/" : `/${section}`}
                     className="group flex items-start gap-3 rounded-lg px-2 py-2 transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
                   >
                     <Icon

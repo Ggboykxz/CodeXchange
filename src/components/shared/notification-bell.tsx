@@ -142,7 +142,13 @@ export function NotificationBell() {
         body: JSON.stringify({ id: n.id }),
       }).catch(() => {});
     }
-    if (n.href?.startsWith("#")) {
+    if (n.href && n.href.startsWith("/")) {
+      // Href réel (`/forum/slug`, `/mentorat`…) : on extrait la section
+      // et le paramètre pour piloter le store.
+      const segments = n.href.slice(1).split("/");
+      navigate(segments[0], segments[1]);
+    } else if (n.href?.startsWith("#")) {
+      // Compatibilité ancien format hash.
       const [section, param] = n.href.slice(1).split("/");
       navigate(section, param);
     }

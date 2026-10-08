@@ -29,21 +29,39 @@ const SECTIONS = [
   "admin",
 ];
 
-/** `#forum/slug` → `{ section: "forum", param: "slug" }` ; absolu → accueil. */
-function parseHash(): { section: string; param?: string } {
+/**
+ * Résout la section courante depuis l'URL. Deux formats cohabitent :
+ *  - chemin réel : `/forum/slug` (routes App Router, indexables)
+ *  - hash :       `#forum/slug`  (ancien format, redirections souples)
+ * Les deux convergent vers le même store ; `navigate()` écrit des chemins
+ * réels pour que chaque section soit une entrée d'historique et un URL
+ * cliquable/partageable.
+ */
+function parseRoute(): { section: string; param?: string } {
   if (typeof window === "undefined") return { section: "home" };
+
+  //1. Chemin réel (`/forum`, `/forum/slug`) — prioritaire.
+  const path = window.location.pathname;
+  if (path.length > 1) {
+    const segments = path.slice(1).split("/");
+    const name = segments[0];
+    if (SECTIONS.includes(name)) {
+      return { section: name, param: segments[1] };
+    }
+  }
+
+  //2. Hash (`#forum`, `#forum/slug`) — compatibilité anciens liens.
   const hash = window.location.hash.slice(1);
   if (!hash) return { section: "home" };
   const [name, param] = hash.split("/");
   if (SECTIONS.includes(name)) return { section: name, param };
-  // Ancre inconnue (ancien lien, ancre HTML) : on reste sur l'accueil plutôt
-  // que d'afficher un écran vide.
   return { section: "home" };
 }
 
-function hashOf(section: string, param?: string): string {
-  if (section === "home") return "";
-  return param ? `#${section}/${param}` : `#${section}`;
+/** `home` → `/` ; sinon `/section` ou `/section/param`. */
+function routePathOf(section: string, param?: string): string {
+  if (section === "home") return "/";
+  return param ? `/${section}/${param}` : `/${section}`;
 }
 
 type AppState = {
@@ -74,7 +92,7 @@ export const useAppStore = create<AppState>()(
         set({ section, sectionParam });
         if (typeof window === "undefined") return;
         window.scrollTo({ top: 0, behavior: "smooth" });
-        const target = window.location.pathname + hashOf(section, sectionParam);
+        const target = routePathOf(section, sectionParam);
         const current = window.location.pathname + window.location.hash;
         // `pushState` (et non plus `replaceState`) : chaque section devient une
         // entrée d'historique, donc Retour revient à l'écran précédent au lieu
@@ -83,7 +101,7 @@ export const useAppStore = create<AppState>()(
       },
 
       syncFromHash: () => {
-        const { section, param } = parseHash();
+        const { section, param } = parseRoute();
         const state = get();
         if (state.section === section && state.sectionParam === param) return;
         set({ section, sectionParam: param });

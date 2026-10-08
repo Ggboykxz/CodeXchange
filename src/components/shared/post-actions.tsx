@@ -140,7 +140,7 @@ export function PostActions({
 
   /** Lien public de la question — calculé au clic, jamais au rendu (SSR). */
   const permalink = () =>
-    `${window.location.origin}/#forum/${threadSlug}`;
+    `${window.location.origin}/forum/${threadSlug}`;
 
   const copyLink = async () => {
     try {

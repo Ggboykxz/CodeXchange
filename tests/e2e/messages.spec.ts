@@ -38,7 +38,7 @@ async function login(
 
 test.describe("Messagerie privée (I2)", () => {
   test("refuse le visiteur non connecté", async ({ page }) => {
-    await page.goto("/#messages");
+    await page.goto("/messages");
     await expect(
       page.getByText("Connecte-toi pour lire tes messages.")
     ).toBeVisible();
@@ -60,9 +60,9 @@ test.describe("Messagerie privée (I2)", () => {
     try {
       /* --- Aïcha : envoie depuis le profil public de Kwame --- */
       await login(a, AICHA, DEMO_PW);
-      await a.goto(`/#annuaire/${KWAME_USERNAME}`);
+      await a.goto(`/annuaire/${KWAME_USERNAME}`);
       await a.getByRole("button", { name: "Envoyer un message" }).click();
-      await expect(a).toHaveURL(/#messages\//);
+      await expect(a).toHaveURL(/messages\//);
 
       const box = a.getByLabel("Écrire un message…");
       await box.fill(BODY);
@@ -73,7 +73,7 @@ test.describe("Messagerie privée (I2)", () => {
 
       /* --- Kwame : la conversation arrive avec la pastille --- */
       await login(b, KWAME, DEMO_PW);
-      await b.goto("/#messages");
+      await b.goto("/messages");
       const row = b.getByTestId("conv-list").locator("li").first();
       await expect(row).toContainText("Aïcha Diallo");
       await expect(row.locator('[aria-label="1"]')).toBeVisible();
@@ -135,7 +135,7 @@ test.describe("Messagerie privée (I2)", () => {
       const aichaId = (
         (await profA.json()).profiles as Array<{ userId: string; username: string }>
       ).find((p) => p.username === "aicha.dev")!.userId;
-      await b.goto(`/#messages/${aichaId}`);
+      await b.goto(`/messages/${aichaId}`);
       await expect(b.getByLabel("Écrire un message…")).toBeVisible();
 
       /* --- Aïcha envoie : le fil de Kwame se remplit SANS action --- */
@@ -144,7 +144,7 @@ test.describe("Messagerie privée (I2)", () => {
       const kwameId = (
         (await profK.json()).profiles as Array<{ userId: string; username: string }>
       ).find((p) => p.username === KWAME_USERNAME)!.userId;
-      await a.goto(`/#messages/${kwameId}`);
+      await a.goto(`/messages/${kwameId}`);
       await expect(a.getByLabel("Écrire un message…")).toBeVisible();
 
       await a.getByLabel("Écrire un message…").fill(body);
