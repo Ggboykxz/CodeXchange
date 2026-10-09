@@ -25,6 +25,7 @@ import {
   type NewThreadData,
 } from "@/components/shared/create-thread-form";
 import { ThreadCard, type ThreadCardData } from "@/components/shared/thread-card";
+import { Tag, tagColors } from "@/components/shared/tag";
 import { toast } from "sonner";
 import {
   ArrowRight,
@@ -94,6 +95,20 @@ const modules = [
   { section: "mentorat", labelKey: "nav.mentorat", titleKey: "modules.mentorat.title", Icon: Users },
   { section: "tutos", labelKey: "nav.tutos", titleKey: "modules.tutos.title", Icon: BookOpen },
   { section: "annuaire", labelKey: "nav.annuaire", titleKey: "modules.annuaire.title", Icon: MapPin },
+];
+
+/** Stack techniques les plus courantes — puces d'accès rapide (barre latérale). */
+const POPULAR_STACK = [
+  "react",
+  "typescript",
+  "go",
+  "rust",
+  "python",
+  "flutter",
+  "kotlin",
+  "devops",
+  "ai",
+  "react-native",
 ];
 
 /**
@@ -372,6 +387,9 @@ export function FeedSection() {
           )}
 
           <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="hidden font-mono text-xs font-medium uppercase tracking-widest text-muted-foreground sm:inline">
+              {t("feed.title")}
+            </span>
             <div
               className="flex items-center gap-1 rounded-lg border bg-muted/40 p-1"
               role="group"
@@ -618,6 +636,17 @@ export function FeedSection() {
                 </li>
               ))}
             </ul>
+          </Card>
+
+          <Card className="p-5">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              {t("feed.tech_stack")}
+            </h2>
+            <div className="flex flex-wrap gap-1.5">
+              {POPULAR_STACK.map((s) => (
+                <Tag key={s} label={s} variant={tagColors[s] || "default"} />
+              ))}
+            </div>
           </Card>
         </aside>
       </div>

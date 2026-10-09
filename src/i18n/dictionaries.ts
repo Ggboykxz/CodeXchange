@@ -548,6 +548,8 @@ const fr: Dict = {
   "feed.sidebar_label": "CodeXchange en bref",
   "feed.sidebar_stats": "La communauté, en chiffres réels",
   "feed.sidebar_explore": "Explorer",
+  "feed.tech_stack": "Stack populaires",
+  "feed.title": "Le fil",
 
   // Composeur de question (libellés de formulaire, i18n)
   "forum.create.title_field": "Titre",
@@ -1124,6 +1126,8 @@ const en: Dict = {
   "feed.sidebar_label": "CodeXchange at a glance",
   "feed.sidebar_stats": "The community, in real numbers",
   "feed.sidebar_explore": "Explore",
+  "feed.tech_stack": "Popular stack",
+  "feed.title": "Feed",
 
   // Question composer (form labels, i18n)
   "forum.create.title_field": "Title",
@@ -1652,6 +1656,8 @@ const sw: Dict = {
   "feed.sidebar_label": "CodeXchange kwa ufupi",
   "feed.sidebar_stats": "Jamii, kwa namba halisi",
   "feed.sidebar_explore": "Chunguza",
+  "feed.tech_stack": "Teknolojia maarufu",
+  "feed.title": "Mlisho",
   "forum.create.title_field": "Jina",
   "forum.create.category_field": "Kundi",
   "forum.create.body_field": "Maelezo",
@@ -2176,6 +2182,8 @@ const ar: Dict = {
   "feed.sidebar_label": "CodeXchange بلمحة",
   "feed.sidebar_stats": "المجتمع، بأرقام حقيقية",
   "feed.sidebar_explore": "استكشف",
+  "feed.tech_stack": "التقنيات الشائعة",
+  "feed.title": "الخلاصة",
   "forum.create.title_field": "العنوان",
   "forum.create.category_field": "الفئة",
   "forum.create.body_field": "التفاصيل",

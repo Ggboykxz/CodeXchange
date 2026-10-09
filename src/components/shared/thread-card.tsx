@@ -99,7 +99,7 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
         <div className="flex gap-3">
           {/* Rail de vote — fond visible au survol, comme la colonne grise
               de Reddit, pour montrer qu'il est interactif. */}
-          <div className="flex shrink-0 flex-col items-center gap-0.5 self-start rounded-md py-1 transition-colors group-hover:bg-muted/70">
+          <div className="flex shrink-0 flex-col items-center gap-0.5 self-start rounded-md border border-border px-1 py-1 transition-colors group-hover:bg-muted/70">
             <button
               type="button"
               aria-label={
@@ -121,8 +121,8 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
             <span
               key={thread.upvotes}
               className={cn(
-                "vote-pop min-w-[2ch] text-center font-mono text-xs font-semibold tabular-nums",
-                myVote === 1 && "text-chart-1",
+                "vote-pop min-w-[2ch] text-center font-mono text-sm font-bold tabular-nums",
+                myVote === 1 && "text-brand",
                 myVote === -1 && "text-destructive"
               )}
             >
@@ -221,7 +221,7 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
                 .filter(Boolean)
                 .slice(0, 3)
                 .map((tg) => (
-                  <Tag key={tg} label={tg} variant={tagColors[tg] || "default"} />
+                  <Tag key={tg} label={`#${tg}`} variant={tagColors[tg] || "default"} />
                 ))}
             </div>
 
