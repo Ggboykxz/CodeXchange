@@ -25,7 +25,13 @@ import { sha256 } from "@/lib/password";
  */
 function loadSecret(): string {
   const secret = process.env.SESSION_SECRET;
-  if (process.env.NODE_ENV === "production" && (!secret || secret.length < 32)) {
+  // N'échoue PAS pendant `next build` : Next évalue les modules de routes en
+  // mode production pour collecter les métadonnées, sans servir de requête ni
+  // disposer des secrets d'exécution. On réserve le fail-fast au VRAI runtime
+  // (serving) : là, refuser de démarrer sans secret solide reste la bonne
+  // garantie. `NEXT_PHASE=phase-production-build` est posé uniquement au build.
+  const isBuilding = process.env.NEXT_PHASE === "phase-production-build";
+  if (!isBuilding && process.env.NODE_ENV === "production" && (!secret || secret.length < 32)) {
     throw new Error(
       "SESSION_SECRET must be set to a value of at least 32 characters in production (see .env.example)"
     );
