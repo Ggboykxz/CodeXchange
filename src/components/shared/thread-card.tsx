@@ -95,7 +95,7 @@ export function ThreadCard({ thread, onOpen, onVote, className }: ThreadCardProp
       onClick={() => onOpen(thread)}
       className={cn("rise-in group cursor-pointer", className)}
     >
-      <Card className="p-3 transition-[border-color,box-shadow] hover:border-foreground/40 hover:shadow-sm sm:p-4">
+      <Card className="card-interactive p-3 sm:p-4">
         <div className="flex gap-3">
           {/* Rail de vote — fond visible au survol, comme la colonne grise
               de Reddit, pour montrer qu'il est interactif. */}

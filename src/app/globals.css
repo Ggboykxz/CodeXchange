@@ -339,3 +339,33 @@ svg.lucide {
 .rise-in:nth-child(6) { animation-delay: 225ms; }
 .rise-in:nth-child(7) { animation-delay: 270ms; }
 .rise-in:nth-child(8) { animation-delay: 315ms; }
+
+/* ------------------------------------------------------------------ */
+/* Motion & interaction tokens (design-system/codexchange/MASTER.md)   */
+/* Source unique pour durées/easings : une transition d'état ne       */
+/* s'improvise jamais composant par composant.                         */
+/* ------------------------------------------------------------------ */
+:root {
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 280ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@layer utilities {
+  /* Carte cliquable : accent de marque au survol + micro-élévation, sans
+     décaler la mise en page (transform seule). La règle global
+     `prefers-reduced-motion` neutralise déjà durées/transform. */
+  .card-interactive {
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+  .card-interactive:hover {
+    border-color: color-mix(in oklch, var(--brand) 45%, transparent);
+    box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.18);
+    transform: translateY(-2px);
+  }
+}
