@@ -335,6 +335,16 @@ export function FeedSection() {
                   className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:16px_16px]"
                 />
                 <div className="relative">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1 font-mono text-xs text-muted-foreground">
+                    <span className="relative flex h-2 w-2" aria-hidden="true">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </span>
+                    {stats?.users !== undefined
+                      ? `${new Intl.NumberFormat("fr-FR").format(stats.users)} `
+                      : ""}
+                    {t("stats.devs")}
+                  </div>
                   <p className="eyebrow mb-2 flex items-center gap-1.5">
                     <span className="text-brand">$</span> {t("hero.eyebrow")}
                   </p>
@@ -563,14 +573,17 @@ export function FeedSection() {
 
           <Card className="p-5">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground">
-              <MessageSquare className="h-4 w-4" aria-hidden="true" />
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
               {t("feed.sidebar_stats")}
             </h2>
             <dl className="grid grid-cols-2 gap-3">
               {statsRows.map((r) => (
                 <div key={r.label}>
                   <dt className="text-xs text-muted-foreground">{r.label}</dt>
-                  <dd className="font-mono text-xl font-bold tabular-nums">
+                  <dd className="font-mono text-2xl font-bold tabular-nums text-brand">
                     {r.value === undefined ? "—" : r.value}
                   </dd>
                 </div>

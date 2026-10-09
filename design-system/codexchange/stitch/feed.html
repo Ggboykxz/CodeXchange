@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>$ codexchange.dev — African Engineering Corps</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-tertiary-fixed": "#1f1b17",
+            "on-surface": "#1d1b1a",
+            "on-surface-variant": "#59413a",
+            "surface-container": "#f3ecea",
+            "surface-container-low": "#f9f2f0",
+            "outline-variant": "#e1bfb5",
+            "on-error": "#ffffff",
+            "surface-container-high": "#ede7e5",
+            "tertiary-fixed": "#eae1da",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#ffece7",
+            "inverse-on-surface": "#f6efed",
+            "primary": "#9b2f00",
+            "surface-bright": "#fff8f6",
+            "secondary-fixed-dim": "#79db8d",
+            "tertiary-container": "#736c67",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-tertiary": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-highest": "#e7e1df",
+            "surface-variant": "#e7e1df",
+            "inverse-surface": "#32302f",
+            "on-primary-fixed": "#390c00",
+            "primary-fixed": "#ffdbd0",
+            "outline": "#8d7168",
+            "secondary": "#006d30",
+            "secondary-fixed": "#95f8a7",
+            "background": "#fff8f6",
+            "on-secondary-fixed-variant": "#005323",
+            "on-secondary-container": "#007233",
+            "surface-dim": "#dfd9d7",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#00210a",
+            "inverse-primary": "#ffb59d",
+            "on-primary-fixed-variant": "#832600",
+            "on-primary": "#ffffff",
+            "tertiary": "#5a544f",
+            "primary-fixed-dim": "#ffb59d",
+            "surface": "#fff8f6",
+            "secondary-container": "#92f5a4",
+            "surface-tint": "#ac3400",
+            "tertiary-fixed-dim": "#cec5be",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#f9efe8",
+            "on-background": "#1d1b1a",
+            "error": "#ba1a1a",
+            "primary-container": "#c2410c"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1rem",
+            "margin-tablet": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2.5rem",
+            "margin": "1rem",
+            "space-2xl": "3rem",
+            "space-xl": "2rem"
+          },
+          fontFamily: {
+            "headline-md": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "label-lg": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "headline-sm": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "title-sm": ["Space Mono"]
+          },
+          fontSize: {
+            "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "code-inline": ["12px", { lineHeight: "16px", letterSpacing: "0em", fontWeight: "400" }],
+            "label-sm": ["10px", { lineHeight: "12px", letterSpacing: "0.08em", fontWeight: "400" }],
+            "body-lg": ["15px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "400" }],
+            "label-lg": ["13px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "700" }],
+            "headline-lg": ["30px", { lineHeight: "38px", letterSpacing: "-0.03em", fontWeight: "700" }],
+            "headline-display": ["40px", { lineHeight: "48px", letterSpacing: "-0.04em", fontWeight: "700" }],
+            "headline-lg-mobile": ["22px", { lineHeight: "30px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "label-md": ["11px", { lineHeight: "14px", letterSpacing: "0.06em", fontWeight: "700" }],
+            "headline-sm": ["18px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "700" }],
+            "body-md": ["13px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "400" }],
+            "body-sm": ["12px", { lineHeight: "18px", letterSpacing: "0em", fontWeight: "400" }],
+            "title-md": ["16px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "700" }],
+            "headline-display-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.03em", fontWeight: "700" }],
+            "title-sm": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Technical Grid Matrix Pattern */
+    .bg-dot-matrix {
+      background-image: radial-gradient(rgba(141, 113, 104, 0.22) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .dark .bg-dot-matrix {
+      background-image: radial-gradient(rgba(225, 191, 181, 0.15) 1px, transparent 1px);
+    }
+    
+    /* Terminal cursor blink */
+    @keyframes cursor-blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .animate-caret {
+      animation: cursor-blink 1s infinite;
+    }
+
+    /* Architectural hard shadow */
+    .brutal-shadow {
+      box-shadow: 3px 3px 0px #181615;
+    }
+    .dark .brutal-shadow {
+      box-shadow: 3px 3px 0px #000000;
+    }
+    .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #181615;
+    }
+    .dark .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #000000;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen bg-dot-matrix selection:bg-primary-container selection:text-on-primary-container transition-colors duration-150">
+<!-- ================= TOP APP BAR (Shared Components JSON Anchor) ================= -->
+<header class="w-full bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Global Search -->
+<div class="flex items-center space-x-6">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary tracking-tight font-bold flex items-center gap-1 group" href="#">
+<span>$ codexchange.dev</span>
+<span class="inline-block w-2.5 h-5 bg-primary-container animate-caret"></span>
+</a>
+<!-- Global Search Bar (on_left) -->
+<div class="hidden lg:flex items-center relative">
+<span class="absolute left-2.5 text-tertiary flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-sm">search</span>
+</span>
+<input class="pl-8 pr-12 py-1 bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline text-on-surface dark:text-inverse-on-surface font-code-inline text-code-inline focus:border-primary-container focus:ring-0 rounded-none w-72 transition-colors" placeholder="&gt; query repos, threads, pings..." type="text"/>
+<kbd class="absolute right-2 px-1.5 py-0.5 border border-outline-variant dark:border-outline text-tertiary font-label-sm text-label-sm bg-surface-container-high dark:bg-inverse-surface">[ / ]</kbd>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center space-x-6 h-full">
+<!-- Active: Discussions (Determined by home feed context) -->
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary font-bold py-1 font-label-md text-label-md transition-colors" href="#discussions">
+          Discussions
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#jobs">
+          Jobs
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#projects">
+          Projects
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#telemetry">
+          Telemetry
+        </a>
+</nav>
+<!-- Right Controls & Status -->
+<div class="flex items-center space-x-3">
+<!-- Continent Ping Telemetry -->
+<div class="hidden xl:flex items-center gap-2 border border-outline-variant dark:border-outline px-2.5 py-1 bg-surface-container dark:bg-inverse-surface font-code-inline text-code-inline text-tertiary">
+<span class="inline-block w-1.5 h-1.5 bg-secondary rounded-full animate-pulse"></span>
+<span>LOS: 14ms</span>
+<span class="text-outline-variant">|</span>
+<span>NBO: 21ms</span>
+<span class="text-outline-variant">|</span>
+<span>KGL: 19ms</span>
+</div>
+<!-- Trailing Icon Actions: language, dark_mode, terminal -->
+<div class="flex items-center space-x-1">
+<button class="p-1.5 text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Region / Language">
+<span class="material-symbols-outlined text-base">language</span>
+</button>
+<button class="p-1.5 text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" id="themeToggleBtn" title="Toggle Terminal Brightness">
+<span class="material-symbols-outlined text-base" id="themeIcon">dark_mode</span>
+</button>
+<button class="p-1.5 text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Terminal CLI Panel">
+<span class="material-symbols-outlined text-base">terminal</span>
+</button>
+</div>
+<!-- Trailing Primary & Secondary Actions from JSON -->
+<div class="flex items-center space-x-2 pl-2 border-l border-outline-variant dark:border-outline">
+<button class="px-2.5 py-1 border border-outline-variant dark:border-outline hover:border-primary dark:hover:border-inverse-primary text-on-surface dark:text-inverse-on-surface font-label-md text-label-md hover:text-primary dark:hover:text-inverse-primary transition-colors bg-surface-container dark:bg-inverse-surface">
+            [ Sign In ]
+          </button>
+<button class="px-3 py-1 bg-primary-container text-on-primary-container border border-primary font-label-md text-label-md hover:bg-primary brutal-shadow-sm active:translate-x-[1px] active:translate-y-[1px] transition-all">
+            [ Register ]
+          </button>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= MAIN CONTAINER (~1280px Bound) ================= -->
+<main class="w-full max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-6">
+<!-- Guest Compact Terminal Hero Banner -->
+<section class="mb-8 border border-outline-variant dark:border-outline bg-surface-container dark:bg-inverse-surface p-5 brutal-shadow relative overflow-hidden">
+<div class="flex flex-col lg:flex-row justify-between lg:items-center gap-6 relative z-10">
+<div class="space-y-2 max-w-3xl">
+<div class="flex items-center gap-2 font-code-inline text-code-inline text-primary-container font-bold">
+<span class="material-symbols-outlined text-sm">wifi_tethering</span>
+<span>$ ping -c 1 africa.dev.community [ACK 200 OK]</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface tracking-tight">
+            The open exchange for African software engineers.
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant leading-relaxed">
+            48,000+ engineers building distributed systems, fintech infra, mobile apps, and AI across Lagos, Nairobi, Kigali, Accra, and Cape Town.
+          </p>
+</div>
+<div class="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[240px]">
+<div class="flex items-center gap-2">
+<button class="w-full px-4 py-2 bg-primary-container text-on-primary-container border border-primary font-label-lg text-label-lg hover:bg-primary brutal-shadow-sm active:translate-x-[2px] active:translate-y-[2px] transition-all text-center">
+              [ Get Started - Free ]
+            </button>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-full px-4 py-2 border border-outline text-on-surface dark:text-inverse-on-surface bg-surface dark:bg-inverse-surface font-label-md text-label-md hover:border-primary-container transition-colors text-center">
+              [ Explore Discussions ]
+            </button>
+</div>
+<div class="text-right">
+<span class="inline-block px-2 py-0.5 border border-outline-variant dark:border-outline font-label-sm text-label-sm text-tertiary bg-surface-container-high dark:bg-inverse-surface">
+              v2.4.0-stable • 100% Open Source
+            </span>
+</div>
+</div>
+</div>
+<!-- Architectural subtle schematic label -->
+<div class="absolute -bottom-2 right-4 text-[9px] text-outline opacity-40 font-code-inline select-none pointer-events-none uppercase">
+        ARCH_NODE // AFRICAN_DISTRIBUTED_CORE
+      </div>
+</section>
+<!-- ================= TWO-COLUMN WORKSPACE ================= -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- ================= LEFT COLUMN: PRIMARY FEED (~840px / 8 cols) ================= -->
+<div class="lg:col-span-8 space-y-4">
+<!-- Feed Toolbar -->
+<div class="border border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface p-3 flex flex-wrap items-center justify-between gap-3">
+<!-- Segmented Sort Buttons -->
+<div class="flex items-center space-x-1" id="sortTabs">
+<button class="px-2.5 py-1 bg-surface dark:bg-inverse-surface text-primary-container font-label-md text-label-md border-b-2 border-primary-container font-bold flex items-center gap-1 transition-all">
+<span>🔥</span><span>Hot</span>
+</button>
+<button class="px-2.5 py-1 text-on-surface-variant dark:text-surface-variant hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span>⚡</span><span>New</span>
+</button>
+<button class="px-2.5 py-1 text-on-surface-variant dark:text-surface-variant hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span>🏆</span><span>Top</span>
+</button>
+<button class="px-2.5 py-1 text-on-surface-variant dark:text-surface-variant hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span>📈</span><span>Rising</span>
+</button>
+<button class="px-2.5 py-1 text-on-surface-variant dark:text-surface-variant hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors">
+<span>💬</span><span>Active</span>
+</button>
+</div>
+<!-- Quick Filters & Ask CTA -->
+<div class="flex items-center gap-2">
+<button class="px-2 py-1 text-xs border border-secondary text-secondary bg-secondary-container/20 font-label-sm text-label-sm flex items-center gap-1" id="solvedFilterBtn">
+<span>[✓ Solved only]</span>
+</button>
+<button class="px-2 py-1 text-xs border border-outline-variant dark:border-outline text-tertiary hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 bg-surface dark:bg-inverse-surface">
+<span>[⚡ Africa Hubs]</span>
+</button>
+<button class="px-3 py-1 bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-1 brutal-shadow-sm">
+<span>+ Ask Question</span>
+</button>
+</div>
+</div>
+<!-- Filter Sub-Prompt Bar -->
+<div class="flex items-center justify-between px-3 py-2 border border-dotted border-outline-variant dark:border-outline bg-surface dark:bg-inverse-surface text-xs font-code-inline text-tertiary">
+<div class="flex items-center gap-2">
+<span class="text-primary-container font-bold">$ grep</span>
+<span>--status=all --region=SSA --sort=hot</span>
+</div>
+<span>Showing 5 of 1,420 threads</span>
+</div>
+<!-- ================= FEED THREAD LIST ================= -->
+<div class="space-y-4">
+<!-- THREAD CARD 1 -->
+<article class="border border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface hover:border-primary-container transition-all brutal-shadow-sm">
+<!-- Header bar with file path aesthetic -->
+<div class="px-4 py-1.5 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface flex items-center justify-between text-xs font-code-inline text-tertiary">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs">folder_open</span>
+<span>telemetry/daraja_b2c_retry_worker.go</span>
+</span>
+<div class="flex items-center gap-2 font-label-sm text-label-sm">
+<span class="text-secondary bg-secondary-container/40 dark:bg-secondary/20 px-1.5 py-0.5 border border-secondary font-bold">
+                  [✓ SOLVED]
+                </span>
+<span class="border border-outline-variant dark:border-outline px-1.5 py-0.5 bg-surface-container">
+                  [HUB: LAGOS / NG]
+                </span>
+</div>
+</div>
+<!-- Main Thread Content with Left Vote Rail -->
+<div class="p-4 flex gap-4">
+<!-- Left Vote Rail -->
+<div class="flex flex-col items-center justify-start min-w-[36px] bg-surface-container dark:bg-inverse-surface border border-outline-variant dark:border-outline py-2 px-1">
+<button class="vote-up text-tertiary hover:text-primary-container transition-colors" data-id="1">
+<span class="material-symbols-outlined text-lg">arrow_drop_up</span>
+</button>
+<span class="vote-count font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface" data-id="1">142</span>
+<button class="vote-down text-tertiary hover:text-primary-container transition-colors" data-id="1">
+<span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+</button>
+</div>
+<!-- Body Details -->
+<div class="flex-1 space-y-2">
+<div class="flex flex-wrap items-center gap-2 text-xs text-tertiary font-code-inline">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">Kwame Mensah (@kmensah)</span>
+<span>•</span>
+<span class="text-primary-container">+3,480 rep</span>
+<span>•</span>
+<span>18m ago</span>
+<span>•</span>
+<span>LOS -&gt; NBO (34ms)</span>
+</div>
+<h2 class="font-title-md text-title-md hover:text-primary-container transition-colors cursor-pointer">
+                  Handling Daraja M-Pesa B2C callback timeouts during peak mobile money traffic in East Africa
+                </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant leading-normal">
+                  We are experiencing 504 gateway timeouts on Safaricom Daraja webhooks when processing concurrent payouts above 400 req/sec. Here is our Go worker pool implementation and idempotency key caching strategy using Redis cluster...
+                </p>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#golang</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#mpesa</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#fintech</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#concurrency</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#redis</span>
+</div>
+<!-- Footer Metrics -->
+<div class="pt-3 border-t border-outline-variant/60 dark:border-outline/60 flex items-center justify-between text-xs font-code-inline text-tertiary">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">visibility</span> 1,420 views
+                    </span>
+<span class="flex items-center gap-1 text-on-surface dark:text-inverse-on-surface font-bold">
+<span class="material-symbols-outlined text-xs">forum</span> 34 answers
+                    </span>
+<span class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-xs">task_alt</span> 12 solutions referenced
+                    </span>
+</div>
+<span class="hover:text-primary-container cursor-pointer">[ share diff ]</span>
+</div>
+</div>
+</div>
+</article>
+<!-- THREAD CARD 2 -->
+<article class="border border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface hover:border-primary-container transition-all brutal-shadow-sm">
+<div class="px-4 py-1.5 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface flex items-center justify-between text-xs font-code-inline text-tertiary">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs">terminal</span>
+<span>mobile/perf_benchmark_apk.sh</span>
+</span>
+<div class="flex items-center gap-2 font-label-sm text-label-sm">
+<span class="text-secondary bg-secondary-container/40 dark:bg-secondary/20 px-1.5 py-0.5 border border-secondary font-bold">
+                  [✓ SOLVED]
+                </span>
+<span class="border border-outline-variant dark:border-outline px-1.5 py-0.5 bg-surface-container">
+                  [HUB: NAIROBI / KE]
+                </span>
+</div>
+</div>
+<div class="p-4 flex gap-4">
+<div class="flex flex-col items-center justify-start min-w-[36px] bg-surface-container dark:bg-inverse-surface border border-outline-variant dark:border-outline py-2 px-1">
+<button class="vote-up text-tertiary hover:text-primary-container transition-colors" data-id="2">
+<span class="material-symbols-outlined text-lg">arrow_drop_up</span>
+</button>
+<span class="vote-count font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface" data-id="2">98</span>
+<button class="vote-down text-tertiary hover:text-primary-container transition-colors" data-id="2">
+<span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex flex-wrap items-center gap-2 text-xs text-tertiary font-code-inline">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">Zuri Ochieng (@zuri_dev)</span>
+<span>•</span>
+<span class="text-primary-container">+2,150 rep</span>
+<span>•</span>
+<span>1h ago</span>
+<span>•</span>
+<span>NBO Edge Cluster</span>
+</div>
+<h2 class="font-title-md text-title-md hover:text-primary-container transition-colors cursor-pointer">
+                  Optimizing Flutter app cold start &amp; bundle size for low-bandwidth Android devices across Nigeria &amp; Kenya
+                </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant leading-normal">
+                  After profiling with DevTools, asset compression and tree shaking reduced our base APK from 38MB to 11.4MB. Here is our automated Fastlane pipeline setup and benchmark metrics on Infinix &amp; Tecno test devices...
+                </p>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#flutter</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#android</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#performance</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#mobile-money</span>
+</div>
+<div class="pt-3 border-t border-outline-variant/60 dark:border-outline/60 flex items-center justify-between text-xs font-code-inline text-tertiary">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">visibility</span> 890 views
+                    </span>
+<span class="flex items-center gap-1 text-on-surface dark:text-inverse-on-surface font-bold">
+<span class="material-symbols-outlined text-xs">forum</span> 19 answers
+                    </span>
+</div>
+<span class="hover:text-primary-container cursor-pointer">[ apk-analysis.log ]</span>
+</div>
+</div>
+</div>
+</article>
+<!-- THREAD CARD 3 -->
+<article class="border border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface hover:border-primary-container transition-all brutal-shadow-sm">
+<div class="px-4 py-1.5 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface flex items-center justify-between text-xs font-code-inline text-tertiary">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs">schema</span>
+<span>distributed/crdt_sync_provider.rs</span>
+</span>
+<div class="flex items-center gap-2 font-label-sm text-label-sm">
+<span class="text-tertiary bg-surface-container-high px-1.5 py-0.5 border border-outline font-bold">
+                  [DISCUSSING]
+                </span>
+<span class="border border-outline-variant dark:border-outline px-1.5 py-0.5 bg-surface-container">
+                  [HUB: KIGALI / RW]
+                </span>
+</div>
+</div>
+<div class="p-4 flex gap-4">
+<div class="flex flex-col items-center justify-start min-w-[36px] bg-surface-container dark:bg-inverse-surface border border-outline-variant dark:border-outline py-2 px-1">
+<button class="vote-up text-tertiary hover:text-primary-container transition-colors" data-id="3">
+<span class="material-symbols-outlined text-lg">arrow_drop_up</span>
+</button>
+<span class="vote-count font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface" data-id="3">215</span>
+<button class="vote-down text-tertiary hover:text-primary-container transition-colors" data-id="3">
+<span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex flex-wrap items-center gap-2 text-xs text-tertiary font-code-inline">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">Jean-Paul Niyonzima (@jp_rw)</span>
+<span>•</span>
+<span class="text-primary-container">+4,910 rep</span>
+<span>•</span>
+<span>3h ago</span>
+<span>•</span>
+<span>KGL Mesh Peer</span>
+</div>
+<h2 class="font-title-md text-title-md hover:text-primary-container transition-colors cursor-pointer">
+                  Building resilient offline-first syncing with SQLite and CRDTs for rural healthcare clinics in Rwanda
+                </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant leading-normal">
+                  Network partitions last up to 48 hours in district health centers. We benchmarked Yjs vs ElectricSQL for multi-master replication on intermittent 3G connections. Looking for edge-case peer reviews...
+                </p>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#rust</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#sqlite</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#crdt</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#distributed-systems</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#offline-first</span>
+</div>
+<div class="pt-3 border-t border-outline-variant/60 dark:border-outline/60 flex items-center justify-between text-xs font-code-inline text-tertiary">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">visibility</span> 2,100 views
+                    </span>
+<span class="flex items-center gap-1 text-on-surface dark:text-inverse-on-surface font-bold">
+<span class="material-symbols-outlined text-xs">forum</span> 47 answers
+                    </span>
+</div>
+<span class="hover:text-primary-container cursor-pointer">[ bench_results.json ]</span>
+</div>
+</div>
+</div>
+</article>
+<!-- THREAD CARD 4 -->
+<article class="border border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface hover:border-primary-container transition-all brutal-shadow-sm">
+<div class="px-4 py-1.5 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface flex items-center justify-between text-xs font-code-inline text-tertiary">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs">code</span>
+<span>fintech/gateway_circuit_breaker.py</span>
+</span>
+<div class="flex items-center gap-2 font-label-sm text-label-sm">
+<span class="text-secondary bg-secondary-container/40 dark:bg-secondary/20 px-1.5 py-0.5 border border-secondary font-bold">
+                  [✓ SOLVED]
+                </span>
+<span class="border border-outline-variant dark:border-outline px-1.5 py-0.5 bg-surface-container">
+                  [HUB: ACCRA / GH]
+                </span>
+</div>
+</div>
+<div class="p-4 flex gap-4">
+<div class="flex flex-col items-center justify-start min-w-[36px] bg-surface-container dark:bg-inverse-surface border border-outline-variant dark:border-outline py-2 px-1">
+<button class="vote-up text-tertiary hover:text-primary-container transition-colors" data-id="4">
+<span class="material-symbols-outlined text-lg">arrow_drop_up</span>
+</button>
+<span class="vote-count font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface" data-id="4">76</span>
+<button class="vote-down text-tertiary hover:text-primary-container transition-colors" data-id="4">
+<span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex flex-wrap items-center gap-2 text-xs text-tertiary font-code-inline">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">Aisha Bello (@abello_tech)</span>
+<span>•</span>
+<span class="text-primary-container">+1,820 rep</span>
+<span>•</span>
+<span>5h ago</span>
+<span>•</span>
+<span>ACC Gateway Host</span>
+</div>
+<h2 class="font-title-md text-title-md hover:text-primary-container transition-colors cursor-pointer">
+                  Paystack vs Flutterwave API: Webhook retry backoff patterns under high failure rates
+                </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant leading-normal">
+                  Implementing exponential backoff with jitter in FastAPI and Celery. Comparing idempotency behavior between both payment gateways when handling banking switch downtime...
+                </p>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#python</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#fastapi</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#payments</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#architecture</span>
+</div>
+<div class="pt-3 border-t border-outline-variant/60 dark:border-outline/60 flex items-center justify-between text-xs font-code-inline text-tertiary">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">visibility</span> 620 views
+                    </span>
+<span class="flex items-center gap-1 text-on-surface dark:text-inverse-on-surface font-bold">
+<span class="material-symbols-outlined text-xs">forum</span> 15 answers
+                    </span>
+</div>
+<span class="hover:text-primary-container cursor-pointer">[ retry_policy.py ]</span>
+</div>
+</div>
+</div>
+</article>
+<!-- THREAD CARD 5 -->
+<article class="border border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface hover:border-primary-container transition-all brutal-shadow-sm">
+<div class="px-4 py-1.5 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface flex items-center justify-between text-xs font-code-inline text-tertiary">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs">cloud_queue</span>
+<span>infra/teraco_vs_af_south_1.tf</span>
+</span>
+<div class="flex items-center gap-2 font-label-sm text-label-sm">
+<span class="text-tertiary bg-surface-container-high px-1.5 py-0.5 border border-outline font-bold">
+                  [BENCHMARK]
+                </span>
+<span class="border border-outline-variant dark:border-outline px-1.5 py-0.5 bg-surface-container">
+                  [HUB: CAPE TOWN / ZA]
+                </span>
+</div>
+</div>
+<div class="p-4 flex gap-4">
+<div class="flex flex-col items-center justify-start min-w-[36px] bg-surface-container dark:bg-inverse-surface border border-outline-variant dark:border-outline py-2 px-1">
+<button class="vote-up text-tertiary hover:text-primary-container transition-colors" data-id="5">
+<span class="material-symbols-outlined text-lg">arrow_drop_up</span>
+</button>
+<span class="vote-count font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface" data-id="5">184</span>
+<button class="vote-down text-tertiary hover:text-primary-container transition-colors" data-id="5">
+<span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex flex-wrap items-center gap-2 text-xs text-tertiary font-code-inline">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">Pieter van der Merwe (@pieter_cpt)</span>
+<span>•</span>
+<span class="text-primary-container">+5,600 rep</span>
+<span>•</span>
+<span>7h ago</span>
+<span>•</span>
+<span>CPT Teraco DC</span>
+</div>
+<h2 class="font-title-md text-title-md hover:text-primary-container transition-colors cursor-pointer">
+                  Deploying Kubernetes clusters on bare-metal vs AWS Cape Town (af-south-1) latency benchmarks
+                </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant leading-normal">
+                  Comparing local fiber ping from Joburg to af-south-1 vs local data centers (Teraco). Here are our Terraform templates and Cilium eBPF network telemetry logs...
+                </p>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#devops</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#kubernetes</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#aws</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#networking</span>
+<span class="border border-outline-variant dark:border-outline px-2 py-0.5 text-xs font-code-inline bg-surface-container dark:bg-inverse-surface text-tertiary hover:border-primary-container cursor-pointer">#terraform</span>
+</div>
+<div class="pt-3 border-t border-outline-variant/60 dark:border-outline/60 flex items-center justify-between text-xs font-code-inline text-tertiary">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">visibility</span> 1,840 views
+                    </span>
+<span class="flex items-center gap-1 text-on-surface dark:text-inverse-on-surface font-bold">
+<span class="material-symbols-outlined text-xs">forum</span> 28 answers
+                    </span>
+</div>
+<span class="hover:text-primary-container cursor-pointer">[ ebpf_telemetry.pcap ]</span>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination / Load more Terminal Action -->
+<div class="p-4 border border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface flex items-center justify-between">
+<span class="font-code-inline text-code-inline text-tertiary">
+            PAGE 01 / 284 [EOF]
+          </span>
+<button class="px-4 py-2 border border-outline text-on-surface dark:text-inverse-on-surface font-label-md text-label-md hover:border-primary hover:text-primary bg-surface dark:bg-inverse-surface transition-colors flex items-center gap-2">
+<span>[ Load Next 25 Threads ]</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- ================= RIGHT COLUMN: SIDEBAR (~320px / 4 cols) ================= -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- MODULE 1: Guest Sign-up Terminal Hero Block -->
+<div class="border border-outline-variant dark:border-outline bg-surface-container dark:bg-inverse-surface p-5 brutal-shadow relative">
+<div class="space-y-3">
+<div class="flex items-center gap-2 text-xs font-code-inline text-primary-container font-bold">
+<span>$ auth --register --mode=open</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm tracking-tight text-on-surface dark:text-inverse-on-surface">
+              Join 48,000+ African Developers
+            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant leading-relaxed">
+              Get code reviews, debug distributed systems, and access vetted tech jobs in Africa.
+            </p>
+<div class="pt-2 space-y-2">
+<button class="w-full py-2 bg-primary-container text-on-primary-container border border-primary font-label-md text-label-md hover:bg-primary brutal-shadow-sm active:translate-x-[1px] active:translate-y-[1px] transition-all text-center">
+                [ Create Free Account ]
+              </button>
+<button class="w-full py-2 border border-outline text-on-surface dark:text-inverse-on-surface font-label-md text-label-md hover:border-primary transition-colors flex items-center justify-center gap-2 bg-surface dark:bg-inverse-surface">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>[ Sign in with GitHub ]</span>
+</button>
+</div>
+</div>
+</div>
+<!-- MODULE 2: Live Platform Telemetry -->
+<div class="border border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface p-4 brutal-shadow-sm">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant dark:border-outline text-xs font-code-inline text-tertiary">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-primary-container">monitoring</span>
+<span>LIVE SYSTEM MATRIX</span>
+</span>
+<span class="text-secondary flex items-center gap-1">
+<span class="inline-block w-2 h-2 bg-secondary rounded-full animate-pulse"></span> OPERATIONAL
+            </span>
+</div>
+<div class="grid grid-cols-2 gap-3 py-3 font-code-inline">
+<div class="border border-outline-variant dark:border-outline p-2 bg-surface dark:bg-inverse-surface">
+<div class="text-[10px] text-tertiary">REGISTERED MEMBERS</div>
+<div class="text-xl font-bold text-on-surface dark:text-inverse-on-surface">48,291</div>
+</div>
+<div class="border border-outline-variant dark:border-outline p-2 bg-surface dark:bg-inverse-surface">
+<div class="text-[10px] text-tertiary">THREADS SOLVED</div>
+<div class="text-xl font-bold text-secondary">142,804</div>
+<div class="text-[9px] text-tertiary">94.2% rate</div>
+</div>
+<div class="border border-outline-variant dark:border-outline p-2 bg-surface dark:bg-inverse-surface">
+<div class="text-[10px] text-tertiary">VERIFIED TECH JOBS</div>
+<div class="text-xl font-bold text-on-surface dark:text-inverse-on-surface">620</div>
+</div>
+<div class="border border-outline-variant dark:border-outline p-2 bg-surface dark:bg-inverse-surface">
+<div class="text-[10px] text-tertiary">AFRICAN HUBS</div>
+<div class="text-xl font-bold text-primary-container">34 Countries</div>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/60 dark:border-outline/60 text-[11px] font-code-inline text-tertiary flex items-center justify-between">
+<span>Nodes: LOS • NBO • KGL • ACC • CPT</span>
+<span class="text-secondary font-bold">0 dropped pkts</span>
+</div>
+</div>
+<!-- MODULE 3: Community Modules Directory -->
+<div class="border border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface p-4 brutal-shadow-sm">
+<div class="pb-2 border-b border-outline-variant dark:border-outline text-xs font-code-inline text-tertiary flex items-center justify-between">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">SYSTEM DIRECTORY</span>
+<span>$ ls /modules</span>
+</div>
+<ul class="py-2 space-y-1 font-body-sm text-body-sm">
+<li>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors group" href="#discussions">
+<span class="group-hover:text-primary-container transition-colors">[ &gt;_ Discussions ]</span>
+<span class="text-xs font-code-inline text-tertiary">4.2k active</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors group" href="#jobs">
+<span class="group-hover:text-primary-container transition-colors">[ 💼 Tech Jobs ]</span>
+<span class="text-xs font-code-inline text-tertiary">Remote &amp; Hubs</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors group" href="#projects">
+<span class="group-hover:text-primary-container transition-colors">[ 📦 Open Source Projects ]</span>
+<span class="text-xs font-code-inline text-tertiary">Made in Africa</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors group" href="#mentoring">
+<span class="group-hover:text-primary-container transition-colors">[ 🤝 Mentorat / Pair Prog ]</span>
+<span class="text-xs font-code-inline text-tertiary">Available</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors group" href="#tutos">
+<span class="group-hover:text-primary-container transition-colors">[ 📚 Tutos &amp; Architectures ]</span>
+<span class="text-xs font-code-inline text-tertiary">Archival</span>
+</a>
+</li>
+<li>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors group" href="#directory">
+<span class="group-hover:text-primary-container transition-colors">[ 📇 Annuaire Développeurs ]</span>
+<span class="text-xs font-code-inline text-tertiary">Index</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- MODULE 4: Upcoming Dev Meetups & Hackathons -->
+<div class="border border-outline-variant dark:border-outline bg-surface-container-low dark:bg-inverse-surface p-4 brutal-shadow-sm">
+<div class="pb-2 border-b border-outline-variant dark:border-outline text-xs font-code-inline text-tertiary flex items-center justify-between">
+<span class="font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-primary-container">event</span>
+<span>CALENDAR // CORPS EVENTS</span>
+</span>
+<span>$ cron</span>
+</div>
+<div class="py-3 space-y-3 font-code-inline text-xs">
+<!-- Event 1 -->
+<div class="border-l-2 border-primary-container pl-2.5 space-y-0.5">
+<div class="font-bold text-on-surface dark:text-inverse-on-surface hover:text-primary-container cursor-pointer transition-colors">
+                Lagos Gophers Meetup
+              </div>
+<div class="text-tertiary">Tomorrow, 17:00 WAT • Hybrid [LOS]</div>
+</div>
+<!-- Event 2 -->
+<div class="border-l-2 border-secondary pl-2.5 space-y-0.5">
+<div class="font-bold text-on-surface dark:text-inverse-on-surface hover:text-primary-container cursor-pointer transition-colors">
+                Nairobi Rustacean Hack
+              </div>
+<div class="text-tertiary">Sat, 10:00 EAT • iHub Nairobi [NBO]</div>
+</div>
+<!-- Event 3 -->
+<div class="border-l-2 border-outline pl-2.5 space-y-0.5">
+<div class="font-bold text-on-surface dark:text-inverse-on-surface hover:text-primary-container cursor-pointer transition-colors">
+                Kigali AI Systems Conf
+              </div>
+<div class="text-tertiary">Nov 14, Hybrid • Norrsken House [KGL]</div>
+</div>
+</div>
+<button class="w-full mt-1 py-1.5 border border-dashed border-outline text-tertiary hover:border-primary-container hover:text-primary-container font-label-sm text-label-sm text-center transition-colors">
+            + Submit Community Event
+          </button>
+</div>
+</aside>
+</div>
+</main>
+<!-- ================= FOOTER (Shared Components JSON Anchor) ================= -->
+<footer class="w-full bg-surface-container dark:bg-inverse-surface border-t border-outline-variant dark:border-outline mt-16">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Copyright text from Shared Components JSON -->
+<div class="space-y-1 text-center md:text-left">
+<div class="font-body-sm text-body-sm text-on-surface dark:text-inverse-on-surface font-bold">
+          © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+        </div>
+<div class="font-code-inline text-code-inline text-tertiary">
+          BUILT FOR THE NEXT BILLION BUILDERS // LATENCY MATTERS // LOW CONSUMPTION UX
+        </div>
+</div>
+<!-- Links from Shared Components JSON -->
+<div class="flex flex-wrap items-center justify-center gap-4">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#terms">
+          Terms of Service
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#privacy">
+          Privacy Directive
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#api">
+          API Docs
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#telemetry">
+          Telemetry Status
+        </a>
+<a class="text-primary dark:text-inverse-primary font-bold font-label-sm text-label-sm transition-colors" href="#matrix">
+          System Matrix
+        </a>
+</div>
+</div>
+</footer>
+<!-- ================= MICRO-INTERACTIONS SCRIPT ================= -->
+<script>
+    // 1. Light / Dark Theme Switcher with persistence
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const htmlElement = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlElement.classList.contains('dark')) {
+        htmlElement.classList.remove('dark');
+        htmlElement.classList.add('light');
+        themeIcon.textContent = 'dark_mode';
+      } else {
+        htmlElement.classList.remove('light');
+        htmlElement.classList.add('dark');
+        themeIcon.textContent = 'light_mode';
+      }
+    });
+
+    // 2. Interactive Vote Counter Rail
+    document.querySelectorAll('.vote-up').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const countSpan = document.querySelector(`.vote-count[data-id="${id}"]`);
+        let currentCount = parseInt(countSpan.textContent, 10);
+        if (!btn.classList.contains('text-primary-container')) {
+          countSpan.textContent = currentCount + 1;
+          btn.classList.add('text-primary-container');
+        } else {
+          countSpan.textContent = currentCount - 1;
+          btn.classList.remove('text-primary-container');
+        }
+      });
+    });
+
+    document.querySelectorAll('.vote-down').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const countSpan = document.querySelector(`.vote-count[data-id="${id}"]`);
+        let currentCount = parseInt(countSpan.textContent, 10);
+        if (!btn.classList.contains('text-primary-container')) {
+          countSpan.textContent = Math.max(0, currentCount - 1);
+          btn.classList.add('text-primary-container');
+        } else {
+          countSpan.textContent = currentCount + 1;
+          btn.classList.remove('text-primary-container');
+        }
+      });
+    });
+
+    // 3. Solved Only Filter Button Toggle
+    const solvedBtn = document.getElementById('solvedFilterBtn');
+    solvedBtn.addEventListener('click', () => {
+      if (solvedBtn.classList.contains('bg-secondary-container/20')) {
+        solvedBtn.classList.remove('bg-secondary-container/20', 'border-secondary', 'text-secondary');
+        solvedBtn.classList.add('border-outline-variant', 'text-tertiary', 'bg-surface');
+      } else {
+        solvedBtn.classList.add('bg-secondary-container/20', 'border-secondary', 'text-secondary');
+        solvedBtn.classList.remove('border-outline-variant', 'text-tertiary', 'bg-surface');
+      }
+    });
+
+    // 4. Sort Tabs Toggle Micro-interaction
+    const sortButtons = document.querySelectorAll('#sortTabs button');
+    sortButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sortButtons.forEach(b => {
+          b.className = 'px-2.5 py-1 text-on-surface-variant dark:text-surface-variant hover:text-primary-container font-label-md text-label-md flex items-center gap-1 transition-colors';
+        });
+        btn.className = 'px-2.5 py-1 bg-surface dark:bg-inverse-surface text-primary-container font-label-md text-label-md border-b-2 border-primary-container font-bold flex items-center gap-1 transition-all';
+      });
+    });
+  </script>
+</body></html>
