@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>codexchange.dev // Tutorials &amp; Architecture Guides</title>
+<!-- Google Fonts: Space Mono & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms & Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "on-secondary-container": "#007233",
+            "secondary-fixed-dim": "#79db8d",
+            "primary-fixed": "#ffdbd0",
+            "error": "#ba1a1a",
+            "surface-bright": "#fff8f6",
+            "on-tertiary-fixed": "#1f1b17",
+            "surface-container": "#f3ecea",
+            "on-tertiary-container": "#f9efe8",
+            "tertiary-fixed-dim": "#cec5be",
+            "secondary": "#006d30",
+            "tertiary-fixed": "#eae1da",
+            "surface-dim": "#dfd9d7",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "background": "#fff8f6",
+            "primary": "#9b2f00",
+            "on-background": "#1d1b1a",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#00210a",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "error-container": "#ffdad6",
+            "tertiary-container": "#736c67",
+            "surface-variant": "#e7e1df",
+            "surface": "#fff8f6",
+            "inverse-surface": "#32302f",
+            "tertiary": "#5a544f",
+            "secondary-fixed": "#95f8a7",
+            "on-primary-fixed-variant": "#832600",
+            "surface-container-high": "#ede7e5",
+            "surface-container-highest": "#e7e1df",
+            "on-tertiary": "#ffffff",
+            "secondary-container": "#92f5a4",
+            "on-surface-variant": "#59413a",
+            "primary-container": "#c2410c",
+            "inverse-primary": "#ffb59d",
+            "on-surface": "#1d1b1a",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "on-primary-container": "#ffece7",
+            "surface-container-low": "#f9f2f0",
+            "on-secondary-fixed-variant": "#005323",
+            "inverse-on-surface": "#f6efed",
+            "outline": "#8d7168",
+            "primary-fixed-dim": "#ffb59d",
+            "on-primary-fixed": "#390c00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "margin-tablet": "1.5rem",
+            "space-xl": "2rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2.5rem",
+            "gutter": "1rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Space Mono"],
+            "title-sm": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "headline-md": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "label-lg": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "headline-sm": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"]
+          },
+          "fontSize": {
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Technical Dotted Drafting Matrix Pattern */
+    .bg-dot-matrix {
+      background-image: radial-gradient(#8d7168 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .brutal-shadow {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+    .brutal-shadow-sm {
+      box-shadow: 1px 1px 0px #1d1b1a;
+    }
+    .brutal-shadow-terracotta {
+      box-shadow: 3px 3px 0px #9b2f00;
+    }
+    /* Pulse terminal indicator */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .terminal-caret {
+      animation: blink 1s infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-full flex flex-col antialiased selection:bg-primary-container selection:text-on-primary">
+<!-- TOP APP BAR (Shared Components JSON Anchor) -->
+<header class="w-full bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="w-full border-b border-outline-variant dark:border-outline px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Search cluster -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary tracking-tight font-bold flex items-center gap-1.5 focus:outline-none" href="#">
+<span>$</span>
+<span>codexchange.dev</span>
+</a>
+<!-- CLI Search Bar -->
+<div class="hidden lg:flex items-center bg-surface-container border border-outline-variant px-2.5 py-1 text-on-surface-variant font-code-inline text-code-inline">
+<span class="text-primary font-bold mr-1.5">&gt;</span>
+<span class="text-tertiary">grep -rn "tutorial"</span>
+<span class="ml-3 text-[10px] bg-surface-variant border border-outline-variant px-1.5 py-0.5 text-on-surface-variant font-bold">[Ctrl+K]</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-6 font-label-md text-label-md">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Discussions</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Jobs</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Projects</a>
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary font-bold py-1" href="#">Tutorials</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Telemetry</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-3">
+<!-- Icons -->
+<div class="hidden sm:flex items-center gap-1 text-on-surface-variant">
+<button class="p-1 hover:text-primary transition-colors" title="Language switch">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</button>
+<button class="p-1 hover:text-primary transition-colors" title="Dark mode toggle">
+<span class="material-symbols-outlined text-[18px]">dark_mode</span>
+</button>
+<button class="p-1 hover:text-primary transition-colors" title="Terminal CLI">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</button>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant hidden sm:block"></div>
+<!-- Auth Actions from JSON -->
+<a class="font-label-md text-label-md text-on-surface hover:text-primary px-2 py-1 transition-colors" href="#">[ Sign In ]</a>
+<a class="font-label-md text-label-md bg-primary-container text-on-primary px-2.5 py-1 border border-primary hover:bg-primary brutal-shadow-sm transition-all active:translate-x-[1px] active:translate-y-[1px]" href="#">[ Register ]</a>
+</div>
+</div>
+</header>
+<!-- CLI Telemetry Ribbon -->
+<aside class="w-full bg-surface-container-high border-b border-outline-variant py-1.5 px-4 md:px-gutter-desktop">
+<div class="max-w-[1280px] mx-auto flex flex-wrap items-center justify-between font-code-inline text-code-inline text-on-surface-variant gap-2">
+<div class="flex items-center gap-2 overflow-x-auto">
+<span class="text-primary font-bold">$ codexchange.dev/tutorials --cat=all</span>
+<span class="text-outline">::</span>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-1.5 py-0.5 border border-secondary">[status: verified_guides]</span>
+</div>
+<div class="flex items-center gap-3 text-label-sm font-label-sm">
+<span class="text-tertiary">PEERING_RTT:</span>
+<span class="text-on-surface">LOS: <strong class="text-secondary font-bold">14ms</strong></span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface">NBO: <strong class="text-secondary font-bold">21ms</strong></span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface">KGL: <strong class="text-secondary font-bold">19ms</strong></span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface">ACC: <strong class="text-secondary font-bold">22ms</strong></span>
+<span class="text-outline-variant">|</span>
+<span class="text-on-surface">CPT: <strong class="text-tertiary font-bold">42ms</strong></span>
+<span class="inline-block w-2 h-2 bg-secondary rounded-full ml-1"></span>
+</div>
+</div>
+</aside>
+<!-- MAIN CANVAS CONTAINER -->
+<main class="w-full max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-8 flex-1">
+<!-- Hero Section -->
+<section class="border border-outline-variant bg-surface-container-lowest p-6 md:p-8 relative bg-dot-matrix mb-8 brutal-shadow">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+<div class="max-w-3xl">
+<div class="flex items-center gap-2 mb-2 font-code-inline text-code-inline text-primary">
+<span>// ARCHITECTURE BLUEPRINTS &amp; DEEP-DIVES</span>
+<span class="inline-block w-2 h-3.5 bg-primary terminal-caret"></span>
+</div>
+<h1 class="font-headline-display text-headline-display text-on-surface mb-3 tracking-tight">
+            Production-tested engineering tutorials by African systems builders.
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            In-depth blueprints, edge latency optimizations, payment rails, offline-first architectures, and low-resource AI fine-tuning.
+          </p>
+</div>
+<!-- Hero CTAs -->
+<div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
+<a class="bg-primary-container text-on-primary font-title-sm text-title-sm px-5 py-3 border border-primary brutal-shadow hover:bg-primary transition-all active:translate-x-[2px] active:translate-y-[2px] text-center" href="#publish">
+            [ + Publish a Tutorial ]
+          </a>
+<a class="bg-surface-container text-on-surface font-code-inline text-code-inline px-4 py-2.5 border border-outline-variant hover:border-on-surface transition-colors text-center" href="#manpage">
+            [ $ man tutorials_guidelines ]
+          </a>
+</div>
+</div>
+<!-- Quick Metrics Ribbon inside Hero -->
+<div class="mt-6 pt-4 border-t border-dashed border-outline-variant flex flex-wrap items-center gap-6 font-code-inline text-code-inline text-tertiary">
+<div><strong class="text-on-surface font-bold">142</strong> VERIFIED_MAN_PAGES</div>
+<div class="text-outline-variant">/</div>
+<div><strong class="text-secondary font-bold">99.8%</strong> CODE_REPRODUCIBILITY_SCORE</div>
+<div class="text-outline-variant">/</div>
+<div><strong class="text-primary font-bold">48k+</strong> CORE_SYSTEM_ENGINEERS</div>
+<div class="text-outline-variant">/</div>
+<div>REGION_SCOPE: <span class="text-on-surface font-bold">[LOS, NBO, KGL, ACC, CPT, CAI]</span></div>
+</div>
+</section>
+<!-- Search & Filter Control Row -->
+<section class="border border-outline-variant bg-surface-container-low p-4 mb-8">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+<!-- Terminal Input -->
+<div class="flex-1 flex items-center bg-surface border border-outline-variant px-3 py-2 text-on-surface">
+<span class="text-primary font-bold font-code-inline text-code-inline mr-2">&gt; grep -in</span>
+<input class="bg-transparent border-0 p-0 text-on-surface font-code-inline text-code-inline focus:ring-0 w-full placeholder:text-outline" placeholder='"query" --tags=rust,payment,latency...' type="text"/>
+<button class="font-label-md text-label-md text-tertiary hover:text-primary uppercase tracking-wide border-l border-outline-variant pl-3 ml-2 shrink-0">
+            [ Enter ]
+          </button>
+</div>
+<!-- Sorting dropdown -->
+<div class="flex items-center gap-2 font-code-inline text-code-inline shrink-0">
+<span class="text-tertiary">sort_by:</span>
+<select class="bg-surface border border-outline-variant text-on-surface font-code-inline text-code-inline py-1.5 px-3 focus:border-primary focus:ring-0">
+<option>[ Newest ]</option>
+<option>[ Most Bookmarked ]</option>
+<option>[ Highest Read Time ]</option>
+</select>
+</div>
+</div>
+<!-- Category Filter Chips -->
+<div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-outline-variant font-label-md text-label-md">
+<span class="text-tertiary mr-1 font-code-inline text-code-inline">FILTERS:</span>
+<button class="bg-primary-container text-on-primary px-2.5 py-1 border border-primary font-bold">[x] All Guides (142)</button>
+<button class="bg-surface text-on-surface-variant hover:text-primary hover:border-primary px-2.5 py-1 border border-outline-variant transition-colors">[ ] Frontend (24)</button>
+<button class="bg-surface text-on-surface-variant hover:text-primary hover:border-primary px-2.5 py-1 border border-outline-variant transition-colors">[ ] Backend &amp; Infra (48)</button>
+<button class="bg-surface text-on-surface-variant hover:text-primary hover:border-primary px-2.5 py-1 border border-outline-variant transition-colors">[ ] Mobile &amp; Offline (32)</button>
+<button class="bg-surface text-on-surface-variant hover:text-primary hover:border-primary px-2.5 py-1 border border-outline-variant transition-colors">[ ] DevOps &amp; SRE (18)</button>
+<button class="bg-surface text-on-surface-variant hover:text-primary hover:border-primary px-2.5 py-1 border border-outline-variant transition-colors">[ ] AI &amp; NLP (12)</button>
+<button class="bg-surface text-on-surface-variant hover:text-primary hover:border-primary px-2.5 py-1 border border-outline-variant transition-colors">[ ] Career &amp; Staff (8)</button>
+</div>
+</section>
+<!-- 2-COLUMN MAIN CONTENT LAYOUT -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT / CENTER MAIN COLUMN (8 cols of 12) -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- A. FEATURED TUTORIAL HERO CARD -->
+<article class="border-2 border-primary bg-surface-container-lowest brutal-shadow">
+<!-- Card Header Bar -->
+<div class="bg-primary text-on-primary px-4 py-2 flex flex-wrap items-center justify-between text-code-inline font-code-inline">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-on-primary rounded-full terminal-caret"></span>
+<span class="font-bold tracking-wider">[ FEATURED // EDITOR'S DIFF ]</span>
+</div>
+<div class="text-[11px] opacity-90">path: /guides/fintech/safari-redis-streams.rs</div>
+</div>
+<!-- Card Body -->
+<div class="p-6">
+<div class="flex items-start justify-between gap-4 mb-2">
+<div class="flex items-center gap-2 text-headline-sm font-headline-sm">
+<span>⚡</span><span>💳</span>
+<span class="bg-surface-container px-2 py-0.5 border border-outline-variant text-label-sm font-label-sm text-primary uppercase">[Backend &amp; Infra]</span>
+<span class="text-tertiary text-label-sm font-label-sm">:: 18 min read</span>
+</div>
+<div class="text-label-sm font-label-sm text-tertiary border border-outline-variant px-2 py-0.5 bg-surface-container-high">
+                450 BOOKMARKS
+              </div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-3">
+              Architecting Resilient USSD &amp; M-Pesa Webhook Pipelines with Rust and Redis Streams
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-relaxed">
+              A deep dive into zero-loss callback processing during telecom maintenance windows across Safaricom and Airtel Africa. Handling backpressure, out-of-order delivery, and replay protection.
+            </p>
+<!-- Code Diff Snippet Preview -->
+<div class="bg-inverse-surface text-surface-container-low font-code-inline text-code-inline p-3 border border-outline mb-4 overflow-x-auto">
+<div class="text-outline-variant font-bold mb-1">// Redis Stream consumer group acknowledge block</div>
+<div class="text-[#86efac]">+ let stream_ack: Result&lt;()&gt; = con.xack("mpesa:c2b:callbacks", "group_east_1", &amp;[&amp;msg_id]).await;</div>
+<div class="text-[#fca5a5]">- con.del(&amp;msg_id).await; // prone to dropped payload on socket timeout</div>
+<div class="text-surface-variant mt-1">&gt; Telemetry verify: LOS-NBO RTT 22ms | Memory footprint: 14.2MB RSS</div>
+</div>
+<!-- Author & Tags -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-outline-variant">
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">
+                  Amina Osei <span class="text-tertiary font-normal">(@a_osei)</span>
+</div>
+<div class="font-body-sm text-body-sm text-tertiary">
+                  Principal Architect @ Safaricom / ex-Andela • 2 days ago
+                </div>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary">
+<span class="bg-surface-variant px-1.5 py-0.5">#rust</span>
+<span class="bg-surface-variant px-1.5 py-0.5">#fintech</span>
+<span class="bg-surface-variant px-1.5 py-0.5">#redis</span>
+<span class="bg-surface-variant px-1.5 py-0.5">#mpesa</span>
+</div>
+</div>
+<!-- Card Actions -->
+<div class="flex flex-wrap items-center gap-3 mt-5">
+<a class="bg-primary-container text-on-primary font-title-sm text-title-sm px-4 py-2 border border-primary brutal-shadow hover:bg-primary transition-all" href="#">
+                [ Read Architecture Guide -&gt; ]
+              </a>
+<a class="bg-surface-container font-code-inline text-code-inline px-3 py-2 border border-outline-variant hover:border-on-surface text-on-surface transition-colors" href="#">
+                [ Clone Demo Repo ]
+              </a>
+<button class="font-label-md text-label-md text-tertiary hover:text-primary ml-auto py-2">
+                [+ Bookmark]
+              </button>
+</div>
+</div>
+</article>
+<!-- B. TUTORIALS GRID OF HIGH-DENSITY CARDS (6 CARDS) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1 -->
+<article class="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col justify-between hover:border-primary transition-colors brutal-shadow-sm">
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-2">
+<span class="text-primary font-bold">[Mobile]</span>
+<span class="text-tertiary">14 min read</span>
+</div>
+<div class="text-xl mb-1">📱 🛰️</div>
+<h3 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-2">
+                Building Offline-First Health Records with SQLite CRDTs and Bluetooth Mesh in Rural Kenya
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 leading-relaxed">
+                Solving 48-hour network blackouts for clinic field workers using CRDT conflict resolution and low-power BLE mesh synchronizers.
+              </p>
+</div>
+<div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary mb-3">
+<span class="bg-surface-container px-1 py-0.5">#sqlite</span>
+<span class="bg-surface-container px-1 py-0.5">#crdt</span>
+<span class="bg-surface-container px-1 py-0.5">#flutter</span>
+</div>
+<div class="pt-2 border-t border-dashed border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Zuri Ochieng <span class="text-tertiary">(@zuri_dev)</span></span>
+<span class="text-tertiary">May 12 • Nairobi</span>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col justify-between hover:border-primary transition-colors brutal-shadow-sm">
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-2">
+<span class="text-primary font-bold">[AI &amp; NLP]</span>
+<span class="text-tertiary">22 min read</span>
+</div>
+<div class="text-xl mb-1">🌍 🗣️</div>
+<h3 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-2">
+                Quantizing Whisper-v3 for Kinyarwanda &amp; Swahili on Low-Cost Raspberry Pi 4
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 leading-relaxed">
+                Optimizing speech-to-text models to 4-bit ONNX runtimes running locally on edge gateways without internet dependency.
+              </p>
+</div>
+<div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary mb-3">
+<span class="bg-surface-container px-1 py-0.5">#pytorch</span>
+<span class="bg-surface-container px-1 py-0.5">#whisper</span>
+<span class="bg-surface-container px-1 py-0.5">#edge-ai</span>
+</div>
+<div class="pt-2 border-t border-dashed border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Jean-Paul Niyonzima <span class="text-tertiary">(@jp_rw)</span></span>
+<span class="text-tertiary">May 10 • Kigali</span>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col justify-between hover:border-primary transition-colors brutal-shadow-sm">
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-2">
+<span class="text-primary font-bold">[DevOps &amp; SRE]</span>
+<span class="text-tertiary">16 min read</span>
+</div>
+<div class="text-xl mb-1">🌐 ⚡</div>
+<h3 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-2">
+                BGP Anycast and eBPF Edge Filtering Across Teraco DB1 and WACS Undersea Cables
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 leading-relaxed">
+                Diagnosing jitter spikes during subsea fiber cuts and automating BGP route flapping mitigation between Cape Town and Lagos IXPs.
+              </p>
+</div>
+<div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary mb-3">
+<span class="bg-surface-container px-1 py-0.5">#ebpf</span>
+<span class="bg-surface-container px-1 py-0.5">#bgp</span>
+<span class="bg-surface-container px-1 py-0.5">#linux</span>
+</div>
+<div class="pt-2 border-t border-dashed border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Chidi Okonkwo <span class="text-tertiary">(@chidi_kernel)</span></span>
+<span class="text-tertiary">May 08 • Cape Town</span>
+</div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col justify-between hover:border-primary transition-colors brutal-shadow-sm">
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-2">
+<span class="text-primary font-bold">[Backend &amp; Infra]</span>
+<span class="text-tertiary">12 min read</span>
+</div>
+<div class="text-xl mb-1">🏦 🔄</div>
+<h3 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-2">
+                Idempotency and Settlement Reconciliation on Paystack and Flutterwave APIs
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 leading-relaxed">
+                How to build dual-ledger banking settlement systems in Go with Celery fallback workers for volatile multi-currency transfers.
+              </p>
+</div>
+<div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary mb-3">
+<span class="bg-surface-container px-1 py-0.5">#golang</span>
+<span class="bg-surface-container px-1 py-0.5">#fintech</span>
+<span class="bg-surface-container px-1 py-0.5">#postgres</span>
+</div>
+<div class="pt-2 border-t border-dashed border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Kwame Boakye <span class="text-tertiary">(@ak_boakye)</span></span>
+<span class="text-tertiary">May 05 • Accra</span>
+</div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col justify-between hover:border-primary transition-colors brutal-shadow-sm">
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-2">
+<span class="text-primary font-bold">[Mobile]</span>
+<span class="text-tertiary">9 min read</span>
+</div>
+<div class="text-xl mb-1">🎨 ⚡</div>
+<h3 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-2">
+                Cutting Flutter Bundle Size by 65% for 3G Android Go Devices in Nigeria
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 leading-relaxed">
+                Tree-shaking SVG fonts, dynamic feature modules, and WebP compression techniques for Tecno and Infinix low-spec devices.
+              </p>
+</div>
+<div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary mb-3">
+<span class="bg-surface-container px-1 py-0.5">#flutter</span>
+<span class="bg-surface-container px-1 py-0.5">#android</span>
+<span class="bg-surface-container px-1 py-0.5">#performance</span>
+</div>
+<div class="pt-2 border-t border-dashed border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Amina Bello <span class="text-tertiary">(@amina_dev)</span></span>
+<span class="text-tertiary">May 01 • Lagos</span>
+</div>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="border border-outline-variant bg-surface-container-lowest p-4 flex flex-col justify-between hover:border-primary transition-colors brutal-shadow-sm">
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-2">
+<span class="text-primary font-bold">[DevOps &amp; SRE]</span>
+<span class="text-tertiary">20 min read</span>
+</div>
+<div class="text-xl mb-1">🛡️ 🔐</div>
+<h3 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors cursor-pointer mb-2">
+                Zero-Trust Internal Service Mesh with Cilium and WireGuard on Bare-Metal
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 leading-relaxed">
+                Replacing heavyweight Istio with Cilium eBPF for mTLS microservices communication across distributed African colocations.
+              </p>
+</div>
+<div>
+<div class="flex flex-wrap gap-1 font-label-sm text-label-sm text-tertiary mb-3">
+<span class="bg-surface-container px-1 py-0.5">#cilium</span>
+<span class="bg-surface-container px-1 py-0.5">#kubernetes</span>
+<span class="bg-surface-container px-1 py-0.5">#security</span>
+</div>
+<div class="pt-2 border-t border-dashed border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Tarek Mostafa <span class="text-tertiary">(@tarek_cloud)</span></span>
+<span class="text-tertiary">Apr 28 • Cairo</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination & Buffer Status Footer -->
+<div class="border border-outline-variant bg-surface-container-low p-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-code-inline text-code-inline">
+<div class="text-on-surface-variant">
+            &gt;&gt; PAGE 01 / 18 <span class="text-secondary font-bold">[EOF_BUFFER_LOADED]</span> | Showing 6 of 142 tutorials
+          </div>
+<button class="bg-surface text-on-surface font-title-sm text-title-sm px-4 py-2 border border-outline-variant hover:border-primary hover:text-primary transition-colors">
+            [ Load Next 12 Tutorials -&gt; ]
+          </button>
+</div>
+</div>
+<!-- RIGHT SIDEBAR COLUMN (4 cols of 12) -->
+<aside class="lg:col-span-4 flex flex-col gap-6">
+<!-- Widget 1: Publish CTA Box -->
+<div class="border-2 border-primary bg-surface-container p-5 brutal-shadow" id="publish">
+<div class="flex items-center gap-2 text-primary font-bold font-title-sm text-title-sm mb-2">
+<span>[ + Publish a Tutorial ]</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">
+            Share production architecture blueprints with 48k+ African engineers. Peer-reviewed by Staff engineers before publishing.
+          </p>
+<ul class="font-code-inline text-code-inline text-on-surface mb-4 space-y-1">
+<li>✔ Honorarium: $250 - $600 per merged guide</li>
+<li>✔ Permanent canonical authorship attribution</li>
+<li>✔ Global syndicate reach via tech hubs</li>
+</ul>
+<button class="w-full bg-primary-container text-on-primary font-title-sm text-title-sm py-2.5 px-4 border border-primary brutal-shadow hover:bg-primary transition-all">
+            [ Draft Technical Blueprint ]
+          </button>
+</div>
+<!-- Widget 2: Tutorial Categories Tree -->
+<div class="border border-outline-variant bg-surface-container-lowest p-4">
+<div class="font-code-inline text-code-inline font-bold text-on-surface border-b border-outline-variant pb-2 mb-3">
+            &gt;&gt; TUTORIAL_CATEGORIES
+          </div>
+<nav class="space-y-1.5 font-code-inline text-code-inline">
+<a class="flex items-center justify-between p-1.5 bg-surface-container-high text-primary font-bold" href="#">
+<span>├── [01] Backend &amp; Infra</span>
+<span class="text-tertiary">[48]</span>
+</a>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container text-on-surface transition-colors" href="#">
+<span>├── [02] Mobile &amp; Offline</span>
+<span class="text-tertiary">[32]</span>
+</a>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container text-on-surface transition-colors" href="#">
+<span>├── [03] Frontend &amp; Web</span>
+<span class="text-tertiary">[24]</span>
+</a>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container text-on-surface transition-colors" href="#">
+<span>├── [04] DevOps &amp; SRE</span>
+<span class="text-tertiary">[18]</span>
+</a>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container text-on-surface transition-colors" href="#">
+<span>├── [05] AI &amp; Low-Resource NLP</span>
+<span class="text-tertiary">[12]</span>
+</a>
+<a class="flex items-center justify-between p-1.5 hover:bg-surface-container text-on-surface transition-colors" href="#">
+<span>└── [06] Career &amp; Staff</span>
+<span class="text-tertiary">[08]</span>
+</a>
+</nav>
+</div>
+<!-- Widget 3: Popular Tags Grid -->
+<div class="border border-outline-variant bg-surface-container-lowest p-4">
+<div class="font-code-inline text-code-inline font-bold text-on-surface border-b border-outline-variant pb-2 mb-3">
+            &gt;&gt; POPULAR_TAGS
+          </div>
+<div class="flex flex-wrap gap-1.5 font-label-md text-label-md">
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#rust (64)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#golang (58)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#mpesa (41)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#fintech (52)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#offline-first (29)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#crdt (17)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#ebpf (19)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#whisper (11)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#flutter (33)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#sqlite (21)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#cilium (14)</a>
+<a class="bg-surface-container hover:bg-primary-container hover:text-on-primary px-2 py-1 border border-outline-variant transition-colors text-on-surface" href="#">#ussd (25)</a>
+</div>
+</div>
+<!-- Widget 4: Editorial Standards (MAN_PAGE) -->
+<div class="border border-outline-variant bg-surface-container-high p-4 font-code-inline text-code-inline" id="manpage">
+<div class="font-bold text-on-surface border-b border-outline-variant pb-2 mb-3 flex items-center justify-between">
+<span>&gt;&gt; EDITORIAL_STANDARDS [MAN_PAGE]</span>
+<span class="text-label-sm font-label-sm text-tertiary">REV: 2.4</span>
+</div>
+<div class="space-y-3 text-body-sm font-body-sm text-on-surface-variant">
+<div>
+<span class="text-primary font-bold">01. Production code only</span>
+<p class="text-tertiary text-xs mt-0.5">No toy "Hello World" tutorials. Every guide must contain reproducible GitHub diffs or container files.</p>
+</div>
+<div>
+<span class="text-primary font-bold">02. Low-bandwidth context</span>
+<p class="text-tertiary text-xs mt-0.5">Explicitly benchmark latency impacts, data packet payloads, and high packet loss resilience.</p>
+</div>
+<div>
+<span class="text-primary font-bold">03. Real architectural tradeoffs</span>
+<p class="text-tertiary text-xs mt-0.5">Provide CPU/Memory flamegraphs and failure mode analysis for low-tier VPS hardware.</p>
+</div>
+</div>
+</div>
+<!-- Widget 5: Telemetry Live Metrics -->
+<div class="border border-outline-variant bg-surface-container-lowest p-4 font-code-inline text-code-inline">
+<div class="font-bold text-on-surface border-b border-outline-variant pb-2 mb-3 flex items-center justify-between">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+              &gt;&gt; TELEMETRY_METRIC [LIVE]
+            </span>
+<span class="text-secondary text-[11px]">ACTIVE</span>
+</div>
+<div class="grid grid-cols-2 gap-3 text-body-sm font-body-sm">
+<div class="bg-surface-container p-2 border border-outline-variant">
+<div class="text-tertiary text-[11px]">TOTAL_GUIDES</div>
+<div class="font-bold text-on-surface text-headline-sm">142</div>
+</div>
+<div class="bg-surface-container p-2 border border-outline-variant">
+<div class="text-tertiary text-[11px]">TOTAL_WORDS</div>
+<div class="font-bold text-on-surface text-headline-sm">480k</div>
+</div>
+<div class="bg-surface-container p-2 border border-outline-variant">
+<div class="text-tertiary text-[11px]">REPOS_LINKED</div>
+<div class="font-bold text-on-surface text-headline-sm">118</div>
+</div>
+<div class="bg-surface-container p-2 border border-outline-variant">
+<div class="text-tertiary text-[11px]">READERS / MO</div>
+<div class="font-bold text-primary text-headline-sm">94,200</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- FOOTER (Shared Components JSON Anchor) -->
+<footer class="w-full bg-surface-container dark:bg-inverse-surface border-t border-outline-variant dark:border-outline mt-12">
+<div class="w-full border-t border-outline-variant dark:border-outline px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Copyright text exact from JSON -->
+<div class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant flex items-center gap-2">
+<span class="text-primary font-bold">$</span>
+<span>© 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]</span>
+</div>
+<!-- Footer navigation links exact from JSON -->
+<nav class="flex flex-wrap items-center justify-center gap-4 font-label-sm text-label-sm">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Terms of Service</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Privacy Directive</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">API Docs</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Telemetry Status</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">System Matrix</a>
+</nav>
+</div>
+</footer>
+</body></html>

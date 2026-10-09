@@ -52,6 +52,7 @@ import {
   ArrowLeft,
   Send,
   Loader2,
+  RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -119,6 +120,29 @@ type ThreadDetail = Thread & {
   posts: Post[];
 };
 
+/**
+ * Les trois statuts de résolution, en bascules façon terminal. L'API acceptait
+ * déjà `?solved=` (all / false / true) : le sélecteur devenait des puces.
+ */
+const statusOptions: { value: "all" | "false" | "true"; labelKey: string }[] = [
+  { value: "all", labelKey: "forum.filter.status.all" },
+  { value: "false", labelKey: "forum.filter.status.unsolved" },
+  { value: "true", labelKey: "forum.filter.status.solved" },
+];
+
+/**
+ * Pastille « live » — le point émeraude qui pulse du design Stitch
+ * (télémétrie, statut de synchronisation). Purement décoratif.
+ */
+function LiveDot({ className }: { className?: string }) {
+  return (
+    <span className={cn("relative flex h-2 w-2", className)} aria-hidden="true">
+      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+    </span>
+  );
+}
+
 export function ForumSection() {
   const t = useT();
   const locale = useAppStore((s) => s.locale);
@@ -175,6 +199,57 @@ export function ForumSection() {
       )
     )
   ).sort();
+
+  /* ---------------------------------------------------------------- */
+  /* Compteurs dérivés de la liste réellement chargée — aucun chiffre  */
+  /* codé en dur : la colonne de droite (télémétrie, nuage de tags,    */
+  /* podium des contributeurs) lit la même réponse API que le fil.     */
+  /* ---------------------------------------------------------------- */
+
+  const tagCounts = new Map<string, number>();
+  const contributors = new Map<
+    string,
+    { username: string; upvotes: number; reputation: number; city: string | null }
+  >();
+  let solvedCount = 0;
+  let answersCount = 0;
+
+  for (const th of visible) {
+    if (th.solved) solvedCount += 1;
+    answersCount += th._count?.posts ?? 0;
+    for (const tg of th.tags.split(",").map((s) => s.trim()).filter(Boolean)) {
+      tagCounts.set(tg, (tagCounts.get(tg) ?? 0) + 1);
+    }
+    const username = th.author.profile?.username ?? th.author.name;
+    const prev = contributors.get(th.author.id);
+    contributors.set(th.author.id, {
+      username,
+      upvotes: (prev?.upvotes ?? 0) + th.upvotes,
+      reputation: th.author.reputation ?? prev?.reputation ?? 0,
+      city: th.author.profile?.city ?? prev?.city ?? null,
+    });
+  }
+
+  /** Nuage de tags trié par fréquence (les plus cités d'abord). */
+  const rankedTags = Array.from(tagCounts.entries()).sort(
+    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0])
+  );
+
+  /** Podium des auteurs de la liste, par upvotes cumulés. */
+  const topContributors = Array.from(contributors.values())
+    .sort((a, b) => b.upvotes - a.upvotes)
+    .slice(0, 4);
+
+  /** Au moins un filtre actif ? Sert à n'afficher « Réinitialiser » qu'utile. */
+  const filtersActive =
+    !!q || category !== "all" || tag !== "all" || solved !== "all";
+
+  const resetFilters = () => {
+    setQ("");
+    setCategory("all");
+    setTag("all");
+    setSolved("all");
+  };
 
   const loadThreads = useCallback(async () => {
     setLoading(true);
@@ -462,6 +537,18 @@ export function ForumSection() {
     }
   };
 
+  /**
+   * Ouvre le composeur — ou refuse poliment si le visiteur n'est pas
+   * connecté. Partagé par le bouton d'en-tête et l'encadré latéral.
+   */
+  const openCreate = () => {
+    if (!user) {
+      toast.error(t("forum.sign_in_to_ask"));
+      return;
+    }
+    setCreateOpen(true);
+  };
+
   // THREAD DETAIL VIEW
   if (sectionParam) {
     if (loadingDetail) {
@@ -478,19 +565,52 @@ export function ForumSection() {
         <Button
           variant="ghost"
           size="sm"
-          className="mb-6 -ms-2"
+          className="mb-3 -ms-2 font-mono text-xs"
           onClick={() => navigate("forum")}
         >
           <ArrowLeft className="h-4 w-4 me-1 rtl:-scale-x-100" />
           {t("forum.back_to_list")}
         </Button>
 
+        {/* Bandeau de commande — le fil d'Ariane façon terminal :
+            `$ cd /forum/<slug>` à gauche, télémétrie de la discussion à
+            droite (vues · réponses) avec la pastille « live ». */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-xl border border-border bg-card px-3 py-2 font-mono text-[11px] sm:text-xs">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="font-bold text-brand" aria-hidden="true">
+              $
+            </span>
+            <span className="truncate text-foreground">
+              cd /forum/{selectedThread.slug}
+            </span>
+            <span className="hidden text-muted-foreground sm:inline">
+              --category={selectedThread.category}
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <LiveDot />
+              [live]
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+              {selectedThread.views} {t("forum.views")}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
+              {selectedThread.posts.length} {t("forum.answers")}
+            </span>
+          </div>
+        </div>
+
         <article className="space-y-6">
           {/* Deux colonnes sur desktop : rail de vote vertical à gauche (la
               « colonne grise » de Reddit), contenu à droite. Sous `sm`, le
               rail devient une barre horizontale, à l'inverse (`order`). */}
           <div className="flex gap-4">
-            <div data-testid="vote-rail" className="hidden sm:flex shrink-0 flex-col items-center gap-0.5 self-start rounded-md border border-border bg-muted/40 px-1.5 py-2 text-sm">
+            {/* Rail de vote — la « colonne grise » de Reddit, en version
+                terminal : filet bordé, chiffre mono en accent de marque. */}
+            <div data-testid="vote-rail" className="hidden sm:flex w-12 shrink-0 flex-col items-center gap-0.5 self-start rounded-md border border-border bg-muted/40 px-1 py-2 font-mono text-sm">
               <button
                 type="button"
                 onClick={() =>
@@ -498,11 +618,11 @@ export function ForumSection() {
                 }
                 aria-label={selectedThread.myVote === 1 ? t("forum.cancel_vote") : t("forum.upvote_question")}
                 aria-pressed={selectedThread.myVote === 1}
-                className={cn("rounded p-1 transition hover:bg-background", selectedThread.myVote === 1 ? "text-chart-1" : "text-muted-foreground hover:text-chart-1")}
+                className={cn("rounded p-1 transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", selectedThread.myVote === 1 ? "text-brand" : "text-muted-foreground hover:text-brand")}
               >
                 <ChevronUp className="h-5 w-5" />
               </button>
-              <span className={cn("font-mono text-sm font-semibold tabular-nums", selectedThread.myVote === 1 && "text-chart-1", selectedThread.myVote === -1 && "text-destructive")}>
+              <span className={cn("font-mono text-sm font-bold tabular-nums", selectedThread.myVote === 1 && "text-brand", selectedThread.myVote === -1 && "text-destructive")}>
                 {selectedThread.upvotes}
               </span>
               <button
@@ -512,63 +632,77 @@ export function ForumSection() {
                 }
                 aria-label={selectedThread.myVote === -1 ? t("forum.cancel_vote") : t("forum.downvote_question")}
                 aria-pressed={selectedThread.myVote === -1}
-                className={cn("rounded p-1 transition hover:bg-background", selectedThread.myVote === -1 ? "text-destructive" : "text-muted-foreground hover:text-destructive")}
+                className={cn("rounded p-1 transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", selectedThread.myVote === -1 ? "text-destructive" : "text-muted-foreground hover:text-brand")}
               >
                 <ChevronDown className="h-5 w-5" />
               </button>
-              <span className="mt-1 flex items-center gap-1 border-t border-border pt-1 text-xs text-muted-foreground">
+              <span className="mt-1 flex items-center gap-1 border-t border-border pt-1 text-[11px] text-muted-foreground">
                 <Eye className="h-3 w-3" /> {selectedThread.views}
               </span>
-              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                 <MessageSquare className="h-3 w-3" /> {selectedThread.posts.length}
               </span>
             </div>
 
             <div className="min-w-0 flex-1">
-          {/* Thread meta */}
+          {/* Thread meta — barre d'en-tête façon terminal : badges de statut,
+              « chemin » de la question, et hub régional de l'auteur (ville /
+              pays) aligné à droite. */}
           <header>
-            <div className="flex items-center gap-2 mb-3">
-              {selectedThread.pinned && (
-                <Tag label={t("forum.pinned")} variant="solid">
-                  <Pin className="h-3 w-3 me-1 inline" />
-                </Tag>
+            <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-border pb-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {selectedThread.pinned && (
+                  <Tag label={t("forum.pinned")} variant="solid">
+                    <Pin className="h-3 w-3 me-1 inline" />
+                  </Tag>
+                )}
+                {selectedThread.solved && (
+                  <Tag label={t("forum.solved")} variant="outline">
+                    <CheckCircle2 className="h-3 w-3 me-1 inline" />
+                  </Tag>
+                )}
+                <Tag label={t(`forum.category.${selectedThread.category}`)} />
+                <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
+                  threads/{selectedThread.category}/{selectedThread.slug}.md
+                </span>
+              </div>
+              {(selectedThread.author.profile?.city ||
+                selectedThread.author.profile?.country) && (
+                <span className="ms-auto inline-flex items-center rounded border border-border bg-muted/50 px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  [ HUB: {selectedThread.author.profile?.city ?? "—"} /{" "}
+                  {selectedThread.author.profile?.country ?? "—"} ]
+                </span>
               )}
-              {selectedThread.solved && (
-                <Tag label={t("forum.solved")} variant="outline">
-                  <CheckCircle2 className="h-3 w-3 me-1 inline" />
-                </Tag>
-              )}
-              <Tag label={t(`forum.category.${selectedThread.category}`)} />
             </div>
             <h1 className="display text-3xl sm:text-4xl lg:text-5xl text-balance mb-4">
               {selectedThread.title}
             </h1>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
               <Avatar
                 name={selectedThread.author.name}
                 color={selectedThread.author.profile?.avatarColor}
                 size="sm"
               />
-              <span>
-                {t("forum.by")}{" "}
+              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="font-mono text-xs">{t("forum.by")}</span>
                 <button
                   onClick={() => navigate("annuaire", selectedThread.author.profile?.username)}
-                  className="font-medium text-foreground hover:text-foreground transition"
+                  className="font-mono text-xs font-bold text-foreground transition hover:text-brand"
                 >
-                  {selectedThread.author.name}
+                  u/{selectedThread.author.profile?.username ?? selectedThread.author.name}
                 </button>
-                {selectedThread.author.profile?.country && (
-                  <span className="text-muted-foreground/70">
-                    {" · "}
-                    {selectedThread.author.profile.city}, {selectedThread.author.profile.country}
-                  </span>
-                )}
+                {typeof selectedThread.author.reputation === "number" &&
+                  selectedThread.author.reputation > 0 && (
+                    <span className="font-mono text-[11px] tabular-nums">
+                      ★ {selectedThread.author.reputation}{" "}
+                      {t("annuaire.reputation")}
+                    </span>
+                  )}
                 <time
                   dateTime={selectedThread.createdAt}
-                  className="text-muted-foreground/70"
+                  className="font-mono text-[11px] text-muted-foreground/70"
                   title={new Date(selectedThread.createdAt).toLocaleString(locale)}
                 >
-                  {" · "}
                   {timeAgoLong(selectedThread.createdAt, locale)}
                 </time>
               </span>
@@ -653,20 +787,24 @@ export function ForumSection() {
           )}
 
           {selectedThread.tags && !editing && (
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
               {selectedThread.tags
                 .split(",")
                 .map((s) => s.trim())
                 .filter(Boolean)
                 .map((tg) => (
-                  <Tag key={tg} label={tg} variant={tagColors[tg] || "default"} />
+                  <Tag
+                    key={tg}
+                    label={`#${tg}`}
+                    variant={tagColors[tg] || "default"}
+                  />
                 ))}
             </div>
           )}
 
           {/* Sous `sm`, le rail vertical n'existe pas : on garde une barre de
               vote horizontale, masquée dès `sm` où le rail prend le relais. */}
-          <div data-testid="vote-bar" className="flex sm:hidden items-center justify-between gap-5 text-sm text-muted-foreground border-t border-b border-border py-3">
+          <div data-testid="vote-bar" className="flex sm:hidden items-center justify-between gap-5 font-mono text-xs text-muted-foreground border-t border-b border-border py-3">
             <span className="flex items-center gap-1">
               <button
                 type="button"
@@ -684,10 +822,10 @@ export function ForumSection() {
                 }
                 aria-pressed={selectedThread.myVote === 1}
                 className={cn(
-                  "flex items-center gap-1 rounded px-1 -mx-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                  "flex items-center gap-1 rounded px-1 -mx-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   selectedThread.myVote === 1
-                    ? "text-chart-1"
-                    : "hover:text-chart-1"
+                    ? "text-brand"
+                    : "hover:text-brand"
                 )}
               >
                 <ChevronUp className="h-4 w-4" />
@@ -710,10 +848,10 @@ export function ForumSection() {
                 aria-pressed={selectedThread.myVote === -1}
                 title={t("forum.downvote_hint")}
                 className={cn(
-                  "rounded px-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1",
+                  "rounded px-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   selectedThread.myVote === -1
-                    ? "text-chart-1"
-                    : "hover:text-chart-1"
+                    ? "text-destructive"
+                    : "hover:text-brand"
                 )}
               >
                 <ChevronDown className="h-4 w-4" />
@@ -804,111 +942,384 @@ export function ForumSection() {
   // LIST VIEW
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      {/* ---------------------------------------------------------- */}
+      {/* Bandeau de commande — `$ codexchange.dev/forum --filter=…`  */}
+      {/* La ligne de prompt du design Stitch, avec les filtres        */}
+      {/* réellement actifs et le nombre de résultats chargés.         */}
+      {/* ---------------------------------------------------------- */}
+      <div className="mb-6 overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border px-3 py-2 font-mono text-[11px] sm:text-xs">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="font-bold text-brand" aria-hidden="true">
+              $
+            </span>
+            <span className="truncate font-medium text-foreground">
+              codexchange.dev/forum
+            </span>
+            <span className="hidden text-muted-foreground md:inline">
+              --filter={category} --sort=activity
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 border border-border bg-muted/50 px-1.5 py-0.5 font-bold">
+              <LiveDot />
+              [status: sync_ok]
+            </span>
+            <span aria-live="polite">
+              {loading
+                ? t("common.loading")
+                : `${visible.length} ${t("common.results")}`}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Empilé sous `sm` : en ligne, le bouton `shrink-0` écrase le bloc
           titre et la description tombe à un mot par ligne. */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <SectionHeader
           eyebrow={t("nav.forum")}
           title={t("forum.title")}
           subtitle={t("forum.subtitle")}
           className="w-full sm:min-w-0 sm:flex-1"
         />
-        <Button
-          onClick={() => {
-            if (!user) {
-              toast.error(t("forum.sign_in_to_ask"));
-              return;
-            }
-            setCreateOpen(true);
-          }}
-          className="bg-brand text-brand-foreground hover:bg-brand/90 shrink-0"
-        >
-          <Plus className="h-4 w-4 me-2" />
+        <Button onClick={openCreate} className="shrink-0 font-mono">
+          <Plus className="h-4 w-4 me-2" aria-hidden="true" />
           {t("forum.new")}
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      {/* Barre de commandes — `> grep -in` pour la recherche, bascules de
+          statut façon terminal, sélecteur de tag, et « Réinitialiser »
+          qui n'apparaît que si un filtre est actif. */}
+      <div className="mb-4 flex flex-col gap-3 xl:flex-row xl:items-center">
+        <div className="flex flex-1 items-center rounded-md border border-input bg-background px-3 transition-[color,box-shadow] focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]">
+          <span
+            className="me-2 hidden font-mono text-xs font-bold text-brand sm:inline"
+            aria-hidden="true"
+          >
+            &gt; grep -in
+          </span>
+          <Search
+            className="me-2 h-4 w-4 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("forum.search.placeholder")}
-            className="ps-9"
+            aria-label={t("common.search")}
+            className="h-9 border-0 bg-transparent ps-0 shadow-none focus-visible:ring-0"
           />
+          <kbd className="ms-2 hidden border border-border bg-muted px-1 font-mono text-[10px] text-muted-foreground sm:inline">
+            ESC
+          </kbd>
         </div>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((c) => (
-              <SelectItem key={c.value} value={c.value}>
-                {t(c.labelKey)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={tag} onValueChange={setTag}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("forum.filter.tag.all")}</SelectItem>
-            {allTags.map((tg) => (
-              <SelectItem key={tg} value={tg}>
-                {tg}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={solved} onValueChange={(v) => setSolved(v as typeof solved)}>
-          <SelectTrigger
-            className="w-full sm:w-[180px]"
-            aria-label={t("forum.filter.status.label")}
+
+        <div
+          className="flex flex-wrap items-center gap-1.5"
+          role="group"
+          aria-label={t("forum.filter.status.label")}
+        >
+          <span
+            className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline"
+            aria-hidden="true"
           >
-            <SelectValue placeholder={t("forum.filter.status.all")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("forum.filter.status.all")}</SelectItem>
-            <SelectItem value="false">{t("forum.filter.status.unsolved")}</SelectItem>
-            <SelectItem value="true">{t("forum.filter.status.solved")}</SelectItem>
-          </SelectContent>
-        </Select>
+            {t("forum.filter.status.label")}:
+          </span>
+          {statusOptions.map((o) => (
+            <button
+              key={o.value}
+              type="button"
+              aria-pressed={solved === o.value}
+              onClick={() => setSolved(o.value)}
+              className={cn(
+                "rounded-md border px-2.5 py-1.5 font-mono text-[11px] font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                solved === o.value
+                  ? "border-brand bg-brand text-brand-foreground"
+                  : "border-border bg-muted/40 text-muted-foreground hover:border-brand/50 hover:text-foreground"
+              )}
+            >
+              {t(o.labelKey)}
+            </button>
+          ))}
+
+          <Select value={tag} onValueChange={setTag}>
+            <SelectTrigger
+              className="h-9 w-full text-xs font-mono sm:w-[170px]"
+              aria-label={t("forum.filter.tag.all")}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("forum.filter.tag.all")}</SelectItem>
+              {allTags.map((tg) => (
+                <SelectItem key={tg} value={tg}>
+                  {tg}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {filtersActive && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={resetFilters}
+              className="font-mono text-xs text-muted-foreground"
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+              {t("common.reset_filters")}
+            </Button>
+          )}
+        </div>
       </div>
 
-      {/* Threads list */}
-      {loading ? (
-        <div className="space-y-3">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-24 rounded-lg bg-muted animate-pulse" />
-          ))}
+      {/* Catégories — la barre de puces `[x] / [ ]` du design Stitch : le
+          même filtre que l'ancien sélecteur, lisible d'un coup d'œil. */}
+      <div
+        className="mb-6 flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/30 p-2"
+        role="group"
+        aria-label={t("forum.filter.all")}
+      >
+        {categories.map((c) => (
+          <button
+            key={c.value}
+            type="button"
+            aria-pressed={category === c.value}
+            onClick={() => setCategory(c.value)}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              category === c.value
+                ? "border-brand bg-brand text-brand-foreground"
+                : "border-border bg-background text-muted-foreground hover:border-brand/50 hover:text-foreground"
+            )}
+          >
+            <span aria-hidden="true">{category === c.value ? "[x]" : "[ ]"}</span>
+            {t(c.labelKey)}
+          </button>
+        ))}
+      </div>
+
+      {/* ---------------------------------------------------------- */}
+      {/* Deux colonnes : le fil technique (~70 %) et sa barre        */}
+      {/* latérale de télémétrie (~30 %), comme sur le design.       */}
+      {/* ---------------------------------------------------------- */}
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="min-w-0">
+          {/* Threads list */}
+          {loading ? (
+            <div className="space-y-3" role="status" aria-busy="true">
+              <span className="sr-only">{t("common.loading")}</span>
+              {[0, 1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="h-28 animate-pulse rounded-lg border border-border bg-muted/40"
+                />
+              ))}
+            </div>
+          ) : visible.length === 0 ? (
+            <Card className="p-12 text-center border-dashed">
+              <MessageSquare className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+              <p className="font-mono text-sm text-muted-foreground">
+                {t("forum.empty")}
+              </p>
+            </Card>
+          ) : (
+            <>
+              <div className="space-y-3">
+                {visible.map((thread) => (
+                  <ThreadCard
+                    key={thread.id}
+                    thread={thread}
+                    onOpen={(th) => navigate("forum", th.slug)}
+                    onVote={(th, value) => handleVote("thread", th.id, value)}
+                  />
+                ))}
+              </div>
+
+              {/* Pied de liste façon terminal : ce que renvoie la requête,
+                  sans pagination inventée. */}
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 font-mono text-[11px] text-muted-foreground">
+                <span className="flex items-center gap-2">
+                  <span className="font-bold text-brand" aria-hidden="true">
+                    $
+                  </span>
+                  ls threads/{category === "all" ? "*" : category} | wc -l
+                </span>
+                <span className="font-bold tabular-nums text-foreground">
+                  {visible.length} {t("common.results")}
+                </span>
+                <span className="hidden sm:inline">[EOF_BUFFER]</span>
+              </div>
+            </>
+          )}
         </div>
-      ) : visible.length === 0 ? (
-        <Card className="p-12 text-center border-dashed">
-          <MessageSquare className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground">{t("forum.empty")}</p>
-        </Card>
-      ) : (
-        <div className="space-y-3">
-          {visible.map((thread) => (
-            <ThreadCard
-              key={thread.id}
-              thread={thread}
-              onOpen={(th) => navigate("forum", th.slug)}
-              onVote={(th, value) => handleVote("thread", th.id, value)}
-            />
-          ))}
-        </div>
-      )}
+
+        {/* ------------------------------------------------------ */}
+        {/* Colonne de droite — télémétrie, nuage de tags, podium   */}
+        {/* ------------------------------------------------------ */}
+        <aside className="space-y-4" aria-label={t("feed.sidebar_label")}>
+          {/* Composeur — `$ forum post --new`, pastille live et rappels
+              de soumission (libellés i18n existants). */}
+          <Card className="card-interactive p-4">
+            <div className="mb-3 flex items-center justify-between font-mono text-[11px]">
+              <span className="font-bold text-brand">$ forum post --new</span>
+              <LiveDot />
+            </div>
+            <Button onClick={openCreate} className="w-full font-mono">
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {t("forum.new")}
+            </Button>
+            <div className="mt-3 space-y-1 rounded-md border border-border bg-muted/40 p-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
+              <p className="font-bold text-foreground">
+                {t("forum.create.title")}
+              </p>
+              <p className="flex gap-1.5">
+                <span className="text-brand" aria-hidden="true">
+                  •
+                </span>
+                {t("forum.create.body.placeholder")}
+              </p>
+              <p className="flex gap-1.5">
+                <span className="text-brand" aria-hidden="true">
+                  •
+                </span>
+                {t("forum.create.tags.placeholder")}
+              </p>
+            </div>
+          </Card>
+
+          {/* Télémétrie — les chiffres de la liste chargée, jamais codés
+              en dur : discussions, résolues, ouvertes, réponses. */}
+          <Card className="p-4">
+            <div className="mb-3 flex items-center justify-between border-b border-border pb-2">
+              <h2 className="font-mono text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                {t("feed.sidebar_stats")}
+              </h2>
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                <LiveDot />
+                [LIVE]
+              </span>
+            </div>
+            <dl className="grid grid-cols-2 gap-2">
+              {[
+                { label: t("stats.threads"), value: visible.length },
+                { label: t("forum.solved"), value: solvedCount },
+                {
+                  label: t("forum.filter.status.unsolved"),
+                  value: visible.length - solvedCount,
+                },
+                { label: t("forum.answers"), value: answersCount },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  className="rounded-md border border-border bg-muted/30 p-2"
+                >
+                  <dt className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {row.label}
+                  </dt>
+                  <dd className="font-mono text-lg font-bold tabular-nums text-brand">
+                    {row.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Card>
+
+          {/* Nuage de tags — cliquable : chaque puce applique le filtre
+              `?tag=`, un second clic l'enlève. */}
+          {rankedTags.length > 0 && (
+            <Card className="p-4">
+              <div className="mb-3 flex items-center justify-between border-b border-border pb-2">
+                <h2 className="font-mono text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                  {t("feed.tech_stack")}
+                </h2>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  INDEXED
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {rankedTags.slice(0, 12).map(([tg, count]) => (
+                  <button
+                    key={tg}
+                    type="button"
+                    aria-pressed={tag === tg}
+                    onClick={() => setTag(tag === tg ? "all" : tg)}
+                    className={cn(
+                      "inline-flex items-center gap-1 rounded-md border px-2 py-1 font-mono text-[11px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      tag === tg
+                        ? "border-brand bg-brand/10 text-brand"
+                        : "border-border bg-muted/40 text-foreground hover:border-brand/50 hover:text-brand"
+                    )}
+                  >
+                    #{tg}
+                    <span className="tabular-nums text-muted-foreground">
+                      {count}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Podium des contributeurs de la liste, par upvotes cumulés.
+              Le clic ouvre l'annuaire (navigation existante). */}
+          {topContributors.length > 0 && (
+            <Card className="p-4">
+              <div className="mb-3 flex items-center justify-between border-b border-border pb-2">
+                <h2 className="font-mono text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                  {t("annuaire.leaderboard")}
+                </h2>
+                <span className="font-mono text-[10px] text-muted-foreground">
+                  WEEK_TOP
+                </span>
+              </div>
+              <ul className="space-y-1.5">
+                {topContributors.map((c, i) => (
+                  <li key={c.username}>
+                    <button
+                      type="button"
+                      onClick={() => navigate("annuaire", c.username)}
+                      className="flex w-full items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-2 py-1.5 font-mono text-start transition hover:border-brand/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span className="w-4 shrink-0 text-[11px] font-bold tabular-nums text-brand">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span className="truncate text-[11px] font-bold text-foreground">
+                          u/{c.username}
+                        </span>
+                        {c.city && (
+                          <span className="truncate text-[10px] text-muted-foreground">
+                            {c.city}
+                          </span>
+                        )}
+                      </span>
+                      <span className="shrink-0 text-[11px] font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+                        +{c.upvotes}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              {typeof topContributors[0]?.reputation === "number" &&
+                topContributors[0].reputation > 0 && (
+                  <p className="mt-3 border-t border-border pt-2 font-mono text-[10px] text-muted-foreground">
+                    ★ {topContributors[0].reputation}{" "}
+                    {t("annuaire.reputation")}
+                  </p>
+                )}
+            </Card>
+          )}
+        </aside>
+      </div>
 
       {/* Create thread dialog */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-bold text-2xl">
+            <DialogTitle className="font-mono text-2xl font-bold">
               {t("forum.create.title")}
             </DialogTitle>
           </DialogHeader>

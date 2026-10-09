@@ -13,7 +13,6 @@ import { useT } from "@/store/app-store";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
-import { SectionHeader } from "@/components/shared/section-header";
 import { PaymentDialog } from "@/components/shared/payment-dialog";
 import { Tag } from "@/components/shared/tag";
 import { Avatar } from "@/components/shared/avatar";
@@ -326,12 +325,18 @@ export function AnnuaireSection() {
   if (sectionParam) {
     if (loadingProfile) {
       return (
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="h-6 w-6 animate-spin text-foreground" />
+        <div
+          className="flex min-h-[60vh] items-center justify-center"
+          role="status"
+          aria-busy="true"
+        >
+          <Loader2 className="h-6 w-6 animate-spin text-foreground" aria-hidden="true" />
         </div>
       );
     }
     if (!selectedProfile) return null;
+
+    const isMe = !!user && selectedProfile.userId === user.id;
 
     return (
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -341,180 +346,216 @@ export function AnnuaireSection() {
           className="mb-6 -ms-2"
           onClick={() => navigate("annuaire")}
         >
-          <ArrowLeft className="h-4 w-4 me-1 rtl:-scale-x-100" />
+          <ArrowLeft className="h-4 w-4 me-1 rtl:-scale-x-100" aria-hidden="true" />
           {t("annuaire.back")}
         </Button>
 
-        <Card className="p-6 lg:p-8 mb-6 paper-grain">
-          <div className="flex flex-col sm:flex-row items-start gap-5">
-            <Avatar
-              name={selectedProfile.user.name}
-              color={selectedProfile.avatarColor}
-              size="xl"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-3 mb-1">
-                <h1 className="font-bold text-3xl lg:text-4xl leading-tight">
-                  {selectedProfile.user.name}
-                </h1>
-                <div className="flex items-center gap-2 shrink-0">
-                  {selectedProfile.available && (
-                    <Tag label={t("annuaire.open_to_work")} variant="solid" />
-                  )}
-                  {user && selectedProfile.userId === user.id && (
+        {/* Dossier du profil — la même « spotlight » que la barre latérale du
+            design : liseré de marque + en-tête de terminal, jamais de fond
+            ajouté, tout vit dans les tokens. */}
+        <Card className="p-0 mb-6 overflow-hidden border-brand/40">
+          <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-4 py-2">
+            <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              <span className="text-brand" aria-hidden="true">$</span>
+              {t("annuaire.title")}
+              <span className="text-muted-foreground/60">::</span>
+              <span className="text-foreground break-all">/dev/{selectedProfile.username}</span>
+            </span>
+            {selectedProfile.available && (
+              <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-600/40 bg-emerald-600/10 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                {t("annuaire.open_to_work")}
+              </span>
+            )}
+          </div>
+
+          <div className="p-6 lg:p-8">
+            <div className="flex flex-col sm:flex-row items-start gap-5">
+              <Avatar
+                name={selectedProfile.user.name}
+                color={selectedProfile.avatarColor}
+                size="xl"
+                className="rounded-lg border-2 border-brand/40"
+              />
+              <div className="flex-1 min-w-0 w-full">
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h1 className="display text-2xl lg:text-3xl text-balance">
+                    {selectedProfile.user.name}
+                  </h1>
+                  {isMe && (
                     <Button
                       variant="outline"
                       size="sm"
+                      className="shrink-0"
                       onClick={() => openEdit(selectedProfile)}
                     >
-                      <Pencil className="h-3.5 w-3.5 me-1" />
+                      <Pencil className="h-3.5 w-3.5 me-1" aria-hidden="true" />
                       {t("annuaire.edit_profile")}
                     </Button>
                   )}
                 </div>
-              </div>
-              {selectedProfile.headline && (
-                <p className="text-base text-muted-foreground mb-2">
-                  {selectedProfile.headline}
+                <p className="font-mono text-xs text-muted-foreground">
+                  u/{selectedProfile.username}
                 </p>
-              )}
-              {selectedProfile.country && (
-                <p className="text-sm text-muted-foreground flex items-center gap-1 mb-3">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {selectedProfile.city}, {selectedProfile.country}
-                </p>
-              )}
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                {selectedProfile.user.emailVerifiedAt && (
-                  <span
-                    className="inline-flex items-center gap-1 rounded border border-emerald-600/40 bg-emerald-600/10 px-2 py-0.5 font-mono text-xs text-emerald-700 dark:text-emerald-400"
-                    title={t("annuaire.verified_hint")}
-                  >
-                    <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                    {t("annuaire.verified")}
-                  </span>
+                {selectedProfile.headline && (
+                  <p className="text-base text-muted-foreground mt-2 mb-2 text-pretty">
+                    {selectedProfile.headline}
+                  </p>
                 )}
-                <span
-                  className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 font-mono text-xs"
-                  title={t("annuaire.reputation_hint")}
-                >
-                  <Star className="h-3 w-3 text-chart-2" aria-hidden="true" />
-                  <span className="sr-only">{t("annuaire.reputation")} : </span>
-                  {selectedProfile.user.reputation ?? 0}
-                  <span className="text-muted-foreground">
-                    {t("annuaire.reputation")}
-                  </span>
-                </span>
-                <span
-                  className="inline-flex items-center rounded border border-foreground/30 bg-foreground/5 px-2 py-0.5 font-mono text-xs font-medium"
-                >
-                  {t(reputationLevel(selectedProfile.user.reputation ?? 0).key)}
-                </span>
-                <span className="font-mono text-xs text-muted-foreground">
-                  @{selectedProfile.username}
-                </span>
-              </div>
-              {/* F5 — jalons réellement mérités (compteurs servis par l'API). */}
-              {detail?.stats && computeBadges(detail.stats).length > 0 && (
-                <div className="flex flex-wrap items-center gap-1.5 mb-4">
-                  <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground me-1">
-                    {t("annuaire.badges")}
-                  </span>
-                  {computeBadges(detail.stats).map((id) => (
+                {(selectedProfile.city || selectedProfile.country) && (
+                  <p className="text-sm font-mono text-muted-foreground flex items-center gap-1 mb-3">
+                    <MapPin className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
+                    {[selectedProfile.city, selectedProfile.country]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                )}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {selectedProfile.user.emailVerifiedAt && (
                     <span
-                      key={id}
-                      className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 text-xs"
+                      className="inline-flex items-center gap-1 rounded border border-emerald-600/40 bg-emerald-600/10 px-2 py-0.5 font-mono text-xs text-emerald-700 dark:text-emerald-400"
+                      title={t("annuaire.verified_hint")}
                     >
-                      <span aria-hidden="true">{BADGE_ICONS[id]}</span>
-                      {t(badgeKey(id))}
+                      <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                      {t("annuaire.verified")}
                     </span>
-                  ))}
+                  )}
+                  <span
+                    className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 font-mono text-xs"
+                    title={t("annuaire.reputation_hint")}
+                  >
+                    <Star className="h-3 w-3 text-chart-2" aria-hidden="true" />
+                    <span className="sr-only">{t("annuaire.reputation")} : </span>
+                    <span className="font-bold tabular-nums text-brand">
+                      {selectedProfile.user.reputation ?? 0}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {t("annuaire.reputation")}
+                    </span>
+                  </span>
+                  {selectedProfile.level && (
+                    <Tag label={t(`annuaire.level.${selectedProfile.level}`)} />
+                  )}
+                  <span
+                    className="inline-flex items-center gap-1 rounded border border-foreground/30 bg-foreground/5 px-2 py-0.5 font-mono text-xs font-medium"
+                    title={t("annuaire.reputation_hint")}
+                  >
+                    <Trophy className="h-3 w-3 text-chart-2" aria-hidden="true" />
+                    {t(reputationLevel(selectedProfile.user.reputation ?? 0).key)}
+                  </span>
                 </div>
-              )}
-              {selectedProfile.stack && (
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {selectedProfile.stack
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                    .map((s) => (
-                      <Tag key={s} label={s} />
+                {/* F5 — jalons réellement mérités (compteurs servis par l'API). */}
+                {detail?.stats && computeBadges(detail.stats).length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 mb-4">
+                    <span className="eyebrow me-1">
+                      {t("annuaire.badges")}
+                    </span>
+                    {computeBadges(detail.stats).map((id) => (
+                      <span
+                        key={id}
+                        className="inline-flex items-center gap-1 rounded border border-border bg-muted/60 px-2 py-0.5 text-xs font-mono"
+                      >
+                        <span aria-hidden="true">{BADGE_ICONS[id]}</span>
+                        {t(badgeKey(id))}
+                      </span>
                     ))}
+                  </div>
+                )}
+                {selectedProfile.stack && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {selectedProfile.stack
+                      .split(",")
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                      .map((s) => (
+                        <Tag key={s} label={`#${s}`} variant="outline" />
+                      ))}
+                  </div>
+                )}
+                <div className="flex flex-wrap items-center gap-2">
+                  {selectedProfile.github && (
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={`https://github.com/${selectedProfile.github}`} target="_blank" rel="noopener noreferrer">
+                        <Github className="h-3.5 w-3.5 me-1" aria-hidden="true" />
+                        GitHub
+                      </a>
+                    </Button>
+                  )}
+                  {selectedProfile.twitter && (
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={`https://twitter.com/${selectedProfile.twitter}`} target="_blank" rel="noopener noreferrer">
+                        <Twitter className="h-3.5 w-3.5 me-1" aria-hidden="true" />
+                        Twitter
+                      </a>
+                    </Button>
+                  )}
+                  {/^https?:\/\//i.test(selectedProfile.website ?? "") && (
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={selectedProfile.website ?? ""} target="_blank" rel="noopener noreferrer">
+                        <Globe className="h-3.5 w-3.5 me-1" aria-hidden="true" />
+                        {t("annuaire.site")}
+                      </a>
+                    </Button>
+                  )}
                 </div>
-              )}
-              <div className="flex items-center gap-2">
-                {selectedProfile.github && (
-                  <Button variant="outline" size="sm" asChild>
-                    <a href={`https://github.com/${selectedProfile.github}`} target="_blank" rel="noopener noreferrer">
-                      <Github className="h-3.5 w-3.5 me-1" />
-                      GitHub
-                    </a>
-                  </Button>
-                )}
-                {selectedProfile.twitter && (
-                  <Button variant="outline" size="sm" asChild>
-                    <a href={`https://twitter.com/${selectedProfile.twitter}`} target="_blank" rel="noopener noreferrer">
-                      <Twitter className="h-3.5 w-3.5 me-1" />
-                      Twitter
-                    </a>
-                  </Button>
-                )}
-                {/^https?:\/\//i.test(selectedProfile.website ?? "") && (
-                  <Button variant="outline" size="sm" asChild>
-                    <a href={selectedProfile.website ?? ""} target="_blank" rel="noopener noreferrer">
-                      <Globe className="h-3.5 w-3.5 me-1" />
-                      Site
-                    </a>
-                  </Button>
-                )}
               </div>
             </div>
-          </div>
 
-          {selectedProfile.bio && (
-            <div className="mt-6 pt-6 border-t border-border">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
-                Bio
-              </h3>
-              <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                {selectedProfile.bio}
-              </p>
-            </div>
-          )}
+            {selectedProfile.bio && (
+              <div className="mt-6 pt-6 border-t border-border">
+                <h2 className="eyebrow mb-2">{t("annuaire.bio")}</h2>
+                <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap text-pretty">
+                  {selectedProfile.bio}
+                </p>
+              </div>
+            )}
+          </div>
         </Card>
 
         {/* H4b — un membre avec mentorat profilé peut être sollicité
             directement depuis son profil, sans retour à la section. */}
         {selectedProfile.user.mentorProfile && user && selectedProfile.userId !== user.id && (
-          <Card className="p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="min-w-0">
-              <p className="font-semibold leading-tight">
-                {t("mentorat.title")} · {selectedProfile.user.mentorProfile.expertise}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {selectedProfile.user.mentorProfile.hourlyRate ?? "—"}
-              </p>
+          <Card className="p-0 mb-6 overflow-hidden">
+            <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-4 py-2">
+              <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                <span className="text-brand" aria-hidden="true">$</span>
+                mentorat --request
+              </span>
+              <Trophy className="h-3.5 w-3.5 text-chart-2" aria-hidden="true" />
             </div>
-            <div className="flex gap-2 shrink-0">
-              <Button
-                size="sm"
-                className="shrink-0 bg-brand text-brand-foreground hover:bg-brand/90"
-                onClick={() => navigate("mentorat", selectedProfile.user.mentorProfile!.id)}
-              >
-                {t("mentorat.request")}
-              </Button>
-              {selectedProfile.user.mentorProfile.hourlyRate &&
-                selectedProfile.user.mentorProfile.hourlyRate !== "Free" &&
-                selectedProfile.user.mentorProfile.hourlyRate !== "—" && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="shrink-0"
-                    onClick={() => setPayOpen(true)}
-                  >
-                    {t("payment.pay_session")}
-                  </Button>
-                )}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
+              <div className="min-w-0">
+                <p className="font-semibold leading-tight">
+                  {t("mentorat.title")} · {selectedProfile.user.mentorProfile.expertise}
+                </p>
+                <p className="text-sm font-mono text-muted-foreground">
+                  {selectedProfile.user.mentorProfile.hourlyRate ?? "—"}
+                </p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <Button
+                  size="sm"
+                  className="shrink-0 bg-brand text-brand-foreground hover:bg-brand/90"
+                  onClick={() => navigate("mentorat", selectedProfile.user.mentorProfile!.id)}
+                >
+                  {t("mentorat.request")}
+                </Button>
+                {selectedProfile.user.mentorProfile.hourlyRate &&
+                  selectedProfile.user.mentorProfile.hourlyRate !== "Free" &&
+                  selectedProfile.user.mentorProfile.hourlyRate !== "—" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="shrink-0"
+                      onClick={() => setPayOpen(true)}
+                    >
+                      {t("payment.pay_session")}
+                    </Button>
+                  )}
+              </div>
             </div>
           </Card>
         )}
@@ -566,23 +607,23 @@ export function AnnuaireSection() {
         {/* Recent activity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {selectedProfile.user.threads.length > 0 && (
-            <Card className="p-5">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-foreground mb-3 flex items-center gap-1.5">
-                <MessageSquare className="h-3.5 w-3.5" />
+            <Card className="p-0 overflow-hidden">
+              <h3 className="flex items-center gap-1.5 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                <MessageSquare className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
                 {t("annuaire.recent_threads")}
               </h3>
-              <ul className="space-y-2">
+              <ul className="p-4 space-y-3">
                 {selectedProfile.user.threads.map((th) => (
                   <li key={th.id}>
                     <button
                       onClick={() => navigate("forum", th.slug)}
-                      className="text-sm text-start hover:text-foreground transition line-clamp-2"
+                      className="w-full text-start text-sm hover:text-brand transition-colors line-clamp-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1 rounded"
                     >
                       {th.title}
                     </button>
-                    <div className="text-[10px] font-mono text-muted-foreground flex items-center gap-2">
+                    <div className="text-[10px] font-mono text-muted-foreground flex items-center gap-2 mt-0.5">
                       <span className="flex items-center gap-0.5">
-                        <Star className="h-2.5 w-2.5" />
+                        <Star className="h-2.5 w-2.5" aria-hidden="true" />
                         {th.upvotes}
                       </span>
                     </div>
@@ -593,18 +634,18 @@ export function AnnuaireSection() {
           )}
 
           {selectedProfile.user.projects.length > 0 && (
-            <Card className="p-5">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-foreground mb-3 flex items-center gap-1.5">
-                <FolderGit2 className="h-3.5 w-3.5" />
+            <Card className="p-0 overflow-hidden">
+              <h3 className="flex items-center gap-1.5 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                <FolderGit2 className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
                 {t("annuaire.recent_projects")}
               </h3>
-              <ul className="space-y-2">
+              <ul className="p-4 space-y-3">
                 {selectedProfile.user.projects.map((p) => (
                   <li key={p.id} className="flex items-center gap-2">
-                    <span className="text-lg">{p.cover}</span>
+                    <span className="text-lg" aria-hidden="true">{p.cover}</span>
                     <span className="text-sm flex-1 line-clamp-1">{p.name}</span>
-                    <span className="text-[10px] font-mono flex items-center gap-0.5 text-muted-foreground">
-                      <Star className="h-2.5 w-2.5" />
+                    <span className="text-[10px] font-mono flex items-center gap-0.5 shrink-0 text-muted-foreground">
+                      <Star className="h-2.5 w-2.5" aria-hidden="true" />
                       {p.stars}
                     </span>
                   </li>
@@ -614,19 +655,19 @@ export function AnnuaireSection() {
           )}
 
           {selectedProfile.user.tutorials.length > 0 && (
-            <Card className="p-5">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-foreground mb-3 flex items-center gap-1.5">
-                <BookOpen className="h-3.5 w-3.5" />
+            <Card className="p-0 overflow-hidden">
+              <h3 className="flex items-center gap-1.5 border-b border-border bg-muted/40 px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                <BookOpen className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
                 {t("annuaire.recent_tutos")}
               </h3>
-              <ul className="space-y-2">
+              <ul className="p-4 space-y-3">
                 {selectedProfile.user.tutorials.map((tu) => (
                   <li key={tu.id}>
                     <button
                       onClick={() => navigate("tutos", tu.slug)}
-                      className="text-sm text-start hover:text-foreground transition line-clamp-2 flex items-start gap-1.5"
+                      className="w-full text-start text-sm hover:text-brand transition-colors line-clamp-2 flex items-start gap-1.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
                     >
-                      <span>{tu.coverEmoji}</span>
+                      <span aria-hidden="true">{tu.coverEmoji}</span>
                       <span className="line-clamp-2">{tu.title}</span>
                     </button>
                   </li>
@@ -773,7 +814,7 @@ export function AnnuaireSection() {
                     onClick={() => saveProfile(selectedProfile)}
                     disabled={saving || !form.name.trim()}
                   >
-                    {saving && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
+                    {saving && <Loader2 className="h-4 w-4 me-2 animate-spin" aria-hidden="true" />}
                     {t("annuaire.save")}
                   </Button>
                 </div>
@@ -787,110 +828,215 @@ export function AnnuaireSection() {
 
   // LIST VIEW
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-      <SectionHeader
-        eyebrow={t("nav.annuaire")}
-        title={t("annuaire.title")}
-        subtitle={t("annuaire.subtitle")}
-        className="mb-8"
-      />
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      {/* Bandeau terminal — la même ligne de commande que le design :
+          aucune valeur en dur, uniquement l'état réel des filtres. */}
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-1.5 font-mono text-[11px] text-muted-foreground">
+        <span className="flex min-w-0 items-center gap-1.5">
+          <span className="text-brand" aria-hidden="true">$</span>
+          <span className="truncate">
+            grep --profiles
+            {country !== "all" ? ` --country="${country}"` : ""}
+            {city !== "all" ? ` --city="${city}"` : ""}
+            {level !== "all" ? ` --level=${level}` : ""}
+            {stack !== "all" ? ` --stack=${stack}` : ""}
+            {availableOnly ? " --available" : ""}
+          </span>
+          <span
+            className="inline-block h-3 w-1.5 shrink-0 animate-pulse bg-brand/70"
+            aria-hidden="true"
+          />
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="relative flex h-2 w-2" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          {loading ? t("common.loading") : `${profiles.length} ${t("common.results")}`}
+        </span>
+      </div>
 
-      <Card className="p-4 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div>
-            <Label className="text-xs font-mono uppercase mb-1.5 block">
-              {t("annuaire.filter.country.all")}
-            </Label>
-            <Select value={country} onValueChange={(v) => { setCountry(v); setCity("all"); }}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c === "all" ? t("annuaire.filter.country.all") : c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label className="text-xs font-mono uppercase mb-1.5 block">
-              {t("annuaire.filter.city.all")}
-            </Label>
-            <Select value={city} onValueChange={setCity}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("annuaire.filter.city.all")}</SelectItem>
-                {cities.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label className="text-xs font-mono uppercase mb-1.5 block">
-              {t("annuaire.filter.stack.all")}
-            </Label>
-            <Select value={stack} onValueChange={setStack}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {stacks.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s === "all" ? t("annuaire.filter.stack.all") : s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label className="text-xs font-mono uppercase mb-1.5 block">
-              {t("annuaire.filter.level.all")}
-            </Label>
-            <Select value={level} onValueChange={setLevel}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {levels.map((l) => (
-                  <SelectItem key={l} value={l}>
-                    {l === "all"
-                      ? t("annuaire.filter.level.all")
-                      : t(`annuaire.level.${l}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      {/* Hero — visiteurs et membres : un seul message clé, les chiffres du
+          registre sont ceux renvoyés par /api/profiles. */}
+      <div className="mb-5 overflow-hidden rounded-xl border border-border bg-card">
+        <div className="relative p-6 sm:p-8">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:16px_16px]"
+          />
+          <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+            <div className="min-w-0">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1 font-mono text-xs text-muted-foreground">
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                {t("hero.tagline")}
+              </div>
+              <p className="eyebrow mb-2 flex items-center gap-1.5">
+                <span className="text-brand">$</span> {t("nav.annuaire")}
+              </p>
+              <h1 className="display text-2xl text-balance sm:text-3xl">
+                {t("annuaire.title")}
+              </h1>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground text-pretty">
+                {t("annuaire.subtitle")}
+              </p>
+            </div>
+            {/* Télémétrie du registre — 4 chiffres lus dans la réponse
+                courante, aucun nombre codé en dur. */}
+            <dl className="grid w-full shrink-0 grid-cols-2 gap-2 lg:w-72">
+              {[
+                { label: t("stats.devs"), value: profiles.length },
+                {
+                  label: t("annuaire.available_only"),
+                  value: profiles.filter((p) => p.available).length,
+                },
+                {
+                  label: t("stats.countries"),
+                  value: new Set(profiles.map((p) => p.country).filter(Boolean)).size,
+                },
+                { label: t("annuaire.leaderboard"), value: top.length },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="rounded-md border border-border bg-background/70 px-3 py-2"
+                >
+                  <dt className="mb-0.5 text-[10px] uppercase leading-tight tracking-widest text-muted-foreground">
+                    {s.label}
+                  </dt>
+                  <dd className="font-mono text-xl font-bold tabular-nums text-brand">
+                    {s.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
-        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-          <Switch
-            id="available"
-            checked={availableOnly}
-            onCheckedChange={setAvailableOnly}
-          />
-          <Label htmlFor="available" className="text-sm cursor-pointer">
-            {t("annuaire.available_only")}
-          </Label>
+      </div>
+
+      <Card className="p-0 mb-6 overflow-hidden">
+        <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-4 py-2">
+          <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+            <Briefcase className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
+            grep --filter
+          </span>
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {profiles.length} {t("common.results")}
+          </span>
+        </div>
+        <div className="p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <Label
+                htmlFor="flt-country"
+                className="eyebrow mb-1.5 block"
+              >
+                {t("annuaire.filter.country.all")}
+              </Label>
+              <Select value={country} onValueChange={(v) => { setCountry(v); setCity("all"); }}>
+                <SelectTrigger id="flt-country" className="w-full font-mono">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {countries.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c === "all" ? t("annuaire.filter.country.all") : c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label
+                htmlFor="flt-city"
+                className="eyebrow mb-1.5 block"
+              >
+                {t("annuaire.filter.city.all")}
+              </Label>
+              <Select value={city} onValueChange={setCity}>
+                <SelectTrigger id="flt-city" className="w-full font-mono">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("annuaire.filter.city.all")}</SelectItem>
+                  {cities.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label
+                htmlFor="flt-stack"
+                className="eyebrow mb-1.5 block"
+              >
+                {t("annuaire.filter.stack.all")}
+              </Label>
+              <Select value={stack} onValueChange={setStack}>
+                <SelectTrigger id="flt-stack" className="w-full font-mono">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {stacks.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s === "all" ? t("annuaire.filter.stack.all") : s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label
+                htmlFor="flt-level"
+                className="eyebrow mb-1.5 block"
+              >
+                {t("annuaire.filter.level.all")}
+              </Label>
+              <Select value={level} onValueChange={setLevel}>
+                <SelectTrigger id="flt-level" className="w-full font-mono">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {levels.map((l) => (
+                    <SelectItem key={l} value={l}>
+                      {l === "all"
+                        ? t("annuaire.filter.level.all")
+                        : t(`annuaire.level.${l}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+            <Switch
+              id="available"
+              checked={availableOnly}
+              onCheckedChange={setAvailableOnly}
+            />
+            <Label htmlFor="available" className="text-sm font-mono cursor-pointer">
+              {t("annuaire.available_only")}
+            </Label>
+          </div>
         </div>
       </Card>
 
       {/* F5 — classement : top 10 par réputation réellement cumulée. */}
       {top.length > 0 && (
-        <Card className="p-4 mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Trophy className="h-4 w-4 text-chart-2" aria-hidden="true" />
-            <h2 className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+        <Card className="p-0 mb-6 overflow-hidden">
+          <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-4 py-2">
+            <h2 className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              <Trophy className="h-3.5 w-3.5 text-chart-2" aria-hidden="true" />
               {t("annuaire.leaderboard")}
             </h2>
+            <span className="font-mono text-[11px] text-muted-foreground">
+              top {top.length}
+            </span>
           </div>
-          <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4">
             {top.map((row, i) => (
               <li key={row.id}>
                 <button
@@ -898,9 +1044,10 @@ export function AnnuaireSection() {
                     row.profile?.username &&
                     navigate("annuaire", row.profile.username)
                   }
-                  className="flex w-full items-center gap-2 rounded border border-border/60 px-2 py-1.5 text-start hover:border-foreground/40 transition-colors"
+                  disabled={!row.profile?.username}
+                  className="flex w-full items-center gap-2 rounded-md border border-border/60 px-2 py-1.5 text-start transition-colors hover:border-brand/40 hover:bg-muted/60 disabled:cursor-default disabled:hover:border-border/60 disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
                 >
-                  <span className="font-mono text-xs text-muted-foreground w-6 shrink-0">
+                  <span className="font-mono text-xs text-muted-foreground w-6 shrink-0 tabular-nums">
                     #{i + 1}
                   </span>
                   <Avatar
@@ -917,7 +1064,7 @@ export function AnnuaireSection() {
                       variant="outline"
                     />
                   )}
-                  <span className="font-mono text-xs flex items-center gap-1 shrink-0">
+                  <span className="font-mono text-xs flex items-center gap-1 shrink-0 text-brand">
                     <Star className="h-3 w-3 text-chart-2" aria-hidden="true" />
                     {row.reputation}
                   </span>
@@ -931,12 +1078,12 @@ export function AnnuaireSection() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-44 rounded-lg bg-muted animate-pulse" />
+            <div key={i} className="h-52 rounded-lg bg-muted animate-pulse" />
           ))}
         </div>
       ) : profiles.length === 0 ? (
         <Card className="p-12 text-center border-dashed">
-          <Users className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+          <Users className="h-8 w-8 text-muted-foreground mx-auto mb-3" aria-hidden="true" />
           <p className="text-muted-foreground">{t("annuaire.empty")}</p>
         </Card>
       ) : (
@@ -944,70 +1091,145 @@ export function AnnuaireSection() {
           {profiles
             .filter((p) => city === "all" || p.city === city)
             .map((p) => (
-              <button
+              <article
                 key={p.id}
                 onClick={() => navigate("annuaire", p.username)}
-                className="text-start group"
+                className="rise-in group cursor-pointer"
               >
-                <Card className="h-full p-5 hover:border-foreground/50 hover:shadow-sm transition-all">
-                  <div className="flex items-start gap-3 mb-3">
-                    <Avatar
-                      name={p.user.name}
-                      color={p.avatarColor}
-                      size="lg"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg leading-tight group-hover:text-foreground transition-colors">
-                        {p.user.name}
-                      </h3>
-                      {p.headline && (
-                        <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-                          {p.headline}
-                        </p>
-                      )}
-                      {p.level && (
-                        <Tag
-                          label={t(`annuaire.level.${p.level}`)}
-                          variant="solid"
-                          className="mt-1.5"
-                        />
-                      )}
-                    </div>
-                    {p.available && (
-                      <span
-                        className="h-2 w-2 rounded-full bg-foreground shrink-0 mt-2"
-                        title={t("annuaire.open_to_work")}
-                      />
-                    )}
+                <Card className="card-interactive flex h-full flex-col p-0 overflow-hidden">
+                  {/* En-tête de terminal : identifiant de registre + hub. */}
+                  <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-3 py-1.5 font-mono text-[11px] text-muted-foreground">
+                    <span className="truncate">#dev-{p.id.slice(0, 6)}</span>
+                    <span className="flex shrink-0 items-center gap-1">
+                      <MapPin className="h-3 w-3 text-brand" aria-hidden="true" />
+                      {[p.city, p.country].filter(Boolean).join(" / ")}
+                    </span>
                   </div>
 
-                  {p.bio && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                      {p.bio}
-                    </p>
-                  )}
-
-                  {p.stack && (
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {p.stack
-                        .split(",")
-                        .map((s) => s.trim())
-                        .filter(Boolean)
-                        .slice(0, 3)
-                        .map((s) => (
-                          <Tag key={s} label={s} />
-                        ))}
+                  <div className="flex flex-1 flex-col p-4">
+                    <div className="flex items-start gap-3 mb-3">
+                      <Avatar
+                        name={p.user.name}
+                        color={p.avatarColor}
+                        size="lg"
+                        className="border-2 border-brand/40"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base leading-tight">
+                          <a
+                            href={`/annuaire/${p.username}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              navigate("annuaire", p.username);
+                            }}
+                            className="decoration-underline underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1 rounded"
+                          >
+                            {p.user.name}
+                          </a>
+                        </h3>
+                        <p className="font-mono text-xs text-muted-foreground mt-0.5">
+                          @{p.username}
+                        </p>
+                      </div>
+                      {p.available && (
+                        <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-600/40 bg-emerald-600/10 px-1.5 py-0.5 font-mono text-[10px] font-medium text-emerald-700 dark:text-emerald-400">
+                          <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          </span>
+                          {t("annuaire.open_to_work")}
+                        </span>
+                      )}
                     </div>
-                  )}
 
-                  {p.country && (
-                    <p className="text-xs font-mono text-muted-foreground flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {p.city}, {p.country}
-                    </p>
-                  )}
+                    {p.headline && (
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-3 text-pretty">
+                        {p.headline}
+                      </p>
+                    )}
+
+                    {p.bio && (
+                      <p className="text-xs text-muted-foreground/80 line-clamp-2 mb-3 text-pretty">
+                        {p.bio}
+                      </p>
+                    )}
+
+                    {p.stack && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {p.stack
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean)
+                          .slice(0, 4)
+                          .map((s) => (
+                            <Tag key={s} label={`#${s}`} variant="outline" />
+                          ))}
+                      </div>
+                    )}
+
+                    <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-3">
+                      {p.level ? (
+                        <Tag label={t(`annuaire.level.${p.level}`)} />
+                      ) : (
+                        <span />
+                      )}
+                      <span
+                        className="font-mono text-[11px] text-brand underline-offset-4 group-hover:underline"
+                        aria-hidden="true"
+                      >
+                        {t("annuaire.view_profile")}
+                      </span>
+                    </div>
+
+                    {/* Liens externes — arrêtent la propagation pour ne pas
+                        ouvrir le dossier en plus de la cible. */}
+                    {(p.github || p.twitter || p.linkedin || /^https?:\/\//i.test(p.website ?? "")) && (
+                      <div className="mt-3 flex items-center gap-2">
+                        {p.github && (
+                          <a
+                            href={`https://github.com/${p.github}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded p-1 text-muted-foreground transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+                            title="GitHub"
+                          >
+                            <Github className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span className="sr-only">GitHub</span>
+                          </a>
+                        )}
+                        {p.twitter && (
+                          <a
+                            href={`https://twitter.com/${p.twitter}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded p-1 text-muted-foreground transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+                            title="Twitter"
+                          >
+                            <Twitter className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span className="sr-only">Twitter</span>
+                          </a>
+                        )}
+                        {/^https?:\/\//i.test(p.website ?? "") && (
+                          <a
+                            href={p.website ?? ""}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded p-1 text-muted-foreground transition-colors hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chart-1"
+                            title={t("annuaire.site")}
+                          >
+                            <Globe className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span className="sr-only">{t("annuaire.site")}</span>
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </Card>
-              </button>
+              </article>
             ))}
         </div>
       )}

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>codexchange.dev/messages // Encrypted Direct Terminal</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Space Mono Google Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-bright": "#fff8f6",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "primary-container": "#c2410c",
+            "tertiary-fixed-dim": "#cec5be",
+            "on-tertiary-fixed": "#1f1b17",
+            "on-background": "#1d1b1a",
+            "on-secondary-fixed-variant": "#005323",
+            "surface-tint": "#ac3400",
+            "on-tertiary-container": "#f9efe8",
+            "surface-dim": "#dfd9d7",
+            "outline-variant": "#e1bfb5",
+            "inverse-primary": "#ffb59d",
+            "on-primary-fixed-variant": "#832600",
+            "tertiary-container": "#736c67",
+            "inverse-surface": "#32302f",
+            "on-primary-fixed": "#390c00",
+            "inverse-on-surface": "#f6efed",
+            "surface-variant": "#e7e1df",
+            "surface-container-high": "#ede7e5",
+            "primary-fixed": "#ffdbd0",
+            "primary": "#9b2f00",
+            "surface-container-lowest": "#ffffff",
+            "secondary-container": "#92f5a4",
+            "surface-container": "#f3ecea",
+            "secondary": "#006d30",
+            "on-surface-variant": "#59413a",
+            "on-error": "#ffffff",
+            "surface-container-low": "#f9f2f0",
+            "on-tertiary": "#ffffff",
+            "on-secondary-container": "#007233",
+            "on-primary-container": "#ffece7",
+            "tertiary": "#5a544f",
+            "error": "#ba1a1a",
+            "on-secondary-fixed": "#00210a",
+            "primary-fixed-dim": "#ffb59d",
+            "error-container": "#ffdad6",
+            "tertiary-fixed": "#eae1da",
+            "surface": "#fff8f6",
+            "secondary-fixed-dim": "#79db8d",
+            "outline": "#8d7168",
+            "on-error-container": "#93000a",
+            "secondary-fixed": "#95f8a7",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-surface": "#1d1b1a",
+            "surface-container-highest": "#e7e1df",
+            "background": "#fff8f6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "margin-desktop": "2.5rem",
+            "margin": "1rem",
+            "space-md": "1rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "1.5rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "headline-md": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "title-sm": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "headline-sm": ["Space Mono"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Architectural Dotted Grid Matrix */
+    .bg-dot-matrix {
+      background-image: radial-gradient(#8d7168 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f3ecea;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #8d7168;
+    }
+    /* Hard brutalist button offset click */
+    .btn-brutal:active {
+      transform: translate(2px, 2px);
+      box-shadow: none !important;
+    }
+    .btn-brutal:hover {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-on-primary">
+<!-- TOP NAVIGATION BAR (SHARED COMPONENT IMPLEMENTATION) -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="w-full border-b border-outline-variant dark:border-outline px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Search -->
+<div class="flex items-center gap-space-lg">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary tracking-tight font-bold flex items-center gap-1.5 hover:text-primary dark:hover:text-inverse-primary" href="#">
+<span>$ codexchange.dev</span>
+</a>
+<!-- Grep Search Bar (on_left) -->
+<div class="hidden lg:flex items-center bg-surface-container-low border border-outline-variant px-2.5 py-1 text-on-surface-variant font-code-inline text-code-inline focus-within:border-primary-container">
+<span class="material-symbols-outlined text-[15px] mr-1.5 text-tertiary">search</span>
+<span class="text-tertiary mr-1 font-bold">&gt;</span>
+<input class="bg-transparent border-0 p-0 text-on-surface font-code-inline text-code-inline focus:ring-0 focus:outline-none w-48 placeholder:text-tertiary" placeholder="grep --messages [Ctrl+K]" type="text"/>
+<span class="border border-outline-variant text-[10px] px-1 py-0.5 text-tertiary ml-2">[ESC]</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-space-md">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Discussions</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Jobs</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Projects</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Mentorship</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Directory</a>
+<!-- Active Messages Navigation -->
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary font-bold py-1 flex items-center gap-1" href="#">
+<span>Messages</span>
+<span class="bg-primary-container text-on-primary text-[9px] px-1 font-bold tracking-tight">3_NEW</span>
+</a>
+</nav>
+<!-- Trailing Action Badges & Telemetry Nodes -->
+<div class="flex items-center gap-space-sm">
+<!-- Node Latency badges -->
+<div class="hidden xl:flex items-center gap-1.5 text-label-sm font-label-sm mr-2 text-tertiary">
+<span class="border border-outline-variant px-1 bg-surface-container py-0.5">LOS:14ms</span>
+<span class="border border-outline-variant px-1 bg-surface-container py-0.5 text-secondary font-bold">NBO:21ms</span>
+<span class="border border-outline-variant px-1 bg-surface-container py-0.5">KGL:19ms</span>
+</div>
+<!-- PGP Badge -->
+<div class="hidden sm:flex items-center gap-1 bg-surface-container border border-outline-variant px-2 py-1 text-[11px] font-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">verified_user</span>
+<span class="text-secondary font-bold">ed25519 verified</span>
+</div>
+<!-- Trailing Icon Actions -->
+<div class="flex items-center border-l border-outline-variant pl-2 gap-1 text-on-surface-variant">
+<button class="p-1 hover:text-primary transition-colors" title="Language switch">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</button>
+<button class="p-1 hover:text-primary transition-colors" title="Dark Mode">
+<span class="material-symbols-outlined text-[18px]">dark_mode</span>
+</button>
+<button class="p-1 hover:text-primary transition-colors" title="Terminal CLI">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</button>
+</div>
+<!-- Trailing Account Profile -->
+<div class="flex items-center gap-2 ml-1">
+<a class="border border-primary-container bg-surface-container px-2 py-1 text-label-sm font-label-sm text-primary hover:bg-primary-container hover:text-on-primary transition-colors" href="#">
+            [@amina_dev]
+          </a>
+</div>
+</div>
+</div>
+</header>
+<!-- TERMINAL SUB-HEADER / TELEMETRY STATUS STRIP -->
+<section class="bg-surface-container-high border-b border-outline-variant">
+<div class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-1.5 flex flex-wrap items-center justify-between font-code-inline text-[11px] text-tertiary">
+<div class="flex items-center gap-2">
+<span class="text-primary font-bold">&gt;&gt;</span>
+<span class="text-on-surface font-bold">$ codexchange.dev/messages --channel=e2ee --cipher=x25519-chacha20-poly1305</span>
+<span class="hidden md:inline text-outline-variant">|</span>
+<span class="hidden md:inline bg-surface border border-outline-variant px-1.5 text-secondary font-bold">
+          [SECURE_CHANNEL // ESTABLISHED]
+        </span>
+</div>
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1">
+<span class="inline-block w-2 h-2 bg-secondary"></span>
+<span>BUFFER_STREAM: ACTIVE</span>
+</span>
+<span class="border-l border-outline-variant pl-2">EPOCH_EXPIRE: 30d</span>
+<span class="border-l border-outline-variant pl-2 text-primary">BUFFER: 4/128KB</span>
+</div>
+</div>
+</section>
+<!-- MAIN TWO-COLUMN DIRECT MESSAGING WORKSPACE -->
+<main class="flex-grow max-w-[1280px] w-full mx-auto grid grid-cols-1 md:grid-cols-12 min-h-[760px] border-x border-outline-variant bg-surface">
+<!-- LEFT COLUMN: THREAD & CONTACT LIST (4 COLUMNS) -->
+<aside class="md:col-span-4 lg:col-span-4 border-r border-outline-variant flex flex-col bg-surface-container-low">
+<!-- List Header & Search Bar -->
+<div class="p-3 border-b border-outline-variant bg-surface space-y-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1 text-label-sm font-label-sm font-bold text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-primary">folder_open</span>
+<span>DIRECTORY_THREADS</span>
+</div>
+<span class="text-label-sm font-label-sm text-tertiary">12_PAIRED</span>
+</div>
+<!-- Terminal grep input -->
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-tertiary font-code-inline text-[11px]">
+<span>$ grep -i</span>
+</div>
+<input class="w-full bg-surface-container-lowest border border-outline-variant pl-20 pr-2 py-1.5 font-code-inline text-code-inline text-on-surface placeholder:text-tertiary focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none" placeholder='"contact or handle..."' type="text"/>
+</div>
+<!-- Filter Tags -->
+<div class="flex flex-wrap gap-1 font-label-sm text-[10px]">
+<button class="bg-primary-container text-on-primary px-2 py-0.5 border border-primary font-bold">[ All (12) ]</button>
+<button class="bg-surface border border-outline-variant text-on-surface px-2 py-0.5 hover:border-on-surface">[ Unread (3) ]</button>
+<button class="bg-surface border border-outline-variant text-secondary px-2 py-0.5 hover:border-secondary font-bold">[ PGP Verified ]</button>
+<button class="bg-surface border border-outline-variant text-tertiary px-2 py-0.5 hover:border-on-surface">[ Mentors ]</button>
+</div>
+</div>
+<!-- Thread Scrollable Feed -->
+<div class="flex-1 overflow-y-auto custom-scroll divide-y divide-outline-variant">
+<!-- Thread Item 1: ACTIVE SELECTED (Zuri Ochieng) -->
+<div class="bg-surface-container p-3 border-l-4 border-l-primary-container cursor-pointer transition-colors relative">
+<div class="flex items-start justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="border border-primary-container bg-primary-container text-on-primary font-bold text-label-md px-1.5 py-0.5">[ZO]</span>
+<div>
+<div class="font-bold text-title-sm text-on-surface flex items-center gap-1.5 leading-none">
+<span>Zuri Ochieng</span>
+<span class="text-[10px] text-tertiary font-normal">@zuri_dev</span>
+</div>
+<div class="text-[10px] font-label-sm text-tertiary mt-0.5">Staff Distributed Eng · NBO KE</div>
+</div>
+</div>
+<span class="font-code-inline text-[10px] text-primary font-bold">14:22 UTC</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface line-clamp-2 mt-1.5 pl-7 text-[11px] leading-relaxed">
+<span class="text-tertiary font-code-inline">&gt;</span> Sent the benchmark diff for the M-Pesa Redis queue fallback...
+          </p>
+<div class="flex items-center justify-between pl-7 mt-2 text-[10px] font-label-sm text-tertiary">
+<span class="text-secondary font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span> Ping 21ms
+            </span>
+<span class="border border-outline-variant bg-surface px-1 text-[9px]">[ED25519:OK]</span>
+</div>
+</div>
+<!-- Thread Item 2: Amina Bello (Unread) -->
+<div class="p-3 bg-surface hover:bg-surface-container-high cursor-pointer transition-colors">
+<div class="flex items-start justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="border border-outline bg-surface-container text-on-surface font-bold text-label-md px-1.5 py-0.5">[AB]</span>
+<div>
+<div class="font-bold text-title-sm text-on-surface flex items-center gap-1 leading-none">
+<span>Amina Bello</span>
+<span class="text-[10px] text-tertiary font-normal">@amina_dev</span>
+</div>
+<div class="text-[10px] font-label-sm text-tertiary mt-0.5">Lead Mobile Infra · LOS NG</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-code-inline text-[10px] text-tertiary">13:45 UTC</span>
+<span class="bg-primary-container text-on-primary font-bold text-[9px] px-1.5 py-0.2 tracking-wider">[ 2 ]</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1 pl-7 text-[11px]">
+            Does your CRDT offline engine handle SQLite write locks?
+          </p>
+<div class="flex items-center justify-between pl-7 mt-1.5 text-[10px] font-label-sm text-tertiary">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span> Ping 14ms</span>
+<span class="text-primary font-bold">[UNREAD]</span>
+</div>
+</div>
+<!-- Thread Item 3: Jean-Paul Niyonzima -->
+<div class="p-3 bg-surface hover:bg-surface-container cursor-pointer transition-colors">
+<div class="flex items-start justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="border border-outline-variant bg-surface-container text-on-surface font-bold text-label-md px-1.5 py-0.5">[JP]</span>
+<div>
+<div class="font-bold text-title-sm text-on-surface flex items-center gap-1 leading-none">
+<span>Jean-Paul N.</span>
+<span class="text-[10px] text-tertiary font-normal">@jp_rw</span>
+</div>
+<div class="text-[10px] font-label-sm text-tertiary mt-0.5">Edge AI Specialist · KGL RW</div>
+</div>
+</div>
+<span class="font-code-inline text-[10px] text-tertiary">Yesterday</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary line-clamp-1 pl-7 text-[11px]">
+            Whisper-v3 Swahili quant weights uploaded to repo...
+          </p>
+<div class="flex items-center justify-between pl-7 mt-1.5 text-[10px] font-label-sm text-tertiary">
+<span>Ping 19ms</span>
+<span class="border border-outline-variant px-1">[FP:7C19...A1]</span>
+</div>
+</div>
+<!-- Thread Item 4: Kwame Boakye -->
+<div class="p-3 bg-surface hover:bg-surface-container cursor-pointer transition-colors">
+<div class="flex items-start justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="border border-outline-variant bg-surface-container text-on-surface font-bold text-label-md px-1.5 py-0.5">[KB]</span>
+<div>
+<div class="font-bold text-title-sm text-on-surface flex items-center gap-1 leading-none">
+<span>Kwame Boakye</span>
+<span class="text-[10px] text-tertiary font-normal">@kwame_dev</span>
+</div>
+<div class="text-[10px] font-label-sm text-tertiary mt-0.5">Fintech Architect · ACC GH</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-code-inline text-[10px] text-tertiary">May 10</span>
+<span class="bg-primary-container text-on-primary font-bold text-[9px] px-1 py-0.2">[ 1 ]</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1 pl-7 text-[11px]">
+            ISO20022 parser pipeline validated against Bank of Ghana sandbox.
+          </p>
+<div class="flex items-center justify-between pl-7 mt-1.5 text-[10px] font-label-sm text-tertiary">
+<span>Ping 22ms</span>
+<span class="text-secondary font-bold">[RECONCILED]</span>
+</div>
+</div>
+<!-- Thread Item 5: Pieter van der Merwe -->
+<div class="p-3 bg-surface hover:bg-surface-container cursor-pointer transition-colors">
+<div class="flex items-start justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="border border-outline-variant bg-surface-container text-on-surface font-bold text-label-md px-1.5 py-0.5">[PM]</span>
+<div>
+<div class="font-bold text-title-sm text-on-surface flex items-center gap-1 leading-none">
+<span>Pieter v.d. Merwe</span>
+<span class="text-[10px] text-tertiary font-normal">@pieter_kernel</span>
+</div>
+<div class="text-[10px] font-label-sm text-tertiary mt-0.5">SRE &amp; Kernel · CPT ZA</div>
+</div>
+</div>
+<span class="font-code-inline text-[10px] text-tertiary">May 08</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary line-clamp-1 pl-7 text-[11px]">
+            Teraco DB1 undersea cable fiber switch completed...
+          </p>
+<div class="flex items-center justify-between pl-7 mt-1.5 text-[10px] font-label-sm text-tertiary">
+<span>Ping 42ms</span>
+<span class="border border-outline-variant px-1">[BGP_UPDATE]</span>
+</div>
+</div>
+<!-- Thread Item 6: Folashade Adeleke -->
+<div class="p-3 bg-surface hover:bg-surface-container cursor-pointer transition-colors">
+<div class="flex items-start justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="border border-outline-variant bg-surface-container text-on-surface font-bold text-label-md px-1.5 py-0.5">[FA]</span>
+<div>
+<div class="font-bold text-title-sm text-on-surface flex items-center gap-1 leading-none">
+<span>Folashade Adeleke</span>
+<span class="text-[10px] text-tertiary font-normal">@fola_ai</span>
+</div>
+<div class="text-[10px] font-label-sm text-tertiary mt-0.5">Speech NLP · LOS NG</div>
+</div>
+</div>
+<span class="font-code-inline text-[10px] text-tertiary">May 05</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary line-clamp-1 pl-7 text-[11px]">
+            Let's review the Yoruba ASR tokenizer diff...
+          </p>
+<div class="flex items-center justify-between pl-7 mt-1.5 text-[10px] font-label-sm text-tertiary">
+<span>Ping 16ms</span>
+<span class="text-tertiary">[MERGED]</span>
+</div>
+</div>
+</div>
+<!-- Quick Session Indicator Bottom Bar -->
+<div class="p-2.5 bg-surface-container border-t border-outline-variant font-code-inline text-[10px] text-tertiary flex justify-between items-center">
+<span>SESSION: LOCAL_STORAGE [OK]</span>
+<button class="text-primary hover:underline font-bold">[ RELOAD_KEYRING ]</button>
+</div>
+</aside>
+<!-- RIGHT COLUMN: CHAT THREAD WORKSPACE (8 COLUMNS) -->
+<section class="md:col-span-8 lg:col-span-8 flex flex-col bg-surface-bright relative">
+<!-- Active Thread Header -->
+<div class="p-3.5 border-b border-outline-variant bg-surface flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<span class="border-2 border-primary-container bg-primary-container text-on-primary font-bold text-headline-sm px-2 py-0.5">
+            ZO
+          </span>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Zuri Ochieng</h1>
+<span class="font-code-inline text-label-md text-primary font-bold">[@zuri_dev]</span>
+<span class="border border-outline-variant bg-surface-container px-1 text-[10px] text-tertiary font-label-sm">
+                [HUB: NAIROBI]
+              </span>
+</div>
+<p class="text-[11px] font-body-sm text-tertiary">
+              Staff Distributed Systems Engineer @ Safaricom / Daraja Core
+            </p>
+<div class="flex items-center gap-2 text-[10px] font-code-inline mt-0.5">
+<span class="text-secondary font-bold flex items-center gap-1">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Online (LOS &lt;-&gt; NBO 34ms RTT)
+              </span>
+<span class="text-outline">|</span>
+<span class="text-tertiary">KEY: 4A9F 88E1 290C BB43 00F9... 8A19 <strong class="text-secondary">[VERIFIED]</strong></span>
+</div>
+</div>
+</div>
+<!-- Terminal Actions Button Cluster -->
+<div class="flex items-center gap-1.5 font-label-sm text-[11px]">
+<button class="btn-brutal bg-surface border border-outline-variant px-2 py-1 text-on-surface hover:border-on-surface transition-all">
+            [ $ man zuri_dev ]
+          </button>
+<button class="btn-brutal bg-surface border border-outline-variant px-2 py-1 text-tertiary hover:border-primary transition-all">
+            [ Export GPG Session ]
+          </button>
+<button class="btn-brutal bg-surface-container-high border border-outline px-2 py-1 text-error hover:bg-error-container transition-all">
+            [ End Channel ]
+          </button>
+</div>
+</div>
+<!-- E2EE Encryption Banner -->
+<div class="px-4 py-2 bg-surface-container border-b border-outline-variant font-code-inline text-[11px] text-tertiary flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[15px] text-secondary">lock</span>
+<span>// E2EE BUFFER: End-to-end encrypted via X25519 session keys. Messages vanish after 30d epoch or manual shred.</span>
+</div>
+<span class="text-secondary font-bold hidden sm:inline">[CIPHER: CHACHA20]</span>
+</div>
+<!-- Messages Stream Canvas -->
+<div class="flex-1 p-4 md:p-6 overflow-y-auto custom-scroll space-y-4 bg-dot-matrix bg-surface-bright">
+<!-- Day Divider -->
+<div class="flex items-center my-2">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="px-3 text-[10px] font-code-inline text-tertiary bg-surface border border-outline-variant">
+            EPOCH: 2025-05-14 // CHANNEL_ESTABLISHED
+          </span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Message 1: THEIR MESSAGE (Left Aligned) -->
+<div class="max-w-[85%] md:max-w-[75%] space-y-1">
+<div class="flex items-center gap-2 font-code-inline text-[10px] text-tertiary">
+<span class="font-bold text-on-surface">Zuri Ochieng (@zuri_dev)</span>
+<span>·</span>
+<span>14:05 UTC</span>
+<span class="text-secondary">[SIG_VERIFIED]</span>
+</div>
+<div class="bg-surface border border-outline-variant p-3.5 shadow-[2px_2px_0px_#e1bfb5]">
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+              Hey Amina! Saw your pull request on <code class="bg-surface-container px-1 py-0.5 border border-outline-variant font-code-inline text-primary">afri-mesh-crdt</code>. The local-first conflict resolution for SQLite is solid, but what happens during Safaricom network jitter when M-Pesa webhook callbacks pile up?
+            </p>
+</div>
+</div>
+<!-- Message 2: MY MESSAGE WITH CODE SNIPPET (Right Aligned - Terracotta) -->
+<div class="max-w-[90%] md:max-w-[80%] ml-auto space-y-1 text-right">
+<div class="flex items-center justify-end gap-2 font-code-inline text-[10px] text-tertiary">
+<span class="text-primary font-bold">✓✓ Read 14:15 UTC</span>
+<span>·</span>
+<span>14:12 UTC</span>
+<span>·</span>
+<span class="font-bold text-on-surface">You (@amina_dev)</span>
+</div>
+<div class="bg-primary-container text-on-primary border border-on-primary-fixed-variant p-3.5 text-left shadow-[2px_2px_0px_#1d1b1a]">
+<p class="font-body-md text-body-md text-on-primary leading-relaxed mb-3">
+              We implemented an exponential backoff worker pool in Tokio with an in-memory ring buffer. Here is the benchmark diff we ran on Nairobi edge nodes:
+            </p>
+<!-- Embedded Code Container with Zero-Padded Line Numbers -->
+<div class="bg-inverse-surface border border-outline text-inverse-on-surface font-code-inline text-[11px] overflow-hidden my-2">
+<div class="bg-inverse-surface border-b border-outline/50 px-2.5 py-1 text-[10px] text-tertiary-fixed-dim flex justify-between items-center">
+<span>crates/crdt-net/src/worker.rs (tokio::select!)</span>
+<span class="text-secondary-fixed">Rust 1.78</span>
+</div>
+<div class="p-2 flex font-mono leading-tight">
+<!-- Gutter line numbers -->
+<div class="text-tertiary pr-3 select-none text-right border-r border-outline/40">
+<div>01</div>
+<div>02</div>
+<div>03</div>
+<div>04</div>
+<div>05</div>
+<div>06</div>
+</div>
+<!-- Code snippet -->
+<pre class="pl-3 overflow-x-auto text-[#f6efed]"><span class="text-[#ffb59d]">pub async fn</span> <span class="text-[#95f8a7]">handle_daraja_backoff</span>(queue: &amp;Arc&lt;RingBuf&gt;) -&gt; Result&lt;()&gt; {
+    <span class="text-[#cec5be]">// Evade SQLite lock contention during 3G bursts</span>
+    <span class="text-[#ffb59d]">let mut</span> interval = tokio::time::interval(Duration::from_millis(<span class="text-[#95f8a7]">45</span>));
+    <span class="text-[#ffb59d]">while let</span> Some(payload) = queue.pop_transaction().<span class="text-[#ffb59d]">await</span> {
+        drain_to_crdt_delta(payload).<span class="text-[#ffb59d]">await</span>?;
+    }
+    Ok(())
+}</pre>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-2">
+              Ran 100k simulated webhook bursts; lock latency dropped from 320ms to 4.2ms.
+            </p>
+</div>
+</div>
+<!-- Message 3: THEIR MESSAGE (Left Aligned) -->
+<div class="max-w-[85%] md:max-w-[75%] space-y-1">
+<div class="flex items-center gap-2 font-code-inline text-[10px] text-tertiary">
+<span class="font-bold text-on-surface">Zuri Ochieng (@zuri_dev)</span>
+<span>·</span>
+<span>14:18 UTC</span>
+<span class="text-secondary">[SIG_VERIFIED]</span>
+</div>
+<div class="bg-surface border border-outline-variant p-3.5 shadow-[2px_2px_0px_#e1bfb5]">
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+              Impressive throughput. 14,200 req/sec zero packet loss on 3G fallback. Can we schedule an architecture review call tomorrow on the mentorship terminal?
+            </p>
+</div>
+</div>
+<!-- Message 4: MY MESSAGE (Right Aligned) -->
+<div class="max-w-[85%] md:max-w-[70%] ml-auto space-y-1 text-right">
+<div class="flex items-center justify-end gap-2 font-code-inline text-[10px] text-tertiary">
+<span class="text-on-surface-variant font-bold">✓ Delivered</span>
+<span>·</span>
+<span>14:22 UTC</span>
+<span>·</span>
+<span class="font-bold text-on-surface">You (@amina_dev)</span>
+</div>
+<div class="bg-primary-container text-on-primary border border-on-primary-fixed-variant p-3 text-left shadow-[2px_2px_0px_#1d1b1a]">
+<p class="font-body-md text-body-md text-on-primary leading-relaxed">
+              Confirmed. I've blocked out 15:00 UTC. Added the PGP calendar invite to your session queue.
+            </p>
+</div>
+</div>
+</div>
+<!-- DOCKED BOTTOM MESSAGE COMPOSER BAR -->
+<div class="p-3 md:p-4 bg-surface border-t border-outline-variant">
+<!-- CLI Command Prompt Line -->
+<div class="flex items-center justify-between mb-1.5 font-code-inline text-[11px] text-tertiary">
+<div class="flex items-center gap-1.5">
+<span class="text-primary font-bold">&gt;</span>
+<span class="text-on-surface">echo -n "message" | gpg --encrypt --recipient zuri@saf.co.ke</span>
+</div>
+<span class="text-[10px] hidden sm:inline">[CHAR: 142/2048]</span>
+</div>
+<!-- Input Box Area -->
+<div class="relative bg-surface-container-lowest border border-outline-variant focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container">
+<textarea class="w-full bg-transparent p-3 font-code-inline text-code-inline text-on-surface placeholder:text-tertiary border-0 focus:ring-0 focus:outline-none resize-none" placeholder="Write encrypted message, snippet, or /command... (Shift+Enter for newline)" rows="3"></textarea>
+<!-- Bottom Action Buttons inside Input Frame -->
+<div class="p-2 border-t border-outline-variant/60 flex flex-wrap items-center justify-between bg-surface-container-low gap-2">
+<div class="flex items-center gap-1.5 font-label-sm text-[11px]">
+<button class="bg-surface border border-outline-variant px-2 py-1 text-on-surface hover:border-on-surface flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px] text-primary">data_object</span>
+<span>[ + Attach Diff / Code ]</span>
+</button>
+<button class="bg-surface border border-outline-variant px-2 py-1 text-on-surface hover:border-on-surface flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[13px] text-secondary">vpn_key</span>
+<span>[ + PGP Key ]</span>
+</button>
+<button class="hidden lg:flex bg-surface border border-outline-variant px-2 py-1 text-tertiary hover:border-on-surface transition-colors">
+<span>[ $ /shred 30m ]</span>
+</button>
+</div>
+<!-- Primary Action Button -->
+<button class="btn-brutal bg-primary-container text-on-primary font-label-md text-label-md px-4 py-1.5 border border-on-primary-fixed-variant flex items-center gap-1.5 transition-all">
+<span>[ Send [Enter] ]</span>
+<span class="material-symbols-outlined text-[14px]">send</span>
+</button>
+</div>
+</div>
+<!-- Keyboard hints footer bar -->
+<div class="flex items-center justify-between mt-2 text-[10px] font-code-inline text-tertiary">
+<span>HINT: Type <kbd class="border border-outline-variant px-1 bg-surface-container text-on-surface">/call</kbd> for terminal WebRTC session</span>
+<span class="text-secondary font-bold">X25519 Ephemeral Ratchet Active</span>
+</div>
+</div>
+</section>
+</main>
+<!-- PLATFORM FOOTER (SHARED COMPONENT IMPLEMENTATION) -->
+<footer class="bg-surface-container dark:bg-inverse-surface border-t border-outline-variant dark:border-outline">
+<div class="w-full border-t border-outline-variant dark:border-outline px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+<span class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary font-bold">
+          $ codexchange.dev
+        </span>
+<span class="hidden sm:inline text-tertiary">|</span>
+<span class="font-body-sm text-body-sm text-tertiary">
+          © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+        </span>
+</div>
+<!-- Links Cluster -->
+<div class="flex flex-wrap justify-center items-center gap-space-md">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Terms of Service
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Privacy Directive
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          API Docs
+        </a>
+<a class="text-primary dark:text-inverse-primary font-bold font-label-sm text-label-sm hover:underline" href="#">
+          Telemetry Status
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          System Matrix
+        </a>
+</div>
+</div>
+</footer>
+</body></html>

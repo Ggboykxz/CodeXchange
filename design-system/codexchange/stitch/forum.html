@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CodeXchange - Developer Forum &amp; Technical Discussions</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary": "#006d30",
+            "surface": "#fff8f6",
+            "on-error-container": "#93000a",
+            "outline": "#8d7168",
+            "primary-fixed": "#ffdbd0",
+            "on-secondary-fixed-variant": "#005323",
+            "outline-variant": "#e1bfb5",
+            "on-surface": "#1d1b1a",
+            "background": "#fff8f6",
+            "on-secondary-container": "#007233",
+            "secondary-fixed-dim": "#79db8d",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#eae1da",
+            "on-surface-variant": "#59413a",
+            "inverse-surface": "#32302f",
+            "inverse-primary": "#ffb59d",
+            "surface-container-low": "#f9f2f0",
+            "on-primary-fixed": "#390c00",
+            "on-background": "#1d1b1a",
+            "primary-fixed-dim": "#ffb59d",
+            "on-secondary-fixed": "#00210a",
+            "error": "#ba1a1a",
+            "surface-variant": "#e7e1df",
+            "on-error": "#ffffff",
+            "inverse-on-surface": "#f6efed",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-secondary": "#ffffff",
+            "on-primary-fixed-variant": "#832600",
+            "surface-container-highest": "#e7e1df",
+            "tertiary-container": "#736c67",
+            "tertiary": "#5a544f",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#f3ecea",
+            "error-container": "#ffdad6",
+            "primary": "#9b2f00",
+            "surface-tint": "#ac3400",
+            "surface-container-high": "#ede7e5",
+            "primary-container": "#c2410c",
+            "on-tertiary-fixed": "#1f1b17",
+            "on-primary": "#ffffff",
+            "tertiary-fixed-dim": "#cec5be",
+            "on-primary-container": "#ffece7",
+            "surface-dim": "#dfd9d7",
+            "surface-bright": "#fff8f6",
+            "secondary-container": "#92f5a4",
+            "secondary-fixed": "#95f8a7",
+            "on-tertiary-container": "#f9efe8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "gutter-desktop": "1.5rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-2xl": "3rem",
+            "margin-desktop": "2.5rem",
+            "margin-tablet": "1.5rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "headline-sm": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "headline-md": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "title-sm": ["Space Mono"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .dot-matrix-bg {
+      background-image: radial-gradient(#e1bfb5 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .pixel-shadow {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+    .pixel-shadow-lg {
+      box-shadow: 4px 4px 0px #1d1b1a;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 18px;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-screen selection:bg-primary-container selection:text-on-primary-container dot-matrix-bg">
+<!-- TopNavBar from Shared Components JSON -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Left Search -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary tracking-tight font-bold hover:opacity-85 transition-opacity" href="#">
+          $ codexchange.dev
+        </a>
+<div class="hidden lg:flex items-center bg-surface-container-low border border-outline-variant px-2.5 py-1 text-on-surface-variant gap-2 text-code-inline font-code-inline focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container">
+<span class="text-tertiary">&gt;</span>
+<input class="bg-transparent border-0 p-0 text-code-inline font-code-inline text-on-surface focus:ring-0 placeholder:text-tertiary w-36 outline-none" placeholder='grep --quick "search"' type="text"/>
+<kbd class="bg-surface border border-outline-variant px-1 font-label-sm text-label-sm text-tertiary">[ / ]</kbd>
+</div>
+</div>
+<!-- Navigation Links (Active: Discussions) -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary font-bold py-1 font-label-md text-label-md" href="#">
+          Discussions
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary hover:border-primary transition-colors" href="#">
+          Jobs
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary hover:border-primary transition-colors" href="#">
+          Projects
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary hover:border-primary transition-colors" href="#">
+          Telemetry
+        </a>
+</nav>
+<!-- Trailing Icon Actions & Auth Buttons -->
+<div class="flex items-center gap-3">
+<!-- Latency Micro-Telemetry (Desktop) -->
+<div class="hidden xl:flex items-center gap-2 border-r border-outline-variant pr-3 text-label-sm font-label-sm text-tertiary">
+<span class="inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>LOS:14ms
+          </span>
+<span class="inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>NBO:21ms
+          </span>
+<span class="inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>KGL:19ms
+          </span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<button aria-label="Language" class="p-1.5 hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Change Language">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button aria-label="Toggle Dark Mode" class="p-1.5 hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Toggle Theme">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<button aria-label="Open Terminal Shell" class="p-1.5 hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Open Terminal Shell">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+</div>
+<div class="flex items-center gap-2 ml-1">
+<button class="px-2.5 py-1 text-on-surface font-label-md text-label-md bg-surface-container border border-outline-variant hover:border-primary hover:text-primary transition-colors">
+            [ Sign In ]
+          </button>
+<button class="px-2.5 py-1 text-on-primary font-label-md text-label-md bg-primary-container border border-primary hover:bg-primary transition-colors pixel-shadow">
+            [ Register ]
+          </button>
+</div>
+</div>
+</div>
+</header>
+<!-- Command Line Banner & Subheader Breadcrumb -->
+<section class="bg-surface-container-high border-b border-outline-variant">
+<div class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-2.5 flex flex-wrap items-center justify-between gap-3 text-code-inline font-code-inline">
+<div class="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+<span class="text-primary font-bold">$</span>
+<span class="text-on-surface">codexchange.dev/discussions</span>
+<span class="text-tertiary">--filter=all --sort=activity</span>
+<span class="px-1.5 py-0.5 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm border border-secondary font-bold">
+          [status: sync_ok]
+        </span>
+</div>
+<div class="flex items-center gap-3 text-label-sm font-label-sm text-tertiary">
+<span>PEERING NODES:</span>
+<span class="text-on-surface">LOS-1</span>
+<span class="text-tertiary">/</span>
+<span class="text-on-surface">NBO-4</span>
+<span class="text-tertiary">/</span>
+<span class="text-on-surface">CPT-2</span>
+<span class="text-tertiary">/</span>
+<span class="text-on-surface">ACC-1</span>
+<span class="text-secondary font-bold">• 100% UP</span>
+</div>
+</div>
+</section>
+<!-- Filter & Grep Command Action Bar -->
+<section class="bg-surface border-b border-outline-variant">
+<div class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+<!-- Grep Search Input -->
+<div class="flex-1 relative flex items-center">
+<div class="w-full flex items-center bg-surface-container-lowest border border-outline-variant px-3 py-1.5 focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container">
+<span class="font-code-inline text-code-inline text-primary mr-2 font-bold">&gt; grep -in</span>
+<input class="w-full bg-transparent border-0 p-0 text-body-md font-body-md text-on-surface focus:ring-0 placeholder:text-tertiary outline-none" placeholder='"search discussions, tags, code snippets, goroutines, flutter..."' type="text"/>
+<span class="font-label-sm text-label-sm text-tertiary border border-outline-variant px-1 bg-surface-container">ESC</span>
+</div>
+</div>
+<!-- Sort Toggles -->
+<div class="flex items-center gap-1 overflow-x-auto whitespace-nowrap">
+<span class="text-label-sm font-label-sm text-tertiary mr-1 uppercase">Sort:</span>
+<button class="px-2.5 py-1 text-on-primary bg-primary-container border border-primary font-label-md text-label-md font-bold pixel-shadow">
+          [ Active ]
+        </button>
+<button class="px-2.5 py-1 text-on-surface bg-surface-container border border-outline-variant hover:border-on-surface font-label-md text-label-md transition-colors">
+          [ Latest ]
+        </button>
+<button class="px-2.5 py-1 text-on-surface bg-surface-container border border-outline-variant hover:border-on-surface font-label-md text-label-md transition-colors">
+          [ Solved ]
+        </button>
+<button class="px-2.5 py-1 text-on-surface bg-surface-container border border-outline-variant hover:border-on-surface font-label-md text-label-md transition-colors">
+          [ Unanswered ]
+        </button>
+<button class="px-2.5 py-1 text-on-surface bg-surface-container border border-outline-variant hover:border-on-surface font-label-md text-label-md transition-colors">
+          [ Bounties ]
+        </button>
+</div>
+</div>
+</section>
+<!-- Main Canvas Grid (2 Columns: ~70% Feed, ~30% Sidebar) -->
+<main class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- LEFT COLUMN (Main Technical Feed, ~70% width -> 8 of 12 cols) -->
+<section class="lg:col-span-8 flex flex-col gap-5">
+<!-- Category Filter Chips Bar -->
+<div class="bg-surface-container border border-outline-variant p-2 flex flex-wrap items-center gap-2">
+<button class="px-2 py-1 text-on-primary bg-primary-container border border-primary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span>[x]</span> All (1,420)
+          </button>
+<button class="px-2 py-1 text-on-surface bg-surface-container-lowest border border-outline-variant hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span>[ ]</span> Frontend (312)
+          </button>
+<button class="px-2 py-1 text-on-surface bg-surface-container-lowest border border-outline-variant hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span>[ ]</span> Backend &amp; Distributed (488)
+          </button>
+<button class="px-2 py-1 text-on-surface bg-surface-container-lowest border border-outline-variant hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span>[ ]</span> Mobile (Android/Flutter) (245)
+          </button>
+<button class="px-2 py-1 text-on-surface bg-surface-container-lowest border border-outline-variant hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span>[ ]</span> DevOps &amp; Cloud Infra (190)
+          </button>
+<button class="px-2 py-1 text-on-surface bg-surface-container-lowest border border-outline-variant hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span>[ ]</span> AI &amp; LLMs (115)
+          </button>
+<button class="px-2 py-1 text-on-surface bg-surface-container-lowest border border-outline-variant hover:border-primary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span>[ ]</span> Career &amp; Compensation (70)
+          </button>
+</div>
+<!-- LIST OF TECHNICAL QUESTION CARDS -->
+<!-- Card 1: Daraja M-Pesa B2C Webhook (Solved) -->
+<article class="bg-surface-container-lowest border border-outline-variant hover:border-primary-container transition-all">
+<div class="flex">
+<!-- Left Vote Rail -->
+<div class="w-12 bg-surface-container-low border-r border-outline-variant flex flex-col items-center justify-start py-3 gap-1 shrink-0 select-none">
+<button aria-label="Upvote" class="p-1 hover:text-primary transition-colors text-on-surface" title="Upvote thread">
+<span class="font-bold text-code-inline">▲</span>
+</button>
+<span class="font-label-md text-label-md text-primary font-bold">+284</span>
+<button aria-label="Downvote" class="p-1 hover:text-primary transition-colors text-tertiary" title="Downvote thread">
+<span class="font-bold text-code-inline">▼</span>
+</button>
+</div>
+<!-- Card Content Body -->
+<div class="flex-1 p-4 flex flex-col gap-2.5">
+<!-- Header Bar / Badges -->
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-1.5 py-0.5 bg-secondary-container text-on-secondary-container border border-secondary font-label-sm text-label-sm font-bold">
+                    [ ✓ SOLVED ]
+                  </span>
+<span class="px-1.5 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm">
+                    [ Backend &amp; Distributed ]
+                  </span>
+<span class="font-code-inline text-code-inline text-tertiary">
+                    telemetry/daraja_b2c_webhook.go
+                  </span>
+</div>
+<span class="px-1.5 py-0.5 bg-surface-container text-tertiary border border-outline-variant font-label-sm text-label-sm font-bold">
+                  [ HUB: NAIROBI / KE ]
+                </span>
+</div>
+<!-- Question Title -->
+<h2 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors leading-snug">
+<a href="#">Resolving 504 Gateway Timeouts on Safaricom Daraja M-Pesa B2C callback worker pools during peak traffic</a>
+</h2>
+<!-- Technical Excerpt -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                When handling concurrent bulk payouts exceeding 450 req/sec, the callback listener queues in RabbitMQ accumulate delayed ACK timeouts. Implemented distributed token bucket rate-limiting with Redis Cluster...
+              </p>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#golang</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#mpesa</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#fintech</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#redis</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#distributed-systems</a>
+</div>
+<!-- Meta & Footer Bar -->
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant text-label-sm font-label-sm text-tertiary">
+<div class="flex flex-wrap items-center gap-3">
+<span class="text-on-surface font-bold">u/kwame_dev</span>
+<span>Rep: 4,820 • Gold Contributor</span>
+<span>posted 22m ago</span>
+<span class="text-secondary font-bold">✓ solution verified by u/amina_systems</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface">
+<span class="flex items-center gap-1 font-bold">💬 42 answers</span>
+<span>👁 1.8k views</span>
+<button class="hover:text-primary transition-colors">[ Share Diff ]</button>
+<button class="hover:text-primary transition-colors">[ Bookmark ]</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2: Flutter Android Go Lagos (Solved) -->
+<article class="bg-surface-container-lowest border border-outline-variant hover:border-primary-container transition-all">
+<div class="flex">
+<!-- Left Vote Rail -->
+<div class="w-12 bg-surface-container-low border-r border-outline-variant flex flex-col items-center justify-start py-3 gap-1 shrink-0 select-none">
+<button aria-label="Upvote" class="p-1 hover:text-primary transition-colors text-on-surface" title="Upvote thread">
+<span class="font-bold text-code-inline">▲</span>
+</button>
+<span class="font-label-md text-label-md text-primary font-bold">+192</span>
+<button aria-label="Downvote" class="p-1 hover:text-primary transition-colors text-tertiary" title="Downvote thread">
+<span class="font-bold text-code-inline">▼</span>
+</button>
+</div>
+<!-- Card Content Body -->
+<div class="flex-1 p-4 flex flex-col gap-2.5">
+<!-- Header Bar / Badges -->
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-1.5 py-0.5 bg-secondary-container text-on-secondary-container border border-secondary font-label-sm text-label-sm font-bold">
+                    [ ✓ SOLVED ]
+                  </span>
+<span class="px-1.5 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm">
+                    [ Mobile ]
+                  </span>
+<span class="font-code-inline text-code-inline text-tertiary">
+                    mobile/flutter_cold_start_lagos.dart
+                  </span>
+</div>
+<span class="px-1.5 py-0.5 bg-surface-container text-tertiary border border-outline-variant font-label-sm text-label-sm font-bold">
+                  [ HUB: LAGOS / NG ]
+                </span>
+</div>
+<!-- Question Title -->
+<h2 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors leading-snug">
+<a href="#">Optimizing Flutter APK cold start times and bundle size for low-bandwidth Android Go devices in Nigeria</a>
+</h2>
+<!-- Technical Excerpt -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                Profiling with DevTools revealed massive tree-shaking overhead with custom SVG fonts. Reduced initial dex payload from 34MB to 11.2MB using deferred component loading and WebP asset pipeline...
+              </p>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#flutter</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#android</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#optimization</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#mobile-money</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#3g-networks</a>
+</div>
+<!-- Meta & Footer Bar -->
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant text-label-sm font-label-sm text-tertiary">
+<div class="flex flex-wrap items-center gap-3">
+<span class="text-on-surface font-bold">u/zuri_code</span>
+<span>Rep: 3,140</span>
+<span>posted 1h ago</span>
+<span class="text-secondary font-bold">✓ Solution verified on Tecno Spark &amp; Infinix Hot</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface">
+<span class="flex items-center gap-1 font-bold">💬 28 answers</span>
+<span>👁 1.2k views</span>
+<button class="hover:text-primary transition-colors">[ Share ]</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 3: AWS Cape Town vs Teraco Bare Metal (Open Discussion) -->
+<article class="bg-surface-container-lowest border-2 border-primary-container transition-all pixel-shadow">
+<div class="flex">
+<!-- Left Vote Rail -->
+<div class="w-12 bg-surface-container-low border-r border-outline-variant flex flex-col items-center justify-start py-3 gap-1 shrink-0 select-none">
+<button aria-label="Upvote" class="p-1 hover:text-primary transition-colors text-on-surface" title="Upvote thread">
+<span class="font-bold text-code-inline">▲</span>
+</button>
+<span class="font-label-md text-label-md text-primary font-bold">+156</span>
+<button aria-label="Downvote" class="p-1 hover:text-primary transition-colors text-tertiary" title="Downvote thread">
+<span class="font-bold text-code-inline">▼</span>
+</button>
+</div>
+<!-- Card Content Body -->
+<div class="flex-1 p-4 flex flex-col gap-2.5">
+<!-- Header Bar / Badges -->
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-1.5 py-0.5 bg-primary-container text-on-primary-container border border-primary font-label-sm text-label-sm font-bold">
+                    [ OPEN DISCUSSION ]
+                  </span>
+<span class="px-1.5 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm">
+                    [ DevOps &amp; Cloud ]
+                  </span>
+<span class="font-code-inline text-code-inline text-tertiary">
+                    infra/af_south_1_egress.tf
+                  </span>
+</div>
+<span class="px-1.5 py-0.5 bg-surface-container text-tertiary border border-outline-variant font-label-sm text-label-sm font-bold">
+                  [ HUB: CAPE TOWN / ZA ]
+                </span>
+</div>
+<!-- Question Title -->
+<h2 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors leading-snug">
+<a href="#">AWS Cape Town (af-south-1) vs Direct Local Bare-Metal Teraco Data Center latency benchmarks for High-Frequency FX routing</a>
+</h2>
+<!-- Technical Excerpt -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                Comparing cross-connect peering latency across WACS and Equinix Teraco DB1 vs AWS af-south-1 direct connect. Experiencing 18ms jitter during undersea cable maintenance windows. Looking for BGP routing configs...
+              </p>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#devops</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#aws</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#teraco</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#networking</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#bgp</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#fintech-infra</a>
+</div>
+<!-- Meta & Footer Bar -->
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant text-label-sm font-label-sm text-tertiary">
+<div class="flex flex-wrap items-center gap-3">
+<span class="text-on-surface font-bold">u/pieter_infra</span>
+<span>Rep: 5,610 • Staff SRE</span>
+<span>posted 3h ago</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface">
+<span class="flex items-center gap-1 font-bold text-primary">💬 39 answers</span>
+<span>👁 2.4k views</span>
+<button class="px-2 py-0.5 bg-surface-container border border-outline-variant hover:border-primary font-bold text-label-sm text-label-sm transition-colors">
+                    [ Subscribe to Thread ]
+                  </button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 4: Swahili Whisper ASR Kigali (Solved) -->
+<article class="bg-surface-container-lowest border border-outline-variant hover:border-primary-container transition-all">
+<div class="flex">
+<!-- Left Vote Rail -->
+<div class="w-12 bg-surface-container-low border-r border-outline-variant flex flex-col items-center justify-start py-3 gap-1 shrink-0 select-none">
+<button aria-label="Upvote" class="p-1 hover:text-primary transition-colors text-on-surface" title="Upvote thread">
+<span class="font-bold text-code-inline">▲</span>
+</button>
+<span class="font-label-md text-label-md text-primary font-bold">+118</span>
+<button aria-label="Downvote" class="p-1 hover:text-primary transition-colors text-tertiary" title="Downvote thread">
+<span class="font-bold text-code-inline">▼</span>
+</button>
+</div>
+<!-- Card Content Body -->
+<div class="flex-1 p-4 flex flex-col gap-2.5">
+<!-- Header Bar / Badges -->
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-1.5 py-0.5 bg-secondary-container text-on-secondary-container border border-secondary font-label-sm text-label-sm font-bold">
+                    [ ✓ SOLVED ]
+                  </span>
+<span class="px-1.5 py-0.5 bg-surface-container text-on-surface-variant border border-outline-variant font-label-sm text-label-sm">
+                    [ AI &amp; LLMs ]
+                  </span>
+<span class="font-code-inline text-code-inline text-tertiary">
+                    models/swahili_asr_whisper_finetune.py
+                  </span>
+</div>
+<span class="px-1.5 py-0.5 bg-surface-container text-tertiary border border-outline-variant font-label-sm text-label-sm font-bold">
+                  [ HUB: KIGALI / RW ]
+                </span>
+</div>
+<!-- Question Title -->
+<h2 class="font-title-md text-title-md text-on-surface hover:text-primary transition-colors leading-snug">
+<a href="#">Fine-tuning Whisper-v3 for Swahili &amp; Kinyarwanda multi-accent ASR on consumer GPUs with 4-bit QLoRA</a>
+</h2>
+<!-- Technical Excerpt -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                Overcoming low-resource dialect phoneme collapse in Eastern African speech models. Training scripts and HuggingFace weights published under Mozilla Common Voice dataset checkpoints...
+              </p>
+<!-- Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#ai</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#nlp</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#whisper</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#swahili</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#kinyarwanda</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#qlora</a>
+<a class="font-code-inline text-code-inline text-primary hover:underline" href="#">#huggingface</a>
+</div>
+<!-- Meta & Footer Bar -->
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant text-label-sm font-label-sm text-tertiary">
+<div class="flex flex-wrap items-center gap-3">
+<span class="text-on-surface font-bold">u/jeanpaul_ml</span>
+<span>Rep: 2,750</span>
+<span>posted 5h ago</span>
+<span class="text-secondary font-bold">✓ Checkpoint artifact linked</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface">
+<span class="flex items-center gap-1 font-bold">💬 19 answers</span>
+<span>👁 980 views</span>
+<button class="hover:text-primary transition-colors">[ Clone Model ]</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Terminal Stream Pagination Controls -->
+<div class="bg-surface-container border border-outline-variant p-3 flex flex-wrap items-center justify-between gap-4 font-code-inline text-code-inline">
+<div class="flex items-center gap-2">
+<span class="text-tertiary">PAGE 01 / 142</span>
+<span class="text-primary font-bold">[EOF_BUFFER]</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 bg-primary-container text-on-primary border border-primary font-label-md text-label-md font-bold pixel-shadow hover:bg-primary transition-colors">
+              [ Load Next 25 Threads → ]
+            </button>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface">
+<span>Jump:</span>
+<span class="px-1.5 py-0.5 bg-surface-container-lowest border border-outline-variant font-bold">[ 01 ]</span>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT SIDEBAR COLUMN (~30% width -> 4 of 12 cols) -->
+<aside class="lg:col-span-4 flex flex-col gap-5">
+<!-- 1. 'Ask a Question' Terracotta CTA Box -->
+<div class="bg-surface-container-low border-2 border-primary-container p-4 flex flex-col gap-3 pixel-shadow">
+<div class="flex items-center justify-between">
+<span class="font-code-inline text-code-inline text-primary font-bold">$ codexchange post --new</span>
+<span class="w-2 h-2 bg-secondary animate-pulse"></span>
+</div>
+<button class="w-full py-2.5 px-4 bg-primary-container text-on-primary font-headline-sm text-headline-sm font-bold border border-primary hover:bg-primary transition-colors text-center pixel-shadow">
+            [ + Ask a Question ]
+          </button>
+<div class="bg-surface-container border border-outline-variant p-2 text-label-sm font-label-sm text-tertiary leading-relaxed">
+<p class="font-bold text-on-surface mb-0.5">SUBMISSION DIRECTIVES:</p>
+<p>• Code formatting required</p>
+<p>• Mark sensitive API keys / tokens</p>
+<p>• Include reproducible benchmark diffs</p>
+</div>
+</div>
+<!-- 2. Community Stats Spotlight (Live Telemetry Matrix) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<span class="font-code-inline text-code-inline text-on-surface font-bold">COMMUNITY_TELEMETRY.stat</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">[LIVE]</span>
+</div>
+<div class="grid grid-cols-2 gap-2 text-code-inline">
+<div class="bg-surface-container-low p-2 border border-outline-variant">
+<span class="font-label-sm text-label-sm text-tertiary block">ACTIVE_THREADS</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">1,420</span>
+</div>
+<div class="bg-surface-container-low p-2 border border-outline-variant">
+<span class="font-label-sm text-label-sm text-tertiary block">RESOLVE_RATE</span>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold">88.4%</span>
+</div>
+<div class="bg-surface-container-low p-2 border border-outline-variant col-span-2">
+<span class="font-label-sm text-label-sm text-tertiary block">MEDIAN_TIME_TO_FIRST_FIX</span>
+<span class="font-title-md text-title-md text-primary font-bold">14 mins</span>
+</div>
+</div>
+<div class="bg-surface-container p-2.5 border border-outline-variant text-label-sm font-label-sm text-on-surface flex flex-col gap-1">
+<span class="text-tertiary font-bold">ONLINE ENGINEERS: 3,842</span>
+<div class="flex flex-wrap gap-x-2 gap-y-1 text-code-inline text-code-inline">
+<span>LOS: <strong class="text-primary">1,410</strong></span>
+<span>•</span>
+<span>NBO: <strong class="text-primary">1,120</strong></span>
+<span>•</span>
+<span>KGL: <strong class="text-primary">512</strong></span>
+<span>•</span>
+<span>CPT: <strong class="text-primary">800</strong></span>
+</div>
+</div>
+</div>
+<!-- 3. Popular #Tags (Filterable pill tags with post counts) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col gap-3">
+<div class="border-b border-outline-variant pb-2 flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Popular Tags</span>
+<span class="font-label-sm text-label-sm text-tertiary">INDEXED</span>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #golang <span class="text-tertiary">(482)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #flutter <span class="text-tertiary">(394)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #fintech <span class="text-tertiary">(380)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #python <span class="text-tertiary">(320)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #aws <span class="text-tertiary">(275)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #rust <span class="text-tertiary">(240)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #mpesa <span class="text-tertiary">(210)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #paystack <span class="text-tertiary">(195)</span>
+</a>
+<a class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-label-md text-label-md hover:text-primary transition-colors" href="#">
+              #sqlite-crdt <span class="text-tertiary">(140)</span>
+</a>
+</div>
+</div>
+<!-- 4. Top Contributors Leaderboard (Weekly Rep) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col gap-3">
+<div class="border-b border-outline-variant pb-2 flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Top Contributors</span>
+<span class="font-label-sm text-label-sm text-tertiary">WEEK_42</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between p-2 bg-surface-container-low border border-outline-variant">
+<div>
+<span class="font-code-inline text-code-inline font-bold text-on-surface block">u/kwame_dev</span>
+<span class="font-label-sm text-label-sm text-tertiary">Lagos • <span class="text-primary font-bold">[Core]</span></span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-bold">+940 rep</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-low border border-outline-variant">
+<div>
+<span class="font-code-inline text-code-inline font-bold text-on-surface block">u/pieter_infra</span>
+<span class="font-label-sm text-label-sm text-tertiary">Cape Town • <span class="text-primary font-bold">[SRE]</span></span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-bold">+780 rep</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-low border border-outline-variant">
+<div>
+<span class="font-code-inline text-code-inline font-bold text-on-surface block">u/zuri_code</span>
+<span class="font-label-sm text-label-sm text-tertiary">Nairobi • <span class="text-primary font-bold">[Mobile]</span></span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-bold">+650 rep</span>
+</div>
+<div class="flex items-center justify-between p-2 bg-surface-container-low border border-outline-variant">
+<div>
+<span class="font-code-inline text-code-inline font-bold text-on-surface block">u/fatima_sys</span>
+<span class="font-label-sm text-label-sm text-tertiary">Accra • <span class="text-primary font-bold">[Fintech]</span></span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-bold">+590 rep</span>
+</div>
+</div>
+</div>
+<!-- 5. Pinned Guidelines / African Engineering Network rules -->
+<div class="bg-surface-container-highest border border-outline-variant p-4 flex flex-col gap-2 font-code-inline text-code-inline">
+<div class="flex items-center justify-between border-b border-outline-variant pb-1.5">
+<span class="font-bold text-on-surface">$ man community_rules</span>
+<span class="text-tertiary font-label-sm text-label-sm">v4.8</span>
+</div>
+<div class="text-body-sm text-body-sm text-on-surface-variant flex flex-col gap-1.5">
+<p>1. Low-bandwidth optimization is first-class.</p>
+<p>2. Provide repro steps, trace payloads, and line numbers.</p>
+<p>3. Respect regional telemetry differences (undersea latency, 3G carrier limits).</p>
+<p>4. No promotional spam; strictly verifiable open-source or production engineering issues.</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer from Shared Components JSON -->
+<footer class="bg-surface-container dark:bg-inverse-surface border-t border-outline-variant dark:border-outline mt-12">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Copyright text from JSON -->
+<div class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm text-center md:text-left">
+        © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+      </div>
+<!-- Links from JSON -->
+<div class="flex flex-wrap items-center justify-center gap-4 text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm">
+<a class="hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Privacy Directive</a>
+<a class="hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">API Docs</a>
+<a class="hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Telemetry Status</a>
+<a class="hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">System Matrix</a>
+</div>
+</div>
+</footer>
+</body></html>

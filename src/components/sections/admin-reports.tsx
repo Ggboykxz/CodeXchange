@@ -7,10 +7,11 @@ import { Avatar } from "@/components/shared/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Tag } from "@/components/shared/tag";
 import { toast } from "sonner";
 import { timeAgo } from "@/lib/time";
 import { cn } from "@/lib/utils";
-import { Check, X, ExternalLink } from "lucide-react";
+import { Check, Flag, X, ExternalLink } from "lucide-react";
 
 type Report = {
   id: string;
@@ -30,6 +31,11 @@ type Report = {
  * M1 — onglet « Signalements » de l'admin. Liste les signalements en
  * attente, permet de les résoudre (avec note) ou de les rejeter. Les
  * signalements traités restent visibles en bas de liste.
+ *
+ * File de triage « terminal » : chaque carte porte son émetteur, la
+ * cible, le motif et l'horodatage, puis les deux seules décisions que
+ * l'API expose (résoudre / rejeter). Rien d'inventé ici : pas de bouton
+ * « bannir » ou « geler » tant que la route ne le permet pas.
  */
 export function AdminReports() {
   const t = useT();
@@ -98,61 +104,85 @@ export function AdminReports() {
     );
   }
 
+  const pending = reports.filter((r) => r.status === "pending").length;
+
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1">
-        {(
-          [
-            { id: "pending", label: t("admin.reports_pending") },
-            { id: "all", label: t("admin.reports_all") },
-          ] as const
-        ).map((f) => (
-          <button
-            key={f.id}
-            onClick={() => setFilter(f.id)}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition",
-              filter === f.id
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {f.label}
-          </button>
-        ))}
+      {/* En-tête de la file + sélecteur de périmètre. */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-3 py-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+            <Flag className="h-3.5 w-3.5 text-brand" aria-hidden />
+            {t("admin.tab_reports")}
+          </h3>
+          <Tag
+            label={`${pending} ${t("admin.reports_pending")}`}
+            tone={pending > 0 ? "terracotta" : undefined}
+            variant={pending > 0 ? undefined : "muted"}
+          />
+        </div>
+        <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1">
+          {(
+            [
+              { id: "pending", label: t("admin.reports_pending") },
+              { id: "all", label: t("admin.reports_all") },
+            ] as const
+          ).map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              aria-pressed={filter === f.id}
+              onClick={() => setFilter(f.id)}
+              className={cn(
+                "flex-1 rounded-md px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors duration-150",
+                filter === f.id
+                  ? "bg-brand text-brand-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {reports.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
+        <p className="rounded-xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
           {t("admin.reports_empty")}
         </p>
       ) : (
         <div className="space-y-2">
           {reports.map((r) => (
-            <Card key={r.id} className="p-4 space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <Avatar name={r.reporter.name} size="xs" />
-                    <span className="text-sm font-medium">{r.reporter.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      @{r.reporter.profile?.username}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {t(`admin.target_${r.targetType}`)} · {t(`report.reason.${r.reason}`)} ·{" "}
-                    {timeAgo(r.createdAt, locale)}
-                  </p>
+            <Card key={r.id} className="card-interactive gap-3 p-4">
+              {/* Émetteur + statut — qui a signalé, où en est le dossier. */}
+              <div className="flex flex-wrap items-start justify-between gap-2 border-b border-border pb-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <Avatar name={r.reporter.name} size="xs" />
+                  <span className="truncate text-sm font-medium">
+                    {r.reporter.name}
+                  </span>
+                  <span className="truncate font-mono text-[11px] text-muted-foreground">
+                    @{r.reporter.profile?.username}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
-                    r.status === "pending" && "bg-chart-2/10 text-chart-2",
-                    r.status === "resolved" && "bg-green-500/10 text-green-600",
-                    r.status === "dismissed" && "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {t(`admin.status_${r.status}`)}
+                {r.status === "pending" && (
+                  <Tag label={t("admin.status_pending")} tone="terracotta" />
+                )}
+                {r.status === "resolved" && (
+                  <Tag label={t("admin.status_resolved")} tone="sage" />
+                )}
+                {r.status === "dismissed" && (
+                  <Tag label={t("admin.status_dismissed")} variant="muted" />
+                )}
+              </div>
+
+              {/* Cible, motif, âge — le triplet que le modérateur lit
+                  avant de décider. */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Tag label={t(`admin.target_${r.targetType}`)} variant="outline" />
+                <Tag label={t(`report.reason.${r.reason}`)} variant="muted" />
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {timeAgo(r.createdAt, locale)}
                 </span>
               </div>
 
@@ -160,10 +190,15 @@ export function AdminReports() {
                 <p className="text-sm text-muted-foreground">{r.details}</p>
               )}
 
+              <p className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
+                <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+                <span className="truncate">{r.targetId}</span>
+              </p>
+
               {r.status === "pending" && (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
                   {resolving === r.id ? (
-                    <div className="flex-1 space-y-2">
+                    <div className="w-full space-y-2">
                       <Textarea
                         value={resolution}
                         onChange={(e) => setResolution(e.target.value)}
@@ -171,7 +206,7 @@ export function AdminReports() {
                         maxLength={500}
                         rows={2}
                       />
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button
                           size="sm"
                           disabled={busy || !resolution.trim()}
@@ -198,7 +233,7 @@ export function AdminReports() {
                             setResolution("");
                           }}
                         >
-                          {t("common.cancel")}
+                          {t("forum.cancel")}
                         </Button>
                       </div>
                     </div>
@@ -226,8 +261,11 @@ export function AdminReports() {
               )}
 
               {r.status !== "pending" && r.resolution && (
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium">{r.resolvedBy?.name}</span> · {r.resolution}
+                <p className="border-t border-border pt-2 font-mono text-[11px] text-muted-foreground">
+                  <span className="font-bold text-foreground">
+                    {r.resolvedBy?.name}
+                  </span>{" "}
+                  · {r.resolution}
                 </p>
               )}
             </Card>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>$ codexchange.dev // ADMIN_CONSOLE</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CDN with Forms -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#f6efed",
+            "error": "#ba1a1a",
+            "outline": "#8d7168",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#005323",
+            "secondary-fixed": "#95f8a7",
+            "on-surface-variant": "#59413a",
+            "surface-container-high": "#ede7e5",
+            "surface-variant": "#e7e1df",
+            "surface-bright": "#fff8f6",
+            "on-primary-fixed": "#390c00",
+            "inverse-surface": "#32302f",
+            "surface-container-highest": "#e7e1df",
+            "on-primary-fixed-variant": "#832600",
+            "tertiary-fixed": "#eae1da",
+            "surface-container": "#f3ecea",
+            "secondary": "#006d30",
+            "on-surface": "#1d1b1a",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed": "#1f1b17",
+            "tertiary-container": "#736c67",
+            "surface-container-low": "#f9f2f0",
+            "secondary-fixed-dim": "#79db8d",
+            "inverse-primary": "#ffb59d",
+            "surface": "#fff8f6",
+            "on-primary": "#ffffff",
+            "primary-fixed-dim": "#ffb59d",
+            "on-error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-tertiary-container": "#f9efe8",
+            "on-secondary-container": "#007233",
+            "tertiary": "#5a544f",
+            "on-secondary-fixed": "#00210a",
+            "primary-container": "#c2410c",
+            "outline-variant": "#e1bfb5",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#9b2f00",
+            "on-background": "#1d1b1a",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "primary-fixed": "#ffdbd0",
+            "error-container": "#ffdad6",
+            "background": "#fff8f6",
+            "secondary-container": "#92f5a4",
+            "tertiary-fixed-dim": "#cec5be",
+            "on-primary-container": "#ffece7",
+            "surface-dim": "#dfd9d7"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "margin": "1rem",
+            "margin-tablet": "1.5rem",
+            "margin-desktop": "2.5rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "title-sm": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "headline-sm": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "label-lg": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"]
+          },
+          "fontSize": {
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Mechanical Dotted Matrix Paper Texture */
+    .bg-dot-matrix {
+      background-image: radial-gradient(rgba(141, 113, 104, 0.22) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .dark .bg-dot-matrix {
+      background-image: radial-gradient(rgba(225, 191, 181, 0.15) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    
+    /* Terminal brutalist hard shadow */
+    .brutal-shadow {
+      box-shadow: 3px 3px 0px #1d1b1a;
+    }
+    .dark .brutal-shadow {
+      box-shadow: 3px 3px 0px #ffb59d;
+    }
+    .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+    .dark .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .brutal-shadow-orange {
+      box-shadow: 2px 2px 0px #9b2f00;
+    }
+
+    /* Terminal scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f3ecea;
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #1c1a18;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #8d7168;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c2410c;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md text-body-md transition-colors duration-100 min-h-screen flex flex-col bg-dot-matrix selection:bg-primary-container selection:text-on-primary-container">
+<!-- ========================================================================= -->
+<!-- TOP SHARED COMPONENT: TopNavBar (from Shared Components JSON)              -->
+<!-- ========================================================================= -->
+<header class="w-full bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Root Prompt -->
+<div class="flex items-center gap-3">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary tracking-tight font-bold hover:opacity-90" href="#">
+          $ codexchange.dev
+        </a>
+<span class="hidden lg:inline-block font-label-sm text-label-sm bg-surface-container-high dark:bg-tertiary text-on-surface-variant dark:text-surface-variant px-1.5 py-0.5 border border-outline-variant dark:border-outline">
+          /admin::ops
+        </span>
+</div>
+<!-- Telemetry Hub Latency Bar (LOS, NBO, KGL, ACC, CPT) -->
+<div class="hidden xl:flex items-center gap-2 font-code-inline text-code-inline bg-surface-container-low dark:bg-inverse-surface px-2.5 py-1 border border-outline-variant dark:border-outline">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary animate-pulse mr-1"></span>
+<span class="text-tertiary dark:text-tertiary-fixed">LOS:</span><span class="text-secondary font-bold">14ms</span>
+<span class="text-outline-variant dark:text-outline">·</span>
+<span class="text-tertiary dark:text-tertiary-fixed">NBO:</span><span class="text-secondary font-bold">21ms</span>
+<span class="text-outline-variant dark:text-outline">·</span>
+<span class="text-tertiary dark:text-tertiary-fixed">KGL:</span><span class="text-secondary font-bold">19ms</span>
+<span class="text-outline-variant dark:text-outline">·</span>
+<span class="text-tertiary dark:text-tertiary-fixed">ACC:</span><span class="text-secondary font-bold">22ms</span>
+<span class="text-outline-variant dark:text-outline">·</span>
+<span class="text-tertiary dark:text-tertiary-fixed">CPT:</span><span class="text-tertiary font-bold">42ms</span>
+</div>
+<!-- Navigation Links from JSON Blueprint -->
+<nav class="hidden md:flex items-center gap-5">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Discussions
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Jobs
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Projects
+        </a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Telemetry
+        </a>
+</nav>
+<!-- Trailing Action Badges & Controls -->
+<div class="flex items-center gap-2 sm:gap-3">
+<!-- Root Access Badge -->
+<div class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-primary-container text-on-primary-container border border-primary font-label-sm text-label-sm tracking-wider">
+<span class="material-symbols-outlined text-[13px] text-on-primary-container">terminal</span>
+<span>[ STAFF_OPS // ROOT_PRIVILEGES ]</span>
+</div>
+<!-- Trailing Icon Actions: language, dark_mode, terminal -->
+<button aria-label="Toggle theme mode" class="w-8 h-8 flex items-center justify-center border border-outline-variant dark:border-outline text-on-surface hover:text-primary dark:hover:text-inverse-primary bg-surface-container hover:bg-surface-container-high transition-colors" id="themeToggleBtn">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+</button>
+<button aria-label="Language selector" class="w-8 h-8 hidden sm:flex items-center justify-center border border-outline-variant dark:border-outline text-on-surface hover:text-primary dark:hover:text-inverse-primary bg-surface-container hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">language</span>
+</button>
+<!-- Admin Profile Avatar Monogram -->
+<div class="flex items-center gap-1.5 pl-2 border-l border-outline-variant dark:border-outline">
+<div class="w-7 h-7 bg-primary text-on-primary font-headline-sm text-[12px] flex items-center justify-center border border-on-surface font-bold">
+            AB
+          </div>
+<span class="hidden md:inline font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">@amina_dev</span>
+</div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- TERMINAL SUB-HEADER BANNER & AUDIT TELEMETRY OVERVIEW                      -->
+<!-- ========================================================================= -->
+<section class="w-full bg-surface-container-low dark:bg-inverse-surface border-b border-outline-variant dark:border-outline">
+<div class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-2.5">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+<!-- System Path & Enforcement Status -->
+<div class="space-y-0.5">
+<div class="flex items-center gap-2 font-code-inline text-code-inline text-primary dark:text-inverse-primary font-bold">
+<span class="text-tertiary dark:text-tertiary-fixed">&gt;&gt;</span>
+<span>$ codexchange.dev/admin/console --enforce-policies --pgp-signed</span>
+</div>
+<div class="flex flex-wrap items-center gap-2 font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant">
+<span class="text-secondary font-bold flex items-center gap-1">
+<span class="inline-block w-1.5 h-1.5 bg-secondary"></span>
+              [SYSTEM: ENFORCING]
+            </span>
+<span>//</span>
+<span class="text-primary font-bold">[AUDIT_STREAM: ACTIVE]</span>
+<span>//</span>
+<span class="text-tertiary dark:text-tertiary-fixed">[QUORUM: 3/5 LEAD_MODS]</span>
+<span>//</span>
+<span class="text-tertiary">SESSION: 0x98AF..E402</span>
+</div>
+</div>
+<!-- Telemetry Metric Overview Chips -->
+<div class="flex flex-wrap items-center gap-2">
+<div class="bg-surface dark:bg-surface-container px-2.5 py-1 border border-outline-variant dark:border-outline flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-tertiary dark:text-tertiary-fixed">TOTAL MEMBERS</span>
+<span class="font-headline-sm text-title-sm text-on-surface dark:text-inverse-on-surface font-bold">48,291</span>
+</div>
+<div class="bg-surface dark:bg-surface-container px-2.5 py-1 border border-outline-variant dark:border-outline flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-tertiary dark:text-tertiary-fixed">PENDING FLAGS</span>
+<span class="font-headline-sm text-title-sm text-primary font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+              7
+            </span>
+</div>
+<div class="bg-surface dark:bg-surface-container px-2.5 py-1 border border-outline-variant dark:border-outline flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-tertiary dark:text-tertiary-fixed">ACTIONS (24H)</span>
+<span class="font-headline-sm text-title-sm text-secondary font-bold">34</span>
+</div>
+<div class="bg-surface dark:bg-surface-container px-2.5 py-1 border border-outline-variant dark:border-outline flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-tertiary dark:text-tertiary-fixed">ESCALATED</span>
+<span class="font-headline-sm text-title-sm text-error font-bold">2</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE: BENTO / TERMINAL CONTROL GRID                             -->
+<!-- ========================================================================= -->
+<main class="flex-grow max-w-[1280px] w-full mx-auto px-4 md:px-gutter-desktop py-5">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+<!-- ======================================================================= -->
+<!-- LEFT PRIMARY WORKSPACE (8 COLS)                                         -->
+<!-- ======================================================================= -->
+<div class="lg:col-span-8 flex flex-col gap-4">
+<!-- Tab Navigation Terminal Bar -->
+<div class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<!-- CLI Navigation Tabs -->
+<div class="flex flex-wrap items-center gap-1" role="tablist">
+<button class="px-3 py-1.5 font-label-md text-label-md bg-primary-container text-on-primary-container border border-primary font-bold flex items-center gap-1.5 brutal-shadow-sm transition-all duration-75" id="tabRolesBtn" onclick="switchConsoleTab('roles')">
+<span>[ROLES &amp; ACCESS]</span>
+</button>
+<button class="px-3 py-1.5 font-label-md text-label-md bg-surface-container dark:bg-surface text-on-surface-variant dark:text-surface-variant border border-outline-variant dark:border-outline hover:text-primary dark:hover:text-inverse-primary hover:border-primary flex items-center gap-1.5 transition-all duration-75" id="tabReportsBtn" onclick="switchConsoleTab('reports')">
+<span>[FLAGGED REPORTS (7)]</span>
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<button class="px-3 py-1.5 font-label-md text-label-md bg-surface-container dark:bg-surface text-on-surface-variant dark:text-surface-variant border border-outline-variant dark:border-outline hover:text-primary dark:hover:text-inverse-primary hover:border-primary flex items-center gap-1.5 transition-all duration-75" id="tabAuditBtn" onclick="switchConsoleTab('audit')">
+<span>[AUDIT / MODERATION LOG]</span>
+</button>
+</div>
+<!-- Quick Action Buttons: Export & Emergency Freeze -->
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 text-on-surface dark:text-inverse-on-surface bg-surface-container hover:bg-surface-container-high border border-outline-variant dark:border-outline font-label-sm text-label-sm transition-colors flex items-center gap-1" onclick="triggerExportNotice()">
+<span class="material-symbols-outlined text-[13px]">file_download</span>
+<span>[ Export CSV ]</span>
+</button>
+<button class="px-2.5 py-1 bg-surface text-error hover:bg-error hover:text-on-error border border-error font-label-sm text-label-sm font-bold transition-colors flex items-center gap-1" onclick="triggerEmergencyFreeze()">
+<span class="material-symbols-outlined text-[13px]">lock</span>
+<span>[ FREEZE QUORUM ]</span>
+</button>
+</div>
+</div>
+<!-- CLI Grep Filter Bar -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline p-2 flex items-center gap-2">
+<span class="text-primary font-bold font-code-inline text-code-inline">&gt;</span>
+<label class="sr-only" for="filterInput">Search Filter Input</label>
+<input class="w-full bg-transparent border-0 p-0 text-on-surface dark:text-inverse-on-surface placeholder:text-tertiary focus:ring-0 font-code-inline text-code-inline" id="filterInput" placeholder='grep -in "user, thread_id, IP, or ed25519 hash..." [Press Enter to filter]' type="text"/>
+<span class="hidden sm:inline-block font-label-sm text-label-sm text-tertiary dark:text-tertiary-fixed bg-surface-container px-1.5 py-0.5 border border-outline-variant dark:border-outline">
+            MODE: REGEX_ASCII
+          </span>
+</div>
+<!-- ===================================================================== -->
+<!-- TAB 1: ROLES & ACCESS MANAGEMENT TABLE                               -->
+<!-- ===================================================================== -->
+<section class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline" id="panelRoles">
+<!-- Filters & Scope Header -->
+<div class="p-3 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-surface flex flex-wrap items-center justify-between gap-2.5">
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface">
+                MEMBERS_REGISTRY &amp; PRIVILEGE_MATRIX
+              </span>
+<span class="font-label-sm text-label-sm bg-surface-container-high dark:bg-tertiary text-on-surface-variant dark:text-surface-variant px-1.5 py-0.2 border border-outline-variant dark:border-outline">
+                COUNT: 6 ACTIVE PROFILES
+              </span>
+</div>
+<!-- Filter Controls -->
+<div class="flex flex-wrap items-center gap-2">
+<label class="sr-only" for="roleFilterSelect">Filter by Role</label>
+<select class="text-on-surface dark:text-inverse-on-surface bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline font-label-sm text-label-sm py-1 px-2 focus:border-primary focus:ring-0" id="roleFilterSelect">
+<option>[ Filter: All Roles ]</option>
+<option>Staff Admin</option>
+<option>Moderator</option>
+<option>Member</option>
+<option>Banned / Suspended</option>
+</select>
+<label class="sr-only" for="hubFilterSelect">Filter by Hub</label>
+<select class="text-on-surface dark:text-inverse-on-surface bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline font-label-sm text-label-sm py-1 px-2 focus:border-primary focus:ring-0" id="hubFilterSelect">
+<option>[ Hub: All Epicenters ]</option>
+<option>LOS (Lagos)</option>
+<option>NBO (Nairobi)</option>
+<option>CPT (Cape Town)</option>
+<option>KGL (Kigali)</option>
+<option>ACC (Accra)</option>
+<option>CAI (Cairo)</option>
+</select>
+</div>
+</div>
+<!-- Table Container with Horizontal Scroll -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse font-body-sm text-body-sm">
+<thead>
+<tr class="bg-surface-container dark:bg-inverse-surface border-b border-outline-variant dark:border-outline font-label-md text-label-md text-tertiary dark:text-tertiary-fixed">
+<th class="py-2.5 px-3">USERNAME &amp; IDENTITY</th>
+<th class="py-2.5 px-3">CURRENT ROLE</th>
+<th class="py-2.5 px-3">REPUTATION &amp; ACTIVITY</th>
+<th class="py-2.5 px-3">2FA / ATTESTATION</th>
+<th class="py-2.5 px-3 text-right">ACTIONS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant dark:divide-outline">
+<!-- Member 1: Amina Bello -->
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 bg-primary text-on-primary font-bold flex items-center justify-center border border-on-surface text-xs">
+                        AB
+                      </div>
+<div>
+<div class="font-title-sm text-title-sm font-bold flex items-center gap-1.5">
+<span>Amina Bello</span>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm bg-surface-container dark:bg-tertiary text-on-surface-variant px-1 border border-outline-variant dark:border-outline">[HUB: LOS]</span>
+</div>
+<div class="font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">
+                          @amina_dev · Lead Mobile Infra
+                        </div>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md px-2 py-0.5 bg-primary-container text-on-primary-container border border-primary font-bold">
+                      Staff Admin
+                    </span>
+</td>
+<td class="py-3 px-3">
+<div class="font-code-inline text-code-inline font-bold text-secondary">+4,820 rep</div>
+<div class="font-label-sm text-label-sm text-tertiary">28 blueprints · 45 PRs</div>
+</td>
+<td class="py-3 px-3">
+<div class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      ED25519 Verified
+                    </div>
+<div class="font-code-inline text-[11px] text-tertiary">Hardware Key #YUBI-89</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 text-on-surface bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Edit Scope ]</button>
+<button class="px-2 py-1 text-tertiary hover:text-primary border border-outline-variant font-label-sm text-label-sm">[ View Audit ]</button>
+</div>
+</td>
+</tr>
+<!-- Member 2: Zuri Ochieng -->
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 bg-tertiary text-on-tertiary font-bold flex items-center justify-center border border-on-surface text-xs">
+                        ZO
+                      </div>
+<div>
+<div class="font-title-sm text-title-sm font-bold flex items-center gap-1.5">
+<span>Zuri Ochieng</span>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm bg-surface-container dark:bg-tertiary text-on-surface-variant px-1 border border-outline-variant dark:border-outline">[HUB: NBO]</span>
+</div>
+<div class="font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">
+                          @zuri_dev · Staff Distributed Eng
+                        </div>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<label class="sr-only" for="selectRoleZuri">Role for Zuri Ochieng</label>
+<select class="font-label-sm text-label-sm bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline px-1.5 py-0.5 text-secondary font-bold focus:ring-0" id="selectRoleZuri">
+<option selected="">Moderator</option>
+<option>Staff Admin</option>
+<option>Member</option>
+<option>Suspended</option>
+</select>
+</td>
+<td class="py-3 px-3">
+<div class="font-code-inline text-code-inline font-bold text-secondary">+4,110 rep</div>
+<div class="font-label-sm text-label-sm text-tertiary">19 blueprints · 38 PRs</div>
+</td>
+<td class="py-3 px-3">
+<div class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      Hardware Key Active
+                    </div>
+<div class="font-code-inline text-[11px] text-tertiary">ED25519 #F402-99B</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 text-on-surface bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Edit Scope ]</button>
+<button class="px-2 py-1 text-primary hover:bg-primary hover:text-on-primary border border-outline-variant font-label-sm text-label-sm">[ Demote ]</button>
+</div>
+</td>
+</tr>
+<!-- Member 3: Jean-Paul Niyonzima -->
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 bg-surface-container text-on-surface font-bold flex items-center justify-center border border-on-surface text-xs">
+                        JP
+                      </div>
+<div>
+<div class="font-title-sm text-title-sm font-bold flex items-center gap-1.5">
+<span>Jean-Paul Niyonzima</span>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm bg-surface-container dark:bg-tertiary text-on-surface-variant px-1 border border-outline-variant dark:border-outline">[HUB: KGL]</span>
+</div>
+<div class="font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">
+                          @jp_rw · Edge AI Specialist
+                        </div>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<label class="sr-only" for="selectRoleJP">Role for Jean-Paul</label>
+<select class="font-label-sm text-label-sm bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline px-1.5 py-0.5 text-secondary font-bold focus:ring-0" id="selectRoleJP">
+<option selected="">Moderator</option>
+<option>Staff Admin</option>
+<option>Member</option>
+<option>Suspended</option>
+</select>
+</td>
+<td class="py-3 px-3">
+<div class="font-code-inline text-code-inline font-bold text-secondary">+2,890 rep</div>
+<div class="font-label-sm text-label-sm text-tertiary">14 blueprints · 22 PRs</div>
+</td>
+<td class="py-3 px-3">
+<div class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      ED25519 Verified
+                    </div>
+<div class="font-code-inline text-[11px] text-tertiary">TOTP Dual Auth</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 text-on-surface bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Edit Scope ]</button>
+<button class="px-2 py-1 text-tertiary hover:text-primary border border-outline-variant font-label-sm text-label-sm">[ View Audit ]</button>
+</div>
+</td>
+</tr>
+<!-- Member 4: Kwame Boakye -->
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 bg-surface-container-high text-on-surface font-bold flex items-center justify-center border border-on-surface text-xs">
+                        KB
+                      </div>
+<div>
+<div class="font-title-sm text-title-sm font-bold flex items-center gap-1.5">
+<span>Kwame Boakye</span>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm bg-surface-container dark:bg-tertiary text-on-surface-variant px-1 border border-outline-variant dark:border-outline">[HUB: ACC]</span>
+</div>
+<div class="font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">
+                          @kwame_dev · Fintech Architect
+                        </div>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<label class="sr-only" for="selectRoleKwame">Role for Kwame Boakye</label>
+<select class="font-label-sm text-label-sm bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline px-1.5 py-0.5 text-on-surface font-bold focus:ring-0" id="selectRoleKwame">
+<option selected="">Member</option>
+<option>Moderator</option>
+<option>Staff Admin</option>
+<option>Suspended</option>
+</select>
+</td>
+<td class="py-3 px-3">
+<div class="font-code-inline text-code-inline font-bold text-secondary">+3,780 rep</div>
+<div class="font-label-sm text-label-sm text-tertiary">31 blueprints · 64 PRs</div>
+</td>
+<td class="py-3 px-3">
+<div class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      ED25519 Verified
+                    </div>
+<div class="font-code-inline text-[11px] text-tertiary">Hardware Key Active</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 text-primary hover:bg-primary-container hover:text-on-primary-container border border-primary font-label-sm text-label-sm font-bold">[ Promote -&gt; Mod ]</button>
+<button class="px-2 py-1 text-tertiary hover:text-primary border border-outline-variant font-label-sm text-label-sm">[ View Audit ]</button>
+</div>
+</td>
+</tr>
+<!-- Member 5: Pieter van der Merwe -->
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 bg-tertiary text-on-tertiary font-bold flex items-center justify-center border border-on-surface text-xs">
+                        PM
+                      </div>
+<div>
+<div class="font-title-sm text-title-sm font-bold flex items-center gap-1.5">
+<span>Pieter van der Merwe</span>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm bg-surface-container dark:bg-tertiary text-on-surface-variant px-1 border border-outline-variant dark:border-outline">[HUB: CPT]</span>
+</div>
+<div class="font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">
+                          @pieter_kernel · SRE &amp; Kernel
+                        </div>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<label class="sr-only" for="selectRolePieter">Role for Pieter van der Merwe</label>
+<select class="font-label-sm text-label-sm bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline px-1.5 py-0.5 text-secondary font-bold focus:ring-0" id="selectRolePieter">
+<option selected="">Moderator</option>
+<option>Staff Admin</option>
+<option>Member</option>
+<option>Suspended</option>
+</select>
+</td>
+<td class="py-3 px-3">
+<div class="font-code-inline text-code-inline font-bold text-secondary">+5,640 rep</div>
+<div class="font-label-sm text-label-sm text-tertiary">42 blueprints · 91 PRs</div>
+</td>
+<td class="py-3 px-3">
+<div class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                      ED25519 Verified
+                    </div>
+<div class="font-code-inline text-[11px] text-tertiary">FIDO2 WebAuthn</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 text-on-surface bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Edit Scope ]</button>
+<button class="px-2 py-1 text-tertiary hover:text-primary border border-outline-variant font-label-sm text-label-sm">[ View Audit ]</button>
+</div>
+</td>
+</tr>
+<!-- Member 6: Tarek Mostafa -->
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 bg-surface-container-high text-on-surface font-bold flex items-center justify-center border border-on-surface text-xs">
+                        TM
+                      </div>
+<div>
+<div class="font-title-sm text-title-sm font-bold flex items-center gap-1.5">
+<span>Tarek Mostafa</span>
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm bg-surface-container dark:bg-tertiary text-on-surface-variant px-1 border border-outline-variant dark:border-outline">[HUB: CAI]</span>
+</div>
+<div class="font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant">
+                          @tarek_cloud · Bare-Metal Cloud
+                        </div>
+</div>
+</div>
+</td>
+<td class="py-3 px-3">
+<label class="sr-only" for="selectRoleTarek">Role for Tarek Mostafa</label>
+<select class="font-label-sm text-label-sm bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant dark:border-outline px-1.5 py-0.5 text-on-surface font-bold focus:ring-0" id="selectRoleTarek">
+<option selected="">Member</option>
+<option>Moderator</option>
+<option>Staff Admin</option>
+<option>Suspended</option>
+</select>
+</td>
+<td class="py-3 px-3">
+<div class="font-code-inline text-code-inline font-bold text-secondary">+4,810 rep</div>
+<div class="font-label-sm text-label-sm text-tertiary">26 blueprints · 53 PRs</div>
+</td>
+<td class="py-3 px-3">
+<div class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                      TOTP Standard
+                    </div>
+<div class="font-code-inline text-[11px] text-tertiary">Awaiting PGP Upload</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 text-primary hover:bg-primary-container hover:text-on-primary-container border border-primary font-label-sm text-label-sm font-bold">[ Promote -&gt; Mod ]</button>
+<button class="px-2 py-1 text-tertiary hover:text-primary border border-outline-variant font-label-sm text-label-sm">[ View Audit ]</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Bottom Pagination Status -->
+<div class="p-3 border-t border-outline-variant dark:border-outline bg-surface-container-low dark:bg-surface flex items-center justify-between text-label-sm font-label-sm text-tertiary">
+<span>SHOWING 1-6 OF 48,291 ENROLLED REPOSITORIES</span>
+<div class="flex items-center gap-1">
+<button class="px-2 py-0.5 border border-outline-variant disabled:opacity-40" disabled="">&lt; PREV</button>
+<span class="px-2 py-0.5 bg-primary text-on-primary font-bold">1</span>
+<button class="px-2 py-0.5 border border-outline-variant hover:text-primary">2</button>
+<button class="px-2 py-0.5 border border-outline-variant hover:text-primary">3</button>
+<span class="px-1">...</span>
+<button class="px-2 py-0.5 border border-outline-variant hover:text-primary">8,048</button>
+<button class="px-2 py-0.5 border border-outline-variant hover:text-primary">NEXT &gt;</button>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- TAB 2: FLAGGED CONTENT & TRIAGE QUEUE (Initially hidden)              -->
+<!-- ===================================================================== -->
+<section class="hidden flex-col gap-3" id="panelReports">
+<!-- Queue Status Pill Header -->
+<div class="p-3 bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary">REPORT_TRIAGE_PIPELINE</span>
+<span class="font-label-sm text-label-sm bg-error-container text-on-error-container px-2 py-0.5 border border-error font-bold">
+                [7 PENDING REVIEW]
+              </span>
+</div>
+<div class="flex items-center gap-3 font-label-sm text-label-sm text-tertiary">
+<span>RESOLVED TODAY: <strong class="text-secondary">19</strong></span>
+<span>·</span>
+<span>FALSE POSITIVES: <strong class="text-tertiary">3</strong></span>
+</div>
+</div>
+<!-- Report Item 1: Scraping Bot -->
+<article class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-4 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant dark:border-outline pb-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary-container font-label-sm text-label-sm font-bold">[JOB_POSTING]</span>
+<span class="font-label-sm text-label-sm text-tertiary">FLAG_ID: #FLG-9941</span>
+<span class="text-on-surface-variant font-code-inline text-code-inline">· Reported by <strong>@fola_ai</strong> · 14m ago [Hub: LOS]</span>
+</div>
+<span class="px-2 py-0.5 border border-error text-error font-label-sm text-label-sm font-bold bg-error-container/30">
+                CRITICAL_VIOLATION
+              </span>
+</div>
+<div class="space-y-1">
+<div class="font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface">
+                Unauthorized API scraping attempt / spam bot token distribution
+              </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant">
+                Account automated script posted 14 duplicate job listing payloads across Lagos and Nairobi boards requesting raw user auth tokens for a "crypto telemetry SDK".
+              </p>
+</div>
+<!-- Diff / Payload Code Box -->
+<div class="bg-surface-container-high dark:bg-surface border border-outline-variant dark:border-outline p-2.5 font-code-inline text-[11px] overflow-x-auto text-on-surface dark:text-inverse-on-surface">
+<div class="text-tertiary pb-1">// Offending payload snippet diff:</div>
+<div class="text-error bg-error-container/20 px-1">- payload_post: { title: "REMOTE_SOLANA_DEV_$$$", webhook: "http://102.164.88.12/collect_keys" }</div>
+<div class="text-secondary bg-secondary-container/20 px-1">+ rule_violation: CoC_Rule_4.2 (Prohibited Exfiltration of telemetry keys)</div>
+</div>
+<!-- Action Controls -->
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant dark:border-outline">
+<div class="font-label-sm text-label-sm text-tertiary">
+                TARGET: @bot_harvester_419 [IP: 102.164.88.12]
+              </div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-3 py-1 bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-bold border border-primary brutal-shadow-sm">[ Resolve &amp; Delete ]</button>
+<button class="px-3 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Warn User ]</button>
+<button class="px-3 py-1 bg-surface hover:bg-error hover:text-on-error border border-error text-error font-label-sm text-label-sm font-bold">[ Quarantine IP / Escalate ]</button>
+<button class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm text-tertiary">[ Dismiss ]</button>
+</div>
+</div>
+</article>
+<!-- Report Item 2: Off-topic Crypto Scheme in Rust Channel -->
+<article class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-4 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant dark:border-outline pb-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-surface-container-high text-on-surface font-label-sm text-label-sm font-bold">[THREAD]</span>
+<span class="font-label-sm text-label-sm text-tertiary">FLAG_ID: #FLG-9938</span>
+<span class="text-on-surface-variant font-code-inline text-code-inline">· Reported by <strong>@musa_rust</strong> · 42m ago [Hub: NBO]</span>
+</div>
+<span class="px-2 py-0.5 border border-outline text-tertiary font-label-sm text-label-sm font-bold">
+                POLICY: SPAM_COMMERCE
+              </span>
+</div>
+<div class="space-y-1">
+<div class="font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface">
+                Off-topic promotional cryptocurrency pyramid scheme in #rust-channel
+              </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant">
+                User spamming thread "Async I/O in Tokio with io_uring" with unrelated affiliate links promising 400% yield on staking tokens.
+              </p>
+</div>
+<div class="bg-surface-container-high dark:bg-surface border border-outline-variant dark:border-outline p-2.5 font-code-inline text-[11px] overflow-x-auto text-on-surface dark:text-inverse-on-surface">
+<div class="text-tertiary pb-1">// Thread message snippet:</div>
+<div class="text-error bg-error-container/20 px-1">- &gt;&gt; "JOIN FAST: Guaranteed 40x weekly gains via Telegram bot t.me/afritoken_ponzi. Don't waste time with rust borrow checker!"</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant dark:border-outline">
+<div class="font-label-sm text-label-sm text-tertiary">
+                TARGET: @crypto_guru_ke [Hub: NBO]
+              </div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-3 py-1 bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-bold border border-primary brutal-shadow-sm">[ Resolve &amp; Delete ]</button>
+<button class="px-3 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Warn User ]</button>
+<button class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm text-tertiary">[ Dismiss / False Positive ]</button>
+</div>
+</div>
+</article>
+<!-- Report Item 3: Violent Language in PR -->
+<article class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-4 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant dark:border-outline pb-2">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-surface-container-high text-on-surface font-label-sm text-label-sm font-bold">[COMMENT]</span>
+<span class="font-label-sm text-label-sm text-tertiary">FLAG_ID: #FLG-9932</span>
+<span class="text-on-surface-variant font-code-inline text-code-inline">· Reported by <strong>@kwame_dev</strong> · 1h 10m ago [Hub: ACC]</span>
+</div>
+<span class="px-2 py-0.5 border border-error text-error font-label-sm text-label-sm font-bold bg-error-container/30">
+                HARASSMENT_BREACH
+              </span>
+</div>
+<div class="space-y-1">
+<div class="font-title-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface">
+                Violent language / Code of Conduct breach in PR review #4092
+              </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant">
+                Hostile comments attacking contributor personal identity during architectural dispute over microservices vs monolith.
+              </p>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-outline-variant dark:border-outline">
+<div class="font-label-sm text-label-sm text-tertiary">
+                TARGET: PR#4092 Comment #88
+              </div>
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-3 py-1 bg-primary text-on-primary hover:bg-primary-container font-label-sm text-label-sm font-bold border border-primary brutal-shadow-sm">[ Resolve &amp; Issue Strike ]</button>
+<button class="px-3 py-1 bg-surface-container hover:bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">[ Lock PR Thread ]</button>
+<button class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm text-tertiary">[ Dismiss ]</button>
+</div>
+</div>
+</article>
+</section>
+<!-- ===================================================================== -->
+<!-- TAB 3: AUDIT / MODERATION LOG (Initially hidden)                      -->
+<!-- ===================================================================== -->
+<section class="hidden bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline" id="panelAudit">
+<div class="p-3 border-b border-outline-variant dark:border-outline bg-surface-container-low dark:bg-surface flex items-center justify-between">
+<span class="font-title-sm text-title-sm font-bold">
+              CRYPTOGRAPHIC_MODERATION_STREAM // ATTESTATION_TRAIL
+            </span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">
+              [ED25519 QUORUM CONFIRMED]
+            </span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse font-code-inline text-code-inline">
+<thead>
+<tr class="bg-surface-container dark:bg-inverse-surface border-b border-outline-variant dark:border-outline text-tertiary font-bold">
+<th class="py-2.5 px-3">TIMESTAMP (UTC)</th>
+<th class="py-2.5 px-3">ACTOR</th>
+<th class="py-2.5 px-3">ACTION_TYPE</th>
+<th class="py-2.5 px-3">TARGET ENTITY</th>
+<th class="py-2.5 px-3">SHA-256 SIGNATURE</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant dark:divide-outline">
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30">
+<td class="py-2.5 px-3 text-tertiary">2025-05-14 14:38:12</td>
+<td class="py-2.5 px-3 font-bold text-primary">amina_dev [ADMIN]</td>
+<td class="py-2.5 px-3"><span class="px-1.5 py-0.5 bg-primary-container text-on-primary-container font-label-sm text-label-sm font-bold">ROLE_CHANGE</span></td>
+<td class="py-2.5 px-3 text-on-surface">u/kwame_dev → Moderator candidate</td>
+<td class="py-2.5 px-3 text-tertiary">0x8a91...cf82 [VALID]</td>
+</tr>
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30">
+<td class="py-2.5 px-3 text-tertiary">2025-05-14 14:12:45</td>
+<td class="py-2.5 px-3 font-bold text-secondary">zuri_dev [MOD]</td>
+<td class="py-2.5 px-3"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant font-label-sm text-label-sm">QUARANTINE_THREAD</span></td>
+<td class="py-2.5 px-3 text-on-surface">thread#daraja-webhook-exploit</td>
+<td class="py-2.5 px-3 text-tertiary">0x44bf...110a [VALID]</td>
+</tr>
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30">
+<td class="py-2.5 px-3 text-tertiary">2025-05-14 13:50:02</td>
+<td class="py-2.5 px-3 font-bold text-tertiary">SYSTEM_CRON [AUTO]</td>
+<td class="py-2.5 px-3"><span class="px-1.5 py-0.5 bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">SUSPEND_TOKEN</span></td>
+<td class="py-2.5 px-3 text-on-surface">u/spambot_9921</td>
+<td class="py-2.5 px-3 text-tertiary">0x221c...99e3 [VALID]</td>
+</tr>
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30">
+<td class="py-2.5 px-3 text-tertiary">2025-05-14 12:44:19</td>
+<td class="py-2.5 px-3 font-bold text-secondary">pieter_kernel [MOD]</td>
+<td class="py-2.5 px-3"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant font-label-sm text-label-sm">RESOLVE_REPORT</span></td>
+<td class="py-2.5 px-3 text-on-surface">flag#FLG-9920 (false positive)</td>
+<td class="py-2.5 px-3 text-tertiary">0x9901...33aa [VALID]</td>
+</tr>
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30">
+<td class="py-2.5 px-3 text-tertiary">2025-05-14 11:15:33</td>
+<td class="py-2.5 px-3 font-bold text-primary">amina_dev [ADMIN]</td>
+<td class="py-2.5 px-3"><span class="px-1.5 py-0.5 bg-surface-container-high border border-outline-variant font-label-sm text-label-sm">KEY_ROTATION</span></td>
+<td class="py-2.5 px-3 text-on-surface">PGP Root Ring (Epoch 402)</td>
+<td class="py-2.5 px-3 text-tertiary">0xf77b...9902 [VALID]</td>
+</tr>
+<tr class="hover:bg-surface-container-low dark:hover:bg-surface/30">
+<td class="py-2.5 px-3 text-tertiary">2025-05-14 09:04:18</td>
+<td class="py-2.5 px-3 font-bold text-secondary">jp_rw [MOD]</td>
+<td class="py-2.5 px-3"><span class="px-1.5 py-0.5 bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">IP_BAN_RANGE</span></td>
+<td class="py-2.5 px-3 text-on-surface">102.164.x.x (Lagos IXPN subnet)</td>
+<td class="py-2.5 px-3 text-tertiary">0x76ba...22c1 [VALID]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- ======================================================================= -->
+<!-- RIGHT SIDEBAR / TELEMETRY & POLICY GUARDRAILS (4 COLS)                  -->
+<!-- ======================================================================= -->
+<aside class="lg:col-span-4 flex flex-col gap-4">
+<!-- PGP Session Key & Quorum Widget -->
+<div class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-4 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant dark:border-outline pb-2">
+<span class="font-headline-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-sm">key</span>
+              PGP_SESSION_ATTESTATION
+            </span>
+<span class="font-label-sm text-label-sm text-secondary font-bold bg-secondary-container/30 px-1.5 py-0.5 border border-secondary">
+              [ACTIVE]
+            </span>
+</div>
+<div class="space-y-2 font-code-inline text-[11px]">
+<div class="flex justify-between text-on-surface-variant dark:text-surface-variant">
+<span>ADMIN_FINGERPRINT:</span>
+<span class="font-bold text-on-surface dark:text-inverse-on-surface">4A89 FC01 2289 E931</span>
+</div>
+<div class="flex justify-between text-on-surface-variant dark:text-surface-variant">
+<span>ACTIVE_EPOCH:</span>
+<span class="text-secondary font-bold">EPOCH_2025.Q2#48</span>
+</div>
+<div class="flex justify-between text-on-surface-variant dark:text-surface-variant">
+<span>QUORUM_APPROVALS:</span>
+<span class="font-bold text-primary">3 / 5 LEAD_MODS</span>
+</div>
+</div>
+<!-- Mod Quorum Badges -->
+<div class="p-2.5 bg-surface-container-low dark:bg-surface border border-outline-variant dark:border-outline space-y-1.5">
+<div class="font-label-sm text-label-sm text-tertiary">CONFIRMED MODERATOR KEYS:</div>
+<div class="flex flex-wrap gap-1">
+<span class="px-1.5 py-0.5 bg-surface-container text-secondary border border-outline-variant font-label-sm text-label-sm">✓ @amina_dev</span>
+<span class="px-1.5 py-0.5 bg-surface-container text-secondary border border-outline-variant font-label-sm text-label-sm">✓ @zuri_dev</span>
+<span class="px-1.5 py-0.5 bg-surface-container text-secondary border border-outline-variant font-label-sm text-label-sm">✓ @pieter_kernel</span>
+<span class="px-1.5 py-0.5 bg-surface-container text-tertiary border border-outline-variant font-label-sm text-label-sm">○ @jp_rw (idle)</span>
+<span class="px-1.5 py-0.5 bg-surface-container text-tertiary border border-outline-variant font-label-sm text-label-sm">○ @kwame_dev (pending)</span>
+</div>
+</div>
+<button class="w-full py-1.5 bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md font-bold border border-primary brutal-shadow-sm transition-all duration-75 text-center" onclick="signSessionAudit()">
+            [ Re-Sign Quorum Keypair ]
+          </button>
+</div>
+<!-- Real-time Rate Limiter & Edge Telemetry -->
+<div class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-4 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant dark:border-outline pb-2">
+<span class="font-headline-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-sm">speed</span>
+              EDGE_RATE_LIMITER
+            </span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">
+              SYS: NOMINAL
+            </span>
+</div>
+<div class="space-y-2.5">
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span>AFRICA-WEST (LOS &amp; ACC):</span>
+<span class="font-bold text-secondary">384 req/sec (12% load)</span>
+</div>
+<div class="w-full bg-surface-container h-2 border border-outline-variant">
+<div class="bg-secondary h-full" style="width: 12%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span>AFRICA-EAST (NBO &amp; KGL):</span>
+<span class="font-bold text-secondary">492 req/sec (18% load)</span>
+</div>
+<div class="w-full bg-surface-container h-2 border border-outline-variant">
+<div class="bg-secondary h-full" style="width: 18%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span>AFRICA-SOUTH (CPT):</span>
+<span class="font-bold text-primary">820 req/sec (44% spike)</span>
+</div>
+<div class="w-full bg-surface-container h-2 border border-outline-variant">
+<div class="bg-primary h-full" style="width: 44%;"></div>
+</div>
+</div>
+</div>
+<div class="p-2 bg-surface-container-low dark:bg-surface border border-outline-variant dark:border-outline font-code-inline text-[11px] text-tertiary">
+<span class="text-primary font-bold">&gt;&gt; NOTICE:</span> IXPN peering exchange syncing cleanly. Zero anomalous DDOS amplification detected in the past 60 minutes.
+          </div>
+</div>
+<!-- Moderation Policy Guardrails ($ man moderation_rules) -->
+<div class="bg-surface dark:bg-inverse-surface border border-outline-variant dark:border-outline p-4 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant dark:border-outline pb-2">
+<span class="font-headline-sm text-title-sm font-bold text-on-surface dark:text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-sm">menu_book</span>
+              $ man moderation_rules
+            </span>
+<span class="font-label-sm text-label-sm text-tertiary">REV: v3.4</span>
+</div>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant list-none">
+<li class="flex items-start gap-2">
+<span class="text-primary font-bold font-code-inline text-code-inline">01.</span>
+<span><strong>RULE 1.0 (Bandwidth Respect):</strong> Zero tolerance for telemetry scrapers or unauthorized automated harvesting.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary font-bold font-code-inline text-code-inline">02.</span>
+<span><strong>RULE 2.0 (Verified Hubs):</strong> Identity attribution must reflect genuine regional hub verification before Staff promotion.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary font-bold font-code-inline text-code-inline">03.</span>
+<span><strong>RULE 3.0 (Quorum Threshold):</strong> Permanent suspensions require minimum 3/5 lead mod consensus keys signed.</span>
+</li>
+</ul>
+<div class="pt-2 border-t border-outline-variant dark:border-outline">
+<a class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-1 font-bold" href="#">
+<span>[ Open Full Constitution &amp; Ethics Directives → ]</span>
+</a>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- ========================================================================= -->
+<!-- FOOTER SHARED COMPONENT: Footer (from Shared Components JSON)              -->
+<!-- ========================================================================= -->
+<footer class="w-full bg-surface-container dark:bg-inverse-surface border-t border-outline-variant dark:border-outline mt-10">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Copyright / African Engineering Corps Stamp -->
+<div class="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+<span class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary font-bold">$ codexchange.dev</span>
+<span class="hidden sm:inline text-tertiary">|</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant font-code-inline">
+          © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+        </span>
+</div>
+<!-- Links from JSON Component -->
+<nav class="flex flex-wrap items-center justify-center gap-4">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Terms of Service
+        </a>
+<span class="text-outline-variant dark:text-outline text-xs">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Privacy Directive
+        </a>
+<span class="text-outline-variant dark:text-outline text-xs">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          API Docs
+        </a>
+<span class="text-outline-variant dark:text-outline text-xs">/</span>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">
+          Telemetry Status
+        </a>
+<span class="text-outline-variant dark:text-outline text-xs">/</span>
+<a class="text-primary dark:text-inverse-primary font-bold font-label-sm text-label-sm hover:underline" href="#">
+          System Matrix
+        </a>
+</nav>
+</div>
+</footer>
+<!-- ========================================================================= -->
+<!-- LIGHTWEIGHT INLINE SCRIPT: Tab switching, Dark mode, Micro-interactions   -->
+<!-- ========================================================================= -->
+<script>
+    // Tab switching terminal controller
+    function switchConsoleTab(targetTab) {
+      const panelRoles = document.getElementById('panelRoles');
+      const panelReports = document.getElementById('panelReports');
+      const panelAudit = document.getElementById('panelAudit');
+
+      const btnRoles = document.getElementById('tabRolesBtn');
+      const btnReports = document.getElementById('tabReportsBtn');
+      const btnAudit = document.getElementById('tabAuditBtn');
+
+      // Inactive tab class styles
+      const inactiveClass = 'px-3 py-1.5 font-label-md text-label-md bg-surface-container dark:bg-surface text-on-surface-variant dark:text-surface-variant border border-outline-variant dark:border-outline hover:text-primary dark:hover:text-inverse-primary hover:border-primary flex items-center gap-1.5 transition-all duration-75';
+      const activeClass = 'px-3 py-1.5 font-label-md text-label-md bg-primary-container text-on-primary-container border border-primary font-bold flex items-center gap-1.5 brutal-shadow-sm transition-all duration-75';
+
+      // Hide all panels
+      panelRoles.classList.add('hidden');
+      panelReports.classList.add('hidden');
+      panelAudit.classList.add('hidden');
+
+      // Reset buttons
+      btnRoles.className = inactiveClass;
+      btnReports.className = inactiveClass;
+      btnAudit.className = inactiveClass;
+
+      if (targetTab === 'roles') {
+        panelRoles.classList.remove('hidden');
+        btnRoles.className = activeClass;
+      } else if (targetTab === 'reports') {
+        panelReports.classList.remove('hidden');
+        btnReports.className = activeClass;
+      } else if (targetTab === 'audit') {
+        panelAudit.classList.remove('hidden');
+        btnAudit.className = activeClass;
+      }
+    }
+
+    // Theme toggle controller
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    themeToggleBtn.addEventListener('click', () => {
+      const htmlEl = document.documentElement;
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        htmlEl.classList.add('light');
+      } else {
+        htmlEl.classList.remove('light');
+        htmlEl.classList.add('dark');
+      }
+    });
+
+    // Mock terminal prompt triggers
+    function triggerEmergencyFreeze() {
+      const confirmAction = confirm(">> SECURITY LOCKDOWN WARNING:\nDo you wish to broadcast EMERGENCY_FREEZE signal to Lagos, Nairobi, Kigali, Accra, and Cape Town nodes?\nQuorum requires 3/5 signatures to reverse.");
+      if (confirmAction) {
+        alert(">> BROADCAST EMITTED: Quorum lockdown mode initiated across all 5 hubs. New PRs and thread mutations frozen.");
+      }
+    }
+
+    function triggerExportNotice() {
+      alert(">> EXPORT PIPELINE:\nGenerating sha256 encrypted CSV archive of 48,291 member reputations and current moderator scope assignments...");
+    }
+
+    function signSessionAudit() {
+      alert(">> ATTESTATION SUCCESS:\nED25519 Session key re-signed by @amina_dev.\nHash: 0x98AF33A0B19277FE -> Quorum verified.");
+    }
+  </script>
+</body></html>

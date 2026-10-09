@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Developer Directory | $ codexchange.dev</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS & Theme Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#ffb59d",
+            "tertiary-container": "#736c67",
+            "surface-bright": "#fff8f6",
+            "secondary-container": "#92f5a4",
+            "background": "#fff8f6",
+            "on-error": "#ffffff",
+            "on-tertiary-container": "#f9efe8",
+            "on-surface-variant": "#59413a",
+            "inverse-surface": "#32302f",
+            "surface-variant": "#e7e1df",
+            "surface-dim": "#dfd9d7",
+            "primary-fixed-dim": "#ffb59d",
+            "on-primary-container": "#ffece7",
+            "secondary-fixed": "#95f8a7",
+            "primary": "#9b2f00",
+            "on-primary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "inverse-on-surface": "#f6efed",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-secondary": "#ffffff",
+            "primary-container": "#c2410c",
+            "tertiary-fixed": "#eae1da",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-container": "#007233",
+            "surface-container": "#f3ecea",
+            "surface": "#fff8f6",
+            "on-tertiary-fixed": "#1f1b17",
+            "on-surface": "#1d1b1a",
+            "secondary": "#006d30",
+            "primary-fixed": "#ffdbd0",
+            "on-primary-fixed-variant": "#832600",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e7e1df",
+            "error-container": "#ffdad6",
+            "secondary-fixed-dim": "#79db8d",
+            "tertiary-fixed-dim": "#cec5be",
+            "error": "#ba1a1a",
+            "surface-container-high": "#ede7e5",
+            "surface-container-low": "#f9f2f0",
+            "on-secondary-fixed-variant": "#005323",
+            "outline-variant": "#e1bfb5",
+            "on-primary-fixed": "#390c00",
+            "tertiary": "#5a544f",
+            "on-error-container": "#93000a",
+            "on-background": "#1d1b1a",
+            "outline": "#8d7168",
+            "on-secondary-fixed": "#00210a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-xl": "2rem",
+            "space-2xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "margin-tablet": "1.5rem",
+            "margin-desktop": "2.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "label-md": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "headline-md": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"],
+            "title-sm": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "headline-sm": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "label-lg": ["Space Mono"]
+          },
+          "fontSize": {
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Technical Dotted Drafting Matrix */
+    .matrix-bg {
+      background-image: radial-gradient(#8d7168 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .brutal-shadow {
+      box-shadow: 3px 3px 0px #1d1b1a;
+    }
+    .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+    .brutal-shadow-primary {
+      box-shadow: 2px 2px 0px #9b2f00;
+    }
+    /* Terminal cursor animation */
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .terminal-caret {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background-color: #c2410c;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container matrix-bg">
+<!-- ================= TOP APP BAR (Shared Components JSON Anchor) ================= -->
+<header class="w-full bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Search Prompt -->
+<div class="flex items-center gap-4">
+<a class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold flex items-center gap-2" href="#">
+<span>$ codexchange.dev</span>
+</a>
+<div class="hidden lg:flex items-center bg-surface-container-low border border-outline-variant px-2.5 py-1 text-on-surface-variant font-code-inline text-code-inline hover:border-primary transition-colors">
+<span class="text-primary font-bold mr-1">&gt;</span>
+<span>grep --directory</span>
+<span class="ml-3 px-1 py-0.5 bg-surface-variant text-label-sm font-label-sm border border-outline-variant">[Ctrl+K]</span>
+</div>
+</div>
+<!-- Navigation Cluster (Responsive & Anchored) -->
+<nav class="hidden md:flex items-center gap-5">
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">Discussions</a>
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">Jobs</a>
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">Projects</a>
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">Mentorship</a>
+<!-- ACTIVE TAB: Directory with exact style_active_navigation mapping -->
+<a class="text-primary border-b-2 border-primary font-bold py-1 font-label-md text-label-md flex items-center gap-1" href="#">
+<span>Directory</span>
+<span class="w-1.5 h-1.5 bg-primary-container inline-block"></span>
+</a>
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">Telemetry</a>
+</nav>
+<!-- Trailing Status Telemetry & Actions -->
+<div class="flex items-center gap-3">
+<!-- Live ping telemetry pill (hidden on small mobile) -->
+<div class="hidden xl:flex items-center gap-2 font-code-inline text-code-inline bg-surface-container px-2 py-0.5 border border-outline-variant text-tertiary">
+<span class="w-2 h-2 rounded-full bg-secondary inline-block animate-pulse"></span>
+<span>LOS:14ms</span>
+<span class="text-outline-variant">|</span>
+<span>NBO:21ms</span>
+<span class="text-outline-variant">|</span>
+<span>KGL:19ms</span>
+<span class="text-outline-variant">|</span>
+<span>CPT:42ms</span>
+</div>
+<!-- Trailing System Actions -->
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<button aria-label="Change Language" class="p-1.5 hover:text-primary border border-transparent hover:border-outline-variant transition-colors" title="Change Language">
+<span class="material-symbols-outlined" style="font-size: 18px;">language</span>
+</button>
+<button aria-label="Toggle Theme" class="p-1.5 hover:text-primary border border-transparent hover:border-outline-variant transition-colors" title="Toggle Theme">
+<span class="material-symbols-outlined" style="font-size: 18px;">dark_mode</span>
+</button>
+<button aria-label="Open Shell Terminal" class="p-1.5 hover:text-primary border border-transparent hover:border-outline-variant transition-colors" title="Open Shell Terminal">
+<span class="material-symbols-outlined" style="font-size: 18px;">terminal</span>
+</button>
+</div>
+<!-- Authentication CTAs -->
+<div class="flex items-center gap-2">
+<a class="font-label-md text-label-md px-2.5 py-1 text-on-surface border border-outline-variant hover:border-primary transition-colors bg-surface-container-low" href="#">
+            [ Sign In ]
+          </a>
+<a class="font-label-md text-label-md px-2.5 py-1 text-on-primary bg-primary-container border border-primary hover:bg-primary transition-colors brutal-shadow-primary" href="#">
+            [ Register ]
+          </a>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= SUB-COMMAND BREADCRUMB STRIP ================= -->
+<div class="w-full bg-surface-container-low border-b border-outline-variant py-1.5 px-4 md:px-gutter-desktop">
+<div class="max-w-[1280px] mx-auto flex items-center justify-between font-code-inline text-code-inline overflow-x-auto text-on-surface-variant">
+<div class="flex items-center gap-2 whitespace-nowrap">
+<span class="text-primary font-bold">$</span>
+<span class="text-on-surface">codexchange.dev/directory</span>
+<span class="text-primary font-bold">--filter=verified_devs</span>
+<span class="text-secondary font-bold">--open_to_work=true</span>
+<span class="terminal-caret"></span>
+</div>
+<div class="hidden sm:flex items-center gap-3 text-label-sm font-label-sm text-tertiary">
+<span class="border border-outline-variant px-1.5 py-0.2 bg-surface-container">[status: registry_sync_ok]</span>
+<span>LATENCY_SYNC: 99.8%</span>
+<span>TZ: UTC+0 to UTC+3</span>
+</div>
+</div>
+</div>
+<!-- ================= HERO & MISSION CONTROL SECTION ================= -->
+<section class="w-full bg-surface border-b border-outline-variant pt-7 pb-6 px-4 md:px-gutter-desktop">
+<div class="max-w-[1280px] mx-auto">
+<!-- Terminal Tag Header -->
+<div class="flex items-center gap-2 mb-3">
+<span class="font-code-inline text-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+          // AFRICAN_ENGINEERING_CORPS :: TALENT_REGISTRY [LOS-NBO-KGL-ACC-CPT-CAI]
+        </span>
+<span class="text-xs text-secondary font-bold flex items-center gap-1 font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 0 DOWNTIME REGISTERED
+        </span>
+</div>
+<!-- Main Headline & Subtitle -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-8">
+<h1 class="font-headline-lg text-headline-lg md:text-headline-display md:font-headline-display tracking-tight text-on-surface mb-3">
+            Vetted African systems builders, kernel hackers, &amp; distributed systems engineers.
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed mb-6">
+            Discover and hire production-tested engineers across 34 African tech ecosystems. Filter by technical stack, latency hub, seniority, and availability. Built for engineers demanding real infrastructure telemetry.
+          </p>
+<!-- Action Buttons -->
+<div class="flex flex-wrap items-center gap-3">
+<button class="bg-primary-container text-on-primary font-label-lg text-label-lg px-4 py-2.5 border border-primary hover:bg-primary transition-all duration-75 brutal-shadow hover:translate-x-[1px] hover:translate-y-[1px]">
+              [ + Join Directory / Claim Profile ]
+            </button>
+<button class="bg-surface-container text-on-surface font-label-lg text-label-lg px-4 py-2.5 border border-outline hover:border-primary transition-colors">
+              [ $ man talent_search ]
+            </button>
+<span class="font-code-inline text-code-inline text-tertiary ml-2 hidden sm:inline">
+              // PGP keys verified with ed25519
+            </span>
+</div>
+</div>
+<!-- Live Matrix Stats Block -->
+<div class="lg:col-span-4 bg-surface-container-low border border-outline p-4 brutal-shadow-sm">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3">
+<span class="font-label-md text-label-md text-tertiary">REGISTRY_MATRIX_TELEMETRY</span>
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+</div>
+<div class="grid grid-cols-2 gap-3 font-code-inline">
+<div class="p-2 bg-surface border border-outline-variant">
+<div class="text-headline-sm font-headline-sm text-primary font-bold">4,892</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">VERIFIED_ENGINEERS</div>
+</div>
+<div class="p-2 bg-surface border border-outline-variant">
+<div class="text-headline-sm font-headline-sm text-secondary font-bold">840</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">OPEN_TO_WORK</div>
+</div>
+<div class="p-2 bg-surface border border-outline-variant">
+<div class="text-headline-sm font-headline-sm text-on-surface font-bold">34</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">HUBS_ACTIVE</div>
+</div>
+<div class="p-2 bg-surface border border-outline-variant">
+<div class="text-headline-sm font-headline-sm text-primary-container font-bold">99.2%</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">PROD_COMMIT_RATE</div>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant font-code-inline text-code-inline text-tertiary flex justify-between">
+<span>UPTIME: 99.98%</span>
+<span>EPOCH: 1740355200</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= TERMINAL FILTER & QUERY BAR ================= -->
+<section class="w-full bg-surface-container border-b border-outline-variant py-4 px-4 md:px-gutter-desktop">
+<div class="max-w-[1280px] mx-auto space-y-3">
+<!-- Command Shell Input -->
+<div class="relative flex items-center bg-surface border-2 border-outline focus-within:border-primary transition-colors">
+<span class="pl-3 pr-2 text-primary font-bold font-code-inline text-title-md">&gt;</span>
+<input aria-label="Filter command" class="w-full py-2 bg-transparent text-on-surface font-code-inline text-body-md border-0 focus:ring-0 focus:outline-none" type="text" value='grep -in "stack or name" --tags=rust,golang,crdt,ebpf...'/>
+<div class="pr-3 flex items-center gap-2">
+<span class="bg-surface-variant text-tertiary font-label-sm text-label-sm px-2 py-0.5 border border-outline-variant hidden sm:inline">[ ENTER ]</span>
+<button class="bg-primary-container text-on-primary font-label-md text-label-md px-3 py-1 border border-primary hover:bg-primary transition-colors">
+            Execute Query
+          </button>
+</div>
+</div>
+<!-- Filter Rows: Hubs, Seniority, Availability & Stack Pills -->
+<div class="flex flex-col gap-2.5 pt-1">
+<!-- Hub Matrix Row -->
+<div class="flex flex-wrap items-center gap-2 font-code-inline text-code-inline">
+<span class="font-label-md text-label-md text-tertiary min-w-[70px]">HUB/GEO:</span>
+<button class="bg-primary-container text-on-primary border border-primary px-2 py-0.5 font-bold">[x] All Africa (4,892)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Nigeria (LOS)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Kenya (NBO)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Rwanda (KGL)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Ghana (ACC)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] South Africa (CPT)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Egypt (CAI)</button>
+</div>
+<!-- Seniority & Availability Row -->
+<div class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap items-center gap-2 font-code-inline text-code-inline">
+<span class="font-label-md text-label-md text-tertiary min-w-[70px]">LEVEL:</span>
+<button class="bg-surface-container-highest border border-outline text-on-surface font-bold px-2 py-0.5">[x] All Levels</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Lead / Principal (312)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Senior (1,840)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Mid-level (2,100)</button>
+<button class="bg-surface border border-outline-variant text-on-surface hover:border-primary px-2 py-0.5">[ ] Fellowship (640)</button>
+</div>
+<!-- Sort Select -->
+<div class="flex items-center gap-2 font-code-inline text-code-inline">
+<span class="font-label-md text-label-md text-tertiary">SORT_BY:</span>
+<div class="border border-outline bg-surface px-2 py-0.5 text-on-surface">
+<span>[ Most Active / Rep ] ▼</span>
+</div>
+</div>
+</div>
+<!-- Stack Tag Quick Filter Badges -->
+<div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-outline-variant/60 font-code-inline text-code-inline">
+<span class="font-label-md text-label-md text-tertiary min-w-[70px]">TAGS:</span>
+<span class="bg-surface-container-high text-primary border border-primary-container px-1.5 py-0.2 font-bold cursor-pointer hover:bg-primary hover:text-on-primary">#rust</span>
+<span class="bg-surface-container-high text-primary border border-primary-container px-1.5 py-0.2 font-bold cursor-pointer hover:bg-primary hover:text-on-primary">#golang</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#flutter</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#ebpf</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#crdt</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#low-bandwidth</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#python</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#fintech</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#wasm</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#kubernetes</span>
+<span class="bg-surface border border-outline-variant text-on-surface px-1.5 py-0.2 cursor-pointer hover:border-primary">#edge-ai</span>
+<span class="ml-auto text-secondary font-bold text-label-sm font-label-sm">[● 840 Open for Full-Time / Contract]</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= MAIN TWO-COLUMN CONTENT GRID ================= -->
+<main class="w-full flex-1 py-8 px-4 md:px-gutter-desktop max-w-[1280px] mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- ================= LEFT: DEVELOPER MEMBER GRID (68% ~ 8 cols) ================= -->
+<section class="lg:col-span-8 space-y-6">
+<!-- Section Bar / Stream Header -->
+<div class="flex items-center justify-between border-b-2 border-outline pb-2">
+<div class="flex items-center gap-2 font-code-inline text-title-sm">
+<span class="text-primary font-bold">cat /dev/engineers</span>
+<span class="text-on-surface-variant font-normal">| MATCHING_INDEX: 6 OF 4,892</span>
+</div>
+<div class="font-label-sm text-label-sm text-tertiary">
+            VIEW: GRID [2x3] :: CACHE_TTL: 42s
+          </div>
+</div>
+<!-- The 6 Detailed Terminal Member Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- CARD 1: Lagos, Nigeria - Amina Bello -->
+<article class="bg-surface border border-outline p-4 brutal-shadow-sm hover:border-primary transition-colors flex flex-col justify-between">
+<div>
+<!-- Card Header Bar -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-tertiary font-bold">#dev-0842 // ping 14ms</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-on-surface font-bold">[HUB: LAGOS / NG]</span>
+</div>
+<!-- Identity & Badges -->
+<div class="flex items-start gap-3 mb-3">
+<div class="w-12 h-12 bg-surface-container-high border-2 border-outline flex-shrink-0 flex items-center justify-center font-bold text-headline-sm text-primary">
+                  AB
+                </div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Amina Bello</h2>
+<span class="text-tertiary font-code-inline text-code-inline">@amina_dev</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-variant text-on-surface font-label-sm text-label-sm px-1.5 py-0.2 border border-outline">[LEAD / STAFF]</span>
+<span class="text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> [OPEN TO WORK]
+                    </span>
+</div>
+</div>
+</div>
+<!-- Headline / Role Narrative -->
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-snug">
+                Lead Mobile Systems Engineer @ Moniepoint alum | Building offline-first CRDT Flutter runtimes for 3G networks in West Africa.
+              </p>
+<!-- Technical Stack Tags -->
+<div class="flex flex-wrap gap-1 mb-4 font-code-inline text-code-inline">
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#flutter</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#android-ndk</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#crdt</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#sqlite</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#offline-first</span>
+</div>
+</div>
+<!-- Footer Stats & Actions -->
+<div class="pt-3 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-tertiary text-label-sm font-label-sm mb-3">
+                Rep: 3,420 • 28 Blueprints • 45 PRs merged in Africa OSS
+              </div>
+<div class="flex items-center justify-between gap-2">
+<a class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-1 border border-primary hover:bg-primary transition-colors" href="#">
+                  [ Dossier ]
+                </a>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ PGP ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Git ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Diff ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 2: Nairobi, Kenya - Zuri Ochieng -->
+<article class="bg-surface border border-outline p-4 brutal-shadow-sm hover:border-primary transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-tertiary font-bold">#dev-1049 // ping 21ms</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-on-surface font-bold">[HUB: NAIROBI / KE]</span>
+</div>
+<div class="flex items-start gap-3 mb-3">
+<div class="w-12 h-12 bg-surface-container-high border-2 border-outline flex-shrink-0 flex items-center justify-center font-bold text-headline-sm text-primary">
+                  ZO
+                </div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Zuri Ochieng</h2>
+<span class="text-tertiary font-code-inline text-code-inline">@zuri_dev</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-variant text-on-surface font-label-sm text-label-sm px-1.5 py-0.2 border border-outline">[SENIOR II]</span>
+<span class="text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> [OPEN TO WORK]
+                    </span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-snug">
+                Senior Rust &amp; Distributed Systems Engineer. Ex-Safaricom backend lead. Specializes in async Daraja rails and Raft consensus nodes.
+              </p>
+<div class="flex flex-wrap gap-1 mb-4 font-code-inline text-code-inline">
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#rust</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#tokio</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#distributed</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#raft</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#mpesa</span>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-tertiary text-label-sm font-label-sm mb-3">
+                Rep: 4,110 • 34 Blueprints • 82 PRs merged in Africa OSS
+              </div>
+<div class="flex items-center justify-between gap-2">
+<a class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-1 border border-primary hover:bg-primary transition-colors" href="#">
+                  [ Dossier ]
+                </a>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ PGP ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Git ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Diff ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 3: Kigali, Rwanda - Jean-Paul Niyonzima -->
+<article class="bg-surface border border-outline p-4 brutal-shadow-sm hover:border-primary transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-tertiary font-bold">#dev-0318 // ping 19ms</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-on-surface font-bold">[HUB: KIGALI / RW]</span>
+</div>
+<div class="flex items-start gap-3 mb-3">
+<div class="w-12 h-12 bg-surface-container-high border-2 border-outline flex-shrink-0 flex items-center justify-center font-bold text-headline-sm text-primary">
+                  JP
+                </div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Jean-Paul Niyonzima</h2>
+<span class="text-tertiary font-code-inline text-code-inline">@jp_rw</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-variant text-on-surface font-label-sm text-label-sm px-1.5 py-0.2 border border-outline">[SENIOR AI/EDGE]</span>
+<span class="text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> [OPEN TO WORK]
+                    </span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-snug">
+                Edge AI Runtime &amp; NLP Engineer. Compiling 4-bit quantized Whisper models for Kinyarwanda &amp; Swahili running locally on Raspberry Pi 5.
+              </p>
+<div class="flex flex-wrap gap-1 mb-4 font-code-inline text-code-inline">
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#edge-ai</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#ggml</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#c-plus-plus</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#swahili-nlp</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#quantization</span>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-tertiary text-label-sm font-label-sm mb-3">
+                Rep: 2,890 • 19 Blueprints • 31 PRs merged in Africa OSS
+              </div>
+<div class="flex items-center justify-between gap-2">
+<a class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-1 border border-primary hover:bg-primary transition-colors" href="#">
+                  [ Dossier ]
+                </a>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ PGP ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Git ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Diff ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 4: Cape Town, South Africa - Pieter van der Merwe -->
+<article class="bg-surface border border-outline p-4 brutal-shadow-sm hover:border-primary transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-tertiary font-bold">#dev-0012 // ping 42ms</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-on-surface font-bold">[HUB: CAPE TOWN / ZA]</span>
+</div>
+<div class="flex items-start gap-3 mb-3">
+<div class="w-12 h-12 bg-surface-container-high border-2 border-outline flex-shrink-0 flex items-center justify-center font-bold text-headline-sm text-primary">
+                  PV
+                </div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Pieter vd Merwe</h2>
+<span class="text-tertiary font-code-inline text-code-inline">@pieter_kernel</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-variant text-on-surface font-label-sm text-label-sm px-1.5 py-0.2 border border-outline">[STAFF SRE]</span>
+<span class="text-tertiary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> [ADVISORY ONLY]
+                    </span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-snug">
+                Staff Kernel Hacker &amp; SRE. Deep packet inspection, eBPF telemetry, and Teraco DB1 undersea routing mitigation pipelines.
+              </p>
+<div class="flex flex-wrap gap-1 mb-4 font-code-inline text-code-inline">
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#ebpf</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#linux-kernel</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#bgp-routing</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#c</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#cilium</span>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-tertiary text-label-sm font-label-sm mb-3">
+                Rep: 5,640 • 41 Blueprints • 112 PRs in Upstream Linux
+              </div>
+<div class="flex items-center justify-between gap-2">
+<a class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-1 border border-primary hover:bg-primary transition-colors" href="#">
+                  [ Dossier ]
+                </a>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ PGP ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Git ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Diff ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 5: Accra, Ghana - Kwame Boakye -->
+<article class="bg-surface border border-outline p-4 brutal-shadow-sm hover:border-primary transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-tertiary font-bold">#dev-1490 // ping 22ms</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-on-surface font-bold">[HUB: ACCRA / GH]</span>
+</div>
+<div class="flex items-start gap-3 mb-3">
+<div class="w-12 h-12 bg-surface-container-high border-2 border-outline flex-shrink-0 flex items-center justify-center font-bold text-headline-sm text-primary">
+                  KB
+                </div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Kwame Boakye</h2>
+<span class="text-tertiary font-code-inline text-code-inline">@kwame_dev</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-variant text-on-surface font-label-sm text-label-sm px-1.5 py-0.2 border border-outline">[SENIOR FINTECH]</span>
+<span class="text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> [OPEN TO WORK]
+                    </span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-snug">
+                Fintech Settlement Architect. Paystack/Flutterwave payment switches idempotency, distributed lock contention, and Go event loops.
+              </p>
+<div class="flex flex-wrap gap-1 mb-4 font-code-inline text-code-inline">
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#golang</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#idempotency</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#kafka</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#postgres</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#grpc</span>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-tertiary text-label-sm font-label-sm mb-3">
+                Rep: 3,780 • 22 Blueprints • 59 PRs merged in Africa OSS
+              </div>
+<div class="flex items-center justify-between gap-2">
+<a class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-1 border border-primary hover:bg-primary transition-colors" href="#">
+                  [ Dossier ]
+                </a>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ PGP ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Git ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Diff ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 6: Cairo, Egypt - Tarek Mostafa -->
+<article class="bg-surface border border-outline p-4 brutal-shadow-sm hover:border-primary transition-colors flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-tertiary font-bold">#dev-2201 // ping 38ms</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-on-surface font-bold">[HUB: CAIRO / EG]</span>
+</div>
+<div class="flex items-start gap-3 mb-3">
+<div class="w-12 h-12 bg-surface-container-high border-2 border-outline flex-shrink-0 flex items-center justify-center font-bold text-headline-sm text-primary">
+                  TM
+                </div>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Tarek Mostafa</h2>
+<span class="text-tertiary font-code-inline text-code-inline">@tarek_cloud</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-surface-variant text-on-surface font-label-sm text-label-sm px-1.5 py-0.2 border border-outline">[PRINCIPAL INFRA]</span>
+<span class="text-secondary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> [OPEN TO WORK]
+                    </span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-snug">
+                Principal Bare-Metal Cloud Engineer. WireGuard overlay mesh, multi-region Kubernetes on sovereign datacenters in North Africa.
+              </p>
+<div class="flex flex-wrap gap-1 mb-4 font-code-inline text-code-inline">
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#kubernetes</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#wireguard</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#bare-metal</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#terraform</span>
+<span class="bg-surface-container text-on-surface px-1.5 py-0.2 border border-outline-variant">#ansible</span>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-tertiary text-label-sm font-label-sm mb-3">
+                Rep: 4,810 • 37 Blueprints • 70 PRs merged in Cloud Native
+              </div>
+<div class="flex items-center justify-between gap-2">
+<a class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2.5 py-1 border border-primary hover:bg-primary transition-colors" href="#">
+                  [ Dossier ]
+                </a>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ PGP ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Git ]</a>
+<a class="px-1.5 py-1 border border-outline-variant hover:border-primary text-on-surface" href="#">[ Diff ]</a>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination / Stream Navigation -->
+<div class="border border-outline bg-surface-container-low p-3 flex flex-col sm:flex-row items-center justify-between gap-3 font-code-inline text-code-inline">
+<div class="text-tertiary">
+<span>SHOWING: 1-6 OF 840 (PAGE 1 OF 140)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 bg-surface border border-outline-variant opacity-60 cursor-not-allowed">[ &lt;&lt; PREV ]</button>
+<span class="px-2 py-1 bg-primary-container text-on-primary font-bold">1</span>
+<button class="px-2 py-1 bg-surface border border-outline-variant hover:border-primary text-on-surface">2</button>
+<button class="px-2 py-1 bg-surface border border-outline-variant hover:border-primary text-on-surface">3</button>
+<span>...</span>
+<button class="px-2 py-1 bg-surface border border-outline-variant hover:border-primary text-on-surface">140</button>
+<button class="px-3 py-1 bg-surface border border-outline-variant hover:border-primary text-on-surface">[ NEXT &gt;&gt; ]</button>
+</div>
+</div>
+</section>
+<!-- ================= RIGHT: SIDEBAR (32% ~ 4 cols) ================= -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- 1. SPOTLIGHT PROFILE DETAIL CARD -->
+<div class="bg-surface border-2 border-primary p-4 brutal-shadow">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3">
+<span class="font-code-inline text-code-inline text-primary font-bold">
+              // SPOTLIGHT_ENGINEER_DOSSIER [FEATURED]
+            </span>
+<span class="px-1.5 py-0.2 bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">STAFF</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 bg-surface-container-highest border-2 border-primary flex items-center justify-center font-bold text-headline-md text-primary">
+                ZO
+              </div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Zuri Ochieng</h3>
+<div class="font-code-inline text-code-inline text-tertiary">@zuri_dev • Nairobi, KE</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold mt-0.5">[● OPEN FOR REMOTE / HYBRID]</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant border-l-2 border-primary pl-3 py-1 bg-surface-container-low">
+              "Designed the low-latency message queue decoupling Daraja MPesa webhook fan-outs during Kenya Black Friday peak (14,200 req/sec zero message loss)."
+            </p>
+<!-- Telemetry & Verification Grid -->
+<div class="grid grid-cols-2 gap-2 font-code-inline text-code-inline pt-1">
+<div class="p-1.5 bg-surface-container border border-outline-variant">
+<div class="text-tertiary font-label-sm text-label-sm">VERIFIED COMMITS</div>
+<div class="text-title-sm font-title-sm text-on-surface font-bold">1,842 (100% GPG)</div>
+</div>
+<div class="p-1.5 bg-surface-container border border-outline-variant">
+<div class="text-tertiary font-label-sm text-label-sm">BENCHMARK RANK</div>
+<div class="text-title-sm font-title-sm text-primary font-bold">TOP 0.4% [RUST]</div>
+</div>
+</div>
+<!-- Endorsements -->
+<div class="pt-2 border-t border-outline-variant font-code-inline text-code-inline">
+<div class="text-label-sm font-label-sm text-tertiary mb-1">ENDORSED BY:</div>
+<div class="text-xs text-on-surface-variant space-y-0.5">
+<div>• VP Infrastructure @ Safaricom PLC</div>
+<div>• Core Contributor @ Tokio-rs async team</div>
+<div>• Tech Lead @ Paystack Payment Rails</div>
+</div>
+</div>
+<!-- PGP Fingerprint snippet -->
+<div class="p-2 bg-surface-container-high border border-outline font-code-inline text-xs text-tertiary overflow-x-auto">
+<div class="text-on-surface font-bold">PGP FINGERPRINT:</div>
+<div class="tracking-wider text-primary">4A9F 88E1 290C BB43 00F9 ... 8A19</div>
+</div>
+<!-- Spotlight CTA Button -->
+<button class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-2 border border-primary hover:bg-primary transition-colors brutal-shadow-sm font-bold">
+              [ Book Architecture Chat / Request PGP ]
+            </button>
+</div>
+</div>
+<!-- 2. DIRECTORY TELEMETRY & HIRING BENCHMARK -->
+<div class="bg-surface border border-outline p-4 brutal-shadow-sm">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3 font-code-inline text-code-inline">
+<span class="text-on-surface font-bold">// DIRECTORY_METRICS [LIVE]</span>
+<span class="text-secondary font-bold text-label-sm">STREAM: OK</span>
+</div>
+<div class="space-y-3 font-code-inline text-code-inline">
+<div>
+<div class="text-label-sm font-label-sm text-tertiary mb-1">AVG. ANNUAL BASE (AFRICA SENIOR TIER):</div>
+<div class="space-y-1">
+<div class="flex justify-between items-center py-1 border-b border-outline-variant/60">
+<span class="text-on-surface">Go / Distributed</span>
+<span class="text-primary font-bold">$72,000 / yr</span>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant/60">
+<span class="text-on-surface">Rust / Kernel Hackers</span>
+<span class="text-primary font-bold">$80,000 / yr</span>
+</div>
+<div class="flex justify-between items-center py-1 border-b border-outline-variant/60">
+<span class="text-on-surface">Mobile Systems (Flutter/NDK)</span>
+<span class="text-primary font-bold">$65,000 / yr</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="text-on-surface">Edge AI / Embedded NLP</span>
+<span class="text-primary font-bold">$75,000 / yr</span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant">
+<div class="text-label-sm font-label-sm text-tertiary mb-1">MOST IN-DEMAND CAPABILITIES (FEB 2025):</div>
+<div class="flex flex-wrap gap-1">
+<span class="bg-surface-container px-1 py-0.5 border border-outline-variant text-xs">Offline Sync CRDTs (+42%)</span>
+<span class="bg-surface-container px-1 py-0.5 border border-outline-variant text-xs">Low-bandwidth Telemetry</span>
+<span class="bg-surface-container px-1 py-0.5 border border-outline-variant text-xs">USSD / SMS Fallbacks</span>
+<span class="bg-surface-container px-1 py-0.5 border border-outline-variant text-xs">Bare-metal Pods</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. QUICK FILTER BY HUB MATRIX -->
+<div class="bg-surface border border-outline p-4 brutal-shadow-sm font-code-inline text-code-inline">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 mb-3">
+<span class="text-on-surface font-bold">$ ls /hubs</span>
+<span class="text-tertiary font-label-sm text-label-sm">ACTIVE NODES</span>
+</div>
+<div class="space-y-1.5">
+<div class="flex items-center justify-between p-1.5 hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<span>LOS (Lagos, NG)</span>
+<span class="font-bold text-primary">1,420 devs</span>
+</div>
+<div class="flex items-center justify-between p-1.5 hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<span>NBO (Nairobi, KE)</span>
+<span class="font-bold text-primary">1,120 devs</span>
+</div>
+<div class="flex items-center justify-between p-1.5 hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<span>CPT (Cape Town, ZA)</span>
+<span class="font-bold text-primary">800 devs</span>
+</div>
+<div class="flex items-center justify-between p-1.5 hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<span>CAI (Cairo, EG)</span>
+<span class="font-bold text-primary">560 devs</span>
+</div>
+<div class="flex items-center justify-between p-1.5 hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<span>KGL (Kigali, RW)</span>
+<span class="font-bold text-primary">512 devs</span>
+</div>
+<div class="flex items-center justify-between p-1.5 hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant">
+<span>ACC (Accra, GH)</span>
+<span class="font-bold text-primary">480 devs</span>
+</div>
+</div>
+</div>
+<!-- 4. TERMINAL MANPAGE GUIDE -->
+<div class="bg-surface-container-low border border-outline p-4 font-code-inline text-code-inline">
+<div class="border-b border-outline-variant pb-2 mb-2 font-bold text-tertiary">
+            $ man dev_directory(1)
+          </div>
+<div class="text-xs text-on-surface-variant space-y-2 leading-relaxed">
+<p>
+<strong class="text-on-surface">SYNOPSIS:</strong> All registered engineers are subject to git commit history verification, cryptographic identity attestation (PGP), and production deployment reviews.
+            </p>
+<p>
+<strong class="text-on-surface">ZERO AGENTS:</strong> Contact messages are transmitted directly over encrypted terminal channels or authenticated email keys. Zero recruiter middle layers.
+            </p>
+<div class="pt-2 border-t border-outline-variant">
+<a class="text-primary font-bold hover:underline" href="#">
+                [ Read full verification protocol --spec ]
+              </a>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- ================= FOOTER (Shared Components JSON Anchor) ================= -->
+<footer class="w-full bg-surface-container border-t border-outline-variant mt-auto">
+<div class="w-full border-t border-outline-variant px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Brand & Copyright from JSON -->
+<div class="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
+<div class="font-headline-sm text-headline-sm text-primary font-bold">
+          $ codexchange.dev
+        </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+        </p>
+</div>
+<!-- Links from JSON -->
+<div class="flex flex-wrap justify-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary transition-colors" href="#">Privacy Directive</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary transition-colors" href="#">API Docs</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary transition-colors" href="#">Telemetry Status</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary transition-colors" href="#">System Matrix</a>
+</div>
+</div>
+</footer>
+</body></html>

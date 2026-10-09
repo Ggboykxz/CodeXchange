@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mentorship Hub - codexchange.dev</title>
+<!-- Google Fonts: Space Mono & Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-highest": "#e7e1df",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-error": "#ffffff",
+            "tertiary-fixed-dim": "#cec5be",
+            "secondary": "#006d30",
+            "primary-container": "#c2410c",
+            "inverse-surface": "#32302f",
+            "on-surface": "#1d1b1a",
+            "inverse-primary": "#ffb59d",
+            "primary-fixed": "#ffdbd0",
+            "outline-variant": "#e1bfb5",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed": "#00210a",
+            "surface-container": "#f3ecea",
+            "surface-bright": "#fff8f6",
+            "surface-variant": "#e7e1df",
+            "inverse-on-surface": "#f6efed",
+            "on-secondary-container": "#007233",
+            "on-primary-fixed": "#390c00",
+            "tertiary-container": "#736c67",
+            "on-error-container": "#93000a",
+            "secondary-fixed-dim": "#79db8d",
+            "error": "#ba1a1a",
+            "surface": "#fff8f6",
+            "surface-container-low": "#f9f2f0",
+            "primary-fixed-dim": "#ffb59d",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#f9efe8",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "secondary-container": "#92f5a4",
+            "on-surface-variant": "#59413a",
+            "on-background": "#1d1b1a",
+            "background": "#fff8f6",
+            "primary": "#9b2f00",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#1f1b17",
+            "on-primary-fixed-variant": "#832600",
+            "on-primary-container": "#ffece7",
+            "surface-tint": "#ac3400",
+            "surface-dim": "#dfd9d7",
+            "surface-container-high": "#ede7e5",
+            "secondary-fixed": "#95f8a7",
+            "on-secondary-fixed-variant": "#005323",
+            "outline": "#8d7168",
+            "tertiary-fixed": "#eae1da",
+            "tertiary": "#5a544f"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-2xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "gutter": "1rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "1.5rem",
+            "margin-desktop": "2.5rem"
+          },
+          "fontFamily": {
+            "headline-lg-mobile": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "label-lg": ["Space Mono"],
+            "headline-sm": ["Space Mono"],
+            "headline-md": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "body-lg": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "title-sm": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "body-md": ["Space Mono"]
+          },
+          "fontSize": {
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Mechanical dot matrix background */
+    .bg-matrix {
+      background-image: radial-gradient(#8d7168 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .dark .bg-matrix {
+      background-image: radial-gradient(#5a544f 0.75px, transparent 0.75px);
+    }
+    /* Utilitarian brutalist button active states */
+    .btn-brutalist:active {
+      transform: translate(2px, 2px);
+      box-shadow: none !important;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col">
+<!-- ==================== TOP NAVIGATION BAR (SHARED COMPONENT) ==================== -->
+<header class="w-full bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="w-full border-b border-outline-variant dark:border-outline px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Search Section -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary tracking-tight font-bold flex items-center gap-2" href="#">
+<span>$ codexchange.dev</span>
+</a>
+<!-- On-left Search Command Bar -->
+<div class="hidden sm:flex items-center bg-surface-container dark:bg-surface-variant border border-outline-variant dark:border-outline px-2.5 py-1 text-on-surface-variant font-code-inline text-code-inline">
+<span class="text-primary dark:text-inverse-primary mr-1">$</span>
+<input class="bg-transparent border-0 p-0 text-on-surface focus:ring-0 font-code-inline text-code-inline w-40 placeholder:text-tertiary" placeholder="grep / find query..." type="text"/>
+<span class="text-tertiary font-label-sm text-label-sm ml-2 bg-surface px-1 border border-outline-variant">^K</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Discussions</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Jobs</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Projects</a>
+<a class="text-primary dark:text-inverse-primary border-b-2 border-primary dark:border-inverse-primary font-bold py-1" href="#">Mentorship</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md py-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Telemetry</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-3">
+<!-- Icon Actions -->
+<div class="flex items-center gap-1 text-tertiary">
+<button class="p-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Change Language">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</button>
+<button class="p-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" id="theme-toggle" title="Toggle Theme">
+<span class="material-symbols-outlined text-[18px]">dark_mode</span>
+</button>
+<button class="p-1 hover:text-primary dark:hover:text-inverse-primary transition-colors" title="Terminal Mode">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</button>
+</div>
+<div class="h-4 w-px bg-outline-variant dark:bg-outline hidden sm:block"></div>
+<!-- Auth Actions -->
+<div class="flex items-center gap-2">
+<a class="font-code-inline text-code-inline text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary px-2 py-1" href="#">[ Sign In ]</a>
+<a class="font-code-inline text-code-inline bg-primary-container text-on-primary-container px-2 py-1 border border-primary hover:bg-primary transition-colors" href="#">[ Register ]</a>
+</div>
+</div>
+</div>
+</header>
+<!-- ==================== SUB-NAVIGATION & TERMINAL CLI HEADER ==================== -->
+<section class="w-full bg-surface-container-low dark:bg-inverse-surface border-b border-outline-variant dark:border-outline bg-matrix">
+<div class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-6">
+<!-- Terminal Status Line -->
+<div class="flex flex-wrap items-center justify-between font-code-inline text-code-inline text-on-surface-variant dark:text-surface-variant pb-3 border-b border-outline-variant dark:border-outline gap-2">
+<div class="flex items-center gap-2">
+<span class="text-primary font-bold">$</span>
+<span class="text-on-surface font-bold">codexchange.dev/mentorship</span>
+<span class="text-tertiary">--mode=all</span>
+<span class="bg-secondary-container text-on-secondary-container px-1.5 py-0.5 font-label-sm text-label-sm font-bold border border-secondary">[status: sync_verified]</span>
+</div>
+<div class="text-tertiary font-label-sm text-label-sm tracking-wider">
+          PEERING: <span class="text-primary font-bold">LOS-1</span> | <span class="text-primary font-bold">NBO-4</span> | <span class="text-primary font-bold">CPT-2</span> | <span class="text-primary font-bold">KGL-1</span> | <span class="text-primary font-bold">ACC-1</span>
+</div>
+</div>
+<!-- Hero Typography & Pitch -->
+<div class="mt-5 max-w-4xl">
+<div class="inline-block bg-surface border border-outline px-2 py-0.5 mb-2 font-label-sm text-label-sm text-primary font-bold">
+          [ PAIR_PROGRAMMING // 1-ON-1 TECH MENTORSHIP ]
+        </div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-bold tracking-tight mb-2">
+          Senior African engineers mentoring the next generation of systems builders.
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl mb-6">
+          Accelerate your career in distributed systems, fintech infra, Rust, kernel eBPF, low-resource NLP, and mobile engineering. Book 1:1 async or live architecture reviews and career roadmap sessions.
+        </p>
+<!-- Quick Action Buttons -->
+<div class="flex flex-wrap items-center gap-3">
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-4 py-2 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+            [ + Become a Mentor ]
+          </button>
+<button class="btn-brutalist bg-surface text-on-surface px-4 py-2 border border-outline font-label-md text-label-md hover:border-primary transition-all shadow-[2px_2px_0px_#181615]">
+            [ $ man mentorship_guide ]
+          </button>
+</div>
+</div>
+<!-- Filter & CLI Grep Control Block -->
+<div class="mt-8 pt-4 border-t border-outline-variant dark:border-outline space-y-3">
+<!-- Grep Input -->
+<div class="relative flex items-center bg-surface border border-outline focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-container">
+<span class="pl-3 pr-2 text-primary font-code-inline text-code-inline font-bold">&gt;</span>
+<input class="w-full py-2.5 bg-transparent border-0 font-code-inline text-code-inline text-on-surface placeholder:text-tertiary focus:ring-0" placeholder="grep -in 'search by stack (Rust, Go, Flutter), company, or hub (Lagos, Nairobi)...'" type="text"/>
+<div class="pr-3 text-tertiary font-label-sm text-label-sm uppercase hidden sm:block">
+            [ENTER_TO_PIPE]
+          </div>
+</div>
+<!-- Filter Clusters -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-code-inline">
+<!-- Stack Filters -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-tertiary font-label-sm text-label-sm font-bold mr-1">STACK:</span>
+<button class="px-2 py-0.5 bg-on-surface text-surface border border-on-surface font-label-sm text-label-sm">[x] All Mentors (124)</button>
+<button class="px-2 py-0.5 bg-surface text-on-surface-variant border border-outline-variant hover:border-outline font-label-sm text-label-sm">[ ] Distributed Systems (42)</button>
+<button class="px-2 py-0.5 bg-surface text-on-surface-variant border border-outline-variant hover:border-outline font-label-sm text-label-sm">[ ] Fintech &amp; Payments (38)</button>
+<button class="px-2 py-0.5 bg-surface text-on-surface-variant border border-outline-variant hover:border-outline font-label-sm text-label-sm">[ ] Mobile / Offline-first (26)</button>
+<button class="px-2 py-0.5 bg-surface text-on-surface-variant border border-outline-variant hover:border-outline font-label-sm text-label-sm">[ ] AI &amp; Low-resource NLP (18)</button>
+</div>
+<!-- Sort Select -->
+<div class="flex items-center gap-1 font-label-sm text-label-sm self-start lg:self-auto">
+<span class="text-tertiary font-bold">SORT:</span>
+<button class="px-2 py-0.5 bg-surface-container border border-outline text-primary font-bold">[ Highest Rated ★ ]</button>
+<button class="px-2 py-0.5 bg-surface border border-outline-variant text-tertiary hover:text-on-surface">[ Most Available ]</button>
+<button class="px-2 py-0.5 bg-surface border border-outline-variant text-tertiary hover:text-on-surface">[ Pro-bono / Free ]</button>
+</div>
+</div>
+<!-- Hub Regional Filters -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<span class="text-tertiary font-label-sm text-label-sm font-bold mr-1">REGION_ROUTING:</span>
+<button class="px-1.5 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold border border-tertiary">[x] All SSA</button>
+<button class="px-1.5 py-0.5 bg-surface text-tertiary font-label-sm text-label-sm border border-outline-variant hover:border-primary">[ ] Lagos (LOS)</button>
+<button class="px-1.5 py-0.5 bg-surface text-tertiary font-label-sm text-label-sm border border-outline-variant hover:border-primary">[ ] Nairobi (NBO)</button>
+<button class="px-1.5 py-0.5 bg-surface text-tertiary font-label-sm text-label-sm border border-outline-variant hover:border-primary">[ ] Kigali (KGL)</button>
+<button class="px-1.5 py-0.5 bg-surface text-tertiary font-label-sm text-label-sm border border-outline-variant hover:border-primary">[ ] Cape Town (CPT)</button>
+<button class="px-1.5 py-0.5 bg-surface text-tertiary font-label-sm text-label-sm border border-outline-variant hover:border-primary">[ ] Accra (ACC)</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== MAIN 2-COLUMN WORKSPACE ==================== -->
+<main class="flex-1 max-w-[1280px] w-full mx-auto px-4 md:px-gutter-desktop py-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- ==================== LEFT / MAIN COLUMN (8-COLS) ==================== -->
+<div class="lg:col-span-8 space-y-8">
+<!-- ==================== SECTION A: MY MENTORSHIPS & SESSIONS ==================== -->
+<section class="border border-outline bg-surface">
+<!-- Terminal Buffer Header -->
+<div class="bg-surface-container px-4 py-2.5 border-b border-outline flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2 font-title-sm text-title-sm text-on-surface">
+<span class="text-primary font-bold">#</span>
+<span>MY MENTORSHIPS &amp; SESSIONS</span>
+</div>
+<div class="font-code-inline text-code-inline text-tertiary">
+<span class="text-primary font-bold">[ ACTIVE: 2</span> // 
+              <span class="text-primary font-bold">PENDING: 1</span> // 
+              <span>COMPLETED: 14 ]</span>
+</div>
+</div>
+<div class="p-4 space-y-4">
+<!-- Active Session Card -->
+<div class="border border-outline bg-surface-container-lowest p-4 relative">
+<div class="flex flex-wrap items-start justify-between gap-2 pb-2 border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 font-label-sm text-label-sm font-bold border border-secondary">
+                      [ ACTIVE // SCHEDULED ]
+                    </span>
+<span class="text-tertiary font-code-inline text-code-inline">id: sess_0x7f4a</span>
+</div>
+<h2 class="font-title-md text-title-md text-on-surface">Distributed Systems Architecture Review</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    with Mentor <span class="font-bold text-on-surface">Kofi Mensah (@kmensah)</span> — Staff at Paystack, Lagos
+                  </p>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-tertiary block">TIME_SLOT</span>
+<span class="font-code-inline text-code-inline text-primary font-bold">Tomorrow 16:00 UTC (LOS/WAT)</span>
+</div>
+</div>
+<!-- Topic & Notes Snippet -->
+<div class="py-3 font-code-inline text-code-inline bg-surface-container-low px-3 my-3 border-l-2 border-primary">
+<span class="text-tertiary block mb-0.5">// AGENDA &amp; PRODUCTION DIFF</span>
+<p class="text-on-surface">Topic: "Reviewing M-Pesa webhook Redis stream idempotency and backpressure handling during network timeouts."</p>
+</div>
+<!-- Actions -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all flex items-center gap-1.5 shadow-[2px_2px_0px_#181615]">
+<span class="material-symbols-outlined text-[14px]">videocam</span>
+                  [ Launch Video / Terminal ]
+                </button>
+<button class="btn-brutalist bg-surface text-on-surface px-3 py-1.5 border border-outline font-label-md text-label-md hover:border-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ View Notes &amp; Repo Diff ]
+                </button>
+<button class="btn-brutalist bg-surface text-tertiary px-3 py-1.5 border border-outline-variant font-label-md text-label-md hover:text-on-surface transition-all">
+                  [ Complete Session ]
+                </button>
+</div>
+</div>
+<!-- Pending Request Card -->
+<div class="border border-outline bg-surface-container-lowest p-4 relative">
+<div class="flex flex-wrap items-start justify-between gap-2 pb-2 border-b border-outline-variant">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold px-2 py-0.5 border border-outline">
+                      [ PENDING_ACCEPTANCE ]
+                    </span>
+<span class="text-tertiary font-code-inline text-code-inline">inbound_req#104</span>
+</div>
+<h2 class="font-title-md text-title-md text-on-surface">Career transition to Rust &amp; eBPF</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    with Mentee <span class="font-bold text-on-surface">Amina Bello (@amina_dev)</span> — Mid-level at Kuda, Lagos
+                  </p>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-tertiary block">REQUESTED_TIME</span>
+<span class="font-code-inline text-code-inline text-on-surface">Thursday 18:00 UTC</span>
+</div>
+</div>
+<div class="py-2.5 font-code-inline text-code-inline text-on-surface-variant my-2 italic bg-surface-container-low px-3 border-l-2 border-tertiary">
+                "Hi Amina, looking for guidance on transitioning from Node.js backend to Linux kernel systems engineering and eBPF network packet filters..."
+              </div>
+<!-- Action buttons -->
+<div class="flex flex-wrap items-center gap-2">
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Accept Request ]
+                </button>
+<button class="btn-brutalist bg-surface text-on-surface px-3 py-1.5 border border-outline font-label-md text-label-md hover:border-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Reschedule ]
+                </button>
+<button class="btn-brutalist bg-surface text-error px-3 py-1.5 border border-outline-variant font-label-md text-label-md hover:border-error transition-all">
+                  [ Decline ]
+                </button>
+</div>
+</div>
+<!-- Completed Review Item -->
+<div class="border border-outline-variant bg-surface-container-low p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-body-sm">
+<div>
+<div class="flex items-center gap-2">
+<span class="text-tertiary font-label-sm text-label-sm font-bold bg-surface-container-high px-1.5 py-0.5 border border-outline-variant">
+                    [ COMPLETED ]
+                  </span>
+<span class="font-bold text-on-surface">Flutter Offline-first Architecture</span>
+<span class="text-tertiary">w/ Zuri Ochieng (@zuri_dev)</span>
+</div>
+<p class="font-code-inline text-code-inline text-on-surface-variant mt-1">
+                  Recorded Note: "Detailed sync schema using CRDTs with SQLite. Mentee established offline retry queue."
+                </p>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="text-primary font-bold">★★★★★</span>
+<span class="font-label-sm text-label-sm text-tertiary block">VERIFIED_LOG</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== SECTION B: FIND A MENTOR GRID ==================== -->
+<section class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline pb-2">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">FIND A MENTOR</span>
+<span class="font-code-inline text-code-inline text-tertiary">[ AVAILABLE_PEERS: 6 OF 124 ]</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary hidden sm:block">SELECTING_ACTIVE_HUBS: ALL</span>
+</div>
+<!-- Mentors List (Brutalist Card Layout) -->
+<div class="space-y-4">
+<!-- Mentor 1: Amina Osei -->
+<article class="border border-outline bg-surface p-4 hover:border-primary transition-all">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-outline-variant pb-3">
+<div class="flex items-start gap-3">
+<!-- Terminal Avatar Placeholder -->
+<div class="w-12 h-12 bg-surface-container-high border border-outline flex items-center justify-center font-bold text-primary font-headline-sm flex-shrink-0">
+                    AO
+                  </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface">Amina Osei</h3>
+<span class="font-code-inline text-code-inline text-tertiary">(@a_osei)</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-tertiary font-bold">[HUB: NAIROBI / KE]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Principal Distributed Systems Architect @ Safaricom / ex-Andela</p>
+<div class="flex items-center gap-2 mt-1 font-label-sm text-label-sm">
+<span class="text-primary font-bold">★ 4.98</span>
+<span class="text-tertiary">(48 reviews)</span>
+<span class="text-tertiary">| Langs: English, Swahili</span>
+</div>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<div class="font-title-sm text-title-sm text-primary font-bold">$45 / hr</div>
+<span class="font-label-sm text-label-sm text-tertiary block">~KES 5,800 // Free for OSS</span>
+</div>
+</div>
+<!-- Tags and Availability -->
+<div class="py-3 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap gap-1.5 font-code-inline text-code-inline">
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#golang</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#distributed-systems</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#kafka</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#m-pesa</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#fintech</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold">
+                  [ 2 slots available this week ]
+                </div>
+</div>
+<!-- Footer CTA -->
+<div class="pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-tertiary">Next available: Wed 14:00 UTC</span>
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3.5 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Request Mentorship ]
+                </button>
+</div>
+</article>
+<!-- Mentor 2: Chidi Okonkwo -->
+<article class="border border-outline bg-surface p-4 hover:border-primary transition-all">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-outline-variant pb-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high border border-outline flex items-center justify-center font-bold text-primary font-headline-sm flex-shrink-0">
+                    CO
+                  </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface">Chidi Okonkwo</h3>
+<span class="font-code-inline text-code-inline text-tertiary">(@chidi_kernel)</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-tertiary font-bold">[HUB: CAPE TOWN / ZA]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Senior Linux Kernel &amp; eBPF Engineer @ Teraco Data Environments</p>
+<div class="flex items-center gap-2 mt-1 font-label-sm text-label-sm">
+<span class="text-primary font-bold">★ 5.0</span>
+<span class="text-tertiary">(31 reviews)</span>
+<span class="text-tertiary">| Langs: English, Zulu</span>
+</div>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<div class="font-title-sm text-title-sm text-secondary font-bold">Pro-bono</div>
+<span class="font-label-sm text-label-sm text-tertiary block">Free for Open Source</span>
+</div>
+</div>
+<div class="py-3 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap gap-1.5 font-code-inline text-code-inline">
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#rust</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#c</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#ebpf</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#linux-kernel</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#networking</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#bgp</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold">
+                  [ 1 slot available ]
+                </div>
+</div>
+<div class="pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-tertiary">Next available: Sat 11:00 UTC</span>
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3.5 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Request Mentorship ]
+                </button>
+</div>
+</article>
+<!-- Mentor 3: Jean-Paul Niyonzima -->
+<article class="border border-outline bg-surface p-4 hover:border-primary transition-all">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-outline-variant pb-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high border border-outline flex items-center justify-center font-bold text-primary font-headline-sm flex-shrink-0">
+                    JP
+                  </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface">Jean-Paul Niyonzima</h3>
+<span class="font-code-inline text-code-inline text-tertiary">(@jp_niyo)</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-tertiary font-bold">[HUB: KIGALI / RW]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Staff Mobile Architect @ Chipper Cash</p>
+<div class="flex items-center gap-2 mt-1 font-label-sm text-label-sm">
+<span class="text-primary font-bold">★ 4.95</span>
+<span class="text-tertiary">(56 reviews)</span>
+<span class="text-tertiary">| Langs: English, French, Kinyarwanda</span>
+</div>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<div class="font-title-sm text-title-sm text-primary font-bold">$35 / hr</div>
+<span class="font-label-sm text-label-sm text-tertiary block">~RWF 48,000</span>
+</div>
+</div>
+<div class="py-3 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap gap-1.5 font-code-inline text-code-inline">
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#flutter</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#android</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#offline-first</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#sqlite-crdt</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#wasm</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold">
+                  [ 3 slots available ]
+                </div>
+</div>
+<div class="pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-tertiary">Next available: Tomorrow 10:00 UTC</span>
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3.5 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Request Mentorship ]
+                </button>
+</div>
+</article>
+<!-- Mentor 4: Folashade Adeleke -->
+<article class="border border-outline bg-surface p-4 hover:border-primary transition-all">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-outline-variant pb-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high border border-outline flex items-center justify-center font-bold text-primary font-headline-sm flex-shrink-0">
+                    FA
+                  </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface">Folashade Adeleke</h3>
+<span class="font-code-inline text-code-inline text-tertiary">(@fola_ai)</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-tertiary font-bold">[HUB: LAGOS / NG]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Research Scientist (Speech &amp; NLP) @ Lelapa AI / Masakhane NLP</p>
+<div class="flex items-center gap-2 mt-1 font-label-sm text-label-sm">
+<span class="text-primary font-bold">★ 4.97</span>
+<span class="text-tertiary">(29 reviews)</span>
+<span class="text-tertiary">| Langs: English, Yoruba</span>
+</div>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<div class="font-title-sm text-title-sm text-primary font-bold">$40 / hr</div>
+<span class="font-label-sm text-label-sm text-tertiary block">~NGN 60,000</span>
+</div>
+</div>
+<div class="py-3 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap gap-1.5 font-code-inline text-code-inline">
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#pytorch</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#whisper</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#low-resource-nlp</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#yoruba</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#asr</span>
+</div>
+<div class="font-label-sm text-label-sm text-tertiary font-bold">
+                  [ Weekend only ]
+                </div>
+</div>
+<div class="pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-tertiary">Next available: Saturday 13:00 UTC</span>
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3.5 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Request Mentorship ]
+                </button>
+</div>
+</article>
+<!-- Mentor 5: Kwame Boakye -->
+<article class="border border-outline bg-surface p-4 hover:border-primary transition-all">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-outline-variant pb-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high border border-outline flex items-center justify-center font-bold text-primary font-headline-sm flex-shrink-0">
+                    KB
+                  </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface">Kwame Boakye</h3>
+<span class="font-code-inline text-code-inline text-tertiary">(@k_boakye)</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-tertiary font-bold">[HUB: ACCRA / GH]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lead Security Engineer &amp; Pentester @ Hub71 / ex-Flutterwave</p>
+<div class="flex items-center gap-2 mt-1 font-label-sm text-label-sm">
+<span class="text-primary font-bold">★ 4.92</span>
+<span class="text-tertiary">(22 reviews)</span>
+<span class="text-tertiary">| Langs: English, Twi</span>
+</div>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<div class="font-title-sm text-title-sm text-primary font-bold">$50 / hr</div>
+<span class="font-label-sm text-label-sm text-tertiary block">~GHS 750</span>
+</div>
+</div>
+<div class="py-3 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap gap-1.5 font-code-inline text-code-inline">
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#appsec</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#pci-dss</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#cryptography</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#golang</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#devsecops</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold">
+                  [ 2 slots available ]
+                </div>
+</div>
+<div class="pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-tertiary">Next available: Friday 15:00 UTC</span>
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3.5 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Request Mentorship ]
+                </button>
+</div>
+</article>
+<!-- Mentor 6: Tarek Mostafa -->
+<article class="border border-outline bg-surface p-4 hover:border-primary transition-all">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-outline-variant pb-3">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 bg-surface-container-high border border-outline flex items-center justify-center font-bold text-primary font-headline-sm flex-shrink-0">
+                    TM
+                  </div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface">Tarek Mostafa</h3>
+<span class="font-code-inline text-code-inline text-tertiary">(@tarek_cloud)</span>
+<span class="bg-surface-container px-1.5 py-0.5 border border-outline-variant font-label-sm text-label-sm text-tertiary font-bold">[HUB: CAIRO / EG]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cloud Infrastructure &amp; Site Reliability Lead</p>
+<div class="flex items-center gap-2 mt-1 font-label-sm text-label-sm">
+<span class="text-primary font-bold">★ 4.89</span>
+<span class="text-tertiary">(37 reviews)</span>
+<span class="text-tertiary">| Langs: English, Arabic</span>
+</div>
+</div>
+</div>
+<div class="text-left sm:text-right">
+<div class="font-title-sm text-title-sm text-primary font-bold">$30 / hr</div>
+<span class="font-label-sm text-label-sm text-tertiary block">Async RFC reviews included</span>
+</div>
+</div>
+<div class="py-3 flex flex-wrap items-center justify-between gap-3">
+<div class="flex flex-wrap gap-1.5 font-code-inline text-code-inline">
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#kubernetes</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#terraform</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#aws</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#cilium</span>
+<span class="bg-surface-container-low px-2 py-0.5 border border-outline-variant text-on-surface">#observability</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-bold">
+                  [ 4 slots available ]
+                </div>
+</div>
+<div class="pt-2 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-tertiary">Next available: Sunday 17:00 UTC</span>
+<button class="btn-brutalist bg-primary-container text-on-primary-container px-3.5 py-1.5 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+                  [ Request Mentorship ]
+                </button>
+</div>
+</article>
+</div>
+</section>
+</div>
+<!-- ==================== RIGHT / SIDEBAR COLUMN (4-COLS) ==================== -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- Box 1: LIVE TELEMETRY -->
+<div class="border border-outline bg-surface">
+<div class="bg-surface-container px-3.5 py-2 border-b border-outline flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+<span class="text-primary font-bold">&gt;&gt;</span> MENTORSHIP_TELEMETRY
+            </span>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold px-1.5 py-0.2 border border-secondary">
+              [LIVE_METRIC]
+            </span>
+</div>
+<div class="p-4 space-y-3 font-code-inline text-code-inline">
+<div class="flex justify-between items-center border-b border-outline-variant pb-2">
+<span class="text-tertiary">Total Mentors:</span>
+<span class="font-bold text-on-surface">124 Verified</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant pb-2">
+<span class="text-tertiary">Completed Sessions:</span>
+<span class="font-bold text-on-surface">3,412 hrs</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant pb-2">
+<span class="text-tertiary">Avg Feedback:</span>
+<span class="font-bold text-primary">4.96 ★★★★★</span>
+</div>
+<div class="pt-1">
+<span class="text-tertiary font-label-sm text-label-sm block mb-1.5">MOST REQUESTED STACKS:</span>
+<div class="space-y-1">
+<div class="flex justify-between items-center bg-surface-container-low px-2 py-1">
+<span class="text-on-surface">#golang</span>
+<span class="text-secondary font-bold">+38% MoM</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-low px-2 py-1">
+<span class="text-on-surface">#rust</span>
+<span class="text-secondary font-bold">+32% MoM</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-low px-2 py-1">
+<span class="text-on-surface">#flutter</span>
+<span class="text-secondary font-bold">+24% MoM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Box 2: CODE OF CONDUCT (MAN PAGE) -->
+<div class="border border-outline bg-surface">
+<div class="bg-surface-container px-3.5 py-2 border-b border-outline flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+<span class="text-primary font-bold">&gt;&gt;</span> CODE_OF_CONDUCT
+            </span>
+<span class="font-label-sm text-label-sm text-tertiary border border-outline-variant px-1 bg-surface">
+              [MAN_PAGE]
+            </span>
+</div>
+<div class="p-4 space-y-3 font-body-sm text-body-sm">
+<div class="border-l-2 border-primary pl-2.5">
+<span class="font-bold text-on-surface font-code-inline text-code-inline block">01. Code-centric sessions</span>
+<p class="text-on-surface-variant text-[11px] leading-tight">Always bring an active GitHub PR, RFC draft, or architecture topology ready to diff.</p>
+</div>
+<div class="border-l-2 border-primary pl-2.5">
+<span class="font-bold text-on-surface font-code-inline text-code-inline block">02. Low-bandwidth resilience</span>
+<p class="text-on-surface-variant text-[11px] leading-tight">Async voice, markdown reviews, or audio-first Google Meet fallback supported for unstable latency.</p>
+</div>
+<div class="border-l-2 border-primary pl-2.5">
+<span class="font-bold text-on-surface font-code-inline text-code-inline block">03. Reciprocal peer growth</span>
+<p class="text-on-surface-variant text-[11px] leading-tight">Mentees commit to giving back via open-source documentation or community forum PR reviews.</p>
+</div>
+</div>
+</div>
+<!-- Box 3: BECOME A MENTOR -->
+<div class="border-2 border-primary bg-surface-container p-4 space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-primary font-bold">// BECOME_A_MENTOR</span>
+<span class="bg-primary text-on-primary font-label-sm text-label-sm px-1.5 py-0.2 font-bold">[CALL_FOR_EXPERTS]</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface">Are you a Senior / Staff / Principal engineer in Africa or the diaspora?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Share your domain knowledge, review production designs, and build the future engineering corps. Set your own availability and rates.
+          </p>
+<button class="w-full btn-brutalist bg-primary-container text-on-primary-container py-2 border border-primary font-label-md text-label-md hover:bg-primary transition-all shadow-[2px_2px_0px_#181615]">
+            [ + Apply as Verified Mentor ]
+          </button>
+</div>
+<!-- Box 4: OFFICE HOURS CRON / GROUP AMA -->
+<div class="border border-outline bg-surface">
+<div class="bg-surface-container px-3.5 py-2 border-b border-outline flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-on-surface flex items-center gap-1.5">
+<span class="text-primary font-bold">&gt;&gt;</span> OFFICE_HOURS_CRON
+            </span>
+<span class="font-label-sm text-label-sm text-tertiary border border-outline-variant px-1 bg-surface">
+              [UPCOMING_GROUP_AMA]
+            </span>
+</div>
+<div class="p-4 space-y-3 font-code-inline text-code-inline">
+<div class="bg-surface-container-low p-2.5 border border-outline-variant">
+<span class="text-primary font-bold block text-[11px]">Friday 18:00 WAT</span>
+<h5 class="font-bold text-on-surface mt-0.5">Scaling PostgreSQL for 10M African mobile transactions</h5>
+<p class="text-tertiary text-[11px] mt-1">w/ Babatunde (Principal Architect @ Moniepoint)</p>
+<button class="mt-2 text-primary hover:underline font-label-sm text-label-sm">[ RSVP Terminal Slot ]</button>
+</div>
+<div class="bg-surface-container-low p-2.5 border border-outline-variant">
+<span class="text-primary font-bold block text-[11px]">Next Tuesday 17:00 EAT</span>
+<h5 class="font-bold text-on-surface mt-0.5">Building Offline-First CRDT apps in low connectivity</h5>
+<p class="text-tertiary text-[11px] mt-1">w/ Mwangi (Mobile Lead, Nairobi)</p>
+<button class="mt-2 text-primary hover:underline font-label-sm text-label-sm">[ RSVP Terminal Slot ]</button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- ==================== FOOTER (SHARED COMPONENT) ==================== -->
+<footer class="w-full bg-surface-container dark:bg-inverse-surface border-t border-outline-variant dark:border-outline mt-12">
+<div class="w-full border-t border-outline-variant dark:border-outline px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Brand & African Engineering Corps Identity -->
+<div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+<a class="font-headline-sm text-headline-sm text-primary dark:text-inverse-primary font-bold" href="#">
+          $ codexchange.dev
+        </a>
+<div class="h-4 w-px bg-outline-variant dark:bg-outline hidden sm:block"></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant font-code-inline text-code-inline">
+          © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+        </p>
+</div>
+<!-- Footer Terminal Links -->
+<nav class="flex flex-wrap items-center justify-center gap-4">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Privacy Directive</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">API Docs</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Telemetry Status</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-sm text-label-sm hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">System Matrix</a>
+</nav>
+</div>
+</footer>
+<!-- Micro-interactions: Theme toggler -->
+<script>
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+    }
+  </script>
+</body></html>

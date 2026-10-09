@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>$ codexchange.dev // Projects Showcase</title>
+<!-- Google Fonts: Space Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary": "#9b2f00",
+            "outline": "#8d7168",
+            "surface-variant": "#e7e1df",
+            "surface-bright": "#fff8f6",
+            "on-tertiary-container": "#f9efe8",
+            "on-primary-fixed": "#390c00",
+            "on-error": "#ffffff",
+            "surface": "#fff8f6",
+            "error-container": "#ffdad6",
+            "on-background": "#1d1b1a",
+            "surface-container-high": "#ede7e5",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed": "#ffdbd0",
+            "inverse-primary": "#ffb59d",
+            "secondary-container": "#92f5a4",
+            "surface-container-highest": "#e7e1df",
+            "on-secondary-fixed": "#00210a",
+            "background": "#fff8f6",
+            "tertiary-fixed-dim": "#cec5be",
+            "surface-container": "#f3ecea",
+            "on-secondary": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "tertiary": "#5a544f",
+            "surface-dim": "#dfd9d7",
+            "on-secondary-fixed-variant": "#005323",
+            "secondary": "#006d30",
+            "on-surface-variant": "#59413a",
+            "on-primary-fixed-variant": "#832600",
+            "primary-container": "#c2410c",
+            "on-tertiary": "#ffffff",
+            "on-secondary-container": "#007233",
+            "primary-fixed-dim": "#ffb59d",
+            "tertiary-fixed": "#eae1da",
+            "on-tertiary-fixed": "#1f1b17",
+            "surface-container-low": "#f9f2f0",
+            "inverse-on-surface": "#f6efed",
+            "secondary-fixed-dim": "#79db8d",
+            "on-tertiary-fixed-variant": "#4b4641",
+            "on-surface": "#1d1b1a",
+            "on-primary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "secondary-fixed": "#95f8a7",
+            "on-primary-container": "#ffece7",
+            "tertiary-container": "#736c67",
+            "error": "#ba1a1a",
+            "inverse-surface": "#32302f",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "2.5rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "margin-tablet": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "space-md": "1rem",
+            "space-2xl": "3rem",
+            "gutter-desktop": "1.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Space Mono"],
+            "headline-lg-mobile": ["Space Mono"],
+            "label-lg": ["Space Mono"],
+            "body-sm": ["Space Mono"],
+            "title-md": ["Space Mono"],
+            "headline-lg": ["Space Mono"],
+            "title-sm": ["Space Mono"],
+            "headline-display-mobile": ["Space Mono"],
+            "headline-display": ["Space Mono"],
+            "label-sm": ["Space Mono"],
+            "code-inline": ["Space Mono"],
+            "headline-md": ["Space Mono"],
+            "body-md": ["Space Mono"],
+            "label-md": ["Space Mono"],
+            "headline-sm": ["Space Mono"]
+          },
+          "fontSize": {
+            "body-lg": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-display": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "400" }],
+            "code-inline": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    /* Mechanical Dotted Matrix Canvas Background */
+    .terminal-dot-grid {
+      background-image: radial-gradient(#8d7168 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .custom-hard-shadow {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+    .custom-hard-shadow-primary {
+      box-shadow: 2px 2px 0px #1d1b1a;
+    }
+    .custom-hard-shadow-primary:hover {
+      box-shadow: 3px 3px 0px #1d1b1a;
+    }
+    .custom-hard-shadow-primary:active {
+      box-shadow: 0px 0px 0px #1d1b1a;
+      transform: translate(2px, 2px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-screen flex flex-col selection:bg-primary selection:text-white">
+<!-- ========================================================================= -->
+<!-- 1. TOP NAV BAR (Shared Component JSON Source of Truth)                    -->
+<!-- ========================================================================= -->
+<header class="w-full bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="w-full border-b border-outline-variant px-4 md:px-gutter-desktop max-w-[1280px] mx-auto flex items-center justify-between h-14">
+<!-- Brand & Left Navigation Links -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold flex items-center gap-2" href="#">
+<span>$ codexchange.dev</span>
+</a>
+<!-- Fast Grep Search Bar in Nav -->
+<div class="hidden lg:flex items-center relative">
+<div class="flex items-center bg-surface-container border border-outline-variant px-2.5 py-1 text-on-surface-variant font-code-inline text-code-inline w-64 hover:border-primary transition-colors">
+<span class="text-primary font-bold mr-1">&gt;</span>
+<input class="bg-transparent border-none p-0 text-on-surface font-code-inline text-code-inline focus:outline-none focus:ring-0 placeholder:text-tertiary w-full" placeholder="grep --projects [Ctrl+K]" type="text"/>
+<kbd class="text-[9px] bg-surface-variant px-1 border border-outline text-tertiary ml-1">⌘K</kbd>
+</div>
+</div>
+<!-- Global Navigation Items -->
+<nav class="hidden md:flex items-center gap-5 ml-2">
+<!-- Discussions -->
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">
+            Discussions
+          </a>
+<!-- Jobs -->
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">
+            Jobs
+          </a>
+<!-- Projects (ACTIVE per semantic matching and JSON active style) -->
+<a class="text-primary border-b-2 border-primary font-bold py-1 font-label-md text-label-md flex items-center gap-1" href="#">
+            Projects
+            <span class="inline-block w-1.5 h-1.5 bg-primary-container rounded-none"></span>
+</a>
+<!-- Telemetry -->
+<a class="text-on-surface-variant font-label-md text-label-md py-1 hover:text-primary transition-colors" href="#">
+            Telemetry
+          </a>
+</nav>
+</div>
+<!-- Trailing Latency Tickers, Icon Utilities, & Auth Actions -->
+<div class="flex items-center gap-4">
+<!-- Live Edge Latency Micro-Ticker (Africa PoPs) -->
+<div class="hidden xl:flex items-center gap-3 border-r border-outline-variant pr-4 font-label-sm text-label-sm text-tertiary">
+<span class="flex items-center gap-1 text-secondary font-bold">
+<span class="w-1.5 h-1.5 bg-secondary rounded-none"></span>LOS:14ms
+          </span>
+<span>NBO:21ms</span>
+<span>KGL:19ms</span>
+<span>ACC:22ms</span>
+<span>CPT:42ms</span>
+</div>
+<!-- Trailing Icon Actions from JSON -->
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button class="p-1 hover:text-primary hover:border-primary transition-colors flex items-center justify-center" title="Change Language [ISO-639]">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</button>
+<button class="p-1 hover:text-primary hover:border-primary transition-colors flex items-center justify-center" title="Toggle Terminal Monochrome Theme">
+<span class="material-symbols-outlined text-[18px]">dark_mode</span>
+</button>
+<button class="p-1 hover:text-primary hover:border-primary transition-colors flex items-center justify-center" title="Open Shell Output Drawer">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</button>
+</div>
+<!-- Auth Actions from JSON -->
+<div class="flex items-center gap-2">
+<a class="font-label-md text-label-md text-on-surface px-2 py-1 hover:text-primary transition-colors" href="#">
+            [ Sign In ]
+          </a>
+<a class="font-label-md text-label-md bg-primary-container text-on-primary-container border border-primary px-3 py-1 custom-hard-shadow-primary font-bold transition-all" href="#">
+            [ Register ]
+          </a>
+</div>
+</div>
+</div>
+<!-- Terminal Status Bar Sub-Header -->
+<div class="w-full bg-surface-container-low border-b border-outline-variant/60 font-code-inline text-code-inline text-tertiary">
+<div class="max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-1 flex flex-wrap items-center justify-between text-[11px]">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="text-primary font-bold">$ codexchange.dev/projects</span>
+<span class="text-tertiary">--view=all --sort=stars</span>
+<span class="bg-surface-variant text-on-surface px-1.5 py-0.2 border border-outline-variant">[status: index_synced]</span>
+</div>
+<div class="flex items-center gap-4 text-tertiary">
+<span>REPOSITORIES_INDEXED: <strong class="text-on-surface">1,842</strong></span>
+<span class="text-outline-variant">|</span>
+<span>ACTIVE_COLLABS: <strong class="text-secondary">318</strong></span>
+</div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- MAIN VIEWPORT CONTAINER (Monospace Editorial 12-Column Grid)               -->
+<!-- ========================================================================= -->
+<main class="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-gutter-desktop py-6 terminal-dot-grid">
+<!-- 2. Hero / Header Terminal Banner -->
+<section class="mb-8 border border-outline-variant bg-surface-container-low p-5 md:p-6 custom-hard-shadow relative">
+<div class="flex items-center justify-between border-b border-outline-variant/70 pb-3 mb-4 font-code-inline text-code-inline text-tertiary">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2.5 h-2.5 bg-primary-container"></span>
+<span class="text-primary font-bold">&gt; git clone showcase/open-source-africa</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-variant px-2 py-0.5 border border-outline-variant text-on-surface">
+          INDEX_VER: 2.14.0-PROD
+        </span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="max-w-3xl space-y-2">
+<h1 class="font-headline-lg text-headline-lg text-on-surface leading-tight tracking-tight">
+            Open-source infrastructure &amp; products built across African tech ecosystems.
+          </h1>
+<p class="font-body-md text-body-md text-tertiary leading-relaxed">
+<span class="text-primary font-bold">&gt; echo:</span> Explore production tools, distributed systems, offline-first SDKs, and fintech rails crafted by African software engineers. Fork, star, test, and contribute.
+          </p>
+</div>
+<div class="flex-shrink-0">
+<a class="inline-flex items-center gap-2 bg-primary-container text-on-primary-container border border-primary px-4 py-2.5 font-label-lg text-label-lg custom-hard-shadow-primary font-bold hover:bg-primary transition-all" href="#submit-repo">
+<span class="material-symbols-outlined text-base">add_box</span>
+<span>[ + Submit Repository / Project ]</span>
+</a>
+</div>
+</div>
+</section>
+<!-- 3. Filter Bar & Query Controls -->
+<section class="mb-6 space-y-3">
+<!-- Search Terminal Input -->
+<div class="border border-outline-variant bg-surface-container-lowest p-2.5 flex items-center gap-3 custom-hard-shadow">
+<span class="font-bold text-primary text-sm pl-1">&gt;</span>
+<input class="w-full bg-transparent border-none p-0 font-code-inline text-code-inline text-on-surface placeholder:text-tertiary focus:outline-none focus:ring-0" placeholder='grep -in "search projects, stacks (Rust, Go, Flutter, WASM), hubs (Lagos, Nairobi)..."' type="text" value='grep -in ""'/>
+<span class="text-xs text-tertiary font-code-inline px-2 py-1 bg-surface-container border border-outline-variant hidden sm:inline-block">
+          MATCH: 1,842
+        </span>
+</div>
+<!-- Filter Matrix: Lifecycle Pills & Sorting Toggles -->
+<div class="flex flex-wrap items-center justify-between gap-3 border border-outline-variant bg-surface-container p-3 font-code-inline text-[11px]">
+<!-- Lifecycle Pills with Checkboxes -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-tertiary font-bold mr-1">FILTER:</span>
+<!-- All -->
+<button class="bg-surface-container-highest text-primary border border-primary px-2 py-1 font-bold flex items-center gap-1.5 custom-hard-shadow">
+<span class="font-bold text-primary">[x]</span>
+<span>All (1,842)</span>
+</button>
+<!-- Live -->
+<button class="bg-surface-container-lowest text-on-surface border border-outline-variant hover:border-primary px-2 py-1 flex items-center gap-1.5 transition-colors">
+<span class="text-tertiary">[ ]</span>
+<span class="inline-block w-1.5 h-1.5 bg-secondary"></span>
+<span>Live (742)</span>
+</button>
+<!-- Beta -->
+<button class="bg-surface-container-lowest text-on-surface border border-outline-variant hover:border-primary px-2 py-1 flex items-center gap-1.5 transition-colors">
+<span class="text-tertiary">[ ]</span>
+<span class="inline-block w-1.5 h-1.5 bg-primary-container"></span>
+<span>Beta (418)</span>
+</button>
+<!-- MVP -->
+<button class="bg-surface-container-lowest text-on-surface border border-outline-variant hover:border-primary px-2 py-1 flex items-center gap-1.5 transition-colors">
+<span class="text-tertiary">[ ]</span>
+<span>MVP (312)</span>
+</button>
+<!-- Maintained -->
+<button class="bg-surface-container-lowest text-on-surface border border-outline-variant hover:border-primary px-2 py-1 flex items-center gap-1.5 transition-colors">
+<span class="text-tertiary">[ ]</span>
+<span>Maintained (280)</span>
+</button>
+<!-- Idea / RFC -->
+<button class="bg-surface-container-lowest text-on-surface border border-outline-variant hover:border-primary px-2 py-1 flex items-center gap-1.5 transition-colors">
+<span class="text-tertiary">[ ]</span>
+<span>Idea / RFC (90)</span>
+</button>
+</div>
+<!-- Sort Toggles -->
+<div class="flex items-center gap-2">
+<span class="text-tertiary font-bold">SORT:</span>
+<button class="bg-surface-container-highest text-primary border border-primary px-2 py-1 font-bold">
+            [ Most Starred * ]
+          </button>
+<button class="hover:text-primary text-tertiary px-1 py-1">
+            [ Recently Committed ]
+          </button>
+<button class="hover:text-primary text-tertiary px-1 py-1 hidden lg:inline-block">
+            [ Needs Contributors ]
+          </button>
+<button class="hover:text-primary text-tertiary px-1 py-1 hidden xl:inline-block">
+            [ Regional Impact ]
+          </button>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4 & 5. MAIN 12-COLUMN ASYMMETRIC GRID (Projects + Terminal Sidebar)        -->
+<!-- ========================================================================= -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- LEFT COLUMN: Projects Showcase Cards (8 Columns) -->
+<section class="lg:col-span-8 space-y-5">
+<!-- CARD 1: daraja-rs -->
+<article class="border border-outline-variant bg-surface-container-lowest hover:border-primary transition-all custom-hard-shadow">
+<!-- Card Header Terminal Bar -->
+<div class="bg-surface-container px-4 py-2 border-b border-outline-variant flex flex-wrap items-center justify-between text-xs font-code-inline gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-secondary text-white font-bold px-1.5 py-0.5 text-[10px]">STATUS: LIVE</span>
+<span class="text-tertiary font-code-inline">#repo-0142 // ping 14ms</span>
+</div>
+<span class="bg-surface-variant text-on-surface border border-outline-variant px-2 py-0.5 text-[10px] font-bold">
+              [HUB: LAGOS / NG]
+            </span>
+</div>
+<div class="p-5 space-y-3">
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors cursor-pointer flex items-center gap-2">
+<span class="text-primary font-bold">daraja-rs</span>
+<span class="text-xs font-normal text-tertiary">v0.8.4</span>
+</h2>
+<div class="flex items-center gap-3 text-xs font-code-inline text-tertiary">
+<span class="text-on-surface font-bold flex items-center gap-0.5"><span class="text-primary">★</span> 1,420</span>
+<span class="flex items-center gap-0.5">⑂ 284</span>
+</div>
+</div>
+<p class="font-body-md text-body-md font-bold text-on-surface">
+              High-throughput asynchronous Rust SDK and webhook receiver for Safaricom M-Pesa Daraja API.
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary leading-relaxed">
+              Zero-copy deserialization, built-in rate-limiting token bucket, and Redis idempotent queue to prevent duplicate B2C disbursements during network jitter.
+            </p>
+<!-- Stack Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#rust</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#fintech</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#mpesa</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#async-tokio</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#daraja</span>
+</div>
+<!-- Looking For Matchmaking Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/50">
+<span class="text-[10px] font-label-sm text-tertiary">CONTRIBUTIONS:</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Rust CI/CD Maintainer]
+              </span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Pen-tester]
+              </span>
+</div>
+<!-- Footer: Maintainer & Action Links -->
+<div class="pt-3 border-t border-outline-variant/60 flex flex-wrap items-center justify-between text-xs font-code-inline gap-3">
+<div class="text-tertiary">
+<span class="text-on-surface font-bold">u/chidi_dev</span> (Lagos, Nigeria • Flutterwave alum) • <span class="text-tertiary">Updated 2h ago</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-primary hover:underline font-bold" href="#">[ GitHub repo ]</a>
+<a class="text-tertiary hover:text-on-surface" href="#">[ Live Docs / Demo ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 2: afri-mesh-crdt -->
+<article class="border border-outline-variant bg-surface-container-lowest hover:border-primary transition-all custom-hard-shadow">
+<div class="bg-surface-container px-4 py-2 border-b border-outline-variant flex flex-wrap items-center justify-between text-xs font-code-inline gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-primary-container text-white font-bold px-1.5 py-0.5 text-[10px]">STATUS: BETA</span>
+<span class="text-tertiary font-code-inline">#repo-0891 // ping 22ms</span>
+</div>
+<span class="bg-surface-variant text-on-surface border border-outline-variant px-2 py-0.5 text-[10px] font-bold">
+              [HUB: NAIROBI / KE]
+            </span>
+</div>
+<div class="p-5 space-y-3">
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors cursor-pointer flex items-center gap-2">
+<span class="text-primary font-bold">afri-mesh-crdt</span>
+<span class="text-xs font-normal text-tertiary">v0.4.1-rc2</span>
+</h2>
+<div class="flex items-center gap-3 text-xs font-code-inline text-tertiary">
+<span class="text-on-surface font-bold flex items-center gap-0.5"><span class="text-primary">★</span> 980</span>
+<span class="flex items-center gap-0.5">⑂ 112</span>
+</div>
+</div>
+<p class="font-body-md text-body-md font-bold text-on-surface">
+              Offline-first Conflict-free Replicated Data Type engine for low-bandwidth rural clinical records.
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary leading-relaxed">
+              Peer-to-peer sync protocol over Bluetooth LE and local Wi-Fi hotspots, resilient to 48h grid disconnects. Zero central server dependency for frontline field doctors.
+            </p>
+<!-- Stack Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#crdt</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#sqlite</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#offline-first</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#golang</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#webrtc</span>
+</div>
+<!-- Looking For Matchmaking Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/50">
+<span class="text-[10px] font-label-sm text-tertiary">CONTRIBUTIONS:</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Flutter UI dev]
+              </span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Medical data validator]
+              </span>
+</div>
+<!-- Footer -->
+<div class="pt-3 border-t border-outline-variant/60 flex flex-wrap items-center justify-between text-xs font-code-inline gap-3">
+<div class="text-tertiary">
+<span class="text-on-surface font-bold">u/mwangi_systems</span> (Nairobi, Kenya • Ushahidi contributor) • <span class="text-tertiary">Updated 6h ago</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-primary hover:underline font-bold" href="#">[ GitHub repo ]</a>
+<a class="text-tertiary hover:text-on-surface" href="#">[ Field Demo ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 3: kinya-whisper-small -->
+<article class="border border-outline-variant bg-surface-container-lowest hover:border-primary transition-all custom-hard-shadow">
+<div class="bg-surface-container px-4 py-2 border-b border-outline-variant flex flex-wrap items-center justify-between text-xs font-code-inline gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-secondary text-white font-bold px-1.5 py-0.5 text-[10px]">STATUS: LIVE</span>
+<span class="text-tertiary font-code-inline">#repo-0319 // ping 31ms</span>
+</div>
+<span class="bg-surface-variant text-on-surface border border-outline-variant px-2 py-0.5 text-[10px] font-bold">
+              [HUB: KIGALI / RW]
+            </span>
+</div>
+<div class="p-5 space-y-3">
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors cursor-pointer flex items-center gap-2">
+<span class="text-primary font-bold">kinya-whisper-small</span>
+<span class="text-xs font-normal text-tertiary">weights: 142MB</span>
+</h2>
+<div class="flex items-center gap-3 text-xs font-code-inline text-tertiary">
+<span class="text-on-surface font-bold flex items-center gap-0.5"><span class="text-primary">★</span> 2,150</span>
+<span class="flex items-center gap-0.5">⑂ 340</span>
+</div>
+</div>
+<p class="font-body-md text-body-md font-bold text-on-surface">
+              4-bit quantized automatic speech recognition fine-tuned on Kinyarwanda &amp; Swahili dialect audio.
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary leading-relaxed">
+              Designed to run locally on low-cost Android devices and Raspberry Pi 4 edge gateways. Achieves 11.2% WER across multi-accent acoustic datasets.
+            </p>
+<!-- Stack Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#pytorch</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#whisper</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#nlp</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#onnx</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#low-resource-languages</span>
+</div>
+<!-- Looking For Matchmaking Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/50">
+<span class="text-[10px] font-label-sm text-tertiary">CONTRIBUTIONS:</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Audio corpus linguists]
+              </span>
+</div>
+<!-- Footer -->
+<div class="pt-3 border-t border-outline-variant/60 flex flex-wrap items-center justify-between text-xs font-code-inline gap-3">
+<div class="text-tertiary">
+<span class="text-on-surface font-bold">u/uwase_ai</span> (Kigali, Rwanda • C4IR Fellow) • <span class="text-tertiary">Updated 1d ago</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-primary hover:underline font-bold" href="#">[ HuggingFace / Model ]</a>
+<a class="text-tertiary hover:text-on-surface" href="#">[ Playground ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 4: ixp-telemetry-ebpf -->
+<article class="border border-outline-variant bg-surface-container-lowest hover:border-primary transition-all custom-hard-shadow">
+<div class="bg-surface-container px-4 py-2 border-b border-outline-variant flex flex-wrap items-center justify-between text-xs font-code-inline gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-surface-variant text-on-surface font-bold px-1.5 py-0.5 text-[10px] border border-outline">STATUS: MAINTAINED</span>
+<span class="text-tertiary font-code-inline">#repo-1044 // ping 42ms</span>
+</div>
+<span class="bg-surface-variant text-on-surface border border-outline-variant px-2 py-0.5 text-[10px] font-bold">
+              [HUB: CAPE TOWN / ZA]
+            </span>
+</div>
+<div class="p-5 space-y-3">
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors cursor-pointer flex items-center gap-2">
+<span class="text-primary font-bold">ixp-telemetry-ebpf</span>
+<span class="text-xs font-normal text-tertiary">v1.2.0</span>
+</h2>
+<div class="flex items-center gap-3 text-xs font-code-inline text-tertiary">
+<span class="text-on-surface font-bold flex items-center gap-0.5"><span class="text-primary">★</span> 765</span>
+<span class="flex items-center gap-0.5">⑂ 89</span>
+</div>
+</div>
+<p class="font-body-md text-body-md font-bold text-on-surface">
+              Kernel eBPF probes for monitoring undersea cable latency anomalies across Teraco &amp; WACS landing stations.
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary leading-relaxed">
+              Continuous jitter analysis and automated BGP route flapping detection for southern African IXPs and Tier-3 cloud egress paths.
+            </p>
+<!-- Stack Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#ebpf</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#c</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#linux-kernel</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#networking</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#bgp</span>
+</div>
+<!-- Looking For Matchmaking Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/50">
+<span class="text-[10px] font-label-sm text-tertiary">CONTRIBUTIONS:</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Rust eBPF port author]
+              </span>
+</div>
+<!-- Footer -->
+<div class="pt-3 border-t border-outline-variant/60 flex flex-wrap items-center justify-between text-xs font-code-inline gap-3">
+<div class="text-tertiary">
+<span class="text-on-surface font-bold">u/devilliers_sre</span> (Cape Town, ZA • Teraco peer) • <span class="text-tertiary">Updated 3d ago</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-primary hover:underline font-bold" href="#">[ GitHub repo ]</a>
+<a class="text-tertiary hover:text-on-surface" href="#">[ Live Grafana Telemetry ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 5: ussd-emulator-web -->
+<article class="border border-outline-variant bg-surface-container-lowest hover:border-primary transition-all custom-hard-shadow">
+<div class="bg-surface-container px-4 py-2 border-b border-outline-variant flex flex-wrap items-center justify-between text-xs font-code-inline gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-outline-variant text-on-surface font-bold px-1.5 py-0.5 text-[10px] border border-outline">STATUS: MVP</span>
+<span class="text-tertiary font-code-inline">#repo-1205 // ping 19ms</span>
+</div>
+<span class="bg-surface-variant text-on-surface border border-outline-variant px-2 py-0.5 text-[10px] font-bold">
+              [HUB: ACCRA / GH]
+            </span>
+</div>
+<div class="p-5 space-y-3">
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors cursor-pointer flex items-center gap-2">
+<span class="text-primary font-bold">ussd-emulator-web</span>
+<span class="text-xs font-normal text-tertiary">wasm-core: 0.3</span>
+</h2>
+<div class="flex items-center gap-3 text-xs font-code-inline text-tertiary">
+<span class="text-on-surface font-bold flex items-center gap-0.5"><span class="text-primary">★</span> 1,120</span>
+<span class="flex items-center gap-0.5">⑂ 195</span>
+</div>
+</div>
+<p class="font-body-md text-body-md font-bold text-on-surface">
+              Browser-based interactive GSM/USSD terminal simulator and test suite for fintech engineers.
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary leading-relaxed">
+              Simulate telecom session timeouts (*920#, *170#), USSD push triggers, and multi-step menus with automated unit test assertions and WebAssembly execution.
+            </p>
+<!-- Stack Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#typescript</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#wasm</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#telecom</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#ussd</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#ghana-fintech</span>
+</div>
+<!-- Looking For Matchmaking Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/50">
+<span class="text-[10px] font-label-sm text-tertiary">CONTRIBUTIONS:</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Telco protocol tester]
+              </span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Tech writer]
+              </span>
+</div>
+<!-- Footer -->
+<div class="pt-3 border-t border-outline-variant/60 flex flex-wrap items-center justify-between text-xs font-code-inline gap-3">
+<div class="text-tertiary">
+<span class="text-on-surface font-bold">u/kofi_code</span> (Accra, Ghana • Paystack partner) • <span class="text-tertiary">Updated 12h ago</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-primary hover:underline font-bold" href="#">[ GitHub repo ]</a>
+<a class="text-tertiary hover:text-on-surface" href="#">[ Interactive Simulator ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 6: solar-mesh-node -->
+<article class="border border-outline-variant bg-surface-container-lowest hover:border-primary transition-all custom-hard-shadow">
+<div class="bg-surface-container px-4 py-2 border-b border-outline-variant flex flex-wrap items-center justify-between text-xs font-code-inline gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-surface-variant text-on-surface font-bold px-1.5 py-0.5 text-[10px] border border-outline">STATUS: IDEA / RFC</span>
+<span class="text-tertiary font-code-inline">#repo-1540 // ping 28ms</span>
+</div>
+<span class="bg-surface-variant text-on-surface border border-outline-variant px-2 py-0.5 text-[10px] font-bold">
+              [HUB: CAIRO / EG]
+            </span>
+</div>
+<div class="p-5 space-y-3">
+<div class="flex items-baseline justify-between gap-4">
+<h2 class="font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors cursor-pointer flex items-center gap-2">
+<span class="text-primary font-bold">solar-mesh-node</span>
+<span class="text-xs font-normal text-tertiary">rfc-draft-01</span>
+</h2>
+<div class="flex items-center gap-3 text-xs font-code-inline text-tertiary">
+<span class="text-on-surface font-bold flex items-center gap-0.5"><span class="text-primary">★</span> 430</span>
+<span class="flex items-center gap-0.5">⑂ 52</span>
+</div>
+</div>
+<p class="font-body-md text-body-md font-bold text-on-surface">
+              Open hardware firmware for LoRa solar micro-grids monitoring agricultural water pumps in Upper Egypt.
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary leading-relaxed">
+              Low-power ESP32 firmware running MicroPython with mesh networking backhaul over SX1262 LoRa modules. Battery status telemetry over MQTT.
+            </p>
+<!-- Stack Tags -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#iot</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#esp32</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#lora</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#embedded</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface">#micropython</span>
+</div>
+<!-- Looking For Matchmaking Chips -->
+<div class="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/50">
+<span class="text-[10px] font-label-sm text-tertiary">CONTRIBUTIONS:</span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Firmware dev (C/C++)]
+              </span>
+<span class="text-[11px] font-code-inline px-2 py-0.5 bg-surface-container-high border border-outline text-primary font-bold">
+                [Looking for: Hardware PCB reviewer]
+              </span>
+</div>
+<!-- Footer -->
+<div class="pt-3 border-t border-outline-variant/60 flex flex-wrap items-center justify-between text-xs font-code-inline gap-3">
+<div class="text-tertiary">
+<span class="text-on-surface font-bold">u/tarek_iot</span> (Cairo, Egypt • Maker lab) • <span class="text-tertiary">Updated 2d ago</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-primary hover:underline font-bold" href="#">[ RFC Document ]</a>
+<a class="text-tertiary hover:text-on-surface" href="#">[ KiCad Schematics ]</a>
+</div>
+</div>
+</div>
+</article>
+<!-- Bottom Pagination Terminal Banner -->
+<div class="border border-outline-variant bg-surface-container-low p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-code-inline">
+<div class="text-tertiary">
+<span class="text-primary font-bold">&gt;&gt; PAGE 01 / 308</span> [EOF_BUFFER_LOADED] | Showing 6 of 1,842 repositories
+          </div>
+<button class="bg-surface-container-highest border border-outline px-3 py-1.5 font-label-md text-label-md text-on-surface hover:border-primary hover:text-primary transition-all custom-hard-shadow flex items-center gap-1">
+<span>[ Load Next 12 Repositories -&gt; ]</span>
+</button>
+</div>
+</section>
+<!-- RIGHT COLUMN: Terminal Command Panels & Widgets (4 Columns) -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- BOX 1: $ codexchange project --submit Callout -->
+<div class="border border-outline bg-surface-container p-5 custom-hard-shadow space-y-4" id="submit-repo">
+<div class="border-b border-outline-variant pb-2 flex items-center justify-between">
+<span class="font-code-inline text-code-inline text-primary font-bold">
+              $ codexchange project --submit
+            </span>
+<span class="inline-block w-2 h-2 bg-secondary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+            Shipping an open-source tool, library, or hardware project in Africa? Get it verified, featured on the terminal index, and connect with peer contributors.
+          </p>
+<a class="w-full text-center block bg-primary-container text-on-primary-container border border-primary px-3 py-2.5 font-label-md text-label-md custom-hard-shadow-primary font-bold hover:bg-primary transition-all" href="#">
+            [ + Add a Project / Submit Repo ]
+          </a>
+<div class="space-y-1.5 pt-2 border-t border-outline-variant/60 font-body-sm text-body-sm text-tertiary">
+<div class="flex items-start gap-2">
+<span class="text-primary font-bold">•</span>
+<span>Automatic repo telemetry &amp; Star tracking</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-primary font-bold">•</span>
+<span>'Looking for' contributor matchmaking</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-primary font-bold">•</span>
+<span>Broadcast to 48,000+ African engineer network</span>
+</div>
+</div>
+</div>
+<!-- BOX 2: // LIFECYCLE_STATUS_MATRIX -->
+<div class="border border-outline-variant bg-surface-container-lowest p-5 custom-hard-shadow space-y-3">
+<div class="border-b border-outline-variant pb-2 font-code-inline text-code-inline text-tertiary font-bold flex items-center justify-between">
+<span>// LIFECYCLE_STATUS_MATRIX</span>
+<span class="text-[10px] font-normal">[STAGE_MAP]</span>
+</div>
+<div class="space-y-2.5 font-code-inline text-xs">
+<div class="p-2 border border-outline-variant bg-surface-container flex items-start justify-between gap-2">
+<div>
+<span class="font-bold text-secondary">[x] Live (742)</span>
+<p class="text-[11px] text-tertiary">Production ready &amp; actively deployed</p>
+</div>
+<span class="w-2 h-2 bg-secondary mt-1"></span>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container flex items-start justify-between gap-2">
+<div>
+<span class="font-bold text-primary-container">[x] Beta (418)</span>
+<p class="text-[11px] text-tertiary">Public testing &amp; feature freeze</p>
+</div>
+<span class="w-2 h-2 bg-primary-container mt-1"></span>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container flex items-start justify-between gap-2">
+<div>
+<span class="font-bold text-on-surface">[x] MVP (312)</span>
+<p class="text-[11px] text-tertiary">Working prototype &amp; core loop</p>
+</div>
+<span class="w-2 h-2 bg-outline mt-1"></span>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container flex items-start justify-between gap-2">
+<div>
+<span class="font-bold text-on-surface">[x] Maintained (280)</span>
+<p class="text-[11px] text-tertiary">Stable LTS, accepting bug fixes</p>
+</div>
+<span class="w-2 h-2 bg-tertiary mt-1"></span>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container flex items-start justify-between gap-2">
+<div>
+<span class="font-bold text-primary">[x] Idea / RFC (90)</span>
+<p class="text-[11px] text-tertiary">Architecture proposals seeking co-founders</p>
+</div>
+<span class="w-2 h-2 bg-primary mt-1"></span>
+</div>
+</div>
+</div>
+<!-- BOX 3: // TRENDING_STACKS_TELEMETRY -->
+<div class="border border-outline-variant bg-surface-container-lowest p-5 custom-hard-shadow space-y-3">
+<div class="border-b border-outline-variant pb-2 font-code-inline text-code-inline text-tertiary font-bold flex items-center justify-between">
+<span>// TRENDING_STACKS_TELEMETRY</span>
+<span class="text-secondary font-bold text-[10px]">LIVE_METRIC</span>
+</div>
+<div class="space-y-2 font-code-inline text-xs">
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface">#rust (Embedded &amp; Web3)</span>
+<span class="text-secondary font-bold">+34% MoM</span>
+</div>
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface">#flutter (Offline-first)</span>
+<span class="text-secondary font-bold">+28% MoM</span>
+</div>
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface">#golang (Payment microservices)</span>
+<span class="text-secondary font-bold">+22% MoM</span>
+</div>
+<div class="flex items-center justify-between py-1 border-b border-outline-variant/40">
+<span class="text-on-surface">#python (ASR &amp; NLP models)</span>
+<span class="text-secondary font-bold">+19% MoM</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span class="text-on-surface">#sqlite-crdt (Local-first sync)</span>
+<span class="text-secondary font-bold">+45% MoM</span>
+</div>
+</div>
+</div>
+<!-- BOX 4: // REPO_MAINTAINER_DIRECTIVES -->
+<div class="border border-outline-variant bg-surface-container-low p-5 custom-hard-shadow space-y-3 font-code-inline">
+<div class="border-b border-outline-variant pb-2 text-code-inline text-tertiary font-bold flex items-center justify-between">
+<span>// REPO_MAINTAINER_DIRECTIVES</span>
+<span class="text-primary font-bold">MAN_PAGE</span>
+</div>
+<div class="space-y-2 text-xs text-on-surface leading-relaxed">
+<div class="flex items-start gap-2">
+<span class="text-primary font-bold">01.</span>
+<span>Open license required (MIT, Apache 2.0, MPL or approved FOSS).</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-primary font-bold">02.</span>
+<span>Reproducible benchmark diffs or offline fallback instructions in README.</span>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-primary font-bold">03.</span>
+<span>Respect low-bandwidth environments (bundle size &lt; 15MB, edge friendly).</span>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/60 text-[11px] text-tertiary">
+<code>$ man codexchange-guidelines(7)</code>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- ========================================================================= -->
+<!-- 6. FOOTER (Shared Component JSON Source of Truth)                         -->
+<!-- ========================================================================= -->
+<footer class="w-full bg-surface-container border-t border-outline-variant mt-12">
+<div class="w-full px-4 md:px-gutter-desktop max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Brand & African Engineering Corps Copyright String -->
+<div class="text-left font-body-sm text-body-sm text-tertiary flex flex-col sm:flex-row items-center gap-2">
+<span class="font-bold text-on-surface">
+          © 2025 codexchange.dev | AFRICAN_ENGINEERING_CORPS [LOS-NBO-KGL-ACC-CPT]
+        </span>
+</div>
+<!-- Links defined in the JSON array -->
+<div class="flex flex-wrap items-center justify-center gap-4 font-label-sm text-label-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Directive</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Telemetry Status</a>
+<span class="text-outline-variant">/</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">System Matrix</a>
+</div>
+</div>
+</footer>
+</body></html>

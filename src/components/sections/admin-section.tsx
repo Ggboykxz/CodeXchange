@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { useAppStore, useT } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
@@ -18,7 +24,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ROLES, canAssignRoles, type Role } from "@/lib/roles";
-import { ArrowLeft, Lock, Search, ShieldAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  Flag,
+  Loader2,
+  Lock,
+  ScrollText,
+  Search,
+  ShieldAlert,
+  ShieldCheck,
+  Terminal,
+  UserCog,
+} from "lucide-react";
 import { AdminReports } from "@/components/sections/admin-reports";
 import { AdminLog } from "@/components/sections/admin-log";
 import { cn } from "@/lib/utils";
@@ -34,6 +52,11 @@ import { cn } from "@/lib/utils";
  * Ce qui ne figure jamais ici : l'e-mail des membres (le sélecteur
  * admin ne le renvoie pas), ni `passwordHash`. Chercher par e-mail
  * fonctionne, le voir ne fonctionne pas.
+ *
+ * Habillage « console terminal » (design Stitch) : bandeau de commande
+ * `$ codexchange.dev/admin`, onglets CLI, registre en tableau. Le chrome
+ * ne change rien aux règles — le rôle reste vérifié par `/api/auth/me`
+ * et chaque écriture reste arbitrée par l'API.
  */
 
 /** Ligne telle que `/api/admin/users` la renvoie. */
@@ -50,6 +73,13 @@ type ListState =
   | { status: "ready"; users: AdminRow[]; total: number; hasMore: boolean };
 
 const PAGE_SIZE = 24;
+
+/** M1 — les trois consoles, dans l'ordre de la barre d'onglets. */
+const TABS = [
+  { id: "roles", labelKey: "admin.tab_roles", Icon: UserCog },
+  { id: "reports", labelKey: "admin.tab_reports", Icon: Flag },
+  { id: "log", labelKey: "admin.tab_log", Icon: ScrollText },
+] as const;
 
 export function AdminSection() {
   const t = useT();
@@ -210,6 +240,31 @@ export function AdminSection() {
     }
   };
 
+  /**
+   * Clavier sur le `tablist` (motif ARIA des onglets : flèches + Home/End).
+   * Un seul onglet est monté à la fois, on déplace donc le focus par son
+   * id plutôt qu'avec un tableau de refs.
+   */
+  const onTablistKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const index = TABS.findIndex((tb) => tb.id === tab);
+    if (index < 0) return;
+    let next = index;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      next = (index + 1) % TABS.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      next = (index - 1 + TABS.length) % TABS.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = TABS.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    setTab(TABS[next].id);
+    document.getElementById(`admin-tab-${TABS[next].id}`)?.focus();
+  };
+
   /* ---------------------------------------------------------------- */
   /* Gardes — l'écran dit ce que le serveur fera de toute façon.        */
   /* ---------------------------------------------------------------- */
@@ -227,7 +282,7 @@ export function AdminSection() {
         aria-busy="true"
       >
         <span className="sr-only">{t("common.loading")}</span>
-        <div className="h-24 rounded-lg bg-muted animate-pulse" />
+        <div className="h-14 rounded-lg bg-muted animate-pulse" />
         <div className="h-64 rounded-lg bg-muted animate-pulse" />
       </div>
     );
@@ -235,10 +290,17 @@ export function AdminSection() {
 
   if (!user) {
     return (
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <Card className="items-center gap-4 py-10 text-center">
-          <Lock className="h-6 w-6 text-muted-foreground" aria-hidden />
-          <p className="text-sm text-muted-foreground">{t("admin.login_required")}</p>
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+        <Card className="items-center gap-4 py-12 text-center">
+          <span className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-muted">
+            <Lock className="h-4 w-4 text-brand" aria-hidden />
+          </span>
+          <h2 className="font-mono text-sm font-bold uppercase tracking-wider">
+            {t("nav.admin")}
+          </h2>
+          <p className="max-w-md text-sm text-muted-foreground">
+            {t("admin.login_required")}
+          </p>
           <div className="flex gap-2">
             <Button onClick={() => openAuth("login")}>{t("nav.login")}</Button>
             <Button variant="outline" onClick={() => navigate("home")}>
@@ -253,10 +315,17 @@ export function AdminSection() {
 
   if (!admin) {
     return (
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <Card className="items-center gap-4 py-10 text-center">
-          <ShieldAlert className="h-6 w-6 text-muted-foreground" aria-hidden />
-          <p className="text-sm text-muted-foreground">{t("admin.forbidden")}</p>
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+        <Card className="items-center gap-4 border-destructive/40 py-12 text-center">
+          <span className="flex h-10 w-10 items-center justify-center rounded-md border border-destructive/40 bg-destructive/10">
+            <ShieldAlert className="h-4 w-4 text-destructive" aria-hidden />
+          </span>
+          <h2 className="font-mono text-sm font-bold uppercase tracking-wider">
+            {t("admin.forbidden")}
+          </h2>
+          <p className="max-w-md text-sm text-muted-foreground">
+            {t("admin.login_required")}
+          </p>
           <Button variant="outline" onClick={() => navigate("home")}>
             <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" aria-hidden />
             {t("nav.home")}
@@ -267,164 +336,304 @@ export function AdminSection() {
   }
 
   /* ---------------------------------------------------------------- */
-  /* Liste                                                             */
+  /* Console                                                          */
   /* ---------------------------------------------------------------- */
 
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-6">
-      <SectionHeader title={t("admin.title")} subtitle={t("admin.subtitle")} />
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-6">
+      <SectionHeader
+        eyebrow={t("nav.admin")}
+        title={t("admin.title")}
+        subtitle={t("admin.subtitle")}
+      />
+
+      {/* Bandeau de commande — `$ codexchange.dev/admin --enforce-policies`.
+          Rappel que l'accès est vérifié côté serveur (`/api/auth/me`) et
+          que chaque écriture reste arbitrée par l'API. */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border px-3 py-2 font-mono text-[11px] sm:text-xs">
+          <div className="flex min-w-0 items-center gap-2">
+            <Terminal className="h-3.5 w-3.5 shrink-0 text-brand" aria-hidden />
+            <span className="font-bold text-brand" aria-hidden="true">
+              $
+            </span>
+            <span className="truncate font-medium text-foreground">
+              codexchange.dev/admin
+            </span>
+            <span className="hidden text-muted-foreground md:inline">
+              --enforce-policies --pgp-signed
+            </span>
+          </div>
+          <span className="inline-flex items-center gap-1.5 border border-border bg-muted/50 px-1.5 py-0.5 font-bold text-foreground">
+            <ShieldCheck className="h-3 w-3 text-brand" aria-hidden />
+            [staff: verified]
+          </span>
+        </div>
+      </div>
 
       {/* M1 — onglets : rôles (B8), signalements, journal de modération */}
-      <div className="flex gap-1 rounded-lg border border-border bg-muted/50 p-1" role="tablist">
-        {(
-          [
-            { id: "roles", label: t("admin.tab_roles") },
-            { id: "reports", label: t("admin.tab_reports") },
-            { id: "log", label: t("admin.tab_log") },
-          ] as const
-        ).map((tb) => (
-          <button
-            key={tb.id}
-            role="tab"
-            aria-selected={tab === tb.id}
-            onClick={() => setTab(tb.id)}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition",
-              tab === tb.id
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {tb.label}
-          </button>
-        ))}
+      <div
+        className="flex flex-wrap items-center gap-1 rounded-lg border border-border bg-muted/50 p-1"
+        role="tablist"
+        aria-label={t("nav.admin")}
+        onKeyDown={onTablistKeyDown}
+      >
+        {TABS.map((tb) => {
+          const active = tab === tb.id;
+          return (
+            <button
+              key={tb.id}
+              id={`admin-tab-${tb.id}`}
+              role="tab"
+              type="button"
+              aria-selected={active}
+              aria-controls={`admin-panel-${tb.id}`}
+              tabIndex={active ? 0 : -1}
+              onClick={() => setTab(tb.id)}
+              className={cn(
+                "flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors duration-150",
+                "[&_svg]:size-3.5 [&_svg]:shrink-0",
+                active
+                  ? "bg-brand text-brand-foreground shadow-sm"
+                  : "border border-transparent text-muted-foreground hover:border-border hover:bg-background hover:text-foreground"
+              )}
+            >
+              <tb.Icon className="h-3.5 w-3.5" aria-hidden />
+              {t(tb.labelKey)}
+            </button>
+          );
+        })}
       </div>
 
       {tab === "roles" && (
-      <>
-      <div className="flex items-center gap-3">
-        <div className="relative flex-1">
-          <Search
-            className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t("admin.search")}
-            aria-label={t("admin.search")}
-            className="ps-9"
-          />
-        </div>
-        {list.status === "ready" && (
-          <span className="shrink-0 whitespace-nowrap text-sm text-muted-foreground">
-            {list.total} {t("admin.members")}
-          </span>
-        )}
-      </div>
+        <section
+          id="admin-panel-roles"
+          role="tabpanel"
+          aria-labelledby="admin-tab-roles"
+          className="space-y-4"
+        >
+          {/* Barre « grep » : le prompt reste discret, la recherche garde
+              son propre anneau de focus brand. */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative min-w-0 flex-1">
+              <Search
+                className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder={t("admin.search")}
+                aria-label={t("admin.search")}
+                className="ps-9"
+              />
+            </div>
+            {list.status === "ready" && (
+              <span className="shrink-0 whitespace-nowrap font-mono text-[11px] text-muted-foreground">
+                {list.total} {t("admin.members")}
+              </span>
+            )}
+          </div>
 
-      {list.status === "loading" && (
-        <div className="space-y-2" role="status" aria-busy="true">
-          <span className="sr-only">{t("common.loading")}</span>
-          <div className="h-12 rounded-lg bg-muted animate-pulse" />
-          <div className="h-12 rounded-lg bg-muted animate-pulse" />
-          <div className="h-12 rounded-lg bg-muted animate-pulse" />
-        </div>
-      )}
-
-      {list.status === "forbidden" && (
-        <p className="rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-          {t("admin.forbidden")}
-        </p>
-      )}
-
-      {list.status === "error" && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-border px-4 py-3 text-sm">
-          <span>{t("admin.error")}</span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => load(applied, 1, false)}
-          >
-            {t("feed.retry")}
-          </Button>
-        </div>
-      )}
-
-      {list.status === "ready" && (
-        <>
-          {list.users.length === 0 ? (
-            <p className="rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-              {t("admin.empty")}
-            </p>
-          ) : (
-            <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
-              {list.users.map((u) => {
-                const isYou = u.id === user.id;
-                return (
-                  <div key={u.id} data-testid="admin-row" className="flex items-center gap-3 px-4 py-3">
-                    <Avatar
-                      name={u.name}
-                      color={u.profile?.avatarColor}
-                      size="sm"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium">
-                          {u.name}
-                        </span>
-                        {isYou && <Tag label={t("admin.you")} variant="muted" />}
-                      </div>
-                      <div className="truncate text-xs text-muted-foreground">
-                        u/{u.profile?.username ?? "—"} · ★ {u.reputation}
-                      </div>
-                    </div>
-                    {/* On ne change pas son propre rôle : le serveur le
-                        refuse aussi (`canChangeRole`), l'UI ne fait que
-                        l'éviter d'y aller se cogner. */}
-                    <Select
-                      value={u.role}
-                      onValueChange={(v) => changeRole(u, v as Role)}
-                      disabled={isYou || saving === u.id}
-                    >
-                      <SelectTrigger className="h-9 w-36 shrink-0">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ROLES.map((r) => (
-                          <SelectItem key={r} value={r}>
-                            {t(`admin.role.${r}`)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                );
-              })}
+          {list.status === "loading" && (
+            <div className="space-y-2" role="status" aria-busy="true">
+              <span className="sr-only">{t("common.loading")}</span>
+              <div className="h-11 rounded-lg bg-muted animate-pulse" />
+              <div className="h-11 rounded-lg bg-muted animate-pulse" />
+              <div className="h-11 rounded-lg bg-muted animate-pulse" />
             </div>
           )}
 
-          {list.hasMore && (
-            <div className="flex justify-center">
+          {list.status === "forbidden" && (
+            <Card
+              className="items-center gap-3 border-destructive/40 py-10 text-center"
+              role="alert"
+            >
+              <ShieldAlert className="h-5 w-5 text-destructive" aria-hidden />
+              <p className="font-mono text-sm text-muted-foreground">
+                {t("admin.forbidden")}
+              </p>
               <Button
                 variant="outline"
-                onClick={() => {
-                  const next = page + 1;
-                  setPage(next);
-                  load(applied, next, true);
-                }}
+                size="sm"
+                onClick={() => load(applied, 1, false)}
               >
-                {t("feed.more")}
+                {t("feed.retry")}
+              </Button>
+            </Card>
+          )}
+
+          {list.status === "error" && (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm">
+              <span className="text-muted-foreground">{t("admin.error")}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => load(applied, 1, false)}
+              >
+                {t("feed.retry")}
               </Button>
             </div>
           )}
-        </>
-      )}
-      </>
+
+          {list.status === "ready" && (
+            <>
+              {list.users.length === 0 ? (
+                <p className="rounded-xl border border-dashed border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+                  {t("admin.empty")}
+                </p>
+              ) : (
+                <div className="overflow-hidden rounded-xl border border-border bg-card">
+                  {/* En-tête de registre — matricule des privilèges. */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-muted/40 px-3 py-2">
+                    <h3 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+                      <UserCog className="h-3.5 w-3.5 text-brand" aria-hidden />
+                      {t("admin.title")}
+                    </h3>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      {list.total} {t("admin.members")}
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-left text-sm">
+                      <caption className="sr-only">{t("admin.subtitle")}</caption>
+                      <thead>
+                        <tr className="border-b border-border bg-muted/40 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                          <th scope="col" className="px-3 py-2 font-bold">
+                            {t("admin.members")}
+                          </th>
+                          <th scope="col" className="px-3 py-2 font-bold">
+                            {t("annuaire.reputation")}
+                          </th>
+                          <th scope="col" className="px-3 py-2 font-bold">
+                            {t("admin.tab_roles")}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {list.users.map((u) => {
+                          const isYou = u.id === user.id;
+                          return (
+                            <tr
+                              key={u.id}
+                              data-testid="admin-row"
+                              className="transition-colors duration-150 hover:bg-muted/40"
+                            >
+                              <td className="px-3 py-2.5">
+                                <div className="flex items-center gap-2.5">
+                                  <Avatar
+                                    name={u.name}
+                                    color={u.profile?.avatarColor}
+                                    size="sm"
+                                  />
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="truncate text-sm font-medium">
+                                        {u.name}
+                                      </span>
+                                      {isYou && (
+                                        <Tag
+                                          label={t("admin.you")}
+                                          tone="terracotta"
+                                        />
+                                      )}
+                                    </div>
+                                    <div className="truncate font-mono text-[11px] text-muted-foreground">
+                                      u/{u.profile?.username ?? "—"}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-3 py-2.5">
+                                <span className="font-mono text-sm font-bold tabular-nums text-foreground">
+                                  ★ {u.reputation}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2.5">
+                                <div className="flex items-center gap-2">
+                                  {/* On ne change pas son propre rôle : le
+                                      serveur le refuse aussi
+                                      (`canChangeRole`), l'UI ne fait que
+                                      l'éviter d'y aller se cogner. */}
+                                  <Select
+                                    value={u.role}
+                                    onValueChange={(v) =>
+                                      changeRole(u, v as Role)
+                                    }
+                                    disabled={isYou || saving === u.id}
+                                  >
+                                    <SelectTrigger
+                                      className="h-8 w-36 shrink-0 font-mono text-xs"
+                                      aria-label={u.name}
+                                    >
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {ROLES.map((r) => (
+                                        <SelectItem key={r} value={r}>
+                                          {t(`admin.role.${r}`)}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  {saving === u.id && (
+                                    <Loader2
+                                      className="h-3.5 w-3.5 animate-spin text-brand"
+                                      aria-hidden
+                                    />
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {list.hasMore && (
+                    <div className="flex justify-center border-t border-border bg-muted/40 px-3 py-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const next = page + 1;
+                          setPage(next);
+                          load(applied, next, true);
+                        }}
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" aria-hidden />
+                        {t("feed.more")}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </section>
       )}
 
-      {tab === "reports" && <AdminReports />}
-      {tab === "log" && <AdminLog />}
+      {tab === "reports" && (
+        <section
+          id="admin-panel-reports"
+          role="tabpanel"
+          aria-labelledby="admin-tab-reports"
+        >
+          <AdminReports />
+        </section>
+      )}
+
+      {tab === "log" && (
+        <section
+          id="admin-panel-log"
+          role="tabpanel"
+          aria-labelledby="admin-tab-log"
+        >
+          <AdminLog />
+        </section>
+      )}
     </div>
   );
 }
