@@ -7,6 +7,7 @@ import { getSessionUserId } from "@/lib/session";
 import { getMemberBySlug, type MembreDetail } from "@/lib/members";
 import { isFavorite } from "@/lib/favorites";
 import BoutonFavori from "@/components/bouton-favori";
+import BoutonSignaler from "@/components/bouton-signaler";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -79,6 +80,11 @@ export default async function PageMembre({ params }: Props) {
               <BoutonFavori kind="membre" targetId={membre.id} initial={favoriDuMembre} connecte={userId !== null} />
             </p>
           )}
+          {userId !== null && userId !== membre.id ? (
+            <p className="mt-2">
+              <BoutonSignaler kind="membre" targetId={membre.id} libelle="Signaler ce membre" />
+            </p>
+          ) : null}
         </div>
       </header>
 

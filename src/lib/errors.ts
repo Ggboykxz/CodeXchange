@@ -13,7 +13,8 @@ export type Code =
   | "MENTOR_SELF_REQUEST"
   | "MENTOR_DUPLICATE"
   | "FORBIDDEN"
-  | "RATE_LIMITED";
+  | "RATE_LIMITED"
+  | "USER_BANNED";
 
 export type Status = 401 | 403 | 409 | 422 | 429;
 
@@ -26,6 +27,7 @@ export const STATUS_BY_CODE: Record<Code, Status> = {
   MENTOR_DUPLICATE: 409,
   FORBIDDEN: 403,
   RATE_LIMITED: 429,
+  USER_BANNED: 403,
 };
 
 /** Messages FR affichés à l'utilisateur (copy, pas des erreurs techniques). */
@@ -38,6 +40,7 @@ export const MESSAGE_FR: Record<Code, string> = {
   MENTOR_DUPLICATE: "Vous avez déjà envoyé une demande à ce mentor.",
   FORBIDDEN: "Vous n'êtes pas autorisé à effectuer cette action.",
   RATE_LIMITED: "Trop de tentatives. Réessayez dans quelques instants.",
+  USER_BANNED: "Ce compte a été suspendu. Contactez un administrateur.",
 };
 
 export class AppError extends Error {

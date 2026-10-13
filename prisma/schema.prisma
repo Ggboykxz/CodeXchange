@@ -23,6 +23,7 @@ model User {
   linkedin     String   @default("")
   site         String   @default("")
   role         String   @default("MEMBER") // MEMBER | MENTOR | ADMIN
+  bannedAt     DateTime?
   createdAt    DateTime @default(now())
 
   sessions   Session[]
@@ -42,6 +43,7 @@ model User {
   demandes   MentorRequest[] @relation("Requester")
   notifications Notification[]
   favoris       Favorite[]
+  signalements  Report[] @relation("Reporter")
 }
 
 model Session {
@@ -225,4 +227,18 @@ model Favorite {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, kind, targetId])
+}
+
+
+model Report {
+  id          Int       @id @default(autoincrement())
+  reporterId  Int
+  kind        String    // post | reply | job | projet | evenement | tuto | membre | message
+  targetId    Int
+  raison      String
+  statut      String    @default("PENDING") // PENDING | TRAITE | REJETE
+  createdAt   DateTime  @default(now())
+  resolvedAt  DateTime?
+  resolvedById Int?
+  reporter    User      @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
 }

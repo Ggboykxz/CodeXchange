@@ -7,6 +7,7 @@ import { isFavorite } from "@/lib/favorites";
 import { getSessionUserId } from "@/lib/session";
 import BoutonPostuler from "./bouton-postuler";
 import BoutonFavori from "@/components/bouton-favori";
+import BoutonSignaler from "@/components/bouton-signaler";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -73,14 +74,17 @@ export default async function PageOffre({ params }: Props) {
             </span>
           </li>
         </ul>
-        <div className="flex flex-wrap gap-2">
-          <BoutonPostuler
-            jobId={jobId}
-            connecte={userId !== null}
-            dejaPostule={dejaPostule}
-            compteur={offre._count.candidatures}
-          />
-          <BoutonFavori kind="job" targetId={jobId} initial={favoriDeLoffre} connecte={userId !== null} />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-2">
+            <BoutonPostuler
+              jobId={jobId}
+              connecte={userId !== null}
+              dejaPostule={dejaPostule}
+              compteur={offre._count.candidatures}
+            />
+            <BoutonFavori kind="job" targetId={jobId} initial={favoriDeLoffre} connecte={userId !== null} />
+          </div>
+          <BoutonSignaler kind="job" targetId={jobId} />
         </div>
         {userId === null && (
           <p className="text-sm text-[var(--cx-muted)]">

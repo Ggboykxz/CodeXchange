@@ -41,6 +41,10 @@ export async function getSessionUserId(): Promise<number | null> {
   const session = await prisma.session.findUnique({ where: { id: jeton } });
   if (!session) return null; // cookie forgé ou déjà détruit
 
+  // Compte banni : la session ne vaut plus rien.
+  const user = await prisma.user.findUnique({ where: { id: session.userId }, select: { bannedAt: true } });
+  if (!user || user.bannedAt) return null;
+
   if (session.expiresAt.getTime() <= Date.now()) {
     await prisma.session.deleteMany({ where: { id: jeton } });
     return null;

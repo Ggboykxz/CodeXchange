@@ -109,5 +109,8 @@ export async function loginUser(email: string, password: string): Promise<User> 
   if (!utilisateur || !(await verifyPassword(password, utilisateur.passwordHash))) {
     throw new AppError("AUTH_INVALID");
   }
+  if (utilisateur.bannedAt) {
+    throw new AppError("USER_BANNED");
+  }
   return utilisateur;
 }

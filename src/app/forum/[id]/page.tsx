@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { aLike, getPost, hasReplyLiked, parseId } from "@/lib/forum";
 import { isFavorite } from "@/lib/favorites";
 import BoutonFavori from "@/components/bouton-favori";
+import BoutonSignaler from "@/components/bouton-signaler";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
 import FormulaireReponse from "./formulaire-reponse";
@@ -100,6 +101,10 @@ export default async function PageSujet({ params }: Props) {
       <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
         {sujet.corps}
       </article>
+
+      <div className="flex justify-end">
+        <BoutonSignaler kind="post" targetId={postId} />
+      </div>
 
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">
