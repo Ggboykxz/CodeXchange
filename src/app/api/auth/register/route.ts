@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { registerUser } from "@/lib/auth";
 import { errorResponse } from "@/lib/errors";
 import { createSession } from "@/lib/session";
+import { sendWelcomeEmail } from "@/lib/mailer";
 
 type CorpsInscription = Partial<{
   email: unknown;
@@ -25,6 +26,8 @@ export async function POST(request: Request) {
       titre: String(corps.titre ?? ""),
     });
     await createSession(membre.id);
+    // E-mail de bienvenue (fire-and-forget : ne jamais bloquer l'inscription).
+    sendWelcomeEmail(membre.email, membre.nom).catch(() => {});
     return NextResponse.json(
       { id: membre.id, nom: membre.nom, slug: membre.slug },
       { status: 201 },
