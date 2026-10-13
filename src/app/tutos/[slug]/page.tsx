@@ -7,6 +7,7 @@ import { renderMarkdown } from "@/lib/markdown";
 import { getTutorial } from "@/lib/tutorials";
 import { isFavorite } from "@/lib/favorites";
 import { getSessionUserId } from "@/lib/session";
+import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** /tutos/[slug] — article rendu en markdown + auteur lié à son profil. */
 export default async function PageTuto({ params }: Props) {
   const { slug } = await params;
-  const [tuto, userId] = await Promise.all([lireTuto(slug), getSessionUserId()]);
+  const [tuto, userId, locale] = await Promise.all([lireTuto(slug), getSessionUserId(), localeCourante()]);
   if (!tuto) notFound();
   const favoriDuTuto = userId === null ? false : await isFavorite(userId, "tuto", tuto.id);
 
@@ -35,7 +36,7 @@ export default async function PageTuto({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/tutos" className="text-sm text-[var(--cx-accent)]">
-        ← Retour aux tutos
+        {t(locale, "tutorials.back")}
       </Link>
 
       <header className="flex flex-col gap-3">
@@ -44,7 +45,7 @@ export default async function PageTuto({ params }: Props) {
         </h1>
         <p className="text-sm text-[var(--cx-muted)]">
           {tuto.author.nom} · {drapeau(tuto.author.pays)} {tuto.author.ville}, {tuto.author.pays}{" "}
-          · ⏱ {tuto.dureeMin} min de lecture
+          · ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
         </p>
         <ul className="flex flex-wrap gap-2">
           {tuto.tags.map((tag) => (
@@ -65,13 +66,13 @@ export default async function PageTuto({ params }: Props) {
       />
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 text-sm">
-        <h2 className="font-semibold">Écrit par</h2>
+        <h2 className="font-semibold">{t(locale, "tutorials.author")}</h2>
         <Link href={`/membres/${tuto.author.slug}`} className="mt-3 flex items-center gap-3">
           <Avatar slug={tuto.author.slug} nom={tuto.author.nom} />
           <span>
             <span className="font-medium hover:text-[var(--cx-accent)]">{tuto.author.nom}</span>
             <span className="block text-xs text-[var(--cx-muted)]">
-              Voir son profil dans l&apos;annuaire →
+              {t(locale, "tutorials.see_profile")}
             </span>
           </span>
         </Link>

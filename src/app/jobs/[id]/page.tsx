@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { aPostule, getJob } from "@/lib/jobs";
 import { parseId } from "@/lib/forum";
 import { isFavorite } from "@/lib/favorites";
+import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import BoutonPostuler from "./bouton-postuler";
 import BoutonFavori from "@/components/bouton-favori";
@@ -37,14 +38,14 @@ export default async function PageOffre({ params }: Props) {
   const offre = await getJob(jobId);
   if (!offre) notFound();
 
-  const userId = await getSessionUserId();
+  const [userId, locale] = await Promise.all([getSessionUserId(), localeCourante()]);
   const dejaPostule = userId === null ? false : await aPostule(userId, jobId);
   const favoriDeLoffre = userId === null ? false : await isFavorite(userId, "job", jobId);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/jobs" className="text-sm text-[var(--cx-accent)]">
-        ← Retour aux offres
+        {t(locale, "jobs.back")}
       </Link>
 
       <header className="flex flex-col gap-3">
@@ -70,7 +71,7 @@ export default async function PageOffre({ params }: Props) {
                   : "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
               }`}
             >
-              {offre.remote ? "Remote" : "Sur place"}
+              {offre.remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
             </span>
           </li>
         </ul>
@@ -97,17 +98,16 @@ export default async function PageOffre({ params }: Props) {
       </header>
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
-        <h2 className="font-semibold">Publiée par</h2>
+        <h2 className="font-semibold">{t(locale, "jobs.author")}</h2>
         <p className="mt-1 text-[var(--cx-muted)]">
           {offre.auteur.nom} · {offre.auteur.ville}, {offre.auteur.pays}
         </p>
       </section>
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
-        <h2 className="font-semibold">Postuler directement</h2>
+        <h2 className="font-semibold">{t(locale, "jobs.external")}</h2>
         <p className="mt-1 text-[var(--cx-muted)]">
-          L&apos;offre originale est hébergée par l&apos;entreprise : ce lien s&apos;ouvre dans un
-          nouvel onglet.
+          {t(locale, "jobs.external_desc")}
         </p>
         <a
           href={offre.lien}
@@ -115,7 +115,7 @@ export default async function PageOffre({ params }: Props) {
           rel="noopener noreferrer"
           className="mt-3 inline-block rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 font-medium hover:border-[var(--cx-accent)]"
         >
-          Ouvrir l&apos;offre sur le site de l&apos;entreprise ↗
+          {t(locale, "jobs.external_link")}
         </a>
       </section>
     </main>

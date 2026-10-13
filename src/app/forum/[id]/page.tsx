@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aLike, getPost, hasReplyLiked, parseId } from "@/lib/forum";
 import { isFavorite } from "@/lib/favorites";
+import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import { getSessionUserId } from "@/lib/session";
@@ -40,7 +41,7 @@ export default async function PageSujet({ params }: Props) {
   const sujet = await getPost(postId);
   if (!sujet) notFound();
 
-  const userId = await getSessionUserId();
+  const [userId, locale] = await Promise.all([getSessionUserId(), localeCourante()]);
   const likedByMe = userId === null ? false : await aLike(userId, postId);
   const favoriDuSujet = userId === null ? false : await isFavorite(userId, "post", postId);
 
@@ -57,7 +58,7 @@ export default async function PageSujet({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/forum" className="text-sm text-[var(--cx-accent)]">
-        ← Retour au forum
+        {t(locale, "forum.back")}
       </Link>
 
       <header className="flex flex-col gap-3">
@@ -109,17 +110,17 @@ export default async function PageSujet({ params }: Props) {
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">
           {sujet.replies.length === 0
-            ? "Aucune réponse"
+            ? t(locale, "forum.answers_zero")
             : sujet.replies.length === 1
-              ? "1 réponse"
-              : `${sujet.replies.length} réponses`}
+              ? t(locale, "forum.answers_one")
+              : `${sujet.replies.length} ${t(locale, "forum.answers_many")}`}
         </h2>
 
         {sujet.replies.length === 0 ? (
           <p className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-6 text-sm text-[var(--cx-muted)]">
             {userId === null
-              ? "Connectez-vous pour donner le premier coup de main."
-              : "Soyez le premier à répondre."}
+              ? t(locale, "forum.no_answer_cta")
+              : t(locale, "forum.no_answer")}
           </p>
         ) : (
           <ul className="flex flex-col gap-3">
@@ -154,7 +155,7 @@ export default async function PageSujet({ params }: Props) {
       </section>
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5">
-        <h2 className="text-lg font-semibold">Votre réponse</h2>
+        <h2 className="text-lg font-semibold">{t(locale, "forum.your_answer")}</h2>
         {userId === null ? (
           <p className="mt-3 text-sm text-[var(--cx-muted)]">
             <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">

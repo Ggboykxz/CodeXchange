@@ -5,6 +5,7 @@ import { drapeau } from "@/lib/drapeaux";
 import { aRsvp, getEvent } from "@/lib/events";
 import { parseId } from "@/lib/forum";
 import { isFavorite } from "@/lib/favorites";
+import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import BoutonRsvp from "./bouton-rsvp";
 import BoutonFavori from "@/components/bouton-favori";
@@ -40,7 +41,7 @@ export default async function PageEvenement({ params }: Props) {
   const evenement = await getEvent(eventId);
   if (!evenement) notFound();
 
-  const userId = await getSessionUserId();
+  const [userId, locale] = await Promise.all([getSessionUserId(), localeCourante()]);
   const dejaConfirme = userId === null ? false : await aRsvp(userId, eventId);
   const favoriDeLevenement = userId === null ? false : await isFavorite(userId, "event", eventId);
   const maintenant = new Date();
@@ -49,7 +50,7 @@ export default async function PageEvenement({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/evenements" className="text-sm text-[var(--cx-accent)]">
-        ← Retour aux événements
+        {t(locale, "events.back")}
       </Link>
 
       <header className="flex flex-col gap-3">
@@ -70,7 +71,7 @@ export default async function PageEvenement({ params }: Props) {
                   : "bg-emerald-600/10 text-emerald-700 dark:text-emerald-400"
               }`}
             >
-              {passe ? "Passé" : "À venir"}
+              {passe ? t(locale, "events.past") : t(locale, "events.upcoming")}
             </span>
           </li>
           <li>

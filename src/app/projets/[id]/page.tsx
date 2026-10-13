@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { parseId } from "@/lib/forum";
 import { estMembre, getProject } from "@/lib/projects";
 import { isFavorite } from "@/lib/favorites";
+import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import BoutonRejoindre from "./bouton-rejoindre";
 import BoutonFavori from "@/components/bouton-favori";
@@ -36,7 +37,7 @@ export default async function PageProjet({ params }: Props) {
   const projet = await getProject(projectId);
   if (!projet) notFound();
 
-  const userId = await getSessionUserId();
+  const [userId, locale] = await Promise.all([getSessionUserId(), localeCourante()]);
   const estAuteur = userId !== null && projet.authorId === userId;
   const dejaMembre = userId === null ? false : await estMembre(userId, projectId);
   const favoriDuProjet = userId === null ? false : await isFavorite(userId, "projet", projectId);
@@ -44,7 +45,7 @@ export default async function PageProjet({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/projets" className="text-sm text-[var(--cx-accent)]">
-        ← Retour aux projets
+        {t(locale, "projects.back")}
       </Link>
 
       <header className="flex flex-col gap-3">
@@ -52,9 +53,9 @@ export default async function PageProjet({ params }: Props) {
           {projet.titre}
         </h1>
         <p className="text-sm text-[var(--cx-muted)]">
-          Lancé par {projet.author.nom} · {projet.author.ville}, {projet.author.pays} ·{" "}
+          {t(locale, "projects.launched_by")} {projet.author.nom} · {projet.author.ville}, {projet.author.pays} ·{" "}
           {DATE.format(projet.createdAt)} ·{" "}
-          {projet._count.membres} {projet._count.membres > 1 ? "membres" : "membre"}
+          {projet._count.membres} {projet._count.membres > 1 ? t(locale, "projects.members_many") : t(locale, "projects.members_one")}
         </p>
         {projet.cherche.length > 0 && (
           <p className="text-sm font-medium">

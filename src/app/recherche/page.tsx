@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { searchCodeXchange } from "@/lib/search";
+import { localeCourante, t } from "@/lib/i18n";
 import { EmptyState } from "@/components/empty-state";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Recherche" };
+
 
 type Props = { searchParams: Promise<{ q?: string }> };
 
@@ -14,7 +16,7 @@ function encodage(q: string): string {
 export default async function PageRecherche({ searchParams }: Props) {
   const params = await searchParams;
   const q = (params.q ?? "").trim();
-  const resultat = await searchCodeXchange(q);
+  const [resultat, locale] = await Promise.all([searchCodeXchange(q), localeCourante()]);
 
   const total =
     resultat.sujets.length +
@@ -30,7 +32,7 @@ export default async function PageRecherche({ searchParams }: Props) {
     items: { id: string; titre: string; href: string; meta?: string }[];
   }[] = [
     {
-      titre: "Sujets",
+      titre: t(locale, "nav.forum"),
       hrefBase: "/forum",
       voirTout: `/forum?q=${encodage(q)}`,
       items: resultat.sujets.map((sujet) => ({
@@ -40,7 +42,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
-      titre: "Offres",
+      titre: t(locale, "nav.jobs"),
       hrefBase: "/jobs",
       voirTout: `/jobs?q=${encodage(q)}`,
       items: resultat.offres.map((offre) => ({
@@ -51,7 +53,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
-      titre: "Projets",
+      titre: t(locale, "nav.projects"),
       hrefBase: "/projets",
       voirTout: `/projets?q=${encodage(q)}`,
       items: resultat.projets.map((projet) => ({
@@ -62,7 +64,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
-      titre: "Membres",
+      titre: t(locale, "nav.directory"),
       hrefBase: "/annuaire",
       voirTout: `/annuaire?q=${encodage(q)}`,
       items: resultat.membres.map((membre) => ({
@@ -73,7 +75,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
-      titre: "Tutos",
+      titre: t(locale, "nav.tutorials"),
       hrefBase: "/tutos",
       voirTout: `/tutos?q=${encodage(q)}`,
       items: resultat.tutos.map((tuto) => ({
@@ -88,36 +90,36 @@ export default async function PageRecherche({ searchParams }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6">
       <header className="flex flex-col gap-3">
-        <h1 className="text-3xl font-black tracking-tight">Recherche globale</h1>
+        <h1 className="text-3xl font-black tracking-tight">{t(locale, "search.title")}</h1>
         <p className="text-sm text-cx-muted-fg">
-          On a trouvé {total} résultat{total > 1 ? "s" : ""}.
+          {t(locale, "search.subtitle")} — {total}
         </p>
         <form action="/recherche" method="get" className="flex gap-2">
           <input
             name="q"
             type="search"
             defaultValue={q}
-            placeholder="Rechercher partout…"
+            placeholder={t(locale, "search.placeholder")}
             className="w-full rounded-lg border border-cx-border bg-transparent px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
           />
           <button
             type="submit"
             className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
           >
-            Chercher
+            {t(locale, "nav.search")}
           </button>
         </form>
       </header>
 
       {total === 0 ? (
         <EmptyState
-          titre="Aucun résultat"
+          titre={t(locale, "search.empty_title")}
           description={
             q.length > 0
               ? `Rien ne correspond à « ${q} ». Essayez un autre mot-clé.`
-              : "Saisissez au moins deux caractères pour lancer la recherche."
+              : t(locale, "search.min_chars")
           }
-          cta="Parcourir le forum"
+          cta={t(locale, "nav.forum")}
           href="/forum"
         />
       ) : (
