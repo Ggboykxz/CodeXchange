@@ -10,6 +10,7 @@ export default defineConfig({
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
   test: {
+    globalSetup: "tests/global-setup.ts",
     environment: "node",
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
     // SQLite : on évite les verrous en exécutant les fichiers de test en série.
