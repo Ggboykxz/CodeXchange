@@ -21,8 +21,35 @@
   --cx-ring: #2563eb;
 }
 
+/* Thème sombre explicite : `data-theme="dark"` sur <html>. */
+:root[data-theme="dark"] {
+  --cx-bg: #0f172a;
+  --cx-fg: #f8fafc;
+  --cx-primary: #60a5fa;
+  --cx-primary-fg: #0f172a;
+  --cx-secondary: #3b82f6;
+  --cx-secondary-fg: #f8fafc;
+  --cx-accent: #fb923c;
+  --cx-accent-fg: #0f172a;
+  --cx-card: #1e293b;
+  --cx-card-fg: #f8fafc;
+  --cx-muted: #334155;
+  --cx-muted-fg: #cbd5e1;
+  --cx-border: #334155;
+  --cx-destructive: #ef4444;
+  --cx-destructive-fg: #f8fafc;
+  --cx-ring: #60a5fa;
+  color-scheme: dark;
+}
+
+/* Thème clair explicite : neutralise la préférence système. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* Mode `auto` (défaut) : suit la préférence système. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root[data-theme="auto"] {
     --cx-bg: #0f172a;
     --cx-fg: #f8fafc;
     --cx-primary: #60a5fa;
@@ -39,6 +66,7 @@
     --cx-destructive: #ef4444;
     --cx-destructive-fg: #f8fafc;
     --cx-ring: #60a5fa;
+    color-scheme: dark;
   }
 }
 
@@ -63,20 +91,14 @@
   --font-sans: var(--font-plex, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
 }
 
-/* Rabat l'ovescroll clair sur fond sombre et inverse. */
-:root {
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-  }
-}
-
 /* Respecte les préférences de mouvement. */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

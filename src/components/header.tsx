@@ -4,6 +4,8 @@ import { unreadCount } from "@/lib/notifications";
 import { prisma } from "@/lib/db";
 import { localeCourante, t } from "@/lib/i18n";
 import SelecteurLangue from "./selecteur-langue";
+import SelecteurTheme from "./selecteur-theme";
+import { themeCourant } from "@/lib/theme";
 
 const liens = [
   { href: "/forum", cle: "nav.forum" },
@@ -21,6 +23,7 @@ export async function Header() {
   const estAdmin = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { role: true } }).then((u) => u?.role === "ADMIN") : false;
 
   const locale = await localeCourante();
+  const theme = await themeCourant();
 
   return (
     <header className="sticky top-0 z-30 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
@@ -29,8 +32,9 @@ export async function Header() {
           <Link href="/" className="text-lg font-bold tracking-tight">
             CodeXchange
           </Link>
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-2 md:flex">
             <SelecteurLangue localeActuelle={locale} />
+            <SelecteurTheme themeInitial={theme} />
           </div>
           <details className="md:hidden">
             <summary
@@ -125,8 +129,9 @@ export async function Header() {
                     </Link>
                   </li>
                 )}
-                <li className="pt-2">
+                <li className="flex items-center gap-2 pt-2">
                   <SelecteurLangue localeActuelle={locale} />
+                  <SelecteurTheme themeInitial={theme} />
                 </li>
               </ul>
             </nav>
