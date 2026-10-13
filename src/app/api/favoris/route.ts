@@ -6,7 +6,6 @@ import {
   FavoriteKind,
   ALL_KINDS,
   toggleFavorite,
-  removeFavorite,
   listFavorites,
 } from "@/lib/favorites";
 

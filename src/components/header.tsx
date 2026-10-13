@@ -79,6 +79,13 @@ export async function Header() {
                 ) : null}
                 {userId ? (
                   <li>
+                    <Link href="/messagerie" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
+                      Messagerie
+                    </Link>
+                  </li>
+                ) : null}
+                {userId ? (
+                  <li>
                     <form action="/api/auth/logout" method="post">
                       <button
                         type="submit"
@@ -141,6 +148,16 @@ export async function Header() {
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
                   Favoris
+                </Link>
+              </li>
+            ) : null}
+            {userId ? (
+              <li>
+                <Link
+                  href="/messagerie"
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                >
+                  Messagerie
                 </Link>
               </li>
             ) : null}

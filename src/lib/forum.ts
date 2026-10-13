@@ -128,7 +128,7 @@ export async function getPost(id: number): Promise<PostDetail | null> {
     },
   });
   if (result) {
-    result.replies.sort((a: any, b: any) => {
+    result.replies.sort((a: ReponseDetail, b: ReponseDetail) => {
       const diffLikes = (b._count?.likes ?? 0) - (a._count?.likes ?? 0);
       if (diffLikes !== 0) return diffLikes;
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Avatar from "@/components/avatar";
 import { drapeau } from "@/lib/drapeaux";
+import { getSessionUserId } from "@/lib/session";
 import { getMemberBySlug, type MembreDetail } from "@/lib/members";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -36,7 +37,7 @@ function LienExterne({ url, libelle }: { url: string; libelle: string }) {
 /** /membres/[slug] — profil public complet : bio, stack, liens, rôle. */
 export default async function PageMembre({ params }: Props) {
   const { slug } = await params;
-  const membre = await lireMembre(slug);
+  const [membre, userId] = await Promise.all([lireMembre(slug), getSessionUserId()]);
   if (!membre) notFound(); // 404 soignée FR via `src/app/not-found.tsx`
 
   return (
@@ -61,6 +62,16 @@ export default async function PageMembre({ params }: Props) {
                 className="inline-block rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-500/20 dark:text-amber-400"
               >
                 Mentor · Demander un mentorat →
+              </Link>
+            </p>
+          )}
+          {userId !== null && userId !== membre.id && (
+            <p className="mt-3">
+              <Link
+                href={`/messagerie?with=${membre.id}`}
+                className="inline-block rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-xs font-semibold text-cx-card-fg hover:bg-cx-muted"
+              >
+                💬 Envoyer un message
               </Link>
             </p>
           )}

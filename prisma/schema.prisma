@@ -29,6 +29,8 @@ model User {
   replies    Reply[]
   likes      Like[]
   replyLikes ReplyLike[] @relation("ReplyLikes")
+  messagesEnvoyes Message[] @relation("SentMessages")
+  messagesRecus   Message[] @relation("ReceivedMessages")
   jobs       Job[]
   candidatures Application[]
   projets    Project[]        @relation("ProjectOwner")
@@ -83,6 +85,17 @@ model ReplyLike {
   reply   Reply @relation(fields: [replyId], references: [id], onDelete: Cascade)
   user    User  @relation("ReplyLikes", fields: [userId], references: [id], onDelete: Cascade)
   @@id([replyId, userId])
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  recipientId Int
+  corps       String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient   User     @relation("ReceivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
 }
 
 model Like {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { errorResponse } from "@/lib/errors";
-import { NON_CONNECTE, editReply, deleteReply, toggleReplyLike, parseId } from "@/lib/forum";
+import { NON_CONNECTE, editReply, deleteReply, parseId } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
 
 type Contexte = { params: Promise<{ id: string; rid: string }> };

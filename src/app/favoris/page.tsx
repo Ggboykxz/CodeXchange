@@ -35,7 +35,7 @@ export default async function PageFavoris() {
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           <p className="text-lg font-semibold">Rien enregistré pour le moment.</p>
           <p className="mt-2 text-sm text-[var(--cx-muted)]">
-            Utilisez l'étoile ☆ sur les pages des sujets, offres, projets, tutos, événements ou membres.
+            Utilisez l&apos;étoile ☆ sur les pages des sujets, offres, projets, tutos, événements ou membres.
           </p>
           <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white">
             Découvrir le forum
