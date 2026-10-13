@@ -1,0 +1,64 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getSessionUserId } from "@/lib/session";
+import { listFavorites } from "@/lib/favorites";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Favoris" };
+
+export default async function PageFavoris() {
+  const userId = await getSessionUserId();
+  if (userId === null) redirect("/connexion");
+
+  const f = await listFavorites(userId);
+  const sections = [
+    { libelle: "Sujets du forum", items: f.posts.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: "Offres d'emploi", items: f.jobs.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: "Projets", items: f.projets.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: "Tutos", items: f.tutos.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: "Événements", items: f.events.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: "Membres", items: f.membres.map((x) => ({ id: x.id, libelle: x.nom, href: x.href })) },
+  ].filter((s) => s.items.length > 0);
+
+  const total = sections.reduce((acc, s) => acc + s.items.length, 0);
+
+  return (
+    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+      <header>
+        <h1 className="text-3xl font-black tracking-tight">Mes favoris</h1>
+        <p className="mt-1 text-sm text-[var(--cx-muted)]">
+          {total === 0 ? "Aucun favori enregistré pour le moment." : `${total} favori${total > 1 ? "s" : ""}, groupés par rubrique.`}
+        </p>
+      </header>
+
+      {sections.length === 0 ? (
+        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+          <p className="text-lg font-semibold">Rien enregistré pour le moment.</p>
+          <p className="mt-2 text-sm text-[var(--cx-muted)]">
+            Utilisez l'étoile ☆ sur les pages des sujets, offres, projets, tutos, événements ou membres.
+          </p>
+          <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white">
+            Découvrir le forum
+          </Link>
+        </section>
+      ) : (
+        <div className="flex flex-col gap-6">
+          {sections.map((section) => (
+            <section key={section.libelle}>
+              <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--cx-muted)]">{section.libelle}</h2>
+              <ul className="mt-3 flex flex-col gap-2">
+                {section.items.map((item) => (
+                  <li key={item.id}>
+                    <Link href={item.href} className="block rounded-lg border border-[var(--cx-muted)]/25 px-4 py-3 transition hover:border-[var(--cx-accent)]">
+                      <span className="font-medium">{item.libelle}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+    </main>
+  );
+}

@@ -37,6 +37,7 @@ model User {
   mentorat   MentorRequest[] @relation("Mentor")
   demandes   MentorRequest[] @relation("Requester")
   notifications Notification[]
+  favoris       Favorite[]
 }
 
 model Session {
@@ -184,4 +185,15 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  kind      String   // post | job | projet | tuto | event | membre
+  targetId  Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kind, targetId])
 }
