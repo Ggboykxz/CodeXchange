@@ -15,7 +15,7 @@ export type SeedMember = {
   stack: string[];
   bio: string;
   github?: string;
-  role: "MEMBER" | "MENTOR";
+  role: "MEMBER" | "MENTOR" | "ADMIN";
 };
 
 export type SeedSujet = { titre: string; tags: string[]; corps: string };
@@ -50,6 +50,7 @@ export type SeedTuto = { slug: string; titre: string; resume: string; tags: stri
 export const SLUG_CAPS = 120;
 
 export const membresDemo: SeedMember[] = [
+  { nom: "Admin CodeXchange", email: "admin@cx.test", slug: "admin-codexchange", titre: "Administrateur", ville: "Libreville", pays: "Gabon", stack: [], bio: "Compte d'administration de la plateforme.", role: "ADMIN" },
   { nom: "Kossi Aho", email: "kossi.aho@cx.test", slug: "kossi-aho", titre: "Dev Flutter", ville: "Libreville", pays: "Gabon", stack: ["Flutter", "Dart", "Firebase"], bio: "Apps mobile d'abord, pour les tiers.", role: "MEMBER", github: "kossi-aho" },
   { nom: "Aïcha Ondo", email: "aicha.ondo@cx.test", slug: "aicha-ondo", titre: "Frontend React", ville: "Port-Gentil", pays: "Gabon", stack: ["React", "TypeScript", "Tailwind"], bio: "UI propres et accessibles.", role: "MENTOR", github: "aicha-ondo" },
   { nom: "Boris Mendogo", email: "boris.mendogo@cx.test", slug: "boris-mendogo", titre: "Backend NestJS", ville: "Douala", pays: "Cameroun", stack: ["NestJS", "Postgres", "Docker"], bio: "APIs solides et déploiement sempé.", role: "MEMBER", github: "boris-mendogo" },

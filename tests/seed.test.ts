@@ -11,7 +11,7 @@ test(
     const { prisma } = await import("../src/lib/db");
     const { runSeed } = await import("../src/lib/seed");
     const res = await runSeed(prisma);
-    expect(res.users).toBe(30);
+    expect(res.users).toBe(31);
     expect(res.posts).toBe(15);
     expect(res.replies).toBeGreaterThanOrEqual(15);
     expect(res.jobs).toBe(10);
@@ -22,7 +22,7 @@ test(
 
     const users = await prisma.user.count();
     const mentors = await prisma.user.count({ where: { role: "MENTOR" } });
-    expect(users).toBe(30);
+    expect(users).toBe(31);
     expect(mentors).toBe(6);
 
     const paysDistinct = (await prisma.user.findMany({ select: { pays: true }, distinct: ["pays"] })).length;
@@ -60,7 +60,7 @@ test(
 
     // rebuild reproducibility: relancer seed, les counts sont identiques.
     const r2 = await runSeed(prisma);
-    expect(r2.users).toBe(30);
+    expect(r2.users).toBe(31);
   },
   120000,
 );
