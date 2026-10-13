@@ -22,6 +22,33 @@ export async function Header() {
             CodeXchange
           </Link>
           <details className="md:hidden">
+            <summary
+              className="cursor-pointer rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted"
+              aria-label="Rechercher"
+            >
+              🔍
+            </summary>
+            <form
+              action="/recherche"
+              method="get"
+              className="absolute left-4 right-4 top-14 flex gap-2 rounded-xl border border-cx-border bg-cx-card p-2 shadow-sm"
+            >
+              <input
+                name="q"
+                type="search"
+                autoFocus
+                placeholder="Rechercher…"
+                className="w-full rounded-lg border border-cx-border bg-transparent px-3 py-2 text-sm outline-none focus:border-cx-primary"
+              />
+              <button
+                type="submit"
+                className="rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg"
+              >
+                OK
+              </button>
+            </form>
+          </details>
+          <details className="md:hidden">
             <summary className="cursor-pointer rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted">
               ☰
             </summary>
@@ -55,6 +82,14 @@ export async function Header() {
               </ul>
             </nav>
           </details>
+          <form action="/recherche" method="get" className="hidden items-center md:flex">
+            <input
+              name="q"
+              type="search"
+              placeholder="Rechercher…"
+              className="w-44 rounded-lg border border-cx-border bg-transparent px-3 py-1.5 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
+            />
+          </form>
           <nav className="hidden items-center gap-1 md:flex">
             <ul className="flex items-center gap-1">
               {liens.map((l) => (
