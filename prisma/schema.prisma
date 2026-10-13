@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  nom          String
+  slug         String   @unique
+  titre        String
+  ville        String
+  pays         String
+  bio          String   @default("")
+  stack        String   @default("")
+  github       String   @default("")
+  linkedin     String   @default("")
+  site         String   @default("")
+  role         String   @default("MEMBER") // MEMBER | MENTOR
+  createdAt    DateTime @default(now())
+
+  sessions   Session[]
+  posts      Post[]
+  replies    Reply[]
+  likes      Like[]
+  jobs       Job[]
+  candidatures Application[]
+  projets    Project[]        @relation("ProjectOwner")
+  rejoins    ProjectMember[]
+  rsvps      Rsvp[]
+  tutos      Tutorial[]
+  mentorat   MentorRequest[] @relation("Mentor")
+  demandes   MentorRequest[] @relation("Requester")
+}
+
+model Session {
+  id        String   @id
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  titre     String
+  corps     String
+  tags      String   @default("")
+  authorId  Int
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replies   Reply[]
+  likes     Like[]
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  corps     String
+  postId    Int
+  authorId  Int
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  userId Int
+  postId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+model Job {
+  id            Int           @id @default(autoincrement())
+  titre         String
+  entreprise    String
+  contrat       String // CDI | Freelance | Stage | Alternance
+  remote        Boolean       @default(false)
+  pays          String
+  ville         String        @default("")
+  lien          String
+  authorId      Int
+  createdAt     DateTime      @default(now())
+  auteur        User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  candidatures  Application[]
+}
+
+model Application {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  userId    Int
+  createdAt DateTime @default(now())
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, userId])
+}
+
+model Project {
+  id          Int             @id @default(autoincrement())
+  titre       String
+  description String
+  stack       String          @default("")
+  cherche     String          @default("")
+  lien        String          @default("")
+  authorId    Int
+  createdAt   DateTime        @default(now())
+  author      User            @relation("ProjectOwner", fields: [authorId], references: [id], onDelete: Cascade)
+  membres     ProjectMember[]
+}
+
+model ProjectMember {
+  projectId Int
+  userId    Int
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  titre       String
+  description String
+  date        DateTime
+  format      String // Présentiel | En ligne
+  ville       String   @default("")
+  pays        String   @default("")
+  lien        String   @default("")
+  createdAt   DateTime @default(now())
+  rsvps       Rsvp[]
+}
+
+model Rsvp {
+  eventId   Int
+  userId    Int
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+model Tutorial {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  titre     String
+  resume    String
+  corps     String
+  tags      String   @default("")
+  dureeMin  Int      @default(5)
+  authorId  Int
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model MentorRequest {
+  id          Int      @id @default(autoincrement())
+  mentorId    Int
+  requesterId Int
+  message     String
+  createdAt   DateTime @default(now())
+  mentor      User     @relation("Mentor", fields: [mentorId], references: [id], onDelete: Cascade)
+  requester   User     @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  @@unique([mentorId, requesterId])
+}
