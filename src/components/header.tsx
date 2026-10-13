@@ -99,8 +99,15 @@ export async function Header() {
                 ) : null}
                 {userId ? (
                   <li>
+                    <Link href="/mon-espace" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
+                      {t(locale, "activity.title")}
+                    </Link>
+                  </li>
+                ) : null}
+                {userId ? (
+                  <li>
                     <Link href="/profil" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.profile")}
+                      {t(locale, "profile.title")}
                     </Link>
                   </li>
                 ) : null}
@@ -195,10 +202,20 @@ export async function Header() {
             {userId ? (
               <li>
                 <Link
+                  href="/mon-espace"
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                >
+                  {t(locale, "activity.title")}
+                </Link>
+              </li>
+            ) : null}
+            {userId ? (
+              <li>
+                <Link
                   href="/profil"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  {t(locale, "nav.profile")}
+                  {t(locale, "profile.title")}
                 </Link>
               </li>
             ) : null}
