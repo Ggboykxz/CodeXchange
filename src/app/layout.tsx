@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { jakarta } from "@/lib/fonts";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,13 +11,16 @@ export const metadata: Metadata = {
   },
   description:
     "Forum, offres d'emploi, projets, mentorat, tutos et événements pour les développeurs en Afrique. Par les devs, pour les devs.",
+  metadataBase: new URL("https://github.com/Ggboykxz/CodeXchange"),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={jakarta.variable}>
       <body className="min-h-screen bg-cx-bg text-cx-fg antialiased font-sans">
-        {children}
+        <Header />
+        <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+        <Footer />
       </body>
     </html>
   );

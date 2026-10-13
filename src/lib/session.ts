@@ -30,7 +30,12 @@ export async function createSession(userId: number): Promise<string> {
 }
 
 export async function getSessionUserId(): Promise<number | null> {
-  const jeton = (await cookies()).get(COOKIE_SESSION)?.value;
+  let jeton: string | undefined;
+  try {
+    jeton = (await cookies()).get(COOKIE_SESSION)?.value;
+  } catch {
+    return null; // hors contexte de requête (tests, rendu hors requête)
+  }
   if (!jeton) return null;
 
   const session = await prisma.session.findUnique({ where: { id: jeton } });

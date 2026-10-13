@@ -2,6 +2,9 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  esbuild: {
+    jsx: "automatic",
+  },
   resolve: {
     // Même alias que `tsconfig.json` (`@/*` → `src/*`) pour importer les route handlers.
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
