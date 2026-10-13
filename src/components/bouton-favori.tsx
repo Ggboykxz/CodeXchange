@@ -1,0 +1,53 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+type Props = {
+  kind: string;
+  targetId: number;
+  initial: boolean;
+  connecte: boolean;
+};
+
+export default function BoutonFavori({ kind, targetId, initial, connecte }: Props) {
+  const router = useRouter();
+  const [favori, setFavori] = useState(initial);
+  const [busy, setBusy] = useState(false);
+
+  async function basculer() {
+    if (!connecte) {
+      router.push("/connexion");
+      return;
+    }
+    setBusy(true);
+    try {
+      const r = await fetch("/api/favoris/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, targetId }),
+      });
+      const data = await r.json();
+      if (typeof data.favori === "boolean") setFavori(data.favori);
+      router.refresh();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={basculer}
+      disabled={busy}
+      className={`inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+        favori
+          ? "border-amber-400/60 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+          : "border-cx-border bg-cx-card text-cx-muted-fg hover:bg-cx-muted"
+      }`}
+      title={connecte ? "Ajouter/retirer des favoris" : "Se connecter pour favoriser"}
+    >
+      {favori ? "★" : "☆"} Favori
+    </button>
+  );
+}

@@ -5,6 +5,8 @@ import Avatar from "@/components/avatar";
 import { drapeau } from "@/lib/drapeaux";
 import { getSessionUserId } from "@/lib/session";
 import { getMemberBySlug, type MembreDetail } from "@/lib/members";
+import { isFavorite } from "@/lib/favorites";
+import BoutonFavori from "@/components/bouton-favori";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -39,6 +41,7 @@ export default async function PageMembre({ params }: Props) {
   const { slug } = await params;
   const [membre, userId] = await Promise.all([lireMembre(slug), getSessionUserId()]);
   if (!membre) notFound(); // 404 soignée FR via `src/app/not-found.tsx`
+  const favoriDuMembre = userId === null ? false : await isFavorite(userId, "membre", membre.id);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -66,13 +69,14 @@ export default async function PageMembre({ params }: Props) {
             </p>
           )}
           {userId !== null && userId !== membre.id && (
-            <p className="mt-3">
+            <p className="mt-3 flex flex-wrap gap-2">
               <Link
                 href={`/messagerie?with=${membre.id}`}
                 className="inline-block rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-xs font-semibold text-cx-card-fg hover:bg-cx-muted"
               >
                 💬 Envoyer un message
               </Link>
+              <BoutonFavori kind="membre" targetId={membre.id} initial={favoriDuMembre} connecte={userId !== null} />
             </p>
           )}
         </div>

@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { parseId } from "@/lib/forum";
 import { estMembre, getProject } from "@/lib/projects";
+import { isFavorite } from "@/lib/favorites";
 import { getSessionUserId } from "@/lib/session";
 import BoutonRejoindre from "./bouton-rejoindre";
+import BoutonFavori from "@/components/bouton-favori";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -37,6 +39,7 @@ export default async function PageProjet({ params }: Props) {
   const userId = await getSessionUserId();
   const estAuteur = userId !== null && projet.authorId === userId;
   const dejaMembre = userId === null ? false : await estMembre(userId, projectId);
+  const favoriDuProjet = userId === null ? false : await isFavorite(userId, "projet", projectId);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -61,7 +64,7 @@ export default async function PageProjet({ params }: Props) {
             </span>
           </p>
         )}
-        <div>
+        <div className="flex flex-wrap gap-2">
           <BoutonRejoindre
             projectId={projectId}
             connecte={userId !== null}
@@ -69,6 +72,7 @@ export default async function PageProjet({ params }: Props) {
             dejaMembre={dejaMembre}
             compteur={projet._count.membres}
           />
+          <BoutonFavori kind="projet" targetId={projectId} initial={favoriDuProjet} connecte={userId !== null} />
         </div>
         {userId === null && (
           <p className="text-sm text-[var(--cx-muted)]">

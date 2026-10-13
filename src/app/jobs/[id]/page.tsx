@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aPostule, getJob } from "@/lib/jobs";
 import { parseId } from "@/lib/forum";
+import { isFavorite } from "@/lib/favorites";
 import { getSessionUserId } from "@/lib/session";
 import BoutonPostuler from "./bouton-postuler";
+import BoutonFavori from "@/components/bouton-favori";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -36,6 +38,7 @@ export default async function PageOffre({ params }: Props) {
 
   const userId = await getSessionUserId();
   const dejaPostule = userId === null ? false : await aPostule(userId, jobId);
+  const favoriDeLoffre = userId === null ? false : await isFavorite(userId, "job", jobId);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -70,13 +73,14 @@ export default async function PageOffre({ params }: Props) {
             </span>
           </li>
         </ul>
-        <div>
+        <div className="flex flex-wrap gap-2">
           <BoutonPostuler
             jobId={jobId}
             connecte={userId !== null}
             dejaPostule={dejaPostule}
             compteur={offre._count.candidatures}
           />
+          <BoutonFavori kind="job" targetId={jobId} initial={favoriDeLoffre} connecte={userId !== null} />
         </div>
         {userId === null && (
           <p className="text-sm text-[var(--cx-muted)]">

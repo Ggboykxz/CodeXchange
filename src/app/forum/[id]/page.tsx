@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aLike, getPost, hasReplyLiked, parseId } from "@/lib/forum";
+import { isFavorite } from "@/lib/favorites";
+import BoutonFavori from "@/components/bouton-favori";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
 import FormulaireReponse from "./formulaire-reponse";
@@ -39,6 +41,7 @@ export default async function PageSujet({ params }: Props) {
 
   const userId = await getSessionUserId();
   const likedByMe = userId === null ? false : await aLike(userId, postId);
+  const favoriDuSujet = userId === null ? false : await isFavorite(userId, "post", postId);
 
   const likesParReponse = new Map<number, boolean>();
   if (userId !== null) {
@@ -78,12 +81,18 @@ export default async function PageSujet({ params }: Props) {
             ))}
           </ul>
         )}
-        <div>
+        <div className="flex flex-wrap gap-2">
           <BoutonLike
             postId={postId}
             connecte={userId !== null}
             likedByMe={likedByMe}
             compteur={sujet._count.likes}
+          />
+          <BoutonFavori
+            kind="post"
+            targetId={postId}
+            initial={favoriDuSujet}
+            connecte={userId !== null}
           />
         </div>
       </header>

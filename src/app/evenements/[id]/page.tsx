@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { drapeau } from "@/lib/drapeaux";
 import { aRsvp, getEvent } from "@/lib/events";
 import { parseId } from "@/lib/forum";
+import { isFavorite } from "@/lib/favorites";
 import { getSessionUserId } from "@/lib/session";
 import BoutonRsvp from "./bouton-rsvp";
+import BoutonFavori from "@/components/bouton-favori";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -40,6 +42,7 @@ export default async function PageEvenement({ params }: Props) {
 
   const userId = await getSessionUserId();
   const dejaConfirme = userId === null ? false : await aRsvp(userId, eventId);
+  const favoriDeLevenement = userId === null ? false : await isFavorite(userId, "event", eventId);
   const passe = evenement.date.getTime() <= Date.now();
 
   return (
@@ -82,13 +85,14 @@ export default async function PageEvenement({ params }: Props) {
                   .join(" ")}
           </li>
         </ul>
-        <div>
+        <div className="flex flex-wrap gap-2">
           <BoutonRsvp
             eventId={eventId}
             connecte={userId !== null}
             dejaConfirme={dejaConfirme}
             compteur={evenement._count.rsvps}
           />
+          <BoutonFavori kind="event" targetId={eventId} initial={favoriDeLevenement} connecte={userId !== null} />
         </div>
         {userId === null && (
           <p className="text-sm text-[var(--cx-muted)]">

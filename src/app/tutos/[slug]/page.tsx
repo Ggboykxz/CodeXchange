@@ -5,6 +5,9 @@ import Avatar from "@/components/avatar";
 import { drapeau } from "@/lib/drapeaux";
 import { renderMarkdown } from "@/lib/markdown";
 import { getTutorial } from "@/lib/tutorials";
+import { isFavorite } from "@/lib/favorites";
+import { getSessionUserId } from "@/lib/session";
+import BoutonFavori from "@/components/bouton-favori";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -21,8 +24,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** /tutos/[slug] — article rendu en markdown + auteur lié à son profil. */
 export default async function PageTuto({ params }: Props) {
   const { slug } = await params;
-  const tuto = await lireTuto(slug);
+  const [tuto, userId] = await Promise.all([lireTuto(slug), getSessionUserId()]);
   if (!tuto) notFound();
+  const favoriDuTuto = userId === null ? false : await isFavorite(userId, "tuto", tuto.id);
 
   // `renderMarkdown` échappe tout HTML d'entrée (Review Focus n°3) : le corps
   // affiche `<script>` en texte, il ne s'exécute jamais.
@@ -52,6 +56,7 @@ export default async function PageTuto({ params }: Props) {
             </li>
           ))}
         </ul>
+        <BoutonFavori kind="tuto" targetId={tuto.id} initial={favoriDuTuto} connecte={userId !== null} />
       </header>
 
       <article
