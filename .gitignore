@@ -1,0 +1,27 @@
+# dépendances / build
+node_modules/
+.next/
+out/
+build/
+next-env.d.ts
+
+# base de données locale
+prisma/*.db
+prisma/*.db-journal
+*.db
+*.db-journal
+
+# secrets
+.env
+.env.local
+.env*.local
+
+# tests / qualité
+coverage/
+*.tsbuildinfo
+.vitest/
+
+# divers
+.DS_Store
+*.log
+npm-debug.log*

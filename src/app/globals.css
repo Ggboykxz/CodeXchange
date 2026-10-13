@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+:root {
+  /* Tokens — remplacés par le choix ui-ux-pro-max en Task 9 */
+  --cx-bg: #faf7f2;
+  --cx-fg: #1c1917;
+  --cx-accent: #ea580c;
+  --cx-muted: #78716c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cx-bg: #0c0a09;
+    --cx-fg: #f5f5f4;
+    --cx-accent: #fb923c;
+    --cx-muted: #a8a29e;
+  }
+}
