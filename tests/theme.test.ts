@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import { estTheme, themeEffectif } from "../src/lib/theme";
 
 test("estTheme accepte light/dark/auto", () => {
