@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Avatar from "@/components/avatar";
+import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
+import { normalizePage } from "@/lib/pagination";
 import { listMentors, type MentorResume } from "@/lib/mentorat";
 import { getSessionUserId } from "@/lib/session";
 import FormulaireMentorat from "./formulaire-mentorat";
@@ -69,9 +71,17 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
   );
 }
 
+type Props = { searchParams: Promise<{ page?: string }> };
+
 /** /mentorat — cartes des mentors + formulaire « demander un mentorat ». */
-export default async function PageMentorat() {
-  const [mentors, userId] = await Promise.all([listMentors(), getSessionUserId()]);
+export default async function PageMentorat({ searchParams }: Props) {
+  const params = await searchParams;
+  const page = normalizePage(params.page);
+  const [resultat, userId] = await Promise.all([listMentors({ page, pageSize: 12 }), getSessionUserId()]);
+
+  const mentors = resultat.items;
+  const totalPages = resultat.totalPages;
+  const pageActuelle = resultat.page;
 
   // Le membre connecté ne peut pas se demander lui-même : on le masque du choix.
   const choix = mentors
@@ -119,6 +129,12 @@ export default async function PageMentorat() {
           </ul>
         </>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/mentorat"
+      />
     </main>
   );
 }

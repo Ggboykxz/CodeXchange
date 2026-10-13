@@ -1,6 +1,10 @@
 import type { Event } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 
 /**
  * Événements (spec) : `titre`, `date` (ISO), `format` (`Présentiel` |
@@ -32,6 +36,8 @@ const INCLUS = { _count: { select: { rsvps: true } } } as const;
 export type EventResume = Omit<Event, "rsvps"> & {
   _count: { rsvps: number };
 };
+
+export type FiltreEvents = { page?: number; pageSize?: number };
 
 export type EventInput = {
   titre: string;
@@ -66,11 +72,17 @@ function estDoublon(erreur: unknown): boolean {
  * Liste des événements, du plus ancien au plus récent : les passés d'abord,
  * puis les événements à venir dans l'ordre de leur date.
  */
-export async function listEvents(): Promise<EventResume[]> {
-  return prisma.event.findMany({
+export async function listEvents(f: { page: number; pageSize?: number }): Promise<PaginatedResult<EventResume>>;
+export async function listEvents(f?: { page?: number; pageSize?: number }): Promise<EventResume[]>;
+export async function listEvents(f?: { page?: number; pageSize?: number }): Promise<EventResume[] | PaginatedResult<EventResume>> {
+  const evenements = await prisma.event.findMany({
     orderBy: [{ date: "asc" }, { id: "asc" }],
     include: INCLUS,
   });
+  if (f?.page !== undefined) {
+    return paginateArray(evenements, f.page, f.pageSize);
+  }
+  return evenements;
 }
 
 /** Événement complet (compteur RSVP). `null` si inexistant ou id invalide. */

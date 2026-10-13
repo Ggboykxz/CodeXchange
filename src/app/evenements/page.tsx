@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
+import { normalizePage } from "@/lib/pagination";
 import { listEvents, type EventResume } from "@/lib/events";
 
 export const metadata = { title: "Événements" };
@@ -97,9 +99,16 @@ function Compteur({ nombre }: { nombre: number }) {
   );
 }
 
+type Props = { searchParams: Promise<{ page?: string }> };
+
 /** /evenements — liste chronologique (passés d'abord) avec badges et compteur RSVP. */
-export default async function PageEvenements() {
-  const evenements = await listEvents();
+export default async function PageEvenements({ searchParams }: Props) {
+  const params = await searchParams;
+  const page = normalizePage(params.page);
+  const resultat = await listEvents({ page, pageSize: 12 });
+  const evenements = resultat.items;
+  const totalPages = resultat.totalPages;
+  const pageActuelle = resultat.page;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -164,6 +173,12 @@ export default async function PageEvenements() {
           ))}
         </ul>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/evenements"
+      />
     </main>
   );
 }

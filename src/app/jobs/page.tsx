@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Pagination from "@/components/pagination";
+import { normalizePage } from "@/lib/pagination";
 import { CONTRATS, listJobs } from "@/lib/jobs";
 
 export const metadata = { title: "Offres d'emploi" };
@@ -13,7 +15,7 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
 });
 
 type Props = {
-  searchParams: Promise<{ remote?: string; pays?: string; contrat?: string; q?: string }>;
+  searchParams: Promise<{ remote?: string; pays?: string; contrat?: string; q?: string; page?: string }>;
 };
 
 /** Badge contrat : rempli pour le type de contrat, bordé pour le mode de travail. */
@@ -46,13 +48,19 @@ export default async function PageJobs({ searchParams }: Props) {
   const pays = (params.pays ?? "").trim();
   const contrat = (params.contrat ?? "").trim();
   const remote = (params.remote ?? "").trim();
+  const page = normalizePage(params.page);
 
-  const offres = await listJobs({
+  const resultat = await listJobs({
     q: q || undefined,
     pays: pays || undefined,
     contrat: contrat || undefined,
     remote: remote === "" ? undefined : remote === "1",
+    page,
+    pageSize: 12,
   });
+  const offres = resultat.items;
+  const totalPages = resultat.totalPages;
+  const pageActuelle = resultat.page;
   const filtreActif = q !== "" || pays !== "" || contrat !== "" || remote !== "";
 
   return (
@@ -213,6 +221,13 @@ export default async function PageJobs({ searchParams }: Props) {
           ))}
         </ul>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/jobs"
+        params={{ q: q || undefined, pays: pays || undefined, contrat: contrat || undefined, remote: remote || undefined }}
+      />
     </main>
   );
 }

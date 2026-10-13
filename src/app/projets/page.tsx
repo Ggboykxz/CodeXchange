@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Pagination from "@/components/pagination";
+import { normalizePage } from "@/lib/pagination";
 import { listProjects } from "@/lib/projects";
 
 export const metadata = { title: "Projets" };
@@ -13,7 +15,7 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
 });
 
 type Props = {
-  searchParams: Promise<{ stack?: string; q?: string }>;
+  searchParams: Promise<{ stack?: string; q?: string; page?: string }>;
 };
 
 /** Badge stack : une pastille par technologie du projet. */
@@ -30,11 +32,17 @@ export default async function PageProjets({ searchParams }: Props) {
   const params = await searchParams;
   const q = (params.q ?? "").trim();
   const stack = (params.stack ?? "").trim();
+  const page = normalizePage(params.page);
 
-  const projets = await listProjects({
+  const resultat = await listProjects({
     q: q || undefined,
     stack: stack || undefined,
+    page,
+    pageSize: 12,
   });
+  const projets = resultat.items;
+  const totalPages = resultat.totalPages;
+  const pageActuelle = resultat.page;
   const filtreActif = q !== "" || stack !== "";
 
   return (
@@ -171,6 +179,13 @@ export default async function PageProjets({ searchParams }: Props) {
           ))}
         </ul>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/projets"
+        params={{ q: q || undefined, stack: stack || undefined }}
+      />
     </main>
   );
 }

@@ -1,5 +1,9 @@
 import type { User } from "@prisma/client";
 import { prisma } from "./db";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 
 /**
  * Annuaire (spec) : membre = `nom`, `slug` unique, `titre`, `ville`, `pays`
@@ -35,7 +39,7 @@ export type MembreResume = Omit<MembreBrut, "stack"> & {
 export type MembreDetail = MembreResume &
   Pick<User, "bio" | "github" | "linkedin" | "site">;
 
-export type FiltreMembres = { pays?: string; stack?: string; q?: string };
+export type FiltreMembres = { pays?: string; stack?: string; q?: string; page?: number; pageSize?: number };
 
 /** Découpe un CSV « Flutter,Dart » en jetons nettoyés. */
 function motsDuCsv(csv: string): string[] {
@@ -63,7 +67,9 @@ function versResume(membre: MembreBrut): MembreResume {
  * Annuaire, par ordre alphabétique sur le nom. Les filtres sont cumulatifs
  * (Review Focus n°4 : chaque combinaison → sous-ensemble exact).
  */
-export async function listMembers(f?: FiltreMembres): Promise<MembreResume[]> {
+export async function listMembers(f: FiltreMembres & { page: number }): Promise<PaginatedResult<MembreResume>>;
+export async function listMembers(f?: FiltreMembres): Promise<MembreResume[]>;
+export async function listMembers(f?: FiltreMembres): Promise<MembreResume[] | PaginatedResult<MembreResume>> {
   const membres = await prisma.user.findMany({
     select: SELECT_MEMBRE,
     orderBy: [{ nom: "asc" }, { id: "asc" }],
@@ -72,21 +78,28 @@ export async function listMembers(f?: FiltreMembres): Promise<MembreResume[]> {
   const pays = f?.pays?.trim().toLowerCase() ?? "";
   const stack = f?.stack?.trim().toLowerCase() ?? "";
   const q = f?.q?.trim().toLowerCase() ?? "";
-  if (!pays && !stack && !q) return membres.map(versResume);
 
-  return membres
-    .filter((membre) => {
-      if (pays && membre.pays.toLowerCase() !== pays) return false;
-      if (stack && !motsDuCsv(membre.stack).some((s) => s.toLowerCase() === stack)) return false;
-      if (q) {
-        const dansNom = membre.nom.toLowerCase().includes(q);
-        const dansTitre = membre.titre.toLowerCase().includes(q);
-        const dansVille = membre.ville.toLowerCase().includes(q);
-        if (!dansNom && !dansTitre && !dansVille) return false;
-      }
-      return true;
-    })
-    .map(versResume);
+  const filtresBruts =
+    !pays && !stack && !q
+      ? membres
+      : membres.filter((membre) => {
+          if (pays && membre.pays.toLowerCase() !== pays) return false;
+          if (stack && !motsDuCsv(membre.stack).some((s) => s.toLowerCase() === stack)) return false;
+          if (q) {
+            const dansNom = membre.nom.toLowerCase().includes(q);
+            const dansTitre = membre.titre.toLowerCase().includes(q);
+            const dansVille = membre.ville.toLowerCase().includes(q);
+            if (!dansNom && !dansTitre && !dansVille) return false;
+          }
+          return true;
+        });
+
+  const res = filtresBruts.map(versResume);
+
+  if (f?.page !== undefined) {
+    return paginateArray(res, f.page, f.pageSize);
+  }
+  return res;
 }
 
 /** Profil public complet (bio, stack, liens, rôle). `null` si le slug est inconnu. */

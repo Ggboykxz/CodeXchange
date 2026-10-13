@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Pagination from "@/components/pagination";
+import { normalizePage } from "@/lib/pagination";
 import { listTutorials } from "@/lib/tutorials";
 
 export const metadata = { title: "Tutos" };
@@ -30,9 +32,16 @@ function NavRubriques() {
   );
 }
 
+type Props = { searchParams: Promise<{ page?: string }> };
+
 /** /tutos — liste des articles : durée de lecture, tags, résumé. */
-export default async function PageTutos() {
-  const tutos = await listTutorials();
+export default async function PageTutos({ searchParams }: Props) {
+  const params = await searchParams;
+  const page = normalizePage(params.page);
+  const resultat = await listTutorials({ page, pageSize: 12 });
+  const tutos = resultat.items;
+  const totalPages = resultat.totalPages;
+  const pageActuelle = resultat.page;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -92,6 +101,12 @@ export default async function PageTutos() {
           ))}
         </ul>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/tutos"
+      />
     </main>
   );
 }

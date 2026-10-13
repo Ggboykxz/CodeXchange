@@ -2,6 +2,10 @@ import type { Post, Reply, User } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
 import { createNotification } from "./notifications";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 
 /**
  * Forum (spec) : sujet = titre 8–120 car., corps ≤ 5 000 car., 1 à 3 tags CSV ;
@@ -36,7 +40,7 @@ export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   _count: { replies: number; likes: number };
 };
 
-export type FiltrePosts = { tag?: string; q?: string };
+export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number };
 
 export type NouveauSujet = { titre: string; corps: string; tags: string[] };
 
@@ -72,8 +76,11 @@ function estDoublon(erreur: unknown): boolean {
  * Liste des sujets, du plus récent au plus ancien.
  * `q` : sous-chaîne insensible à la casse sur le titre **ou** le corps.
  * `tag` : correspondance exacte (insensible à la casse) sur une entrée du CSV.
+ * Si `page` est fourni, retourne un `PaginatedResult<PostResume>`.
  */
-export async function listPosts(f?: FiltrePosts): Promise<PostResume[]> {
+export async function listPosts(f: FiltrePosts & { page: number }): Promise<PaginatedResult<PostResume>>;
+export async function listPosts(f?: FiltrePosts): Promise<PostResume[]>;
+export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | PaginatedResult<PostResume>> {
   const sujets = await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
     include: {
@@ -84,17 +91,23 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[]> {
 
   const q = f?.q?.trim().toLowerCase() ?? "";
   const tag = f?.tag?.trim().toLowerCase() ?? "";
-  if (!q && !tag) return sujets;
+  let filtrees = sujets;
+  if (q || tag) {
+    filtrees = sujets.filter((sujet) => {
+      if (q) {
+        const dansTitre = sujet.titre.toLowerCase().includes(q);
+        const dansCorps = sujet.corps.toLowerCase().includes(q);
+        if (!dansTitre && !dansCorps) return false;
+      }
+      if (tag && !tagsDuCsv(sujet.tags).some((t) => t.toLowerCase() === tag)) return false;
+      return true;
+    });
+  }
 
-  return sujets.filter((sujet) => {
-    if (q) {
-      const dansTitre = sujet.titre.toLowerCase().includes(q);
-      const dansCorps = sujet.corps.toLowerCase().includes(q);
-      if (!dansTitre && !dansCorps) return false;
-    }
-    if (tag && !tagsDuCsv(sujet.tags).some((t) => t.toLowerCase() === tag)) return false;
-    return true;
-  });
+  if (f?.page !== undefined) {
+    return paginateArray(filtrees, f.page, f.pageSize);
+  }
+  return filtrees;
 }
 
 /** Sujet complet : auteur, réponses triées par date, compteur de likes. `null` si inexistant. */

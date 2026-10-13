@@ -1,5 +1,9 @@
 import type { Tutorial, User } from "@prisma/client";
 import { prisma } from "./db";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 
 /**
  * Tutos (spec) : `slug` unique, `titre`, `resume`, `corps` (markdown léger),
@@ -37,12 +41,18 @@ function versResume(tuto: TutoBrut): TutoResume {
 }
 
 /** Liste des tutos, du plus récent au plus ancien. */
-export async function listTutorials(): Promise<TutoResume[]> {
+export async function listTutorials(f: { page: number; pageSize?: number }): Promise<PaginatedResult<TutoResume>>;
+export async function listTutorials(f?: { page?: number; pageSize?: number }): Promise<TutoResume[]>;
+export async function listTutorials(f?: { page?: number; pageSize?: number }): Promise<TutoResume[] | PaginatedResult<TutoResume>> {
   const tutos = await prisma.tutorial.findMany({
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     include: { author: { select: SELECT_AUTEUR } },
   });
-  return tutos.map(versResume);
+  const res = tutos.map(versResume);
+  if (f?.page !== undefined) {
+    return paginateArray(res, f.page, f.pageSize);
+  }
+  return res;
 }
 
 /** Tuto complet (corps markdown brut + auteur). `null` si le slug est inconnu. */

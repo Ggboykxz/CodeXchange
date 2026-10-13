@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Pagination from "@/components/pagination";
+import { normalizePage } from "@/lib/pagination";
 import { listPosts } from "@/lib/forum";
 
 export const metadata = { title: "Forum" };
@@ -12,14 +14,18 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
 });
 
-type Props = { searchParams: Promise<{ q?: string; tag?: string }> };
+type Props = { searchParams: Promise<{ q?: string; tag?: string; page?: string }> };
 
 /** /forum — liste des sujets + recherche + filtre par tag (query string). */
 export default async function PageForum({ searchParams }: Props) {
   const params = await searchParams;
   const q = (params.q ?? "").trim();
   const tag = (params.tag ?? "").trim();
-  const sujets = await listPosts({ q: q || undefined, tag: tag || undefined });
+  const page = normalizePage(params.page);
+  const resultat = await listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12 });
+  const sujets = resultat.items;
+  const totalPages = resultat.totalPages;
+  const pageActuelle = resultat.page;
   const filtreActif = q !== "" || tag !== "";
 
   return (
@@ -157,6 +163,13 @@ export default async function PageForum({ searchParams }: Props) {
           ))}
         </ul>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/forum"
+        params={{ q: q || undefined, tag: tag || undefined }}
+      />
     </main>
   );
 }

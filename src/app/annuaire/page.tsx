@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Avatar from "@/components/avatar";
+import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
+import { normalizePage } from "@/lib/pagination";
 import { listCountries, listMembers, type MembreResume } from "@/lib/members";
 
 export const metadata = { title: "Annuaire" };
@@ -12,7 +14,7 @@ const CLASS_CHAMP =
 const BADGES_MAX = 3;
 
 type Props = {
-  searchParams: Promise<{ pays?: string; stack?: string; q?: string }>;
+  searchParams: Promise<{ pays?: string; stack?: string; q?: string; page?: string }>;
 };
 
 /** Badge stack : une pastille par technologie (3 max sur les cartes). */
@@ -68,11 +70,15 @@ export default async function PageAnnuaire({ searchParams }: Props) {
   const q = (params.q ?? "").trim();
   const pays = (params.pays ?? "").trim();
   const stack = (params.stack ?? "").trim();
+  const page = normalizePage(params.page);
 
-  const [membres, paysListes] = await Promise.all([
-    listMembers({ q: q || undefined, pays: pays || undefined, stack: stack || undefined }),
+  const [resultatMembres, paysListes] = await Promise.all([
+    listMembers({ q: q || undefined, pays: pays || undefined, stack: stack || undefined, page, pageSize: 12 }),
     listCountries(),
   ]);
+  const membres = resultatMembres.items;
+  const totalPages = resultatMembres.totalPages;
+  const pageActuelle = resultatMembres.page;
   const filtreActif = q !== "" || pays !== "" || stack !== "";
 
   return (
@@ -190,6 +196,13 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           ))}
         </ul>
       )}
+
+      <Pagination
+        page={pageActuelle}
+        totalPages={totalPages}
+        basePath="/annuaire"
+        params={{ q: q || undefined, pays: pays || undefined, stack: stack || undefined }}
+      />
     </main>
   );
 }

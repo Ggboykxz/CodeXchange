@@ -1,5 +1,9 @@
 import type { Project, User } from "@prisma/client";
 import { prisma } from "./db";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 import { AppError } from "./errors";
 import { createNotification } from "./notifications";
 
@@ -35,7 +39,7 @@ export type ProjetResume = Omit<Project, "author" | "membres" | "stack" | "cherc
   _count: { membres: number };
 };
 
-export type FiltreProjets = { stack?: string; q?: string };
+export type FiltreProjets = { stack?: string; q?: string; page?: number; pageSize?: number };
 
 export type ProjectInput = {
   titre: string;
@@ -99,7 +103,9 @@ const INCLUS = {
  * Liste des projets, du plus récent au plus ancien. Les filtres sont
  * cumulatifs (Review Focus n°4 : chaque combinaison → sous-ensemble exact).
  */
-export async function listProjects(f?: FiltreProjets): Promise<ProjetResume[]> {
+export async function listProjects(f: FiltreProjets & { page: number }): Promise<PaginatedResult<ProjetResume>>;
+export async function listProjects(f?: FiltreProjets): Promise<ProjetResume[]>;
+export async function listProjects(f?: FiltreProjets): Promise<ProjetResume[] | PaginatedResult<ProjetResume>> {
   const projets = await prisma.project.findMany({
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     include: INCLUS,
@@ -108,17 +114,23 @@ export async function listProjects(f?: FiltreProjets): Promise<ProjetResume[]> {
   const listes = projets.map(versResume);
   const stack = f?.stack?.trim().toLowerCase() ?? "";
   const q = f?.q?.trim().toLowerCase() ?? "";
-  if (!stack && !q) return listes;
+  let filtrees = listes;
+  if (stack || q) {
+    filtrees = listes.filter((projet) => {
+      if (stack && !projet.stack.some((s) => s.toLowerCase() === stack)) return false;
+      if (q) {
+        const dansTitre = projet.titre.toLowerCase().includes(q);
+        const dansDescription = projet.description.toLowerCase().includes(q);
+        if (!dansTitre && !dansDescription) return false;
+      }
+      return true;
+    });
+  }
 
-  return listes.filter((projet) => {
-    if (stack && !projet.stack.some((s) => s.toLowerCase() === stack)) return false;
-    if (q) {
-      const dansTitre = projet.titre.toLowerCase().includes(q);
-      const dansDescription = projet.description.toLowerCase().includes(q);
-      if (!dansTitre && !dansDescription) return false;
-    }
-    return true;
-  });
+  if (f?.page !== undefined) {
+    return paginateArray(filtrees, f.page, f.pageSize);
+  }
+  return filtrees;
 }
 
 /** Projet complet : auteur, `cherche` en tableau, compteur de membres. `null` si inexistant. */

@@ -2,6 +2,10 @@ import type { User } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
 import { createNotification } from "./notifications";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 
 /**
  * Mentorat v1 (spec) : profils de mentors (`role = "MENTOR"`) + formulaire
@@ -62,13 +66,19 @@ function estDoublon(erreur: unknown): boolean {
 }
 
 /** Liste des mentors, par ordre alphabétique — uniquement `role = "MENTOR"`. */
-export async function listMentors(): Promise<MentorResume[]> {
+export async function listMentors(f: { page: number; pageSize?: number }): Promise<PaginatedResult<MentorResume>>;
+export async function listMentors(f?: { page?: number; pageSize?: number }): Promise<MentorResume[]>;
+export async function listMentors(f?: { page?: number; pageSize?: number }): Promise<MentorResume[] | PaginatedResult<MentorResume>> {
   const mentors = await prisma.user.findMany({
     where: { role: "MENTOR" },
     select: SELECT_MENTOR,
     orderBy: [{ nom: "asc" }, { id: "asc" }],
   });
-  return mentors.map(versResume);
+  const res = mentors.map(versResume);
+  if (f?.page !== undefined) {
+    return paginateArray(res, f.page, f.pageSize);
+  }
+  return res;
 }
 
 /**

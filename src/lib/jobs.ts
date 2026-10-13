@@ -2,6 +2,10 @@ import type { Job, User } from "@prisma/client";
 import { CONTRATS } from "./contrats";
 import { prisma } from "./db";
 import { AppError } from "./errors";
+import type { PaginatedResult } from "./pagination";
+import { paginateArray } from "./pagination";
+
+export type { PaginatedResult } from "./pagination";
 import { createNotification } from "./notifications";
 
 export { CONTRATS };
@@ -33,7 +37,7 @@ export type JobResume = Job & { auteur: AuteurOffre };
 
 export type JobDetail = JobResume & { _count: { candidatures: number } };
 
-export type FiltreJobs = { remote?: boolean; pays?: string; contrat?: string; q?: string };
+export type FiltreJobs = { remote?: boolean; pays?: string; contrat?: string; q?: string; page?: number; pageSize?: number };
 
 export type JobInput = {
   titre: string;
@@ -68,7 +72,9 @@ function estDoublon(erreur: unknown): boolean {
  * Liste des offres, de la plus récente à la plus ancienne. Les filtres sont
  * cumulatifs (Review Focus n°4 : chaque combinaison → sous-ensemble exact).
  */
-export async function listJobs(f?: FiltreJobs): Promise<Job[]> {
+export async function listJobs(f: FiltreJobs & { page: number }): Promise<PaginatedResult<Job>>;
+export async function listJobs(f?: FiltreJobs): Promise<Job[]>;
+export async function listJobs(f?: FiltreJobs): Promise<Job[] | PaginatedResult<Job>> {
   const offres = await prisma.job.findMany({
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
   });
@@ -77,20 +83,26 @@ export async function listJobs(f?: FiltreJobs): Promise<Job[]> {
   const pays = f?.pays?.trim().toLowerCase() ?? "";
   const contrat = f?.contrat?.trim().toLowerCase() ?? "";
   const q = f?.q?.trim().toLowerCase() ?? "";
-  if (remote === undefined && !pays && !contrat && !q) return offres;
+  let filtrees = offres;
+  if (remote !== undefined || pays || contrat || q) {
+    filtrees = offres.filter((offre) => {
+      if (remote !== undefined && offre.remote !== remote) return false;
+      if (pays && offre.pays.toLowerCase() !== pays) return false;
+      if (contrat && offre.contrat.toLowerCase() !== contrat) return false;
+      if (q) {
+        const dansTitre = offre.titre.toLowerCase().includes(q);
+        const dansEntreprise = offre.entreprise.toLowerCase().includes(q);
+        const dansVille = offre.ville.toLowerCase().includes(q);
+        if (!dansTitre && !dansEntreprise && !dansVille) return false;
+      }
+      return true;
+    });
+  }
 
-  return offres.filter((offre) => {
-    if (remote !== undefined && offre.remote !== remote) return false;
-    if (pays && offre.pays.toLowerCase() !== pays) return false;
-    if (contrat && offre.contrat.toLowerCase() !== contrat) return false;
-    if (q) {
-      const dansTitre = offre.titre.toLowerCase().includes(q);
-      const dansEntreprise = offre.entreprise.toLowerCase().includes(q);
-      const dansVille = offre.ville.toLowerCase().includes(q);
-      if (!dansTitre && !dansEntreprise && !dansVille) return false;
-    }
-    return true;
-  });
+  if (f?.page !== undefined) {
+    return paginateArray(filtrees, f.page, f.pageSize);
+  }
+  return filtrees;
 }
 
 /** Offre complète : auteur + compteur de candidatures. `null` si inexistante. */
