@@ -5,35 +5,86 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 import { cookieLocale, t, type Locale } from "@/lib/i18n";
+import { validerEmail, validerMotDePasse, validerObligatoire } from "@/lib/validation";
+import { useToast } from "@/components/toast";
 
 const CLASS_CHAMP =
   "w-full rounded-lg border border-[var(--cx-muted)]/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--cx-accent)] focus:ring-2 focus:ring-[var(--cx-accent)]/30";
+
+const CLASSE_ERREUR = "mt-1 text-xs font-medium text-cx-destructive";
+
+/** Message d'erreur inline d'un champ (affiché seulement si touché). */
+function ErreurChamp({ id, message, actif }: { id: string; message: string | null; actif: boolean }) {
+  if (!actif || !message) return null;
+  return (
+    <p id={`erreur-${id}`} className={CLASSE_ERREUR}>
+      {message}
+    </p>
+  );
+}
 
 export default function PageInscription() {
   const [erreur, setErreur] = useState<string | null>(null);
   const [locale] = useState<Locale>(cookieLocale);
   const router = useRouter();
+  const toast = useToast();
   const [enCours, setEnCours] = useState(false);
+
+  const [valeurs, setValeurs] = useState({
+    nom: "",
+    email: "",
+    password: "",
+    ville: "",
+    pays: "",
+    titre: "",
+  });
+  const [touches, setTouches] = useState<Record<string, boolean>>({});
+
+  const champ = (nom: keyof typeof valeurs) => ({
+    value: valeurs[nom],
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+      setValeurs((v) => ({ ...v, [nom]: e.target.value })),
+    onBlur: () => setTouches((t) => ({ ...t, [nom]: true })),
+  });
+
+  const erreurs = {
+    nom: validerObligatoire(valeurs.nom, "Le nom", 2, 80),
+    email: validerEmail(valeurs.email),
+    password: validerMotDePasse(valeurs.password),
+    ville: validerObligatoire(valeurs.ville, "La ville", 2, 80),
+    pays: validerObligatoire(valeurs.pays, "Le pays", 2, 80),
+    titre: validerObligatoire(valeurs.titre, "Le titre", 2, 80),
+  };
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setEnCours(true);
     setErreur(null);
-    const donnees = Object.fromEntries(new FormData(e.currentTarget));
+
+    const premiere = Object.values(erreurs).find((x) => x !== null);
+    if (premiere) {
+      setTouches({ nom: true, email: true, password: true, ville: true, pays: true, titre: true });
+      setEnCours(false);
+      return;
+    }
+
     try {
       const reponse = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(donnees),
+        body: JSON.stringify(valeurs),
       });
       if (!reponse.ok) {
         const corps = (await reponse.json().catch(() => null)) as { message?: string } | null;
-        setErreur(corps?.message ?? MESSAGE_FR.FORUM_VALIDATION);
+        setErreur(corps?.message ?? MESSAGE_FR.AUTH_DUPLICATE_EMAIL);
+        toast.erreur("Inscription refusée", corps?.message ?? undefined);
         return;
       }
-      router.push( "/");
+      toast.succes("Compte créé, bienvenue !");
+      router.push("/");
     } catch {
-      setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
+      setErreur(t(locale, "auth.server_error"));
+      toast.erreur("Inscription impossible", t(locale, "auth.server_error"));
     } finally {
       setEnCours(false);
     }
@@ -43,10 +94,10 @@ export default function PageInscription() {
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "auth.register_title")}</h1>
       <p className="mt-2 text-sm text-[var(--cx-muted)]">
-        Rejoignez la plateforme africaine des développeurs — c&apos;est gratuit.
+        {t(locale, "home.hero_sub")}
       </p>
 
-      <form onSubmit={envoyerFormulaire} className="mt-8 flex flex-col gap-4">
+      <form onSubmit={envoyerFormulaire} className="mt-8 flex flex-col gap-4" noValidate>
         <div>
           <label htmlFor="nom" className="mb-1 block text-sm font-medium">
             {t(locale, "auth.name")}
@@ -58,8 +109,12 @@ export default function PageInscription() {
             required
             autoComplete="name"
             placeholder="Aïcha Ondo"
+            aria-invalid={touches.nom && erreurs.nom !== null}
+            aria-describedby={touches.nom && erreurs.nom ? "erreur-nom" : undefined}
             className={CLASS_CHAMP}
+            {...champ("nom")}
           />
+          <ErreurChamp id="nom" message={erreurs.nom} actif={Boolean(touches.nom)} />
         </div>
 
         <div>
@@ -73,8 +128,12 @@ export default function PageInscription() {
             required
             autoComplete="email"
             placeholder="aicha@example.com"
+            aria-invalid={touches.email && erreurs.email !== null}
+            aria-describedby={touches.email && erreurs.email ? "erreur-email" : undefined}
             className={CLASS_CHAMP}
+            {...champ("email")}
           />
+          <ErreurChamp id="email" message={erreurs.email} actif={Boolean(touches.email)} />
         </div>
 
         <div>
@@ -86,11 +145,14 @@ export default function PageInscription() {
             name="password"
             type="password"
             required
-            minLength={8}
             autoComplete="new-password"
-            placeholder="8 caractères minimum"
+            placeholder="8 caractères, lettres et chiffres"
+            aria-invalid={touches.password && erreurs.password !== null}
+            aria-describedby={touches.password && erreurs.password ? "erreur-password" : undefined}
             className={CLASS_CHAMP}
+            {...champ("password")}
           />
+          <ErreurChamp id="password" message={erreurs.password} actif={Boolean(touches.password)} />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -104,8 +166,11 @@ export default function PageInscription() {
               type="text"
               required
               placeholder="Libreville"
+              aria-invalid={touches.ville && erreurs.ville !== null}
               className={CLASS_CHAMP}
+              {...champ("ville")}
             />
+            <ErreurChamp id="ville" message={erreurs.ville} actif={Boolean(touches.ville)} />
           </div>
           <div>
             <label htmlFor="pays" className="mb-1 block text-sm font-medium">
@@ -117,8 +182,11 @@ export default function PageInscription() {
               type="text"
               required
               placeholder="Gabon"
+              aria-invalid={touches.pays && erreurs.pays !== null}
               className={CLASS_CHAMP}
+              {...champ("pays")}
             />
+            <ErreurChamp id="pays" message={erreurs.pays} actif={Boolean(touches.pays)} />
           </div>
         </div>
 
@@ -132,15 +200,21 @@ export default function PageInscription() {
             type="text"
             required
             placeholder="Développeuse Flutter"
+            aria-invalid={touches.titre && erreurs.titre !== null}
             className={CLASS_CHAMP}
+            {...champ("titre")}
           />
+          <ErreurChamp id="titre" message={erreurs.titre} actif={Boolean(touches.titre)} />
         </div>
 
-        {erreur && (
-          <p role="alert" className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-600">
+        {erreur ? (
+          <p
+            role="alert"
+            className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm font-medium text-cx-destructive"
+          >
             {erreur}
           </p>
-        )}
+        ) : null}
 
         <button
           type="submit"
@@ -152,7 +226,7 @@ export default function PageInscription() {
       </form>
 
       <p className="mt-6 text-sm text-[var(--cx-muted)]">
-        Déjà membre ?{" "}
+        {t(locale, "auth.has_account")}{" "}
         <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
           {t(locale, "auth.login_link")}
         </Link>
