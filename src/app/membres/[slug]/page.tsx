@@ -50,7 +50,7 @@ export default async function PageMembre({ params }: Props) {
       </Link>
 
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start">
-        <Avatar slug={membre.slug} nom={membre.nom} taille="lg" />
+        <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
         <div className="min-w-0">
           <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
             {membre.nom}

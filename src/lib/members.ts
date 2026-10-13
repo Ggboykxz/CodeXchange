@@ -27,6 +27,7 @@ const SELECT_MEMBRE = {
   role: true,
   createdAt: true,
   stack: true,
+  avatar: true,
 } as const;
 
 type MembreBrut = Pick<User, keyof typeof SELECT_MEMBRE>;
@@ -37,7 +38,7 @@ export type MembreResume = Omit<MembreBrut, "stack"> & {
 };
 
 export type MembreDetail = MembreResume &
-  Pick<User, "bio" | "github" | "linkedin" | "site">;
+  Pick<User, "bio" | "github" | "linkedin" | "site" | "avatar">;
 
 export type FiltreMembres = { pays?: string; stack?: string; q?: string; page?: number; pageSize?: number };
 
@@ -60,6 +61,7 @@ function versResume(membre: MembreBrut): MembreResume {
     role: membre.role,
     createdAt: membre.createdAt,
     stack: motsDuCsv(membre.stack),
+    avatar: membre.avatar,
   };
 }
 

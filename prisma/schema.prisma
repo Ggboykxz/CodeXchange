@@ -17,6 +17,7 @@ model User {
   ville        String
   pays         String
   bio          String   @default("")
+  avatar       String   @default("") // data URL (base64) ou "" 
   stack        String   @default("")
   github       String   @default("")
   linkedin     String   @default("")

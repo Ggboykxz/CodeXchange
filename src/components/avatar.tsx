@@ -45,11 +45,24 @@ type Props = {
   nom: string;
   /** Taille du pastille : `sm` (carte d'annuaire) ou `lg` (profil). */
   taille?: "sm" | "lg";
+  /** Data URL (base64) de l'avatar téléversé, ou absent. */
+  avatar?: string;
 };
 
 /** Pastille Avatar réutilisable (annuaire, profils publics). */
-export default function Avatar({ slug, nom, taille = "sm" }: Props) {
+export default function Avatar({ slug, nom, taille = "sm", avatar }: Props) {
   const dimension = taille === "lg" ? "h-20 w-20 text-2xl" : "h-11 w-11 text-sm";
+  if (avatar) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={avatar}
+        alt=""
+        aria-hidden="true"
+        className={`inline-flex shrink-0 items-center justify-center rounded-full object-cover ${dimension}`}
+      />
+    );
+  }
   return (
     <span
       aria-hidden="true"

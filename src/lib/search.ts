@@ -94,6 +94,7 @@ export async function searchCodeXchange(q: string): Promise<ResultatRecherche> {
       role: user.role,
       createdAt: user.createdAt,
       stack: motsDuCsv(user.stack),
+      avatar: user.avatar,
     }));
 
   const tutos = tutorialsBruts

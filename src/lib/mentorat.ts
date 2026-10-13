@@ -24,6 +24,7 @@ const MESSAGE_MAX = 1000;
 
 /** Champs du profil mentor exposés à l'écran (jamais `passwordHash` ni l'e-mail). */
 const SELECT_MENTOR = {
+  avatar: true,
   id: true,
   nom: true,
   slug: true,

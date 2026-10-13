@@ -37,7 +37,7 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
   return (
     <li className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60">
       <div className="flex items-start gap-4">
-        <Avatar slug={mentor.slug} nom={mentor.nom} />
+        <Avatar slug={mentor.slug} nom={mentor.nom} avatar={mentor.avatar || undefined} />
         <div className="min-w-0">
           <Link href={`/membres/${mentor.slug}`}>
             <h2 className="truncate text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">

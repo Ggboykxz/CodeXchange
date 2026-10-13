@@ -34,7 +34,7 @@ function CarteMembre({ membre }: { membre: MembreResume }) {
   return (
     <li className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60">
       <Link href={`/membres/${membre.slug}`} className="flex items-start gap-4">
-        <Avatar slug={membre.slug} nom={membre.nom} />
+        <Avatar slug={membre.slug} nom={membre.nom} avatar={membre.avatar || undefined} />
         <div className="min-w-0">
           <h2 className="truncate text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
             {membre.nom}
