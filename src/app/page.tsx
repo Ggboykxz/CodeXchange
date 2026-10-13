@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { Button } from "@/components/button";
+import { localeCourante, t } from "@/lib/i18n";
 
 const sections = [
   {
@@ -89,43 +90,39 @@ const sections = [
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [membres, sujets, offres] = await Promise.all([
-    prisma.user.count(),
-    prisma.post.count(),
-    prisma.job.count(),
-  ]);
+  const membres = await prisma.user.count();
   const derniersSujets = await prisma.post.findMany({
     take: 3,
     orderBy: { createdAt: "desc" },
     select: { id: true, titre: true, tags: true },
   });
 
+  const locale = await localeCourante();
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Hero */}
       <section className="py-12 text-center sm:py-20">
         <p className="inline-flex rounded-full border border-cx-border bg-cx-card px-3 py-1 text-xs font-semibold text-cx-muted-fg">
-          Fait par des devs africains, pour des devs africains
+          {t(locale, "home.badge")}
         </p>
         <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
-          CodeXchange — la plateforme des{" "}
-          <span className="text-cx-primary">développeurs africains</span>
+          {t(locale, "home.hero_prefix")}{" "}
+          <span className="text-cx-primary">{t(locale, "home.hero_highlight")}</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-cx-muted-fg">
-          Pose une question sur le forum, trouve une mission, recrute des
-          co-fondateurs, découvre des mentors et des événements locaux. Tout en
-          français, sur mobile.
+          {t(locale, "home.hero_sub")}
         </p>
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Button variant="primary" href="/inscription">
-            Rejoindre la communauté
+            {t(locale, "home.cta_join")}
           </Button>
           <Button variant="ghost" href="/forum">
-            Parcourir le forum →
+            {t(locale, "home.cta_forum")}
           </Button>
         </div>
         <p className="mt-6 text-sm text-cx-muted-fg">
-          {membres} membres · {sujets} sujets · {offres} offres en ligne
+          {membres} {t(locale, "home.stats")}
         </p>
       </section>
 

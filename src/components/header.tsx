@@ -2,21 +2,25 @@ import Link from "next/link";
 import { getSessionUserId } from "@/lib/session";
 import { unreadCount } from "@/lib/notifications";
 import { prisma } from "@/lib/db";
+import { localeCourante, t } from "@/lib/i18n";
+import SelecteurLangue from "./selecteur-langue";
 
 const liens = [
-  { href: "/forum", label: "Forum" },
-  { href: "/jobs", label: "Emplois" },
-  { href: "/projets", label: "Projets" },
-  { href: "/annuaire", label: "Annuaire" },
-  { href: "/tutos", label: "Tutos" },
-  { href: "/evenements", label: "Événements" },
-  { href: "/mentorat", label: "Mentorat" },
+  { href: "/forum", cle: "nav.forum" },
+  { href: "/jobs", cle: "nav.jobs" },
+  { href: "/projets", cle: "nav.projects" },
+  { href: "/annuaire", cle: "nav.directory" },
+  { href: "/tutos", cle: "nav.tutorials" },
+  { href: "/evenements", cle: "nav.events" },
+  { href: "/mentorat", cle: "nav.mentorship" },
 ];
 
 export async function Header() {
   const userId = await getSessionUserId();
   const nonLues = userId !== null ? await unreadCount(userId).catch(() => 0) : 0;
   const estAdmin = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { role: true } }).then((u) => u?.role === "ADMIN") : false;
+
+  const locale = await localeCourante();
 
   return (
     <header className="sticky top-0 z-30 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
@@ -25,10 +29,13 @@ export async function Header() {
           <Link href="/" className="text-lg font-bold tracking-tight">
             CodeXchange
           </Link>
+          <div className="hidden md:block">
+            <SelecteurLangue localeActuelle={locale} />
+          </div>
           <details className="md:hidden">
             <summary
               className="cursor-pointer rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted"
-              aria-label="Rechercher"
+              aria-label={t(locale, "nav.search")}
             >
               🔍
             </summary>
@@ -41,7 +48,7 @@ export async function Header() {
                 name="q"
                 type="search"
                 autoFocus
-                placeholder="Rechercher…"
+                placeholder={t(locale, "nav.search")}
                 className="w-full rounded-lg border border-cx-border bg-transparent px-3 py-2 text-sm outline-none focus:border-cx-primary"
               />
               <button
@@ -61,42 +68,42 @@ export async function Header() {
                 {liens.map((l) => (
                   <li key={l.href}>
                     <Link href={l.href} className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {l.label}
+                      {t(locale, l.cle)}
                     </Link>
                   </li>
                 ))}
                 {userId ? (
                   <li>
                     <Link href="/notifications" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      Notifications{nonLues > 0 ? ` (${nonLues})` : ""}
+                      {t(locale, "nav.notifications")}{nonLues > 0 ? ` (${nonLues})` : ""}
                     </Link>
                   </li>
                 ) : null}
                 {userId ? (
                   <li>
                     <Link href="/favoris" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      Favoris
+                      {t(locale, "nav.favorites")}
                     </Link>
                   </li>
                 ) : null}
                 {userId ? (
                   <li>
                     <Link href="/messagerie" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      Messagerie
+                      {t(locale, "nav.messages")}
                     </Link>
                   </li>
                 ) : null}
                 {userId ? (
                   <li>
                     <Link href="/profil" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      Mon profil
+                      {t(locale, "nav.profile")}
                     </Link>
                   </li>
                 ) : null}
                 {estAdmin ? (
                   <li>
                     <Link href="/admin" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      Admin
+                      {t(locale, "nav.admin")}
                     </Link>
                   </li>
                 ) : null}
@@ -107,7 +114,7 @@ export async function Header() {
                         type="submit"
                         className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted"
                       >
-                        Déconnexion
+                        {t(locale, "nav.logout")}
                       </button>
                     </form>
                   </li>
@@ -118,6 +125,9 @@ export async function Header() {
                     </Link>
                   </li>
                 )}
+                <li className="pt-2">
+                  <SelecteurLangue localeActuelle={locale} />
+                </li>
               </ul>
             </nav>
           </details>
@@ -125,7 +135,7 @@ export async function Header() {
             <input
               name="q"
               type="search"
-              placeholder="Rechercher…"
+              placeholder={t(locale, "nav.search")}
               className="w-44 rounded-lg border border-cx-border bg-transparent px-3 py-1.5 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
             />
           </form>
@@ -137,7 +147,7 @@ export async function Header() {
                     href={l.href}
                     className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                   >
-                    {l.label}
+                    {t(locale, l.cle)}
                   </Link>
                 </li>
               ))}
@@ -148,7 +158,7 @@ export async function Header() {
                   href="/notifications"
                   className="relative rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  Notifications
+                  {t(locale, "nav.notifications")}
                   {nonLues > 0 ? (
                     <span className="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-cx-primary px-1 text-[10px] font-bold text-cx-primary-fg">
                       {nonLues}
@@ -163,7 +173,7 @@ export async function Header() {
                   href="/favoris"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  Favoris
+                  {t(locale, "nav.favorites")}
                 </Link>
               </li>
             ) : null}
@@ -173,7 +183,7 @@ export async function Header() {
                   href="/messagerie"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  Messagerie
+                  {t(locale, "nav.messages")}
                 </Link>
               </li>
             ) : null}
@@ -183,7 +193,7 @@ export async function Header() {
                   href="/profil"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  Mon profil
+                  {t(locale, "nav.profile")}
                 </Link>
               </li>
             ) : null}
@@ -193,7 +203,7 @@ export async function Header() {
                   href="/admin"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  Admin
+                  {t(locale, "nav.admin")}
                 </Link>
               </li>
             ) : null}
@@ -204,7 +214,7 @@ export async function Header() {
                     type="submit"
                     className="rounded-lg px-3 py-2 text-sm font-semibold text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                   >
-                    Déconnexion
+                    {t(locale, "nav.logout")}
                   </button>
                 </form>
               ) : (
