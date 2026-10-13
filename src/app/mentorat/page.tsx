@@ -1,0 +1,124 @@
+import Link from "next/link";
+import Avatar from "@/components/avatar";
+import { drapeau } from "@/lib/drapeaux";
+import { listMentors, type MentorResume } from "@/lib/mentorat";
+import { getSessionUserId } from "@/lib/session";
+import FormulaireMentorat from "./formulaire-mentorat";
+
+export const metadata = { title: "Mentorat" };
+
+/** Lien discret vers les autres rubriques créées par la Task 8. */
+const RUBRIQUES = [
+  { href: "/evenements", libelle: "Événements" },
+  { href: "/tutos", libelle: "Tutos" },
+  { href: "/mentorat", libelle: "Mentorat" },
+] as const;
+
+function NavRubriques() {
+  return (
+    <nav aria-label="Rubriques" className="flex flex-wrap gap-3 text-sm">
+      {RUBRIQUES.map((rubrique) => (
+        <Link
+          key={rubrique.href}
+          href={rubrique.href}
+          className="text-[var(--cx-muted)] underline-offset-4 hover:text-[var(--cx-accent)] hover:underline"
+        >
+          {rubrique.libelle}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+/** Carte d'un mentor : avatar, titre, ville/pays, bio, stack, lien profil. */
+function CarteMentor({ mentor }: { mentor: MentorResume }) {
+  return (
+    <li className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60">
+      <div className="flex items-start gap-4">
+        <Avatar slug={mentor.slug} nom={mentor.nom} />
+        <div className="min-w-0">
+          <Link href={`/membres/${mentor.slug}`}>
+            <h2 className="truncate text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
+              {mentor.nom}
+            </h2>
+          </Link>
+          <p className="truncate text-sm text-[var(--cx-muted)]">{mentor.titre}</p>
+          <p className="mt-1 text-xs text-[var(--cx-muted)]">
+            {drapeau(mentor.pays)} {mentor.ville}, {mentor.pays}
+          </p>
+
+          {mentor.bio && (
+            <p className="mt-2 text-sm leading-relaxed text-[var(--cx-muted)]">{mentor.bio}</p>
+          )}
+
+          {mentor.stack.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {mentor.stack.map((technologie) => (
+                <li
+                  key={technologie}
+                  className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                >
+                  {technologie}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/** /mentorat — cartes des mentors + formulaire « demander un mentorat ». */
+export default async function PageMentorat() {
+  const [mentors, userId] = await Promise.all([listMentors(), getSessionUserId()]);
+
+  // Le membre connecté ne peut pas se demander lui-même : on le masque du choix.
+  const choix = mentors
+    .filter((mentor) => mentor.id !== userId)
+    .map((mentor) => ({ id: mentor.id, nom: mentor.nom }));
+
+  return (
+    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-10">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight">Mentorat</h1>
+          <p className="mt-1 text-sm text-[var(--cx-muted)]">
+            Blocages, carrière, lancement d&apos;un projet : écrivez à un mentor, il vous répond
+            avec bienveillance.
+          </p>
+        </div>
+        <NavRubriques />
+      </header>
+
+      <FormulaireMentorat mentors={choix} connecte={userId !== null} />
+
+      {mentors.length === 0 ? (
+        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+          <p className="text-lg font-semibold">Aucun mentor pour le moment.</p>
+          <p className="mt-2 text-sm text-[var(--cx-muted)]">
+            Vous avez de l&apos;expérience à partager ? Inscrivez-vous : le rôle mentor se porte
+            dès le profil.
+          </p>
+          <Link
+            href="/inscription"
+            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
+          >
+            Créer le premier profil
+          </Link>
+        </section>
+      ) : (
+        <>
+          <h2 className="text-lg font-semibold">
+            {mentors.length} {mentors.length > 1 ? "mentors disponibles" : "mentor disponible"}
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {mentors.map((mentor) => (
+              <CarteMentor key={mentor.id} mentor={mentor} />
+            ))}
+          </ul>
+        </>
+      )}
+    </main>
+  );
+}
