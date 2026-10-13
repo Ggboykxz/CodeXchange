@@ -16,6 +16,7 @@ test("le client Prisma expose les modèles du spec", async () => {
     "rsvp",
     "tutorial",
     "mentorRequest",
+    "notification",
   ] as const;
   for (const m of modeles) {
     expect(typeof (prisma[m] as { count: unknown }).count).toBe("function");

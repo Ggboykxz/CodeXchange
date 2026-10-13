@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSessionUserId } from "@/lib/session";
+import { unreadCount } from "@/lib/notifications";
 
 const liens = [
   { href: "/forum", label: "Forum" },
@@ -13,6 +14,7 @@ const liens = [
 
 export async function Header() {
   const userId = await getSessionUserId();
+  const nonLues = userId !== null ? await unreadCount(userId).catch(() => 0) : 0;
 
   return (
     <header className="sticky top-0 z-30 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
@@ -63,6 +65,13 @@ export async function Header() {
                 ))}
                 {userId ? (
                   <li>
+                    <Link href="/notifications" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
+                      Notifications{nonLues > 0 ? ` (${nonLues})` : ""}
+                    </Link>
+                  </li>
+                ) : null}
+                {userId ? (
+                  <li>
                     <form action="/api/auth/logout" method="post">
                       <button
                         type="submit"
@@ -103,6 +112,21 @@ export async function Header() {
                 </li>
               ))}
             </ul>
+            {userId ? (
+              <li>
+                <Link
+                  href="/notifications"
+                  className="relative rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                >
+                  Notifications
+                  {nonLues > 0 ? (
+                    <span className="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-cx-primary px-1 text-[10px] font-bold text-cx-primary-fg">
+                      {nonLues}
+                    </span>
+                  ) : null}
+                </Link>
+              </li>
+            ) : null}
             <div className="ml-3 border-l border-cx-border pl-3">
               {userId ? (
                 <form action="/api/auth/logout" method="post">

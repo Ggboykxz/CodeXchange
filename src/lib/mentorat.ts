@@ -1,6 +1,7 @@
 import type { User } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
+import { createNotification } from "./notifications";
 
 /**
  * Mentorat v1 (spec) : profils de mentors (`role = "MENTOR"`) + formulaire
@@ -122,6 +123,21 @@ export async function requestMentor(
       data: { mentorId, requesterId, message: texte },
       select: { id: true },
     });
+
+    // Notification au mentor (si différent du demandeur — toujours vrai ici).
+    if (mentorId !== requesterId) {
+      try {
+        await createNotification({
+          userId: mentorId,
+          type: "DEMANDE_MENTOR",
+          text: "Vous avez reçu une nouvelle demande de mentorat.",
+          lien: `/mentorat`,
+        });
+      } catch {
+        // fire-and-forget
+      }
+    }
+
     return demande.id;
   } catch (erreur) {
     if (estDoublon(erreur)) throw new AppError("MENTOR_DUPLICATE");

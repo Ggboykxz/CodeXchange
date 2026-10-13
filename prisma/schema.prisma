@@ -36,6 +36,7 @@ model User {
   tutos      Tutorial[]
   mentorat   MentorRequest[] @relation("Mentor")
   demandes   MentorRequest[] @relation("Requester")
+  notifications Notification[]
 }
 
 model Session {
@@ -172,4 +173,15 @@ model MentorRequest {
   requester   User     @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
 
   @@unique([mentorId, requesterId])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String
+  text      String
+  lien      String   @default("")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

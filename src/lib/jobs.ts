@@ -2,6 +2,7 @@ import type { Job, User } from "@prisma/client";
 import { CONTRATS } from "./contrats";
 import { prisma } from "./db";
 import { AppError } from "./errors";
+import { createNotification } from "./notifications";
 
 export { CONTRATS };
 
@@ -157,7 +158,7 @@ export async function createJob(authorId: number, i: JobInput): Promise<number> 
  * deux requêtes simultanées passent le premier contrôle (rattrapage P2002).
  */
 export async function applyToJob(jobId: number, userId: number): Promise<number> {
-  const offre = await prisma.job.findUnique({ where: { id: jobId }, select: { id: true } });
+  const offre = await prisma.job.findUnique({ where: { id: jobId }, select: { id: true, authorId: true } });
   if (!offre) throw new AppError("FORUM_VALIDATION", "Offre introuvable.");
 
   const paire = { jobId, userId };
@@ -169,6 +170,20 @@ export async function applyToJob(jobId: number, userId: number): Promise<number>
   } catch (erreur) {
     if (estDoublon(erreur)) throw new AppError("JOB_DUPLICATE_APPLICATION");
     throw erreur;
+  }
+
+  // Notification au propriétaire de l'offre (si différent du candidat).
+  if (offre.authorId !== userId) {
+    try {
+      await createNotification({
+        userId: offre.authorId,
+        type: "CANDIDATURE",
+        text: "Une nouvelle candidature a été reçue pour votre offre.",
+        lien: `/jobs/${jobId}`,
+      });
+    } catch {
+      // fire-and-forget
+    }
   }
 
   return prisma.application.count({ where: { jobId } });

@@ -1,6 +1,7 @@
 import type { Project, User } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
+import { createNotification } from "./notifications";
 
 /**
  * Projets (spec) : annonce co-fondateur = `titre`, `description`,
@@ -175,6 +176,7 @@ export async function joinProject(projectId: number, userId: number): Promise<nu
   });
   if (!projet) throw new AppError("FORUM_VALIDATION", "Projet introuvable.");
 
+  let membreCree = false;
   if (projet.authorId !== userId) {
     const paire = { projectId, userId };
     const existant = await prisma.projectMember.findUnique({
@@ -184,9 +186,25 @@ export async function joinProject(projectId: number, userId: number): Promise<nu
     if (!existant) {
       try {
         await prisma.projectMember.create({ data: paire });
+        membreCree = true;
       } catch (erreur) {
         if (!estDoublon(erreur)) throw erreur; // déjà créé par une requête simultanée
       }
+    }
+  }
+
+  // Notification au propriétaire du projet (si un nouveau membre a rejoint et
+  // qu'il n'est pas l'auteur lui-même).
+  if (membreCree && projet.authorId !== userId) {
+    try {
+      await createNotification({
+        userId: projet.authorId,
+        type: "REJOINDRE_PROJET",
+        text: "Un nouveau membre a rejoint votre projet.",
+        lien: `/projets/${projectId}`,
+      });
+    } catch {
+      // fire-and-forget
     }
   }
 

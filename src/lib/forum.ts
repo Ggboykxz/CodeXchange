@@ -1,6 +1,7 @@
 import type { Post, Reply, User } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
+import { createNotification } from "./notifications";
 
 /**
  * Forum (spec) : sujet = titre 8–120 car., corps ≤ 5 000 car., 1 à 3 tags CSV ;
@@ -147,10 +148,24 @@ export async function addReply(postId: number, authorId: number, corps: string):
       `La réponse doit faire entre ${REPONSE_MIN} et ${REPONSE_MAX} caractères.`,
     );
   }
-  const post = await prisma.post.findUnique({ where: { id: postId }, select: { id: true } });
+  const post = await prisma.post.findUnique({ where: { id: postId }, select: { id: true, authorId: true } });
   if (!post) throw new AppError("FORUM_VALIDATION", "Sujet introuvable.");
 
   await prisma.reply.create({ data: { corps: texte, postId, authorId } });
+
+  // Notification au auteur du sujet (si différent de l'auteur de la réponse).
+  if (post.authorId !== authorId) {
+    try {
+      await createNotification({
+        userId: post.authorId,
+        type: "REPONSE_SUJET",
+        text: "Une nouvelle réponse a été postée sur votre sujet.",
+        lien: `/forum/${postId}`,
+      });
+    } catch {
+      // fire-and-forget : ne jamais interrompre addReply
+    }
+  }
 }
 
 /**
@@ -160,7 +175,7 @@ export async function addReply(postId: number, authorId: number, corps: string):
  * likes pour la même paire (Review Focus n°1).
  */
 export async function toggleLike(postId: number, userId: number): Promise<boolean> {
-  const post = await prisma.post.findUnique({ where: { id: postId }, select: { id: true } });
+  const post = await prisma.post.findUnique({ where: { id: postId }, select: { id: true, authorId: true } });
   if (!post) throw new AppError("FORUM_VALIDATION", "Sujet introuvable.");
 
   const paire = { userId, postId };
@@ -172,6 +187,19 @@ export async function toggleLike(postId: number, userId: number): Promise<boolea
 
   try {
     await prisma.like.create({ data: paire });
+    // Notification à l'auteur (like ajouté uniquement, si différent).
+    if (post.authorId !== userId) {
+      try {
+        await createNotification({
+          userId: post.authorId,
+          type: "LIKE_SUJET",
+          text: "Votre sujet a reçu un nouveau like.",
+          lien: `/forum/${postId}`,
+        });
+      } catch {
+        // fire-and-forget
+      }
+    }
     return true;
   } catch (erreur) {
     if (estDoublon(erreur)) {
