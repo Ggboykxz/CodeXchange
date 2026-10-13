@@ -3,6 +3,7 @@ import Avatar from "@/components/avatar";
 import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t } from "@/lib/i18n";
 import { listCountries, listMembers, type MembreResume } from "@/lib/members";
 
 export const metadata = { title: "Annuaire" };
@@ -72,9 +73,10 @@ export default async function PageAnnuaire({ searchParams }: Props) {
   const stack = (params.stack ?? "").trim();
   const page = normalizePage(params.page);
 
-  const [resultatMembres, paysListes] = await Promise.all([
+  const [resultatMembres, paysListes, locale] = await Promise.all([
     listMembers({ q: q || undefined, pays: pays || undefined, stack: stack || undefined, page, pageSize: 12 }),
     listCountries(),
+    localeCourante(),
   ]);
   const membres = resultatMembres.items;
   const totalPages = resultatMembres.totalPages;
@@ -85,34 +87,33 @@ export default async function PageAnnuaire({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Annuaire</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "directory.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Les développeurs d&apos;Afrique : par pays, par stack, par ville — trouvez votre
-            prochain co-fondateur ou mentor.
+{t(locale, "directory.subtitle")}
           </p>
         </div>
         <Link
           href="/inscription"
           className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
         >
-          Rejoindre l&apos;annuaire
+          {t(locale, "nav.join")} · {t(locale, "directory.title")}
         </Link>
       </header>
 
       <form action="/annuaire" method="get" className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <label htmlFor="q" className="sr-only">
-          Rechercher un membre
+          {t(locale, "directory.search")}
         </label>
         <input
           id="q"
           name="q"
           type="search"
           defaultValue={q}
-          placeholder="Rechercher (nom, titre, ville)…"
+          placeholder={t(locale, "directory.search")}
           className={`${CLASS_CHAMP} sm:max-w-64`}
         />
         <label htmlFor="pays" className="sr-only">
-          Filtrer par pays
+          {t(locale, "directory.country_filter")}
         </label>
         <select id="pays" name="pays" defaultValue={pays} className={`${CLASS_CHAMP} sm:max-w-44`}>
           <option value="">Tous les pays</option>
@@ -123,28 +124,28 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           ))}
         </select>
         <label htmlFor="stack" className="sr-only">
-          Filtrer par technologie
+          {t(locale, "directory.stack_filter")}
         </label>
         <input
           id="stack"
           name="stack"
           type="text"
           defaultValue={stack}
-          placeholder="Stack (ex. Flutter)"
+          placeholder={t(locale, "directory.stack_filter")}
           className={`${CLASS_CHAMP} sm:max-w-40`}
         />
         <button
           type="submit"
           className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
         >
-          Filtrer
+          {t(locale, "directory.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/annuaire"
             className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
           >
-            Tout effacer
+            {t(locale, "directory.reset")}
           </Link>
         )}
       </form>
@@ -153,23 +154,22 @@ export default async function PageAnnuaire({ searchParams }: Props) {
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           {filtreActif ? (
             <>
-              <p className="text-lg font-semibold">Aucun membre ne correspond à vos filtres.</p>
+              <p className="text-lg font-semibold">{t(locale, "directory.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Essayez un autre mot-clé, un autre pays ou une autre technologie — ou inscrivez-vous
-                : la communauté grandit chaque jour.
+                {t(locale, "directory.empty_desc")}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/annuaire"
                   className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
                 >
-                  Voir tout l&apos;annuaire
+                  {t(locale, "directory.title")}
                 </Link>
                 <Link
                   href="/inscription"
                   className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
                 >
-                  S&apos;inscrire
+                  {t(locale, "auth.register_link")}
                 </Link>
               </div>
             </>

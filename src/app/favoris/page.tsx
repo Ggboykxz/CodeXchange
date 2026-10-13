@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/session";
 import { listFavorites } from "@/lib/favorites";
+import { localeCourante, t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Favoris" };
@@ -10,14 +11,14 @@ export default async function PageFavoris() {
   const userId = await getSessionUserId();
   if (userId === null) redirect("/connexion");
 
-  const f = await listFavorites(userId);
+  const [f, locale] = await Promise.all([listFavorites(userId), localeCourante()]);
   const sections = [
-    { libelle: "Sujets du forum", items: f.posts.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
-    { libelle: "Offres d'emploi", items: f.jobs.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
-    { libelle: "Projets", items: f.projets.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
-    { libelle: "Tutos", items: f.tutos.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
-    { libelle: "Événements", items: f.events.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
-    { libelle: "Membres", items: f.membres.map((x) => ({ id: x.id, libelle: x.nom, href: x.href })) },
+    { libelle: t(locale, "favorites.group_forum"), items: f.posts.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: t(locale, "favorites.group_jobs"), items: f.jobs.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: t(locale, "favorites.group_projects"), items: f.projets.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: t(locale, "favorites.group_tutorials"), items: f.tutos.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: t(locale, "favorites.group_events"), items: f.events.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
+    { libelle: t(locale, "favorites.group_members"), items: f.membres.map((x) => ({ id: x.id, libelle: x.nom, href: x.href })) },
   ].filter((s) => s.items.length > 0);
 
   const total = sections.reduce((acc, s) => acc + s.items.length, 0);
@@ -25,20 +26,22 @@ export default async function PageFavoris() {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header>
-        <h1 className="text-3xl font-black tracking-tight">Mes favoris</h1>
+        <h1 className="text-3xl font-black tracking-tight">{t(locale, "favorites.title")}</h1>
         <p className="mt-1 text-sm text-[var(--cx-muted)]">
-          {total === 0 ? "Aucun favori enregistré pour le moment." : `${total} favori${total > 1 ? "s" : ""}, groupés par rubrique.`}
+          {total === 0
+            ? t(locale, "favorites.none")
+            : `${total} ${t(locale, "favorites.count_many")}`}
         </p>
       </header>
 
       {sections.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
-          <p className="text-lg font-semibold">Rien enregistré pour le moment.</p>
+          <p className="text-lg font-semibold">{t(locale, "favorites.empty_title")}</p>
           <p className="mt-2 text-sm text-[var(--cx-muted)]">
             Utilisez l&apos;étoile ☆ sur les pages des sujets, offres, projets, tutos, événements ou membres.
           </p>
           <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white">
-            Découvrir le forum
+            {t(locale, "favorites.discover")}
           </Link>
         </section>
       ) : (

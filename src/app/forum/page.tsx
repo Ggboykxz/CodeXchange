@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t } from "@/lib/i18n";
 import { listPosts } from "@/lib/forum";
 
 export const metadata = { title: "Forum" };
@@ -22,7 +23,10 @@ export default async function PageForum({ searchParams }: Props) {
   const q = (params.q ?? "").trim();
   const tag = (params.tag ?? "").trim();
   const page = normalizePage(params.page);
-  const resultat = await listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12 });
+  const [resultat, locale] = await Promise.all([
+    listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12 }),
+    localeCourante(),
+  ]);
   const sujets = resultat.items;
   const totalPages = resultat.totalPages;
   const pageActuelle = resultat.page;
@@ -32,54 +36,54 @@ export default async function PageForum({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Forum</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "forum.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Questions, retours d&apos;expérience et coups de main entre développeurs.
+            {t(locale, "forum.subtitle")}
           </p>
         </div>
         <Link
           href="/forum/nouveau"
           className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
         >
-          Écrire un sujet
+          {t(locale, "forum.new")}
         </Link>
       </header>
 
       <form action="/forum" method="get" className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor="q" className="sr-only">
-          Rechercher un sujet
+          {t(locale, "forum.search")}
         </label>
         <input
           id="q"
           name="q"
           type="search"
           defaultValue={q}
-          placeholder="Rechercher (titre ou corps)…"
+          placeholder={t(locale, "forum.search")}
           className={CLASS_CHAMP}
         />
         <label htmlFor="tag" className="sr-only">
-          Filtrer par tag
+          {t(locale, "forum.tag_filter")}
         </label>
         <input
           id="tag"
           name="tag"
           type="text"
           defaultValue={tag}
-          placeholder="Tag (ex. gabon)"
+          placeholder={t(locale, "forum.tag_filter")}
           className={`${CLASS_CHAMP} sm:max-w-40`}
         />
         <button
           type="submit"
           className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
         >
-          Filtrer
+          {t(locale, "forum.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/forum"
             className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
           >
-            Tout effacer
+            {t(locale, "forum.reset")}
           </Link>
         )}
       </form>
@@ -88,36 +92,36 @@ export default async function PageForum({ searchParams }: Props) {
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           {filtreActif ? (
             <>
-              <p className="text-lg font-semibold">Aucun sujet ne correspond à votre recherche.</p>
+              <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Essayez un autre mot-clé ou un autre tag.
+                {t(locale, "forum.empty_desc")}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/forum"
                   className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
                 >
-                  Voir tous les sujets
+                  {t(locale, "nav.forum")}
                 </Link>
                 <Link
                   href="/forum/nouveau"
                   className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
                 >
-                  Écrire un sujet
+                  {t(locale, "forum.new")}
                 </Link>
               </div>
             </>
           ) : (
             <>
-              <p className="text-lg font-semibold">Le forum est tout neuf.</p>
+              <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Posez la première question : la communauté vous répond.
+                {t(locale, "forum.empty_desc")}
               </p>
               <Link
                 href="/forum/nouveau"
                 className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
               >
-                Écrire le premier sujet
+                {t(locale, "forum.new")}
               </Link>
             </>
           )}
@@ -156,7 +160,7 @@ export default async function PageForum({ searchParams }: Props) {
               )}
 
               <p className="mt-3 text-xs text-[var(--cx-muted)]">
-                {sujet._count.replies} {sujet._count.replies > 1 ? "réponses" : "réponse"} ·{" "}
+                {sujet._count.replies} {sujet._count.replies > 1 ? t(locale, "forum.answers_many") : t(locale, "forum.answers_one")} ·{" "}
                 {sujet._count.likes} {sujet._count.likes > 1 ? "likes" : "like"}
               </p>
             </li>

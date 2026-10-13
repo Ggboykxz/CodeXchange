@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t } from "@/lib/i18n";
 import { listTutorials } from "@/lib/tutorials";
 
 export const metadata = { title: "Tutos" };
@@ -9,36 +10,16 @@ export const metadata = { title: "Tutos" };
 // (seed exécuté après le build), jamais un état figé à la compilation.
 export const dynamic = "force-dynamic";
 
-/** Lien discret vers les autres rubriques créées par la Task 8. */
-const RUBRIQUES = [
-  { href: "/evenements", libelle: "Événements" },
-  { href: "/tutos", libelle: "Tutos" },
-  { href: "/mentorat", libelle: "Mentorat" },
-] as const;
-
-function NavRubriques() {
-  return (
-    <nav aria-label="Rubriques" className="flex flex-wrap gap-3 text-sm">
-      {RUBRIQUES.map((rubrique) => (
-        <Link
-          key={rubrique.href}
-          href={rubrique.href}
-          className="text-[var(--cx-muted)] underline-offset-4 hover:text-[var(--cx-accent)] hover:underline"
-        >
-          {rubrique.libelle}
-        </Link>
-      ))}
-    </nav>
-  );
-}
-
 type Props = { searchParams: Promise<{ page?: string }> };
 
 /** /tutos — liste des articles : durée de lecture, tags, résumé. */
 export default async function PageTutos({ searchParams }: Props) {
   const params = await searchParams;
   const page = normalizePage(params.page);
-  const resultat = await listTutorials({ page, pageSize: 12 });
+  const [resultat, locale] = await Promise.all([
+    listTutorials({ page, pageSize: 12 }),
+    localeCourante(),
+  ]);
   const tutos = resultat.items;
   const totalPages = resultat.totalPages;
   const pageActuelle = resultat.page;
@@ -47,26 +28,24 @@ export default async function PageTutos({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Tutos</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "tutorials.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Des articles courts et pratiques, écrits par la communauté — à lire dans le métro.
+            {t(locale, "tutorials.subtitle")}
           </p>
         </div>
-        <NavRubriques />
       </header>
 
       {tutos.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
-          <p className="text-lg font-semibold">Aucun tuto publié pour le moment.</p>
+          <p className="text-lg font-semibold">{t(locale, "tutorials.empty_title")}</p>
           <p className="mt-2 text-sm text-[var(--cx-muted)]">
-            Vous avez résolu un bug récemment ? Écrivez le premier tuto : un paragraphe suffit pour
-            démarrer.
+            {t(locale, "tutorials.empty_desc")}
           </p>
           <Link
             href="/forum/nouveau"
             className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
           >
-            Écrire le premier tuto sur le forum
+            {t(locale, "forum.new")}
           </Link>
         </section>
       ) : (
@@ -86,7 +65,7 @@ export default async function PageTutos({ searchParams }: Props) {
 
               <ul className="mt-3 flex flex-wrap items-center gap-2">
                 <li className="rounded-full border border-[var(--cx-muted)]/40 px-2.5 py-0.5 text-xs font-medium text-[var(--cx-muted)]">
-                  ⏱ {tuto.dureeMin} min de lecture
+                  ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
                 </li>
                 {tuto.tags.map((tag) => (
                   <li

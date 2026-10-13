@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t } from "@/lib/i18n";
 import { listProjects } from "@/lib/projects";
 
 export const metadata = { title: "Projets" };
@@ -34,12 +35,15 @@ export default async function PageProjets({ searchParams }: Props) {
   const stack = (params.stack ?? "").trim();
   const page = normalizePage(params.page);
 
-  const resultat = await listProjects({
-    q: q || undefined,
-    stack: stack || undefined,
-    page,
-    pageSize: 12,
-  });
+  const [resultat, locale] = await Promise.all([
+    listProjects({
+      q: q || undefined,
+      stack: stack || undefined,
+      page,
+      pageSize: 12,
+    }),
+    localeCourante(),
+  ]);
   const projets = resultat.items;
   const totalPages = resultat.totalPages;
   const pageActuelle = resultat.page;
@@ -49,54 +53,54 @@ export default async function PageProjets({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Projets</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "projects.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Des co-fondateurs cherchent des talents : designers, mobile, backend — rejoignez-les.
+            {t(locale, "projects.subtitle")}
           </p>
         </div>
         <Link
           href="/projets/nouveau"
           className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
         >
-          Lancer un projet
+          {t(locale, "projects.new")}
         </Link>
       </header>
 
       <form action="/projets" method="get" className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <label htmlFor="q" className="sr-only">
-          Rechercher un projet
+          {t(locale, "projects.search")}
         </label>
         <input
           id="q"
           name="q"
           type="search"
           defaultValue={q}
-          placeholder="Rechercher (titre, description)…"
+          placeholder={t(locale, "projects.search")}
           className={`${CLASS_CHAMP} sm:max-w-64`}
         />
         <label htmlFor="stack" className="sr-only">
-          Filtrer par technologie
+          {t(locale, "projects.stack_filter")}
         </label>
         <input
           id="stack"
           name="stack"
           type="text"
           defaultValue={stack}
-          placeholder="Stack (ex. Flutter)"
+          placeholder={t(locale, "projects.stack_filter")}
           className={`${CLASS_CHAMP} sm:max-w-40`}
         />
         <button
           type="submit"
           className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
         >
-          Filtrer
+          {t(locale, "projects.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/projets"
             className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
           >
-            Tout effacer
+            {t(locale, "projects.reset")}
           </Link>
         )}
       </form>
@@ -105,37 +109,36 @@ export default async function PageProjets({ searchParams }: Props) {
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           {filtreActif ? (
             <>
-              <p className="text-lg font-semibold">Aucun projet ne correspond à vos filtres.</p>
+              <p className="text-lg font-semibold">{t(locale, "projects.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Essayez un autre mot-clé ou une autre technologie.
+                {t(locale, "projects.empty_desc")}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/projets"
                   className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
                 >
-                  Voir tous les projets
+                  {t(locale, "projects.title")}
                 </Link>
                 <Link
                   href="/projets/nouveau"
                   className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
                 >
-                  Lancer un projet
+                  {t(locale, "projects.new")}
                 </Link>
               </div>
             </>
           ) : (
             <>
-              <p className="text-lg font-semibold">Aucun projet pour le moment.</p>
+              <p className="text-lg font-semibold">{t(locale, "projects.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Vous avez une idée et cherchez une équipe ? Lancez le premier projet : la
-                communauté le voit tout de suite.
+                {t(locale, "projects.empty_desc")}
               </p>
               <Link
                 href="/projets/nouveau"
                 className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
               >
-                Lancer le premier projet
+                {t(locale, "projects.new")}
               </Link>
             </>
           )}
@@ -160,7 +163,7 @@ export default async function PageProjets({ searchParams }: Props) {
               <p className="mt-2 text-xs text-[var(--cx-muted)]">
                 {projet.author.nom} · {projet.author.ville}, {projet.author.pays} ·{" "}
                 {DATE.format(projet.createdAt)} ·{" "}
-                {projet._count.membres} {projet._count.membres > 1 ? "membres" : "membre"}
+                {projet._count.membres} {projet._count.membres > 1 ? t(locale, "projects.members_many") : t(locale, "projects.members_one")}
               </p>
 
               <ul className="mt-3 flex flex-wrap items-center gap-2">
@@ -171,7 +174,7 @@ export default async function PageProjets({ searchParams }: Props) {
                 ))}
                 {projet.cherche.length > 0 && (
                   <li className="text-xs font-medium text-[var(--cx-muted)]">
-                    cherche&nbsp;: {projet.cherche.join(", ")}
+                    {t(locale, "projects.search")}&nbsp;: {projet.cherche.join(", ")}
                   </li>
                 )}
               </ul>

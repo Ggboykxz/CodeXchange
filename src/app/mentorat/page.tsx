@@ -3,6 +3,7 @@ import Avatar from "@/components/avatar";
 import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t } from "@/lib/i18n";
 import { listMentors, type MentorResume } from "@/lib/mentorat";
 import { getSessionUserId } from "@/lib/session";
 import FormulaireMentorat from "./formulaire-mentorat";
@@ -10,28 +11,6 @@ import FormulaireMentorat from "./formulaire-mentorat";
 export const metadata = { title: "Mentorat" };
 
 /** Lien discret vers les autres rubriques créées par la Task 8. */
-const RUBRIQUES = [
-  { href: "/evenements", libelle: "Événements" },
-  { href: "/tutos", libelle: "Tutos" },
-  { href: "/mentorat", libelle: "Mentorat" },
-] as const;
-
-function NavRubriques() {
-  return (
-    <nav aria-label="Rubriques" className="flex flex-wrap gap-3 text-sm">
-      {RUBRIQUES.map((rubrique) => (
-        <Link
-          key={rubrique.href}
-          href={rubrique.href}
-          className="text-[var(--cx-muted)] underline-offset-4 hover:text-[var(--cx-accent)] hover:underline"
-        >
-          {rubrique.libelle}
-        </Link>
-      ))}
-    </nav>
-  );
-}
-
 /** Carte d'un mentor : avatar, titre, ville/pays, bio, stack, lien profil. */
 function CarteMentor({ mentor }: { mentor: MentorResume }) {
   return (
@@ -77,7 +56,11 @@ type Props = { searchParams: Promise<{ page?: string }> };
 export default async function PageMentorat({ searchParams }: Props) {
   const params = await searchParams;
   const page = normalizePage(params.page);
-  const [resultat, userId] = await Promise.all([listMentors({ page, pageSize: 12 }), getSessionUserId()]);
+  const [resultat, userId, locale] = await Promise.all([
+    listMentors({ page, pageSize: 12 }),
+    getSessionUserId(),
+    localeCourante(),
+  ]);
 
   const mentors = resultat.items;
   const totalPages = resultat.totalPages;
@@ -92,35 +75,32 @@ export default async function PageMentorat({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Mentorat</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "mentorship.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Blocages, carrière, lancement d&apos;un projet : écrivez à un mentor, il vous répond
-            avec bienveillance.
+            {t(locale, "mentorship.subtitle")}
           </p>
         </div>
-        <NavRubriques />
       </header>
 
       <FormulaireMentorat mentors={choix} connecte={userId !== null} />
 
       {mentors.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
-          <p className="text-lg font-semibold">Aucun mentor pour le moment.</p>
+          <p className="text-lg font-semibold">{t(locale, "mentorship.empty_title")}</p>
           <p className="mt-2 text-sm text-[var(--cx-muted)]">
-            Vous avez de l&apos;expérience à partager ? Inscrivez-vous : le rôle mentor se porte
-            dès le profil.
+            {t(locale, "mentorship.empty_desc")}
           </p>
           <Link
             href="/inscription"
             className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
           >
-            Créer le premier profil
+            {t(locale, "auth.register_link")}
           </Link>
         </section>
       ) : (
         <>
           <h2 className="text-lg font-semibold">
-            {mentors.length} {mentors.length > 1 ? "mentors disponibles" : "mentor disponible"}
+            {mentors.length} {mentors.length > 1 ? t(locale, "nav.mentorship") : t(locale, "nav.mentorship")}
           </h2>
           <ul className="grid gap-3 sm:grid-cols-2">
             {mentors.map((mentor) => (

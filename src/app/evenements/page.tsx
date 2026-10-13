@@ -2,6 +2,7 @@ import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t, type Locale } from "@/lib/i18n";
 import { listEvents, type EventResume } from "@/lib/events";
 
 export const metadata = { title: "Événements" };
@@ -19,30 +20,8 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
 const HEURE = new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
 /** Lien discret vers les autres rubriques créées par la Task 8. */
-const RUBRIQUES = [
-  { href: "/evenements", libelle: "Événements" },
-  { href: "/tutos", libelle: "Tutos" },
-  { href: "/mentorat", libelle: "Mentorat" },
-] as const;
-
-function NavRubriques() {
-  return (
-    <nav aria-label="Rubriques" className="flex flex-wrap gap-3 text-sm">
-      {RUBRIQUES.map((rubrique) => (
-        <Link
-          key={rubrique.href}
-          href={rubrique.href}
-          className="text-[var(--cx-muted)] underline-offset-4 hover:text-[var(--cx-accent)] hover:underline"
-        >
-          {rubrique.libelle}
-        </Link>
-      ))}
-    </nav>
-  );
-}
-
 /** Badge « Passé » / « À venir » selon la date du jour d'exécution. */
-function StatutEvenement({ date, maintenant }: { date: Date; maintenant: Date }) {
+function StatutEvenement({ date, maintenant, locale }: { date: Date; maintenant: Date; locale: Locale }) {
   const passe = date.getTime() <= maintenant.getTime();
   return (
     <span
@@ -52,14 +31,14 @@ function StatutEvenement({ date, maintenant }: { date: Date; maintenant: Date })
           : "bg-emerald-600/10 text-emerald-700 dark:text-emerald-400"
       }`}
     >
-      {passe ? "Passé" : "À venir"}
+      {passe ? t(locale, "events.past") : t(locale, "events.upcoming")}
     </span>
   );
 }
 
 /** Lieu d'un événement : présentiel = ville/pays avec drapeau, en ligne = le lien. */
 function LieuEvenement({ evenement }: { evenement: EventResume }) {
-  if (evenement.format === "En ligne") {
+  if (evenement.format === "En ligne" || evenement.format === "Online") {
     return (
       <>
         En ligne
@@ -105,7 +84,7 @@ type Props = { searchParams: Promise<{ page?: string }> };
 export default async function PageEvenements({ searchParams }: Props) {
   const params = await searchParams;
   const page = normalizePage(params.page);
-  const resultat = await listEvents({ page, pageSize: 12 });
+  const [resultat, locale] = await Promise.all([listEvents({ page, pageSize: 12 }), localeCourante()]);
   const evenements = resultat.items;
   const totalPages = resultat.totalPages;
   const pageActuelle = resultat.page;
@@ -115,12 +94,11 @@ export default async function PageEvenements({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Événements</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "events.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Meetups, hackathons et ateliers en Afrique — confirmez votre présence en un clic.
+            {t(locale, "events.subtitle")}
           </p>
         </div>
-        <NavRubriques />
       </header>
 
       {evenements.length === 0 ? (
@@ -159,7 +137,7 @@ export default async function PageEvenements({ searchParams }: Props) {
 
               <ul className="mt-3 flex flex-wrap items-center gap-2">
                 <li>
-                  <StatutEvenement date={evenement.date} maintenant={maintenant} />
+                  <StatutEvenement date={evenement.date} maintenant={maintenant} locale={locale} />
                 </li>
                 <li>
                   <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">

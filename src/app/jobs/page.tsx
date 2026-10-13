@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
+import { localeCourante, t, type Locale } from "@/lib/i18n";
 import { CONTRATS, listJobs } from "@/lib/jobs";
 
 export const metadata = { title: "Offres d'emploi" };
@@ -27,7 +28,7 @@ function BadgeContrat({ contrat }: { contrat: string }) {
   );
 }
 
-function BadgeRemote({ remote }: { remote: boolean }) {
+function BadgeRemote({ remote, locale }: { remote: boolean; locale: Locale }) {
   return (
     <span
       className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
@@ -36,7 +37,7 @@ function BadgeRemote({ remote }: { remote: boolean }) {
           : "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
       }`}
     >
-      {remote ? "Remote" : "Sur place"}
+      {remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
     </span>
   );
 }
@@ -50,14 +51,16 @@ export default async function PageJobs({ searchParams }: Props) {
   const remote = (params.remote ?? "").trim();
   const page = normalizePage(params.page);
 
-  const resultat = await listJobs({
+  const [resultat, locale] = await Promise.all([listJobs({
     q: q || undefined,
     pays: pays || undefined,
     contrat: contrat || undefined,
     remote: remote === "" ? undefined : remote === "1",
     page,
     pageSize: 12,
-  });
+  }),
+    localeCourante(),
+  ]);
   const offres = resultat.items;
   const totalPages = resultat.totalPages;
   const pageActuelle = resultat.page;
@@ -67,44 +70,44 @@ export default async function PageJobs({ searchParams }: Props) {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Offres d&apos;emploi</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "jobs.title")}</h1>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            Missions, CDI et stages pour les développeurs d&apos;Afrique — en remote ou sur place.
+            {t(locale, "jobs.subtitle")}
           </p>
         </div>
         <Link
           href="/jobs/nouveau"
           className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
         >
-          Publier une offre
+          {t(locale, "jobs.new")}
         </Link>
       </header>
 
       <form action="/jobs" method="get" className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <label htmlFor="q" className="sr-only">
-          Rechercher une offre
+          {t(locale, "jobs.search")}
         </label>
         <input
           id="q"
           name="q"
           type="search"
           defaultValue={q}
-          placeholder="Rechercher (titre, entreprise, ville)…"
+          placeholder={t(locale, "jobs.search")}
           className={`${CLASS_CHAMP} sm:max-w-56`}
         />
         <label htmlFor="pays" className="sr-only">
-          Filtrer par pays
+          {t(locale, "jobs.country_filter")}
         </label>
         <input
           id="pays"
           name="pays"
           type="text"
           defaultValue={pays}
-          placeholder="Pays (ex. Gabon)"
+          placeholder={t(locale, "jobs.country_filter")}
           className={`${CLASS_CHAMP} sm:max-w-36`}
         />
         <label htmlFor="contrat" className="sr-only">
-          Filtrer par contrat
+          {t(locale, "jobs.contract_filter")}
         </label>
         <select
           id="contrat"
@@ -120,7 +123,7 @@ export default async function PageJobs({ searchParams }: Props) {
           ))}
         </select>
         <label htmlFor="remote" className="sr-only">
-          Filtrer par mode de travail
+          {t(locale, "jobs.remote_filter")}
         </label>
         <select
           id="remote"
@@ -128,22 +131,22 @@ export default async function PageJobs({ searchParams }: Props) {
           defaultValue={remote}
           className={`${CLASS_CHAMP} sm:max-w-36`}
         >
-          <option value="">Remote ou sur place</option>
-          <option value="1">Remote</option>
-          <option value="0">Sur place</option>
+          <option value="">{t(locale, "jobs.remote")} / {t(locale, "jobs.onsite")}</option>
+          <option value="1">{t(locale, "jobs.remote")}</option>
+          <option value="0">{t(locale, "jobs.onsite")}</option>
         </select>
         <button
           type="submit"
           className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
         >
-          Filtrer
+          {t(locale, "jobs.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/jobs"
             className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
           >
-            Tout effacer
+            {t(locale, "jobs.reset")}
           </Link>
         )}
       </form>
@@ -152,36 +155,36 @@ export default async function PageJobs({ searchParams }: Props) {
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           {filtreActif ? (
             <>
-              <p className="text-lg font-semibold">Aucune offre ne correspond à vos filtres.</p>
+              <p className="text-lg font-semibold">{t(locale, "jobs.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Essayez un autre mot-clé, un autre pays ou un autre type de contrat.
+                {t(locale, "jobs.empty_desc")}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/jobs"
                   className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
                 >
-                  Voir toutes les offres
+                  {t(locale, "jobs.title")}
                 </Link>
                 <Link
                   href="/jobs/nouveau"
                   className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
                 >
-                  Publier une offre
+                  {t(locale, "jobs.new")}
                 </Link>
               </div>
             </>
           ) : (
             <>
-              <p className="text-lg font-semibold">Aucune offre pour le moment.</p>
+              <p className="text-lg font-semibold">{t(locale, "jobs.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Vous recrutez ? Publiez la première offre : la communauté la voit tout de suite.
+                {t(locale, "jobs.empty_desc")}
               </p>
               <Link
                 href="/jobs/nouveau"
                 className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
               >
-                Publier la première offre
+                {t(locale, "jobs.new")}
               </Link>
             </>
           )}
@@ -214,7 +217,7 @@ export default async function PageJobs({ searchParams }: Props) {
                   <BadgeContrat contrat={offre.contrat} />
                 </li>
                 <li>
-                  <BadgeRemote remote={offre.remote} />
+                  <BadgeRemote remote={offre.remote} locale={locale} />
                 </li>
               </ul>
             </li>

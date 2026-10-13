@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { EmptyState } from "@/components/empty-state";
 import { getSessionUserId } from "@/lib/session";
 import { listNotifications, unreadCount } from "@/lib/notifications";
+import { localeCourante, t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -13,17 +14,21 @@ export default async function PageNotifications() {
   const userId = await getSessionUserId();
   if (userId === null) redirect("/connexion");
 
-  const [notifications, nonLues] = await Promise.all([listNotifications(userId, { limit: 50 }), unreadCount(userId)]);
+  const [notifications, nonLues, locale] = await Promise.all([
+    listNotifications(userId, { limit: 50 }),
+    unreadCount(userId),
+    localeCourante(),
+  ]);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-4 py-10 sm:px-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Notifications</h1>
+          <h1 className="text-3xl font-black tracking-tight">{t(locale, "notifications.title")}</h1>
           <p className="mt-1 text-sm text-cx-muted-fg">
-            {nonLues > 0
-              ? `${nonLues} notification${nonLues > 1 ? "s" : ""} non lue${nonLues > 1 ? "s" : ""}.`
-              : "Tout est à jour."}
+            {nonLues === 1
+              ? t(locale, "notifications.unread_one")
+              : `${nonLues} ${t(locale, "notifications.unread_many")}`}
           </p>
         </div>
         {notifications.length > 0 ? (
@@ -32,7 +37,7 @@ export default async function PageNotifications() {
               type="submit"
               className="rounded-lg border border-cx-border px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
             >
-              Tout marquer comme lu
+              {t(locale, "notifications.mark_all")}
             </button>
           </form>
         ) : null}
@@ -40,9 +45,9 @@ export default async function PageNotifications() {
 
       {notifications.length === 0 ? (
         <EmptyState
-          titre="Aucune notification"
-          description="Les réponses, likes et activités liées à votre compte apparaîtront ici."
-          cta="Retour au forum"
+          titre={t(locale, "notifications.empty_title")}
+          description={t(locale, "notifications.empty_desc")}
+          cta={t(locale, "nav.forum")}
           href="/forum"
         />
       ) : (
@@ -69,7 +74,7 @@ export default async function PageNotifications() {
                       href={notification.lien}
                       className="rounded-lg px-2 py-1 text-xs font-medium text-cx-primary hover:bg-cx-muted"
                     >
-                      Voir
+                      {t(locale, "notifications.see")}
                     </Link>
                   ) : null}
                   {!notification.isRead ? (

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/session";
 import { listThreads, listMessages } from "@/lib/messagerie";
 import FormulaireMessage from "./formulaire-message";
+import { localeCourante, t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Messagerie" };
@@ -16,7 +17,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
   const params = await searchParams;
   const withId = params.with ? Number(params.with) : null;
 
-  const threads = await listThreads(userId);
+  const [threads, locale] = await Promise.all([listThreads(userId), localeCourante()]);
   const conversation = withId && Number.isInteger(withId) ? await listMessages(userId, withId) : [];
 
   const courant = threads.find((t) => t.autreId === withId);
@@ -24,9 +25,9 @@ export default async function PageMessagerie({ searchParams }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-4 px-4 py-6 sm:px-6">
       <header>
-        <h1 className="text-2xl font-black tracking-tight">Messagerie</h1>
+        <h1 className="text-2xl font-black tracking-tight">{t(locale, "messaging.title")}</h1>
         <p className="mt-1 text-sm text-cx-muted-fg">
-          Vos conversations privées avec les membres de la communauté.
+{t(locale, "messaging.subtitle")}
         </p>
       </header>
 
@@ -34,7 +35,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
         <aside className="rounded-xl border border-cx-border bg-cx-card p-2">
           {threads.length === 0 ? (
             <p className="px-3 py-4 text-sm text-cx-muted-fg">
-              Aucune conversation. Démarrez-en une depuis un profil.
+              {t(locale, "messaging.empty_conversations")}
             </p>
           ) : (
             <ul className="flex flex-col">
@@ -70,7 +71,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
               </header>
               <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4" style={{ maxHeight: "460px" }}>
                 {conversation.length === 0 ? (
-                  <p className="text-sm text-cx-muted-fg">Aucun message pour le moment.</p>
+                  <p className="text-sm text-cx-muted-fg">{t(locale, "messaging.no_messages")}</p>
                 ) : (
                   conversation.map((m) => {
                     const estLeMien = m.senderId === userId;
@@ -97,7 +98,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
             </>
           ) : (
             <div className="flex flex-1 items-center justify-center p-10 text-sm text-cx-muted-fg">
-              Sélectionne une conversation à gauche, ou réponds à un membre depuis son profil.
+              {t(locale, "messaging.select")}
             </div>
           )}
         </section>
