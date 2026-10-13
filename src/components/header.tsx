@@ -36,9 +36,14 @@ export async function Header() {
                 ))}
                 {userId ? (
                   <li>
-                    <Link href="/membres/voir-vous" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      Mon profil
-                    </Link>
+                    <form action="/api/auth/logout" method="post">
+                      <button
+                        type="submit"
+                        className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted"
+                      >
+                        Déconnexion
+                      </button>
+                    </form>
                   </li>
                 ) : (
                   <li>
@@ -65,9 +70,14 @@ export async function Header() {
             </ul>
             <div className="ml-3 border-l border-cx-border pl-3">
               {userId ? (
-                <Link href="/profil" className="rounded-lg px-3 py-2 text-sm font-semibold text-cx-primary">
-                  Mon compte
-                </Link>
+                <form action="/api/auth/logout" method="post">
+                  <button
+                    type="submit"
+                    className="rounded-lg px-3 py-2 text-sm font-semibold text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  >
+                    Déconnexion
+                  </button>
+                </form>
               ) : (
                 <>
                   <Link href="/connexion" className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-cx-muted">
