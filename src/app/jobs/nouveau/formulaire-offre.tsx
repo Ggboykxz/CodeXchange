@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CONTRATS } from "@/lib/contrats";
 import { MESSAGE_FR } from "@/lib/errors";
@@ -13,6 +14,7 @@ type CorpsReponse = { id?: number; message?: string };
 /** Formulaire de publication d'une offre → POST /api/jobs, puis redirection. */
 export default function FormulaireOffre() {
   const [erreur, setErreur] = useState<string | null>(null);
+  const router = useRouter();
   const [enCours, setEnCours] = useState(false);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
@@ -41,7 +43,7 @@ export default function FormulaireOffre() {
         return;
       }
       const { id } = (await reponse.json()) as CorpsReponse;
-      window.location.href = `/jobs/${id}`;
+      router.push( `/jobs/${id}`);
     } catch {
       setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
     } finally {

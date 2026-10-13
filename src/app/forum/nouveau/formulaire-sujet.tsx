@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 
@@ -12,6 +13,7 @@ type CorpsReponse = { message?: string };
 /** Formulaire de création d'un sujet → POST /api/forum. */
 export default function FormulaireSujet() {
   const [erreur, setErreur] = useState<string | null>(null);
+  const router = useRouter();
   const [enCours, setEnCours] = useState(false);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
@@ -40,7 +42,7 @@ export default function FormulaireSujet() {
         return;
       }
       const { id } = (await reponse.json()) as { id: number };
-      window.location.href = `/forum/${id}`;
+      router.push( `/forum/${id}`);
     } catch {
       setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
     } finally {

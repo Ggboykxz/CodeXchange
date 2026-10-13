@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 
@@ -9,6 +10,7 @@ const CLASS_CHAMP =
 
 export default function PageInscription() {
   const [erreur, setErreur] = useState<string | null>(null);
+  const router = useRouter();
   const [enCours, setEnCours] = useState(false);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
@@ -27,7 +29,7 @@ export default function PageInscription() {
         setErreur(corps?.message ?? MESSAGE_FR.FORUM_VALIDATION);
         return;
       }
-      window.location.href = "/";
+      router.push( "/");
     } catch {
       setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
     } finally {

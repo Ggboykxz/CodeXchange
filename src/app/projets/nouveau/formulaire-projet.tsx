@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 
@@ -12,6 +13,7 @@ type CorpsReponse = { id?: number; message?: string };
 /** Formulaire de lancement d'un projet → POST /api/projects, puis redirection. */
 export default function FormulaireProjet() {
   const [erreur, setErreur] = useState<string | null>(null);
+  const router = useRouter();
   const [enCours, setEnCours] = useState(false);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
@@ -38,7 +40,7 @@ export default function FormulaireProjet() {
         return;
       }
       const { id } = (await reponse.json()) as CorpsReponse;
-      window.location.href = `/projets/${id}`;
+      router.push( `/projets/${id}`);
     } catch {
       setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
     } finally {

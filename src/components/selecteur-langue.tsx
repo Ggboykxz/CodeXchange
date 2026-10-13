@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LOCALES, type Locale } from "@/lib/i18n";
 
 /** Sélecteur de langue (cookie `cx_locale`, 1 an). */
@@ -9,8 +9,12 @@ export default function SelecteurLangue({ localeActuelle }: { localeActuelle: Lo
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>(localeActuelle);
 
+  // Écrit le cookie dans un effet (une écriture est un effet de bord).
+  useEffect(() => {
+    document.cookie = `cx_locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+  }, [locale]);
+
   function changer(nouvelle: Locale) {
-    document.cookie = `cx_locale=${nouvelle}; path=/; max-age=31536000; SameSite=Lax`;
     setLocale(nouvelle);
     router.refresh();
   }

@@ -43,7 +43,8 @@ export default async function PageEvenement({ params }: Props) {
   const userId = await getSessionUserId();
   const dejaConfirme = userId === null ? false : await aRsvp(userId, eventId);
   const favoriDeLevenement = userId === null ? false : await isFavorite(userId, "event", eventId);
-  const passe = evenement.date.getTime() <= Date.now();
+  const maintenant = new Date();
+  const passe = evenement.date.getTime() <= maintenant.getTime();
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">

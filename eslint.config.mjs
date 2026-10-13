@@ -1,11 +1,10 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import { FlatCompat } from "@eslint/eslintrc";
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+import typescript from "eslint-config-next/typescript";
 
-// eslint-config-next@15 livre encore des configs « eslintrc » : FlatCompat
-// les convertit en config plate pour ESLint 9.
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
-
+// eslint-config-next@16 livre des configs plates natives (plus de FlatCompat).
 export default defineConfig([
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...coreWebVitals,
+  ...typescript,
   globalIgnores([".next/**", "node_modules/**", "out/**", "build/**", "next-env.d.ts"]),
 ]);

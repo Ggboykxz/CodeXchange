@@ -42,8 +42,8 @@ function NavRubriques() {
 }
 
 /** Badge « Passé » / « À venir » selon la date du jour d'exécution. */
-function StatutEvenement({ date }: { date: Date }) {
-  const passe = date.getTime() <= Date.now();
+function StatutEvenement({ date, maintenant }: { date: Date; maintenant: Date }) {
+  const passe = date.getTime() <= maintenant.getTime();
   return (
     <span
       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -109,6 +109,7 @@ export default async function PageEvenements({ searchParams }: Props) {
   const evenements = resultat.items;
   const totalPages = resultat.totalPages;
   const pageActuelle = resultat.page;
+  const maintenant = new Date();
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -158,7 +159,7 @@ export default async function PageEvenements({ searchParams }: Props) {
 
               <ul className="mt-3 flex flex-wrap items-center gap-2">
                 <li>
-                  <StatutEvenement date={evenement.date} />
+                  <StatutEvenement date={evenement.date} maintenant={maintenant} />
                 </li>
                 <li>
                   <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
