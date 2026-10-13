@@ -11,7 +11,8 @@ export type Code =
   | "FORUM_VALIDATION"
   | "JOB_DUPLICATE_APPLICATION"
   | "MENTOR_SELF_REQUEST"
-  | "MENTOR_DUPLICATE";
+  | "MENTOR_DUPLICATE"
+  | "FORBIDDEN";
 
 export type Status = 401 | 403 | 409 | 422;
 
@@ -22,6 +23,7 @@ export const STATUS_BY_CODE: Record<Code, Status> = {
   JOB_DUPLICATE_APPLICATION: 409,
   MENTOR_SELF_REQUEST: 403,
   MENTOR_DUPLICATE: 409,
+  FORBIDDEN: 403,
 };
 
 /** Messages FR affichés à l'utilisateur (copy, pas des erreurs techniques). */
@@ -32,6 +34,7 @@ export const MESSAGE_FR: Record<Code, string> = {
   JOB_DUPLICATE_APPLICATION: "Vous avez déjà postulé à cette offre.",
   MENTOR_SELF_REQUEST: "Vous ne pouvez pas demander un mentorat à vous-même.",
   MENTOR_DUPLICATE: "Vous avez déjà envoyé une demande à ce mentor.",
+  FORBIDDEN: "Vous n'êtes pas autorisé à effectuer cette action.",
 };
 
 export class AppError extends Error {

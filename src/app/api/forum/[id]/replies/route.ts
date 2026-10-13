@@ -4,7 +4,7 @@ import { NON_CONNECTE, addReply, parseId } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
 
 type Contexte = { params: Promise<{ id: string }> };
-type CorpsReponse = Partial<{ corps: unknown }>;
+type CorpsReponse = Partial<{ corps: unknown; parentId: unknown }>;
 
 const INCONNU = { error: "NOT_FOUND", message: "Sujet introuvable." } as const;
 
@@ -21,8 +21,10 @@ export async function POST(request: Request, { params }: Contexte) {
     if (postId === null) return NextResponse.json(INCONNU, { status: 404 });
 
     const corps = (await request.json().catch(() => null)) as CorpsReponse | null;
-    await addReply(postId, userId, String(corps?.corps ?? ""));
-    return NextResponse.json({ ok: true, postId }, { status: 201 });
+    const parentIdRaw = corps?.parentId;
+    const parentId = parentIdRaw === undefined || parentIdRaw === null ? undefined : Number(parentIdRaw);
+    const newReplyId = await addReply(postId, userId, String(corps?.corps ?? ""), parentId);
+    return NextResponse.json({ ok: true, postId, replyId: newReplyId }, { status: 201 });
   } catch (erreur) {
     const { status, body } = errorResponse(erreur);
     return NextResponse.json(body, { status });

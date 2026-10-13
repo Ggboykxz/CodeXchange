@@ -32,7 +32,10 @@ export type PostResume = Omit<Post, "author" | "replies" | "likes"> & {
   _count: { replies: number; likes: number };
 };
 
-export type ReponseDetail = Omit<Reply, "author" | "post"> & { author: AuteurResume };
+export type ReponseDetail = Omit<Reply, "author" | "post"> & {
+  author: AuteurResume;
+  _count: { likes: number };
+};
 
 export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   author: AuteurResume;
@@ -113,17 +116,25 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
 /** Sujet complet : auteur, réponses triées par date, compteur de likes. `null` si inexistant. */
 export async function getPost(id: number): Promise<PostDetail | null> {
   if (!Number.isInteger(id) || id <= 0) return null;
-  return prisma.post.findUnique({
+  const result = await prisma.post.findUnique({
     where: { id },
     include: {
       author: { select: SELECT_AUTEUR },
       replies: {
         orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-        include: { author: { select: SELECT_AUTEUR } },
+        include: { author: { select: SELECT_AUTEUR }, _count: { select: { likes: true } } },
       },
       _count: { select: { replies: true, likes: true } },
     },
   });
+  if (result) {
+    result.replies.sort((a: any, b: any) => {
+      const diffLikes = (b._count?.likes ?? 0) - (a._count?.likes ?? 0);
+      if (diffLikes !== 0) return diffLikes;
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    });
+  }
+  return result;
 }
 
 /** Création d'un sujet ; lève `FORUM_VALIDATION` (422) en cas de règle violée. */
@@ -153,7 +164,12 @@ export async function createPost(authorId: number, i: NouveauSujet): Promise<num
 }
 
 /** Réponse à un sujet ; lève `FORUM_VALIDATION` si le corps est hors limites ou le sujet absent. */
-export async function addReply(postId: number, authorId: number, corps: string): Promise<void> {
+export async function addReply(
+  postId: number,
+  authorId: number,
+  corps: string,
+  parentId?: number
+): Promise<number> {
   const texte = corps.trim();
   if (texte.length < REPONSE_MIN || texte.length > REPONSE_MAX) {
     throw new AppError(
@@ -164,7 +180,14 @@ export async function addReply(postId: number, authorId: number, corps: string):
   const post = await prisma.post.findUnique({ where: { id: postId }, select: { id: true, authorId: true } });
   if (!post) throw new AppError("FORUM_VALIDATION", "Sujet introuvable.");
 
-  await prisma.reply.create({ data: { corps: texte, postId, authorId } });
+  // Validation du parent (imbrication d'un seul niveau).
+  if (parentId) {
+    const parent = await prisma.reply.findUnique({ where: { id: parentId }, select: { postId: true, parentId: true, deletedAt: true } });
+    if (!parent || parent.postId !== postId || parent.deletedAt) throw new AppError("FORUM_VALIDATION", "Réponse parente introuvable.");
+    if (parent.parentId !== null) throw new AppError("FORUM_VALIDATION", "Imbrication limitée à un seul niveau.");
+  }
+
+  const reply = await prisma.reply.create({ data: { corps: texte, postId, authorId, parentId: parentId ?? null } });
 
   // Notification au auteur du sujet (si différent de l'auteur de la réponse).
   if (post.authorId !== authorId) {
@@ -179,6 +202,57 @@ export async function addReply(postId: number, authorId: number, corps: string):
       // fire-and-forget : ne jamais interrompre addReply
     }
   }
+  return reply.id;
+}
+
+/** Édite une réponse (uniquement par son auteur). Lève `FORBIDDEN` sinon. */
+export async function editReply(replyId: number, authorId: number, corps: string): Promise<void> {
+  const texte = corps.trim();
+  if (texte.length < REPONSE_MIN || texte.length > REPONSE_MAX) {
+    throw new AppError("FORUM_VALIDATION", `La réponse doit faire entre ${REPONSE_MIN} et ${REPONSE_MAX} caractères.`);
+  }
+  const reply = await prisma.reply.findUnique({ where: { id: replyId }, select: { id: true, authorId: true, deletedAt: true } });
+  if (!reply) throw new AppError("FORUM_VALIDATION", "Réponse introuvable.");
+  if (reply.deletedAt) throw new AppError("FORUM_VALIDATION", "Réponse supprimée.");
+  if (reply.authorId !== authorId) throw new AppError("FORBIDDEN", "Vous ne pouvez pas modifier cette réponse.");
+  await prisma.reply.update({ where: { id: replyId }, data: { corps: texte } });
+}
+
+/** Suppression douce d'une réponse (uniquement par son auteur). */
+export async function deleteReply(replyId: number, authorId: number): Promise<void> {
+  const reply = await prisma.reply.findUnique({ where: { id: replyId }, select: { authorId: true } });
+  if (!reply) throw new AppError("FORUM_VALIDATION", "Réponse introuvable.");
+  if (reply.authorId !== authorId) throw new AppError("FORBIDDEN", "Vous ne pouvez pas supprimer cette réponse.");
+  await prisma.reply.update({ where: { id: replyId }, data: { deletedAt: new Date(), corps: "[message supprimé]" } });
+}
+
+/** Like idempotent sur une réponse (retourne true si ajouté). */
+export async function toggleReplyLike(replyId: number, userId: number): Promise<boolean> {
+  const reply = await prisma.reply.findUnique({ where: { id: replyId }, select: { id: true, deletedAt: true } });
+  if (!reply || reply.deletedAt) throw new AppError("FORUM_VALIDATION", "Réponse introuvable.");
+
+  const paire = { userId, replyId };
+  const existant = await prisma.replyLike.findUnique({ where: { replyId_userId: paire } });
+  if (existant) {
+    await prisma.replyLike.delete({ where: { replyId_userId: paire } });
+    return false;
+  }
+
+  try {
+    await prisma.replyLike.create({ data: paire });
+    return true;
+  } catch (erreur) {
+    if (estDoublon(erreur)) {
+      await prisma.replyLike.deleteMany({ where: paire });
+      return false;
+    }
+    throw erreur;
+  }
+}
+
+export async function hasReplyLiked(userId: number, replyId: number): Promise<boolean> {
+  const like = await prisma.replyLike.findUnique({ where: { replyId_userId: { replyId, userId } }, select: { replyId: true } });
+  return like !== null;
 }
 
 /**

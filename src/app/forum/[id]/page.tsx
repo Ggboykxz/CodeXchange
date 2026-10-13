@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { aLike, getPost, parseId } from "@/lib/forum";
+import { aLike, getPost, hasReplyLiked, parseId } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
 import FormulaireReponse from "./formulaire-reponse";
+import ActionsReponse from "./bouton-reponse";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -38,6 +39,16 @@ export default async function PageSujet({ params }: Props) {
 
   const userId = await getSessionUserId();
   const likedByMe = userId === null ? false : await aLike(userId, postId);
+
+  const likesParReponse = new Map<number, boolean>();
+  if (userId !== null) {
+    await Promise.all(
+      sujet.replies.map(async (reponse) => {
+        const a = await hasReplyLiked(userId, reponse.id);
+        likesParReponse.set(reponse.id, a);
+      })
+    );
+  }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -106,10 +117,22 @@ export default async function PageSujet({ params }: Props) {
                 <p className="text-xs text-[var(--cx-muted)]">
                   {reponse.author.nom} · {reponse.author.ville}, {reponse.author.pays} ·{" "}
                   {DATE.format(reponse.createdAt)}
+                  {reponse.createdAt !== reponse.updatedAt ? " · édité" : ""}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">
-                  {reponse.corps}
+                  {reponse.deletedAt ? "[message supprimé]" : reponse.corps}
                 </p>
+                {reponse.deletedAt === null ? (
+                  <ActionsReponse
+                    replyId={reponse.id}
+                    postId={postId}
+                    corpsInitial={reponse.corps}
+                    estAuteur={userId !== null && userId === reponse.authorId}
+                    connecte={userId !== null}
+                    likedByMe={likesParReponse.get(reponse.id) === true}
+                    likes={reponse._count?.likes ?? 0}
+                  />
+                ) : null}
               </li>
             ))}
           </ul>

@@ -28,6 +28,7 @@ model User {
   posts      Post[]
   replies    Reply[]
   likes      Like[]
+  replyLikes ReplyLike[] @relation("ReplyLikes")
   jobs       Job[]
   candidatures Application[]
   projets    Project[]        @relation("ProjectOwner")
@@ -65,9 +66,23 @@ model Reply {
   corps     String
   postId    Int
   authorId  Int
+  parentId  Int?
+  deletedAt DateTime?
+  updatedAt DateTime @default(now()) @updatedAt
   createdAt DateTime @default(now())
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    Reply?   @relation("ReplyThread", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Reply[]  @relation("ReplyThread")
+  likes     ReplyLike[]
+}
+
+model ReplyLike {
+  replyId Int
+  userId  Int
+  reply   Reply @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user    User  @relation("ReplyLikes", fields: [userId], references: [id], onDelete: Cascade)
+  @@id([replyId, userId])
 }
 
 model Like {
