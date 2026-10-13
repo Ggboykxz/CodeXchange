@@ -35,16 +35,23 @@ Scripts utiles : `npm run build`, `npm start`, `npm run seed`, `npm run test:wat
 - **Forum** : sujets, réponses, likes idempotents, tags, recherche insensible à la casse, filtre par tag.
 - **Emplois** : offres (contrat, remote, pays), filtres persistés, postulation unique (409 sinon).
 - **Projets** : annonces co-fondateurs, bouton « je veux rejoindre » (idempotent).
-- **Annuaire** : membres filtrables par pays/stack/recherche, profil public, drapeau par pays, avatar à couleur déterministe.
+- **Annuaire** : membres filtrables par pays/stack/recherche, profil public, drapeau par pays, avatar uploadé ou à couleur déterministe.
 - **Tutos** : articles avec durée, tags, rendu markdown maison (HTML échappé — sûr).
 - **Événements** : liste avec badges Passé/À venir, RSVP avec compteur.
 - **Mentorat** : profils de mentors et demande de mentorat enregistrée.
+- **Notifications** : réponses, likes, candidatures, rejoindre un projet, demandes de mentorat, messages.
+- **Recherche globale** : une barre, cinq rubriques, résultats groupés.
+- **Messagerie privée** : conversations entre membres, statut lu/non-lu.
+- **Favoris** : sauvegarde de sujets, offres, projets, tutos, événements, membres.
+- **Interactions riches** : réponses imbriquées (1 niveau), édition, suppression douce, likes par réponse.
+- **Profil** : page personnelle avec upload d'avatar (PNG/JPEG/WebP, 500 Ko max).
+- **Administration** : tableau de bord statistiques et modération (rôle `ADMIN`).
 
-Comptes : inscription e-mail/mot de passe, session en cookie `httpOnly` (14 jours).
+Comptes : inscription e-mail/mot de passe, session en cookie `httpOnly` (14 jours), rate-limiting 5 tentatives / 15 min sur la connexion.
 
 ## Langue
 
-Toute l'interface et le copy sont **en français**.
+L'interface commune (navigation, pied de page, accueil) est bilingue **FR / EN** avec un sélecteur dans l'en-tête ; les contenus métier (forum, offres, descriptifs) restent en français.
 
 ## Données de démonstration
 
@@ -56,12 +63,13 @@ Mot de passe commun des 30 membres de démo : `CodeXchange2026!`. Les données s
 
 ## Architecture
 
-- **Next.js 15** (App Router, `src/`) pour le front et l'API (route handlers).
+- **Next.js 16** (App Router, `src/`) pour le front et l'API (route handlers).
 - **Prisma + SQLite** en dev, bascule PostgreSQL (Neon) au déploiement par l'édition de `provider` dans `schema.prisma` + `prisma migrate deploy`.
 - **Logique métier isolée** dans `src/lib/*.ts` — testable sans HTTP, handlers minces qui traduisent les codes d'erreur (`src/lib/errors.ts`) en statuts HTTP.
 - **Authentification** : `bcryptjs` + table `Session` + cookie signé côté serveur. Aucun service tiers.
 - **Design** : Tailwind CSS v4 (`@theme inline`), tokens dans `src/app/globals.css`, polices via `next/font/google` (Plus Jakarta Sans). Choix et arbitrage dans `docs/design-choices.md`.
-- **Tests** : Vitest, ≥ 100 tests à date (comptage réel selon build), lint et tsc bloquants.
+- **Tests** : Vitest 4, **135 tests** à date, lint et tsc bloquants.
+- **Sécurité** : rate-limiting en mémoire sur la connexion, `npm audit` à jour côté production (Next 16, React 19.3).
 
 ## Structure du dépôt
 
@@ -69,7 +77,7 @@ Mot de passe commun des 30 membres de démo : `CodeXchange2026!`. Les données s
 src/
   app/                  # pages + route handlers (API)
   components/           # Header, Footer, EmptyState, Badge, Button, Avatar, Container
-  lib/                  # métier (auth, session, forum, jobs, projects, members, events, tutorials, mentorat, errors, db, fonts, seed, contrats, drapeaux, markdown)
+  lib/                  # métier (auth, session, forum, jobs, projects, members, events, tutorials, mentorat, notifications, messagerie, favorites, search, admin, mailer, rate-limit, i18n, errors, db, fonts, seed, contrats, drapeaux, markdown)
 docs/
   superpowers/specs/    # spec de design
   superpowers/plans/    # plan d'implémentation (12 tâches)
