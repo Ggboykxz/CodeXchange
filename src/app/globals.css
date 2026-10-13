@@ -1,18 +1,82 @@
 @import "tailwindcss";
 
+/* ===== Tokens — style « developer community SaaS » (ui-ux-pro-max) ===== */
+/* Base claire (mode par défaut : meilleur contraste pour une démo en salle). */
 :root {
-  /* Tokens — remplacés par le choix ui-ux-pro-max en Task 9 */
-  --cx-bg: #faf7f2;
-  --cx-fg: #1c1917;
+  --cx-bg: #f8fafc;
+  --cx-fg: #1e293b;
+  --cx-primary: #2563eb;
+  --cx-primary-fg: #ffffff;
+  --cx-secondary: #3b82f6;
+  --cx-secondary-fg: #ffffff;
   --cx-accent: #ea580c;
-  --cx-muted: #78716c;
+  --cx-accent-fg: #ffffff;
+  --cx-card: #ffffff;
+  --cx-card-fg: #1e293b;
+  --cx-muted: #e9eff8;
+  --cx-muted-fg: #475569;
+  --cx-border: #e2e8f0;
+  --cx-destructive: #dc2626;
+  --cx-destructive-fg: #ffffff;
+  --cx-ring: #2563eb;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --cx-bg: #0c0a09;
-    --cx-fg: #f5f5f4;
+    --cx-bg: #0f172a;
+    --cx-fg: #f8fafc;
+    --cx-primary: #60a5fa;
+    --cx-primary-fg: #0f172a;
+    --cx-secondary: #3b82f6;
+    --cx-secondary-fg: #f8fafc;
     --cx-accent: #fb923c;
-    --cx-muted: #a8a29e;
+    --cx-accent-fg: #0f172a;
+    --cx-card: #1e293b;
+    --cx-card-fg: #f8fafc;
+    --cx-muted: #334155;
+    --cx-muted-fg: #cbd5e1;
+    --cx-border: #334155;
+    --cx-destructive: #ef4444;
+    --cx-destructive-fg: #f8fafc;
+    --cx-ring: #60a5fa;
+  }
+}
+
+/* Rend les tokens disponibles comme classes Tailwind v4 (bg-cx-bg, …). */
+@theme inline {
+  --color-cx-bg: var(--cx-bg);
+  --color-cx-fg: var(--cx-fg);
+  --color-cx-primary: var(--cx-primary);
+  --color-cx-primary-fg: var(--cx-primary-fg);
+  --color-cx-secondary: var(--cx-secondary);
+  --color-cx-secondary-fg: var(--cx-secondary-fg);
+  --color-cx-accent: var(--cx-accent);
+  --color-cx-accent-fg: var(--cx-accent-fg);
+  --color-cx-card: var(--cx-card);
+  --color-cx-card-fg: var(--cx-card-fg);
+  --color-cx-muted: var(--cx-muted);
+  --color-cx-muted-fg: var(--cx-muted-fg);
+  --color-cx-border: var(--cx-border);
+  --color-cx-destructive: var(--cx-destructive);
+  --color-cx-destructive-fg: var(--cx-destructive-fg);
+  --color-cx-ring: var(--cx-ring);
+  --font-sans: var(--font-plex, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
+}
+
+/* Rabat l'ovescroll clair sur fond sombre et inverse. */
+:root {
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Respecte les préférences de mouvement. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

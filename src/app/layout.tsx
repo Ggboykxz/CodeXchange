@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { jakarta } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className="min-h-screen bg-[var(--cx-bg)] text-[var(--cx-fg)] antialiased">
+    <html lang="fr" className={jakarta.variable}>
+      <body className="min-h-screen bg-cx-bg text-cx-fg antialiased font-sans">
         {children}
       </body>
     </html>
