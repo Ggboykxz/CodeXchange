@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/toast";
 
 type Props = {
   kind: string;
@@ -12,6 +13,7 @@ type Props = {
 
 export default function BoutonFavori({ kind, targetId, initial, connecte }: Props) {
   const router = useRouter();
+  const toast = useToast();
   const [favori, setFavori] = useState(initial);
   const [busy, setBusy] = useState(false);
 
@@ -29,6 +31,8 @@ export default function BoutonFavori({ kind, targetId, initial, connecte }: Prop
       });
       const data = await r.json();
       if (typeof data.favori === "boolean") setFavori(data.favori);
+      if (data.favori === true) toast.succes("Ajouté aux favoris");
+      else if (data.favori === false) toast.succes("Retiré des favoris");
       router.refresh();
     } finally {
       setBusy(false);

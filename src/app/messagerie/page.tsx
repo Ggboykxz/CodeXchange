@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/session";
 import { listThreads, listMessages } from "@/lib/messagerie";
 import FormulaireMessage from "./formulaire-message";
+import DefileurMessages from "./defileur-messages";
 import { localeCourante, t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -69,7 +70,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
               <header className="border-b border-cx-border px-4 py-3">
                 <h2 className="font-semibold">{courant?.autreNom ?? "Conversation"}</h2>
               </header>
-              <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4" style={{ maxHeight: "460px" }}>
+              <DefileurMessages>
                 {conversation.length === 0 ? (
                   <p className="text-sm text-cx-muted-fg">{t(locale, "messaging.no_messages")}</p>
                 ) : (
@@ -91,7 +92,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
                     );
                   })
                 )}
-              </div>
+    </DefileurMessages>
               <footer className="border-t border-cx-border p-3">
                 <FormulaireMessage destinataireId={withId} onEnvoye={() => {}} />
               </footer>

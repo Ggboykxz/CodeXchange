@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/toast";
 
 type Props = {
   replyId: number;
@@ -23,6 +24,7 @@ export default function ActionsReponse({
   likes,
 }: Props) {
   const router = useRouter();
+  const toast = useToast();
   const [liked, setLiked] = useState(likedByMe);
   const [compteur, setCompteur] = useState(likes);
   const [enEdition, setEnEdition] = useState(false);
@@ -39,6 +41,7 @@ export default function ActionsReponse({
         setLiked(data.like);
         setCompteur((c) => (data.like ? c + 1 : Math.max(0, c - 1)));
       }
+      if (data.error) toast.erreur("Action impossible", data.message);
       router.refresh();
     } finally {
       setBusy(false);
@@ -51,6 +54,7 @@ export default function ActionsReponse({
     setBusy(true);
     try {
       await fetch(`/api/forum/${postId}/replies/${replyId}`, { method: "DELETE" });
+      toast.succes("Réponse supprimée");
       router.refresh();
     } finally {
       setBusy(false);
@@ -67,6 +71,7 @@ export default function ActionsReponse({
         body: JSON.stringify({ corps: texte }),
       });
       setEnEdition(false);
+      toast.succes("Réponse modifiée");
       router.refresh();
     } finally {
       setBusy(false);

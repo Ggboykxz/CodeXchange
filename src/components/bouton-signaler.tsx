@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/toast";
 import type { KindSignalement } from "@/lib/reports";
 
 type Props = { kind: KindSignalement; targetId: number; libelle?: string };
@@ -10,6 +11,7 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
   const [raison, setRaison] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const toast = useToast();
 
   async function envoyer() {
     if (raison.trim().length < 3) {
@@ -28,7 +30,7 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
         const data = await r.json().catch(() => null);
         setMessage(data?.message ?? "Échec de l'envoi du signalement.");
       } else {
-        setMessage("Signalement envoyé. Merci !");
+        toast.succes("Signalement envoyé", "Merci, un administrateur va l'examiner.");
         setOuvert(false);
         setRaison("");
       }
