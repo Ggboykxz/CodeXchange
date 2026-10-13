@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/lib/session";
 import { listThreads, sendDm } from "@/lib/messagerie";
+import { limiteEcriture } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,13 @@ export async function POST(request: Request) {
   const userId = await getSessionUserId();
   if (userId === null) return NextResponse.json({ error: "AUTH_INVALID", message: "Authentification requise." }, { status: 401 });
   try {
+    const limite = await limiteEcriture(`messages:user:${userId}`, 30);
+    if (!limite.ok) {
+      return NextResponse.json(
+        { error: "RATE_LIMITED", message: "Trop de messages envoyés. Patientez une minute." },
+        { status: 429 },
+      );
+    }
     const body = (await request.json()) as Partial<{ recipientId: unknown; corps: unknown }>;
     const rid = Number(body.recipientId);
     if (!Number.isInteger(rid) || rid <= 0) throw new Error("INVALID_RECIPIENT");

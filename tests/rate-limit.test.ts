@@ -32,3 +32,14 @@ test("rateLimit se réinitialise après la fenêtre", () => {
     }, 60),
   );
 });
+
+test("rateLimitAsync retombe sur la mémoire sans Redis", async () => {
+  const { rateLimitAsync, resetRateLimits: reset } = await import("../src/lib/rate-limit");
+  reset();
+  const r1 = await rateLimitAsync("async:key", 2, 1000);
+  const r2 = await rateLimitAsync("async:key", 2, 1000);
+  const r3 = await rateLimitAsync("async:key", 2, 1000);
+  expect(r1.ok).toBe(true);
+  expect(r2.ok).toBe(true);
+  expect(r3.ok).toBe(false);
+});

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { errorResponse } from "@/lib/errors";
 import { NON_CONNECTE, addReply, parseId } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
+import { limiteEcriture } from "@/lib/rate-limit";
 
 type Contexte = { params: Promise<{ id: string }> };
 type CorpsReponse = Partial<{ corps: unknown; parentId: unknown }>;
@@ -14,6 +15,14 @@ export async function POST(request: Request, { params }: Contexte) {
     const userId = await getSessionUserId();
     if (userId === null) {
       return NextResponse.json(NON_CONNECTE.body, { status: NON_CONNECTE.status });
+    }
+
+    const limite = await limiteEcriture(`replies:user:${userId}`, 20);
+    if (!limite.ok) {
+      return NextResponse.json(
+        { error: "RATE_LIMITED", message: "Trop de réponses envoyées. Patientez une minute." },
+        { status: 429 },
+      );
     }
 
     const { id } = await params;
