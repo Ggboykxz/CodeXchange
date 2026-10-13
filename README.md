@@ -68,8 +68,11 @@ Mot de passe commun des 30 membres de démo : `CodeXchange2026!`. Les données s
 - **Logique métier isolée** dans `src/lib/*.ts` — testable sans HTTP, handlers minces qui traduisent les codes d'erreur (`src/lib/errors.ts`) en statuts HTTP.
 - **Authentification** : `bcryptjs` + table `Session` + cookie signé côté serveur. Aucun service tiers.
 - **Design** : Tailwind CSS v4 (`@theme inline`), tokens dans `src/app/globals.css`, polices via `next/font/google` (Plus Jakarta Sans). Choix et arbitrage dans `docs/design-choices.md`.
-- **Tests** : Vitest 4, **135 tests** à date, lint et tsc bloquants.
-- **Sécurité** : rate-limiting en mémoire sur la connexion, `npm audit` à jour côté production (Next 16, React 19.3).
+- **Tests** : Vitest 4, **145 tests** à date, lint et tsc bloquants.
+- **Sécurité** : rate-limiting distribué (Redis/Upstash, repli mémoire) sur connexion, inscription, réponses et messages ; signalements communautaires ; bannissement de comptes ; `npm audit` propre côté production (Next 16, React 19.3).
+- **E-mails** : transport Resend (`RESEND_API_KEY`) avec repli console ; e-mail de bienvenue + e-mails de notification.
+- **Stockage** : avatars en base (data URL) en dev, Vercel Blob (`BLOB_READ_WRITE_TOKEN`) en production.
+- **Langue** : interface complète FR/EN (sélecteur dans l'en-tête, cookie `cx_locale`) ; contenus utilisateurs dans leur langue d'origine.
 
 ## Structure du dépôt
 
