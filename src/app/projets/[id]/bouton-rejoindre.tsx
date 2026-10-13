@@ -1,0 +1,126 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+type Props = {
+  projectId: number;
+  connecte: boolean;
+  estAuteur: boolean;
+  dejaMembre: boolean;
+  compteur: number;
+};
+
+type CorpsReponse = { membres?: number; message?: string };
+
+/**
+ * Bouton « Je veux rejoindre » → POST /api/projects/[id]/join (idempotent).
+ * Grisé et inactif si non connecté, si le projet est le sien ou si l'on est
+ * déjà membre.
+ */
+export default function BoutonRejoindre({
+  projectId,
+  connecte,
+  estAuteur,
+  dejaMembre,
+  compteur,
+}: Props) {
+  const router = useRouter();
+  const [membre, setMembre] = useState(dejaMembre);
+  const [nombre, setNombre] = useState(compteur);
+  const [enCours, setEnCours] = useState(false);
+  const [erreur, setErreur] = useState<string | null>(null);
+
+  if (!connecte) {
+    return (
+      <button
+        type="button"
+        disabled
+        aria-disabled="true"
+        title="Connectez-vous pour rejoindre ce projet"
+        className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm text-[var(--cx-muted)] opacity-60"
+      >
+        Je veux rejoindre · connectez-vous
+      </button>
+    );
+  }
+
+  if (estAuteur) {
+    return (
+      <span className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          disabled
+          aria-disabled="true"
+          title="Vous êtes l'auteur de ce projet"
+          className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm text-[var(--cx-muted)] opacity-60"
+        >
+          ✓ Votre projet
+        </button>
+        <span className="text-xs text-[var(--cx-muted)]">
+          {nombre} {nombre > 1 ? "membres" : "membre"}
+        </span>
+      </span>
+    );
+  }
+
+  if (membre) {
+    return (
+      <span className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          disabled
+          aria-disabled="true"
+          title="Vous avez déjà rejoint ce projet"
+          className="cursor-not-allowed rounded-lg border border-[var(--cx-accent)] bg-[var(--cx-accent)]/10 px-4 py-2.5 text-sm font-medium text-[var(--cx-accent)] opacity-80"
+        >
+          ✓ Vous avez rejoint ce projet
+        </button>
+        <span className="text-xs text-[var(--cx-muted)]">
+          {nombre} {nombre > 1 ? "membres" : "membre"}
+        </span>
+      </span>
+    );
+  }
+
+  async function rejoindreProjet() {
+    setEnCours(true);
+    setErreur(null);
+    try {
+      const reponse = await fetch(`/api/projects/${projectId}/join`, { method: "POST" });
+      const corps = (await reponse.json().catch(() => null)) as CorpsReponse | null;
+      if (!reponse.ok) {
+        setErreur(corps?.message ?? "Impossible de rejoindre ce projet.");
+        return;
+      }
+      setMembre(true);
+      setNombre(corps?.membres ?? nombre + 1);
+      router.refresh();
+    } catch {
+      setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
+    } finally {
+      setEnCours(false);
+    }
+  }
+
+  return (
+    <span className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={rejoindreProjet}
+        disabled={enCours}
+        className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white transition disabled:opacity-60"
+      >
+        {enCours ? "Envoi…" : "Je veux rejoindre"}
+      </button>
+      <span className="text-xs text-[var(--cx-muted)]">
+        {nombre} {nombre > 1 ? "membres" : "membre"}
+      </span>
+      {erreur && (
+        <span role="alert" className="text-xs text-red-600">
+          {erreur}
+        </span>
+      )}
+    </span>
+  );
+}
