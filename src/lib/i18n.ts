@@ -224,7 +224,11 @@ const FR: Record<string, string> = {
   "profile.stack": "Stack",
   "profile.stack_empty": "Non renseignée.",
   "profile.public": "Voir mon profil public →",
-    // Mon espace
+    // Tri
+  "sort.label": "Trier par",
+  "sort.recent": "Plus récents",
+  "sort.popular": "Plus populaires",
+  // Mon espace
   "activity.title": "Mon activité",
   "activity.tab_sujets": "Mes sujets",
   "activity.tab_candidatures": "Mes candidatures",

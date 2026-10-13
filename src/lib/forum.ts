@@ -43,7 +43,7 @@ export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   _count: { replies: number; likes: number };
 };
 
-export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number };
+export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number; tri?: "recent" | "populaire" };
 
 export type NouveauSujet = { titre: string; corps: string; tags: string[] };
 
@@ -104,6 +104,15 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
       }
       if (tag && !tagsDuCsv(sujet.tags).some((t) => t.toLowerCase() === tag)) return false;
       return true;
+    });
+  }
+
+  // Tri : « populaire » = score likes + 2×réponses, puis date.
+  if (f?.tri === "populaire") {
+    filtrees = [...filtrees].sort((a, b) => {
+      const scoreA = a._count.likes + a._count.replies * 2;
+      const scoreB = b._count.likes + b._count.replies * 2;
+      return scoreB - scoreA || b.createdAt.getTime() - a.createdAt.getTime();
     });
   }
 

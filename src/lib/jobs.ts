@@ -37,7 +37,7 @@ export type JobResume = Job & { auteur: AuteurOffre };
 
 export type JobDetail = JobResume & { _count: { candidatures: number } };
 
-export type FiltreJobs = { remote?: boolean; pays?: string; contrat?: string; q?: string; page?: number; pageSize?: number };
+export type FiltreJobs = { remote?: boolean; pays?: string; contrat?: string; q?: string; page?: number; pageSize?: number; tri?: "recent" | "populaire" };
 
 export type JobInput = {
   titre: string;
@@ -97,6 +97,18 @@ export async function listJobs(f?: FiltreJobs): Promise<Job[] | PaginatedResult<
       }
       return true;
     });
+  }
+
+  // Tri « populaire » : nombre de candidatures (une requête groupée), puis date.
+  if (f?.tri === "populaire") {
+    const comptes = await prisma.application.groupBy({
+      by: ["jobId"],
+      _count: { _all: true },
+    });
+    const poids = new Map(comptes.map((c) => [c.jobId, c._count._all]));
+    filtrees = [...filtrees].sort(
+      (a, b) => (poids.get(b.id) ?? 0) - (poids.get(a.id) ?? 0) || b.createdAt.getTime() - a.createdAt.getTime(),
+    );
   }
 
   if (f?.page !== undefined) {

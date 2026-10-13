@@ -2,6 +2,7 @@ import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
+import SelecteurTri from "@/components/selecteur-tri";
 import { listPosts } from "@/lib/forum";
 
 export const metadata = { title: "Forum" };
@@ -15,7 +16,7 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
 });
 
-type Props = { searchParams: Promise<{ q?: string; tag?: string; page?: string }> };
+type Props = { searchParams: Promise<{ q?: string; tag?: string; page?: string; tri?: string }> };
 
 /** /forum — liste des sujets + recherche + filtre par tag (query string). */
 export default async function PageForum({ searchParams }: Props) {
@@ -23,8 +24,9 @@ export default async function PageForum({ searchParams }: Props) {
   const q = (params.q ?? "").trim();
   const tag = (params.tag ?? "").trim();
   const page = normalizePage(params.page);
+  const tri = params.tri === "populaire" ? "populaire" : "recent";
   const [resultat, locale] = await Promise.all([
-    listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12 }),
+    listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12, tri }),
     localeCourante(),
   ]);
   const sujets = resultat.items;
@@ -87,6 +89,23 @@ export default async function PageForum({ searchParams }: Props) {
           </Link>
         )}
       </form>
+
+      <div className="flex justify-end">
+        <SelecteurTri
+          basePath="/forum"
+          params={{ q: q || undefined, tag: tag || undefined, tri }}
+          actuelle={tri}
+          options={[
+            { valeur: "recent", cle: "sort.recent" },
+            { valeur: "populaire", cle: "sort.popular" },
+          ]}
+          libelles={{
+            tri: t(locale, "sort.label"),
+            "sort.recent": t(locale, "sort.recent"),
+            "sort.popular": t(locale, "sort.popular"),
+          }}
+        />
+      </div>
 
       {sujets.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
@@ -172,7 +191,7 @@ export default async function PageForum({ searchParams }: Props) {
         page={pageActuelle}
         totalPages={totalPages}
         basePath="/forum"
-        params={{ q: q || undefined, tag: tag || undefined }}
+        params={{ q: q || undefined, tag: tag || undefined, tri }}
       />
     </main>
   );

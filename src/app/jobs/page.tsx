@@ -2,6 +2,7 @@ import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t, type Locale } from "@/lib/i18n";
+import SelecteurTri from "@/components/selecteur-tri";
 import { CONTRATS, listJobs } from "@/lib/jobs";
 
 export const metadata = { title: "Offres d'emploi" };
@@ -16,7 +17,7 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
 });
 
 type Props = {
-  searchParams: Promise<{ remote?: string; pays?: string; contrat?: string; q?: string; page?: string }>;
+  searchParams: Promise<{ remote?: string; pays?: string; contrat?: string; q?: string; page?: string; tri?: string }>;
 };
 
 /** Badge contrat : rempli pour le type de contrat, bordé pour le mode de travail. */
@@ -49,6 +50,7 @@ export default async function PageJobs({ searchParams }: Props) {
   const pays = (params.pays ?? "").trim();
   const contrat = (params.contrat ?? "").trim();
   const remote = (params.remote ?? "").trim();
+  const tri = params.tri === "populaire" ? "populaire" : "recent";
   const page = normalizePage(params.page);
 
   const [resultat, locale] = await Promise.all([listJobs({
@@ -58,6 +60,7 @@ export default async function PageJobs({ searchParams }: Props) {
     remote: remote === "" ? undefined : remote === "1",
     page,
     pageSize: 12,
+    tri,
   }),
     localeCourante(),
   ]);
@@ -150,6 +153,28 @@ export default async function PageJobs({ searchParams }: Props) {
           </Link>
         )}
       </form>
+
+      <div className="flex justify-end">
+        <SelecteurTri
+          basePath="/jobs"
+          params={{
+            q: q || undefined,
+            pays: pays || undefined,
+            contrat: contrat || undefined,
+            remote: remote || undefined,
+          }}
+          actuelle={tri}
+          options={[
+            { valeur: "recent", cle: "sort.recent" },
+            { valeur: "populaire", cle: "sort.popular" },
+          ]}
+          libelles={{
+            tri: t(locale, "sort.label"),
+            "sort.recent": t(locale, "sort.recent"),
+            "sort.popular": t(locale, "sort.popular"),
+          }}
+        />
+      </div>
 
       {offres.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
