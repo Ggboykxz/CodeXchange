@@ -34,7 +34,7 @@ export async function sendDm(senderId: number, recipientId: number, corps: strin
 
   // Notification à la réception.
   try {
-    await createNotification({ userId: recipientId, type: "REPONSE_SUJET", text: "Vous avez reçu un nouveau message.", lien: "/messagerie" });
+    await createNotification({ userId: recipientId, type: "MESSAGE", text: "Vous avez reçu un nouveau message.", lien: "/messagerie" });
   } catch {
     // fire-and-forget
   }

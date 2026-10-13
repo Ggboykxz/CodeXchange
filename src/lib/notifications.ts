@@ -29,6 +29,7 @@ export const TYPES_NOTIFICATION = [
   "CANDIDATURE",
   "REJOINDRE_PROJET",
   "DEMANDE_MENTOR",
+  "MESSAGE",
 ] as const;
 
 export type NotificationType = (typeof TYPES_NOTIFICATION)[number];
@@ -47,6 +48,7 @@ export const NOTIFICATION_TYPE = {
   CANDIDATURE: "CANDIDATURE",
   REJOINDRE_PROJET: "REJOINDRE_PROJET",
   DEMANDE_MENTOR: "DEMANDE_MENTOR",
+  MESSAGE: "MESSAGE",
 } as const satisfies Record<NotificationType, NotificationType>;
 
 export type NouvelleNotification = {
@@ -73,6 +75,9 @@ function normaliseLimite(valeur: number | undefined): number {
 /**
  * Crée une notification et retourne son id.
  * `data` : `{ userId, type, text, lien? }`.
+ *
+ * Déclenche aussi un e-mail *fire-and-forget* (jamais bloquant, jamais fatal)
+ * vers le destinataire, selon le transport configuré (`src/lib/mailer.ts`).
  */
 export async function createNotification(data: NouvelleNotification): Promise<number> {
   const notification = await prisma.notification.create({
@@ -84,7 +89,25 @@ export async function createNotification(data: NouvelleNotification): Promise<nu
     },
     select: { id: true },
   });
+
+  // E-mail fire-and-forget : ne doit jamais faire échouer la notification.
+  try {
+    void envoyerEmailNotification(data.userId, data.text, data.lien ?? "");
+  } catch {
+    // volontairement ignoré
+  }
+
   return notification.id;
+}
+
+/** Croisement DB → mailer (isolé pour être testable et non bloquant). */
+async function envoyerEmailNotification(userId: number, texte: string, lien: string): Promise<void> {
+  const [destinataire, mailer] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { email: true, nom: true } }),
+    import("./mailer"),
+  ]);
+  if (!destinataire?.email) return;
+  await mailer.sendNotificationEmail(destinataire.email, destinataire.nom, texte, lien);
 }
 
 /**
