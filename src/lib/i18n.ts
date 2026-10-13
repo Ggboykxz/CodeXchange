@@ -548,3 +548,10 @@ export async function localeCourante(): Promise<Locale> {
     return LOCALE_PAR_DEFAUT;
   }
 }
+
+/** Lecture synchrone du cookie pour les composants clients. */
+export function cookieLocale(): Locale {
+  if (typeof document === "undefined") return LOCALE_PAR_DEFAUT;
+  const match = /(?:^|;\s*)cx_locale=(fr|en)/.exec(document.cookie);
+  return match && estLocale(match[1]) ? match[1] : LOCALE_PAR_DEFAUT;
+}

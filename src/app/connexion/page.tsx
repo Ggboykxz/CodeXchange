@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
+import { cookieLocale, t, type Locale } from "@/lib/i18n";
 
 const CLASS_CHAMP =
   "w-full rounded-lg border border-[var(--cx-muted)]/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--cx-accent)] focus:ring-2 focus:ring-[var(--cx-accent)]/30";
 
 export default function PageConnexion() {
   const [erreur, setErreur] = useState<string | null>(null);
+  const [locale] = useState<Locale>(cookieLocale);
   const router = useRouter();
   const [enCours, setEnCours] = useState(false);
 
@@ -39,15 +41,15 @@ export default function PageConnexion() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
-      <h1 className="text-3xl font-black tracking-tight">Connexion</h1>
+      <h1 className="text-3xl font-black tracking-tight">{t(locale, "auth.login_title")}</h1>
       <p className="mt-2 text-sm text-[var(--cx-muted)]">
-        Content de vous revoir sur CodeXchange.
+        {t(locale, "home.hero_sub")}
       </p>
 
       <form onSubmit={envoyerFormulaire} className="mt-8 flex flex-col gap-4">
         <div>
           <label htmlFor="email" className="mb-1 block text-sm font-medium">
-            E-mail
+            {t(locale, "auth.email")}
           </label>
           <input
             id="email"
@@ -62,7 +64,7 @@ export default function PageConnexion() {
 
         <div>
           <label htmlFor="password" className="mb-1 block text-sm font-medium">
-            Mot de passe
+            {t(locale, "auth.password")}
           </label>
           <input
             id="password"
@@ -70,7 +72,7 @@ export default function PageConnexion() {
             type="password"
             required
             autoComplete="current-password"
-            placeholder="Votre mot de passe"
+            placeholder={t(locale, "auth.password")}
             className={CLASS_CHAMP}
           />
         </div>
@@ -86,14 +88,14 @@ export default function PageConnexion() {
           disabled={enCours}
           className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
         >
-          {enCours ? "Connexion…" : "Se connecter"}
+          {enCours ? t(locale, "common.loading") : t(locale, "auth.login_submit")}
         </button>
       </form>
 
       <p className="mt-6 text-sm text-[var(--cx-muted)]">
         Pas encore de compte ?{" "}
         <Link href="/inscription" className="font-medium text-[var(--cx-accent)]">
-          S&apos;inscrire
+          {t(locale, "auth.register_link")}
         </Link>
       </p>
     </main>
