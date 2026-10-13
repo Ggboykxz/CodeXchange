@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { stockerImage, stockageDistantActif } from "@/lib/storage";
 import { getSessionUserId } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -29,8 +30,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "FORUM_VALIDATION", message: "Image trop lourde (max 500 Ko)." }, { status: 422 });
     }
 
-    await prisma.user.update({ where: { id: userId }, data: { avatar: dataUrl } });
-    return NextResponse.json({ ok: true });
+    // Stockage distant (Vercel Blob) si configuré, sinon data URL en base.
+    const aStocker = await stockerImage(dataUrl, `avatars/${userId}-${Date.now()}`);
+    await prisma.user.update({ where: { id: userId }, data: { avatar: aStocker } });
+    return NextResponse.json({ ok: true, distant: stockageDistantActif() });
   } catch {
     return NextResponse.json({ error: "INTERNAL", message: "Une erreur interne est survenue." }, { status: 500 });
   }
