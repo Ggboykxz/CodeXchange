@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { searchCodeXchange } from "@/lib/search";
 import { localeCourante, t } from "@/lib/i18n";
+import BarreRecherche from "@/components/barre-recherche";
+import { suggestionsRecherche } from "@/lib/suggestions";
 import { EmptyState } from "@/components/empty-state";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +18,11 @@ function encodage(q: string): string {
 export default async function PageRecherche({ searchParams }: Props) {
   const params = await searchParams;
   const q = (params.q ?? "").trim();
-  const [resultat, locale] = await Promise.all([searchCodeXchange(q), localeCourante()]);
+  const [resultat, locale, suggestions] = await Promise.all([
+    searchCodeXchange(q),
+    localeCourante(),
+    suggestionsRecherche(),
+  ]);
 
   const total =
     resultat.sujets.length +
@@ -94,21 +100,9 @@ export default async function PageRecherche({ searchParams }: Props) {
         <p className="text-sm text-cx-muted-fg">
           {t(locale, "search.subtitle")} — {total}
         </p>
-        <form action="/recherche" method="get" className="flex gap-2">
-          <input
-            name="q"
-            type="search"
-            defaultValue={q}
-            placeholder={t(locale, "search.placeholder")}
-            className="w-full rounded-lg border border-cx-border bg-transparent px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
-          />
-          <button
-            type="submit"
-            className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
-          >
-            {t(locale, "nav.search")}
-          </button>
-        </form>
+        <div className="max-w-md">
+          <BarreRecherche suggestions={suggestions} />
+        </div>
       </header>
 
       {total === 0 ? (

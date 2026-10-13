@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { localeCourante, t } from "@/lib/i18n";
 import SelecteurLangue from "./selecteur-langue";
 import SelecteurTheme from "./selecteur-theme";
+import BarreRecherche from "./barre-recherche";
+import { suggestionsRecherche } from "@/lib/suggestions";
 import { themeCourant } from "@/lib/theme";
 
 const liens = [
@@ -24,6 +26,7 @@ export async function Header() {
 
   const locale = await localeCourante();
   const theme = await themeCourant();
+  const suggestions = await suggestionsRecherche().catch(() => []);
 
   return (
     <header className="sticky top-0 z-30 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
@@ -143,14 +146,9 @@ export async function Header() {
               </ul>
             </nav>
           </details>
-          <form action="/recherche" method="get" className="hidden items-center md:flex">
-            <input
-              name="q"
-              type="search"
-              placeholder={t(locale, "nav.search")}
-              className="w-44 rounded-lg border border-cx-border bg-transparent px-3 py-1.5 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
-            />
-          </form>
+          <div className="hidden w-52 md:block">
+            <BarreRecherche suggestions={suggestions} />
+          </div>
           <nav className="hidden items-center gap-1 md:flex">
             <ul className="flex items-center gap-1">
               {liens.map((l) => (
