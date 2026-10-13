@@ -1,27 +1,28 @@
 import Link from "next/link";
+import { localeCourante, t } from "@/lib/i18n";
 
 /** 404 française et soignée : le membre ou la page demandé(e) n'existe pas (plus). */
-export default function NotFound() {
+export default async function NotFound() {
+  const locale = await localeCourante();
   return (
     <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4 px-6 text-center">
       <p className="text-7xl font-black tracking-tight text-[var(--cx-accent)]">404</p>
-      <h1 className="text-2xl font-bold leading-snug">Cette page n&apos;existe pas (ou plus).</h1>
+      <h1 className="text-2xl font-bold leading-snug">{t(locale, "status.404_title")}</h1>
       <p className="text-sm text-[var(--cx-muted)]">
-        Le lien a peut-être expiré, ou le membre a supprimé son profil. Pas de panique : la
-        communauté est juste à côté.
+        {t(locale, "status.404_desc")}
       </p>
       <div className="mt-3 flex flex-wrap justify-center gap-3">
         <Link
           href="/"
           className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm font-medium"
         >
-          Retour à l&apos;accueil
+          {t(locale, "common.back_home")}
         </Link>
         <Link
           href="/annuaire"
           className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
         >
-          Parcourir l&apos;annuaire
+          {t(locale, "nav.directory")}
         </Link>
       </div>
     </main>

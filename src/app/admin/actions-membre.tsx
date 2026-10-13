@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { cookieLocale, t } from "@/lib/i18n";
 import { useRouter } from "next/navigation";
 
 type Props = { userId: number; banni: boolean };
 
 export default function ActionsMembre({ userId, banni }: Props) {
   const router = useRouter();
+  const locale = cookieLocale();
   const [busy, setBusy] = useState(false);
 
   async function basculer() {
@@ -29,7 +31,7 @@ export default function ActionsMembre({ userId, banni }: Props) {
         banni ? "bg-emerald-500/10 text-emerald-600" : "bg-red-500/10 text-red-600"
       }`}
     >
-      {banni ? "Débannir" : "Bannir"}
+      {banni ? t(locale, "admin.unban") : t(locale, "admin.ban")}
     </button>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { cookieLocale, t } from "@/lib/i18n";
 import type { StatsAdmin } from "@/lib/admin";
 
 /** Rafraîchit les compteurs toutes les 10 s (dashboard temps réel). */
 export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdmin }) {
   const [stats, setStats] = useState(statsInitiaux);
+  const locale = cookieLocale();
   const [pause, setPause] = useState(false);
 
   useEffect(() => {
@@ -22,15 +24,15 @@ export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdm
   }, [pause]);
 
   const cartes: Array<[string, number]> = [
-    ["Membres", stats.membres],
-    ["Sujets", stats.sujets],
-    ["Réponses", stats.reponses],
-    ["Offres", stats.offres],
-    ["Projets", stats.projets],
-    ["Événements", stats.evenements],
-    ["Tutos", stats.tutos],
-    ["Messages", stats.messages],
-    ["Notifications", stats.notifications],
+    [t(locale, "admin.members"), stats.membres],
+    [t(locale, "admin.posts"), stats.sujets],
+    [t(locale, "admin.replies"), stats.reponses],
+    [t(locale, "admin.jobs"), stats.offres],
+    [t(locale, "admin.projects"), stats.projets],
+    [t(locale, "admin.events"), stats.evenements],
+    [t(locale, "admin.tutorials"), stats.tutos],
+    [t(locale, "admin.messages"), stats.messages],
+    [t(locale, "admin.notifications"), stats.notifications],
   ];
 
   return (
@@ -46,7 +48,7 @@ export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdm
         onClick={() => setPause((p) => !p)}
         className="col-span-full justify-self-end text-xs text-cx-muted-fg underline-offset-2 hover:underline sm:col-span-5"
       >
-        {pause ? "Reprendre le rafraîchissement" : "Mettre en pause le rafraîchissement (10 s)"}
+        {pause ? t(locale, "admin.refresh_resume") : t(locale, "admin.refresh_pause")}
       </button>
     </section>
   );

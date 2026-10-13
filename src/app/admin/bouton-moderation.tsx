@@ -1,4 +1,5 @@
 "use client";
+import { cookieLocale, t } from "@/lib/i18n";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -12,9 +13,10 @@ type Props = {
 export default function BoutonModeration({ type, id, label }: Props) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const locale = cookieLocale();
 
   async function supprimer() {
-    if (!confirm(`Supprimer ${label} ?`)) return;
+    if (!confirm(`${t(locale, "common.report")} ${label} ?`)) return;
     setBusy(true);
     try {
       await fetch(`/api/admin/${type}s/${id}`, { method: "DELETE" });
@@ -31,7 +33,7 @@ export default function BoutonModeration({ type, id, label }: Props) {
       disabled={busy}
       className="rounded-md px-2 py-1 text-xs font-medium text-red-500 hover:bg-red-500/10"
     >
-      Supprimer
+      {t(locale, "common.report")}
     </button>
   );
 }

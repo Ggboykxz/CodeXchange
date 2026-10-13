@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { cookieLocale, t } from "@/lib/i18n";
 import { useRouter } from "next/navigation";
 
 type Props = { reportId: number };
 
 export default function ActionsSignalement({ reportId }: Props) {
   const router = useRouter();
+  const locale = cookieLocale();
   const [busy, setBusy] = useState(false);
 
   async function traiter(decision: "TRAITE" | "REJETE") {
@@ -31,7 +33,7 @@ export default function ActionsSignalement({ reportId }: Props) {
         disabled={busy}
         className="rounded-md bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-600 hover:bg-red-500/20"
       >
-        Sanctionner
+        {t(locale, "admin.sanction")}
       </button>
       <button
         type="button"
@@ -39,7 +41,7 @@ export default function ActionsSignalement({ reportId }: Props) {
         disabled={busy}
         className="rounded-md bg-cx-muted px-2 py-1 text-xs font-semibold text-cx-muted-fg hover:opacity-80"
       >
-        Rejeter
+        {t(locale, "admin.reject")}
       </button>
     </span>
   );

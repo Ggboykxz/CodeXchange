@@ -4,6 +4,7 @@ import { getSessionUserId } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { getAdminStats } from "@/lib/admin";
 import { listReports, listBannedUsers } from "@/lib/reports";
+import { localeCourante, t } from "@/lib/i18n";
 import BoutonModeration from "./bouton-moderation";
 import CartesStats from "./cartes-stats";
 import ActionsSignalement from "./actions-signalement";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Administration" };
 
 export default async function PageAdmin() {
-  const userId = await getSessionUserId();
+  const [userId, locale] = await Promise.all([getSessionUserId(), localeCourante()]);
   if (userId === null) redirect("/connexion");
 
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
@@ -38,41 +39,41 @@ export default async function PageAdmin() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-10">
-      <h1 className="text-3xl font-black tracking-tight">Administration</h1>
+      <h1 className="text-3xl font-black tracking-tight">{t(locale, "admin.title")}</h1>
 
       <CartesStats statsInitiaux={stats} />
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
-        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">Sujets récents</h2>
+        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">{t(locale, "admin.recent_posts")}</h2>
         <ul className="divide-y divide-cx-border">
           {sujets.map((s) => (
             <li key={s.id} className="flex items-center justify-between gap-3 px-5 py-2 text-sm">
               <Link href={`/forum/${s.id}`} className="truncate hover:text-cx-primary">{s.titre}</Link>
-              <BoutonModeration type="post" id={s.id} label="ce sujet" />
+              <BoutonModeration type="post" id={s.id} label={t(locale, "admin.posts")} />
             </li>
           ))}
         </ul>
       </section>
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
-        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">Réponses récentes</h2>
+        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">{t(locale, "admin.recent_replies")}</h2>
         <ul className="divide-y divide-cx-border">
           {reponses.map((r) => (
             <li key={r.id} className="flex items-center justify-between gap-3 px-5 py-2 text-sm">
               <span className="truncate text-cx-muted-fg">{r.corps}</span>
-              <BoutonModeration type="reply" id={r.id} label="cette réponse" />
+              <BoutonModeration type="reply" id={r.id} label={t(locale, "admin.replies")} />
             </li>
           ))}
         </ul>
       </section>
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
-        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">Offres récentes</h2>
+        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">{t(locale, "admin.recent_jobs")}</h2>
         <ul className="divide-y divide-cx-border">
           {offres.map((o) => (
             <li key={o.id} className="flex items-center justify-between gap-3 px-5 py-2 text-sm">
               <Link href={`/jobs/${o.id}`} className="truncate hover:text-cx-primary">{o.titre}</Link>
-              <BoutonModeration type="job" id={o.id} label="cette offre" />
+              <BoutonModeration type="job" id={o.id} label={t(locale, "admin.jobs")} />
             </li>
           ))}
         </ul>
@@ -80,10 +81,10 @@ export default async function PageAdmin() {
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
         <h2 className="border-b border-cx-border px-5 py-3 font-semibold">
-          Signalements ({signalements.length})
+          {t(locale, "admin.reports")} ({signalements.length})
         </h2>
         {signalements.length === 0 ? (
-          <p className="px-5 py-4 text-sm text-cx-muted-fg">Aucun signalement.</p>
+          <p className="px-5 py-4 text-sm text-cx-muted-fg">{t(locale, "admin.reports_none")}</p>
         ) : (
           <ul className="divide-y divide-cx-border">
             {signalements.map((rep) => (
@@ -95,7 +96,7 @@ export default async function PageAdmin() {
                 {rep.statut === "PENDING" ? (
                   <ActionsSignalement reportId={rep.id} />
                 ) : (
-                  <span className="shrink-0 text-xs font-semibold text-cx-muted-fg">{rep.statut}</span>
+                  <span className="shrink-0 text-xs font-semibold text-cx-muted-fg">{rep.statut === "PENDING" ? t(locale, "admin.reports") : t(locale, "admin.reject")}</span>
                 )}
               </li>
             ))}
@@ -105,10 +106,10 @@ export default async function PageAdmin() {
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
         <h2 className="border-b border-cx-border px-5 py-3 font-semibold">
-          Comptes suspendus ({bannis.length})
+          {t(locale, "admin.banned")} ({bannis.length})
         </h2>
         {bannis.length === 0 ? (
-          <p className="px-5 py-4 text-sm text-cx-muted-fg">Aucun compte suspendu.</p>
+          <p className="px-5 py-4 text-sm text-cx-muted-fg">{t(locale, "admin.banned_none")}</p>
         ) : (
           <ul className="divide-y divide-cx-border">
             {bannis.map((m) => (
@@ -126,7 +127,7 @@ export default async function PageAdmin() {
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
         <h2 className="border-b border-cx-border px-5 py-3 font-semibold">
-          Membres — bannir / débannir
+          {t(locale, "admin.manage_members")}
         </h2>
         <ul className="divide-y divide-cx-border">
           {membres.map((m) => (
@@ -136,7 +137,7 @@ export default async function PageAdmin() {
                 <span className="text-xs text-cx-muted-fg">{m.titre}</span>
                 {m.bannedAt ? (
                   <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-600">
-                    SUSPENDU
+                    {t(locale, "admin.suspended")}
                   </span>
                 ) : null}
               </div>
