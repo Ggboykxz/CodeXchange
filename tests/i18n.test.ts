@@ -33,3 +33,17 @@ test("couvre toutes les pages principales avec des clés non vides", () => {
     expect(t("en", cle).length).toBeGreaterThan(0);
   }
 });
+
+test("les clés des onglets de mon espace existent", () => {
+  for (const cle of ["activity.tab_sujets", "activity.tab_candidatures", "activity.tab_projets", "activity.tab_favoris"]) {
+    expect(t("fr", cle).length).toBeGreaterThan(0);
+    expect(t("en", cle).length).toBeGreaterThan(0);
+  }
+});
+
+test("les clés de tri et de filtre notifications existent", () => {
+  for (const cle of ["sort.label", "sort.recent", "sort.popular", "notifications.all", "notifications.unread", "notifications.group_today"]) {
+    expect(t("fr", cle).length).toBeGreaterThan(0);
+    expect(t("en", cle).length).toBeGreaterThan(0);
+  }
+});
