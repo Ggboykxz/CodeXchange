@@ -235,6 +235,18 @@ export async function deleteReply(replyId: number, authorId: number): Promise<vo
   await prisma.reply.update({ where: { id: replyId }, data: { deletedAt: new Date(), corps: "[message supprimé]" } });
 }
 
+/** Restaure une réponse supprimée douce (auteur uniquement). */
+export async function restoreReply(replyId: number, authorId: number, corps: string): Promise<void> {
+  const texte = corps.trim();
+  if (texte.length < REPONSE_MIN || texte.length > REPONSE_MAX) {
+    throw new AppError("FORUM_VALIDATION", `La réponse doit faire entre ${REPONSE_MIN} et ${REPONSE_MAX} caractères.`);
+  }
+  const reply = await prisma.reply.findUnique({ where: { id: replyId }, select: { authorId: true } });
+  if (!reply) throw new AppError("FORUM_VALIDATION", "Réponse introuvable.");
+  if (reply.authorId !== authorId) throw new AppError("FORBIDDEN", "Vous ne pouvez pas restaurer cette réponse.");
+  await prisma.reply.update({ where: { id: replyId }, data: { deletedAt: null, corps: texte } });
+}
+
 /** Like idempotent sur une réponse (retourne true si ajouté). */
 export async function toggleReplyLike(replyId: number, userId: number): Promise<boolean> {
   const reply = await prisma.reply.findUnique({ where: { id: replyId }, select: { id: true, deletedAt: true } });

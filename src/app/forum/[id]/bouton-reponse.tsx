@@ -52,9 +52,25 @@ export default function ActionsReponse({
     if (!estAuteur || busy) return;
     if (!confirm("Supprimer cette réponse ?")) return;
     setBusy(true);
+    // On garde le corps d'origine pour pouvoir annuler la suppression.
+    const corpsOriginal = texte;
     try {
       await fetch(`/api/forum/${postId}/replies/${replyId}`, { method: "DELETE" });
-      toast.succes("Réponse supprimée");
+      toast.avecAction("Réponse supprimée", {
+        label: "Annuler",
+        onClick: () => {
+          void fetch(`/api/forum/${postId}/replies/${replyId}/restaurer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ corps: corpsOriginal }),
+          })
+            .then(() => {
+              toast.succes("Réponse restaurée");
+              router.refresh();
+            })
+            .catch(() => toast.erreur("Restauration impossible"));
+        },
+      });
       router.refresh();
     } finally {
       setBusy(false);
