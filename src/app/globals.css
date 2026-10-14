@@ -102,3 +102,9 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Focus visible cohérent pour la navigation clavier. */
+:focus-visible {
+  outline: 2px solid var(--cx-ring);
+  outline-offset: 2px;
+}

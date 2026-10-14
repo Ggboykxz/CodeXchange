@@ -17,7 +17,7 @@ export type ButtonProps = {
 };
 
 export function Button({ children, variant = "primary", href, type = "button", className = "" }: ButtonProps) {
-  const cls = `inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-cx-ring disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant] ?? variants.primary} ${className}`;
+  const cls = `inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2.5 text-sm min-h-[44px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-cx-ring disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant] ?? variants.primary} ${className}`;
   if (href) {
     return (
       <Link href={href} className={cls}>
