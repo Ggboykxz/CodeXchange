@@ -6,6 +6,7 @@ import { getSessionUserId } from "@/lib/session";
 import SelecteurTri from "@/components/selecteur-tri";
 import Tendances from "@/components/tendances";
 import { listPosts } from "@/lib/forum";
+import { idsSuivis } from "@/lib/follows";
 
 export const metadata = { title: "Forum" };
 
@@ -18,7 +19,7 @@ const DATE = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
 });
 
-type Props = { searchParams: Promise<{ q?: string; tag?: string; page?: string; tri?: string }> };
+type Props = { searchParams: Promise<{ q?: string; tag?: string; page?: string; tri?: string; suivis?: string }> };
 
 /** /forum — liste des sujets + recherche + filtre par tag (query string). */
 export default async function PageForum({ searchParams }: Props) {
@@ -29,8 +30,19 @@ export default async function PageForum({ searchParams }: Props) {
   const userId = await getSessionUserId();
   const triParam = params.tri;
   const tri = triParam === "new" || triParam === "top" ? triParam : "hot";
+  const filtreSuivis = params.suivis === "1" && userId !== null;
+  // En mode « Abonnements », on ne montre que les sujets des membres suivis.
+  const auteursSuivis = filtreSuivis ? await idsSuivis(userId as number) : undefined;
   const [resultat, locale] = await Promise.all([
-    listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12, tri, userId: userId == null ? undefined : userId }),
+    listPosts({
+      q: q || undefined,
+      tag: tag || undefined,
+      page,
+      pageSize: 12,
+      tri,
+      userId: userId == null ? undefined : userId,
+      authorIds: auteursSuivis,
+    }),
     localeCourante(),
   ]);
   const sujets = resultat.items;
@@ -55,6 +67,29 @@ export default async function PageForum({ searchParams }: Props) {
         </Link>
       </header>
       <p className="text-sm text-cx-muted-fg"><Link href="/forum/tags" className="text-cx-primary hover:underline">Voir toutes les communautés →</Link></p>
+
+      {userId !== null && (
+        <nav aria-label="Filtrer le fil" className="flex gap-2">
+          <Link
+            href="/forum"
+            aria-current={!filtreSuivis ? "page" : undefined}
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${
+              !filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "border border-cx-border text-cx-muted-fg hover:text-cx-fg"
+            }`}
+          >
+            Tout
+          </Link>
+          <Link
+            href="/forum?suivis=1"
+            aria-current={filtreSuivis ? "page" : undefined}
+            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${
+              filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "border border-cx-border text-cx-muted-fg hover:text-cx-fg"
+            }`}
+          >
+            Abonnements
+          </Link>
+        </nav>
+      )}
 
       <Tendances limite={6} />
 
@@ -117,7 +152,28 @@ export default async function PageForum({ searchParams }: Props) {
 
       {sujets.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
-          {filtreActif ? (
+          {filtreSuivis ? (
+            <>
+              <p className="text-lg font-semibold">Votre fil d&apos;abonnements est vide</p>
+              <p className="mt-2 text-sm text-[var(--cx-muted)]">
+                Suivez des membres depuis l&apos;annuaire pour voir leurs sujets ici.
+              </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <Link
+                  href="/annuaire"
+                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
+                >
+                  Découvrir des membres
+                </Link>
+                <Link
+                  href="/forum"
+                  className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
+                >
+                  Tout le forum
+                </Link>
+              </div>
+            </>
+          ) : filtreActif ? (
             <>
               <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
               <p className="mt-2 text-sm text-[var(--cx-muted)]">

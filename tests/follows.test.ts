@@ -16,8 +16,10 @@ vi.mock("next/headers", () => ({
 
 import { prisma } from "../src/lib/db";
 import { AppError } from "../src/lib/errors";
+import { createPost, listPosts } from "../src/lib/forum";
 import {
   getCompteursSuivi,
+  idsSuivis,
   listAbonnes,
   listAbonnements,
   toggleFollow,
@@ -135,4 +137,34 @@ test("listes abonnés / abonnements", async () => {
   expect(abonnes.some((m) => m.id === aliceId)).toBe(true);
   // Nettoie.
   await toggleFollow(aliceId, bobId);
+});
+
+// --- Fil d'abonnements -------------------------------------------------------
+
+test("idsSuivis + filtre authorIds : seuls les sujets des suivis apparaissent", async () => {
+  const postIdBob = await createPost(bobId, {
+    titre: "Sujet de Bob pour le fil d'abonnements",
+    corps: "Contexte long suffisant pour la validation du titre du sujet de Bob.",
+    tags: ["bob"],
+  });
+  const postIdAlice = await createPost(aliceId, {
+    titre: "Sujet d'Alice pour le fil d'abonnements",
+    corps: "Contexte long suffisant pour la validation du titre du sujet d'Alice.",
+    tags: ["alice"],
+  });
+
+  // Alice suit Bob.
+  await toggleFollow(aliceId, bobId);
+  const suivis = await idsSuivis(aliceId);
+  expect(suivis).toContain(bobId);
+
+  // Fil d'abonnements d'Alice → uniquement les sujets de Bob.
+  const fil = listPosts({ authorIds: suivis });
+  const ids = (await fil).map((p) => p.id);
+  expect(ids).toContain(postIdBob);
+  expect(ids).not.toContain(postIdAlice);
+
+  // Nettoie.
+  await toggleFollow(aliceId, bobId);
+  await prisma.post.deleteMany({ where: { id: { in: [postIdBob, postIdAlice] } } });
 });

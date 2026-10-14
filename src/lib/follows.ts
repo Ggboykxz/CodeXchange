@@ -43,6 +43,15 @@ export async function toggleFollow(followerId: number, followeeId: number): Prom
   return getCompteursSuivi(followeeId, followerId);
 }
 
+/** Ids des membres suivis par `userId` (pour le fil d'abonnements du forum). */
+export async function idsSuivis(userId: number): Promise<number[]> {
+  const lignes = await prisma.userFollow.findMany({
+    where: { followerId: userId },
+    select: { followeeId: true },
+  });
+  return lignes.map((l) => l.followeeId);
+}
+
 /** Compteurs + état « je le suis » pour un profil visité. */
 export async function getCompteursSuivi(userId: number, viewerId?: number): Promise<CompteursSuivi> {
   const [abonnes, abonnements, lien] = await Promise.all([

@@ -54,7 +54,7 @@ export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   _count: { replies: number; likes: number };
 };
 
-export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number; tri?: "hot" | "new" | "top" | "recent" | "populaire"; userId?: number };
+export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number; tri?: "hot" | "new" | "top" | "recent" | "populaire"; userId?: number; authorIds?: number[] };
 
 export type NouveauSujet = { titre: string; corps: string; tags: string[]; sondage?: { question?: string; options?: string[] } };
 
@@ -118,9 +118,12 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
 
   const q = f?.q?.trim().toLowerCase() ?? "";
   const tag = f?.tag?.trim().toLowerCase() ?? "";
+  const auteursSuivis = f?.authorIds;
   let filtrees = pourUtilisateur;
-  if (q || tag) {
+  if (q || tag || auteursSuivis) {
     filtrees = pourUtilisateur.filter((sujet) => {
+      // Fil « Abonnements » : n'inclut que les sujets des membres suivis.
+      if (auteursSuivis && !auteursSuivis.includes(sujet.authorId)) return false;
       if (q) {
         const dansTitre = sujet.titre.toLowerCase().includes(q);
         const dansCorps = sujet.corps.toLowerCase().includes(q);
