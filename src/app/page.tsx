@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/button";
 import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
+import VisuelAccueil from "@/components/visuel-accueil";
 
 const ICONES = [
   <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
@@ -86,6 +87,7 @@ export default async function HomePage() {
         <p className="mt-6 text-sm text-cx-muted-fg">
           {membres} {t(locale, "home.stats")}
         </p>
+        <VisuelAccueil />
       </section>
 
       {/* Sections */}

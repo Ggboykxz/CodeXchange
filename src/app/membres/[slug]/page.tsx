@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Avatar from "@/components/avatar";
+import Avatar, { couleurDuSlug } from "@/components/avatar";
 import { drapeau } from "@/lib/drapeaux";
 import { getSessionUserId } from "@/lib/session";
 import { getMemberBySlug, type MembreDetail } from "@/lib/members";
@@ -74,6 +74,18 @@ export default async function PageMembre({ params }: Props) {
           ]}
         />
       </Link>
+
+      {/* Bannière de couverture : dégradé déterministe selon le membre. */}
+      <div
+        aria-hidden="true"
+        className="relative -mx-6 h-32 overflow-hidden sm:h-40"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${couleurDuSlug(membre.slug)} 0%, rgba(0,0,0,0) 90%)`,
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-cx-bg/60 to-transparent" />
+        <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(currentColor_1px,transparent_1px)] [background-size:16px_16px] text-white" />
+      </div>
 
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
