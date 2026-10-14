@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Pagination from "@/components/pagination";
+import CarteSujet from "@/components/carte-sujet";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
@@ -7,21 +8,18 @@ import SelecteurTri from "@/components/selecteur-tri";
 import Tendances from "@/components/tendances";
 import { listPosts } from "@/lib/forum";
 import { idsSuivis } from "@/lib/follows";
+import { topHashtags } from "@/lib/hashtags";
+import { prisma } from "@/lib/db";
+import { Icone } from "@/components/icones";
 
 export const metadata = { title: "Forum" };
 
 const CLASS_CHAMP =
   "w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
-const DATE = new Intl.DateTimeFormat("fr-FR", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
-
 type Props = { searchParams: Promise<{ q?: string; tag?: string; page?: string; tri?: string; suivis?: string }> };
 
-/** /forum — liste des sujets + recherche + filtre par tag (query string). */
+/** /forum — fil façon Reddit : nav communautés | cartes avec vote | widget à propos. */
 export default async function PageForum({ searchParams }: Props) {
   const params = await searchParams;
   const q = (params.q ?? "").trim();
@@ -31,9 +29,9 @@ export default async function PageForum({ searchParams }: Props) {
   const triParam = params.tri;
   const tri = triParam === "new" || triParam === "top" ? triParam : "hot";
   const filtreSuivis = params.suivis === "1" && userId !== null;
-  // En mode « Abonnements », on ne montre que les sujets des membres suivis.
   const auteursSuivis = filtreSuivis ? await idsSuivis(userId as number) : undefined;
-  const [resultat, locale] = await Promise.all([
+
+  const [resultat, locale, communautes, membres] = await Promise.all([
     listPosts({
       q: q || undefined,
       tag: tag || undefined,
@@ -44,6 +42,8 @@ export default async function PageForum({ searchParams }: Props) {
       authorIds: auteursSuivis,
     }),
     localeCourante(),
+    topHashtags(8),
+    prisma.user.count(),
   ]);
   const sujets = resultat.items;
   const totalPages = resultat.totalPages;
@@ -51,212 +51,215 @@ export default async function PageForum({ searchParams }: Props) {
   const filtreActif = q !== "" || tag !== "";
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black tracking-tight">{t(locale, "forum.title")}</h1>
-          <p className="mt-1 text-sm text-[var(--cx-muted)]">
-            {t(locale, "forum.subtitle")}
-          </p>
+    <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="grid items-start gap-6 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_320px]">
+        {/* ── Colonne gauche : communautés (≥ lg) ──────────────────── */}
+        <aside className="hidden lg:block lg:sticky lg:top-20">
+          <section className="overflow-hidden rounded-lg border border-cx-border bg-cx-card">
+            <h2 className="border-b border-cx-border px-4 py-3 text-sm font-bold">
+              {t(locale, "nav.directory")} · Communautés
+            </h2>
+            <ul className="p-2">
+              {communautes.map((c) => (
+                <li key={c.tag}>
+                  <Link
+                    href={`/forum?tag=${encodeURIComponent(c.tag)}`}
+                    className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-cx-muted"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cx-primary/10 text-xs font-bold text-cx-primary">
+                        c
+                      </span>
+                      <span className="truncate font-medium">{c.tag}</span>
+                    </span>
+                    <span className="ml-2 shrink-0 text-xs text-cx-muted-fg">{c.count}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/forum/tags"
+              className="block border-t border-cx-border px-4 py-2.5 text-xs font-semibold text-cx-primary hover:bg-cx-muted"
+            >
+              Voir toutes les communautés →
+            </Link>
+          </section>
+
+          <nav className="mt-4 rounded-lg border border-cx-border bg-cx-card p-2">
+            {[
+              { href: "/jobs", cle: "nav.jobs", icone: "jobs" as const },
+              { href: "/projets", cle: "nav.projects", icone: "projets" as const },
+              { href: "/annuaire", cle: "nav.directory", icone: "annuaire" as const },
+              { href: "/tutos", cle: "nav.tutorials", icone: "tutos" as const },
+            ].map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+              >
+                <Icone nom={l.icone} className="h-4 w-4" />
+                {t(locale, l.cle)}
+              </Link>
+            ))}
+          </nav>
+        </aside>
+
+        {/* ── Colonne centrale : fil ───────────────────────────────── */}
+        <div className="min-w-0">
+          <header className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-black tracking-tight">{t(locale, "forum.title")}</h1>
+              <p className="mt-1 text-sm text-cx-muted-fg">{t(locale, "forum.subtitle")}</p>
+            </div>
+            <Link
+              href="/forum/nouveau"
+              className="inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-4 py-2 text-sm font-bold text-white hover:opacity-90"
+            >
+              <Icone nom="plus" className="h-4 w-4" />
+              {t(locale, "forum.new")}
+            </Link>
+          </header>
+
+          {/* Recherche. */}
+          <form action="/forum" method="get" className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <label htmlFor="q" className="sr-only">
+              {t(locale, "forum.search")}
+            </label>
+            <input id="q" name="q" type="search" defaultValue={q} placeholder={t(locale, "forum.search")} className={CLASS_CHAMP} />
+            <label htmlFor="tag" className="sr-only">
+              {t(locale, "forum.tag_filter")}
+            </label>
+            <input id="tag" name="tag" type="text" defaultValue={tag} placeholder={t(locale, "forum.tag_filter")} className={`${CLASS_CHAMP} sm:max-w-40`} />
+            <button type="submit" className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:bg-cx-muted">
+              {t(locale, "forum.filter")}
+            </button>
+            {filtreActif ? (
+              <Link href="/forum" className="px-2 py-2 text-sm font-medium text-cx-accent underline-offset-4 hover:underline">
+                {t(locale, "forum.reset")}
+              </Link>
+            ) : null}
+          </form>
+
+          {/* Barre de tri façon Reddit : filtres à gauche, tri à droite. */}
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-lg border border-cx-border bg-cx-card px-2 py-1.5">
+            <nav aria-label="Filtrer le fil" className="flex gap-1">
+              <Link
+                href="/forum"
+                aria-current={!filtreSuivis ? "page" : undefined}
+                className={`rounded-full px-3 py-1 text-sm font-semibold transition ${
+                  !filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
+                }`}
+              >
+                Tout
+              </Link>
+              {userId !== null ? (
+                <Link
+                  href="/forum?suivis=1"
+                  aria-current={filtreSuivis ? "page" : undefined}
+                  className={`rounded-full px-3 py-1 text-sm font-semibold transition ${
+                    filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
+                  }`}
+                >
+                  Abonnements
+                </Link>
+              ) : null}
+            </nav>
+            <SelecteurTri
+              basePath="/forum"
+              params={{ q: q || undefined, tag: tag || undefined, tri }}
+              actuelle={tri}
+              options={[
+                { valeur: "hot", cle: "sort.hot" },
+                { valeur: "new", cle: "sort.new" },
+                { valeur: "top", cle: "sort.top" },
+              ]}
+              libelles={{
+                tri: t(locale, "sort.label"),
+                "sort.recent": t(locale, "sort.recent"),
+                "sort.popular": t(locale, "sort.popular"),
+              }}
+            />
+          </div>
+
+          {/* Tendances (visible sur toutes les tailles). */}
+          <div className="mt-4">
+            <Tendances limite={6} />
+          </div>
+
+          {/* Fil de cartes. */}
+          {sujets.length === 0 ? (
+            <section className="mt-4 rounded-lg border border-dashed border-cx-border px-6 py-12 text-center">
+              {filtreSuivis ? (
+                <>
+                  <p className="text-lg font-semibold">Votre fil d&apos;abonnements est vide</p>
+                  <p className="mt-2 text-sm text-cx-muted-fg">Suivez des membres depuis l&apos;annuaire pour voir leurs sujets ici.</p>
+                  <div className="mt-5 flex flex-wrap justify-center gap-3">
+                    <Link href="/annuaire" className="rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg">
+                      Découvrir des membres
+                    </Link>
+                    <Link href="/forum" className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium">
+                      Tout le forum
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
+                  <p className="mt-2 text-sm text-cx-muted-fg">{t(locale, "forum.empty_desc")}</p>
+                  <Link href="/forum/nouveau" className="mt-5 inline-block rounded-full bg-cx-accent px-5 py-2.5 text-sm font-semibold text-white">
+                    {t(locale, "forum.new")}
+                  </Link>
+                </>
+              )}
+            </section>
+          ) : (
+            <ul className="mt-4 flex flex-col gap-2.5">
+              {sujets.map((sujet) => (
+                <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={userId !== null} />
+              ))}
+            </ul>
+          )}
+
+          <Pagination
+            page={pageActuelle}
+            totalPages={totalPages}
+            basePath="/forum"
+            params={{ q: q || undefined, tag: tag || undefined, tri }}
+          />
         </div>
-        <Link
-          href="/forum/nouveau"
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
-        >
-          {t(locale, "forum.new")}
-        </Link>
-      </header>
-      <p className="text-sm text-cx-muted-fg"><Link href="/forum/tags" className="text-cx-primary hover:underline">Voir toutes les communautés →</Link></p>
 
-      {userId !== null && (
-        <nav aria-label="Filtrer le fil" className="flex gap-2">
-          <Link
-            href="/forum"
-            aria-current={!filtreSuivis ? "page" : undefined}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${
-              !filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "border border-cx-border text-cx-muted-fg hover:text-cx-fg"
-            }`}
-          >
-            Tout
-          </Link>
-          <Link
-            href="/forum?suivis=1"
-            aria-current={filtreSuivis ? "page" : undefined}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition ${
-              filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "border border-cx-border text-cx-muted-fg hover:text-cx-fg"
-            }`}
-          >
-            Abonnements
-          </Link>
-        </nav>
-      )}
-
-      <Tendances limite={6} />
-
-      <form action="/forum" method="get" className="flex flex-col gap-3 sm:flex-row">
-        <label htmlFor="q" className="sr-only">
-          {t(locale, "forum.search")}
-        </label>
-        <input
-          id="q"
-          name="q"
-          type="search"
-          defaultValue={q}
-          placeholder={t(locale, "forum.search")}
-          className={CLASS_CHAMP}
-        />
-        <label htmlFor="tag" className="sr-only">
-          {t(locale, "forum.tag_filter")}
-        </label>
-        <input
-          id="tag"
-          name="tag"
-          type="text"
-          defaultValue={tag}
-          placeholder={t(locale, "forum.tag_filter")}
-          className={`${CLASS_CHAMP} sm:max-w-40`}
-        />
-        <button
-          type="submit"
-          className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
-        >
-          {t(locale, "forum.filter")}
-        </button>
-        {filtreActif && (
-          <Link
-            href="/forum"
-            className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
-          >
-            {t(locale, "forum.reset")}
-          </Link>
-        )}
-      </form>
-
-      <div className="flex justify-end">
-        <SelecteurTri
-          basePath="/forum"
-          params={{ q: q || undefined, tag: tag || undefined, tri }}
-          actuelle={tri}
-          options={[
-            { valeur: "hot", cle: "sort.hot" },
-            { valeur: "new", cle: "sort.new" },
-            { valeur: "top", cle: "sort.top" },
-          ]}
-          libelles={{
-            tri: t(locale, "sort.label"),
-            "sort.recent": t(locale, "sort.recent"),
-            "sort.popular": t(locale, "sort.popular"),
-          }}
-        />
-      </div>
-
-      {sujets.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
-          {filtreSuivis ? (
-            <>
-              <p className="text-lg font-semibold">Votre fil d&apos;abonnements est vide</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                Suivez des membres depuis l&apos;annuaire pour voir leurs sujets ici.
+        {/* ── Colonne droite : widget à propos (≥ xl) ──────────────── */}
+        <aside className="hidden xl:block xl:sticky xl:top-20">
+          <section className="overflow-hidden rounded-lg border border-cx-border bg-cx-card">
+            <div className="h-14 bg-gradient-to-r from-cx-primary/30 to-cx-accent/30" />
+            <div className="p-4">
+              <h2 className="text-lg font-bold">À propos de CodeXchange</h2>
+              <p className="mt-1.5 text-sm text-cx-muted-fg">
+                La communauté des développeurs d&apos;Afrique : pose des questions, partage des projets et trouve des co-fondateurs.
               </p>
-              <div className="mt-5 flex flex-wrap justify-center gap-3">
-                <Link
-                  href="/annuaire"
-                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
-                >
-                  Découvrir des membres
+              <dl className="mt-3 grid grid-cols-2 gap-2 text-center">
+                <div className="rounded-md bg-cx-muted/60 py-2">
+                  <dt className="text-xs text-cx-muted-fg">Membres</dt>
+                  <dd className="text-lg font-bold">{membres}</dd>
+                </div>
+                <div className="rounded-md bg-cx-muted/60 py-2">
+                  <dt className="text-xs text-cx-muted-fg">Communautés</dt>
+                  <dd className="text-lg font-bold">{communautes.length}</dd>
+                </div>
+              </dl>
+              {userId === null ? (
+                <Link href="/inscription" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-white hover:opacity-90">
+                  {t(locale, "nav.join")}
                 </Link>
-                <Link
-                  href="/forum"
-                  className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
-                >
-                  Tout le forum
-                </Link>
-              </div>
-            </>
-          ) : filtreActif ? (
-            <>
-              <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                {t(locale, "forum.empty_desc")}
-              </p>
-              <div className="mt-5 flex flex-wrap justify-center gap-3">
-                <Link
-                  href="/forum"
-                  className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
-                >
-                  {t(locale, "nav.forum")}
-                </Link>
-                <Link
-                  href="/forum/nouveau"
-                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
-                >
+              ) : (
+                <Link href="/forum/nouveau" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-white hover:opacity-90">
                   {t(locale, "forum.new")}
                 </Link>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
-                {t(locale, "forum.empty_desc")}
-              </p>
-              <Link
-                href="/forum/nouveau"
-                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
-              >
-                {t(locale, "forum.new")}
-              </Link>
-            </>
-          )}
-        </section>
-      ) : (
-        <ul className="flex flex-col gap-3">
-          {sujets.map((sujet) => (
-            <li
-              key={sujet.id}
-              className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60"
-            >
-              <Link href={`/forum/${sujet.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
-                  {sujet.titre}
-                </h2>
-              </Link>
-
-              <p className="mt-1 text-xs text-[var(--cx-muted)]">
-                {sujet.author.nom} · {sujet.author.ville}, {sujet.author.pays} ·{" "}
-                {DATE.format(sujet.createdAt)}
-              </p>
-
-              {sujet.tags && (
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {sujet.tags.split(",").map((mot) => (
-                    <li key={mot}>
-                      <Link
-                        href={`/forum?tag=${encodeURIComponent(mot.trim())}`}
-                        className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--cx-accent)]"
-                      >
-                        {mot.trim()}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
               )}
-
-              <p className="mt-3 text-xs text-[var(--cx-muted)]">
-                {sujet._count.replies} {sujet._count.replies > 1 ? t(locale, "forum.answers_many") : t(locale, "forum.answers_one")} ·{" "}
-                {sujet._count.likes} {sujet._count.likes > 1 ? "likes" : "like"}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Pagination
-        page={pageActuelle}
-        totalPages={totalPages}
-        basePath="/forum"
-        params={{ q: q || undefined, tag: tag || undefined, tri }}
-      />
+            </div>
+          </section>
+        </aside>
+      </div>
     </main>
   );
 }

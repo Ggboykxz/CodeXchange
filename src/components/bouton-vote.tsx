@@ -4,16 +4,24 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "./toast";
 
+/**
+ * Contrôleur de vote vertical façon Reddit : ▲ score ▼.
+ * Orange (`cx-accent`) à la hausse, bleu (`cx-primary`) à la baisse — les
+ * couleurs sémantiques de la plateforme correspondent à celles de Reddit.
+ * Rendu « gouttière » (sans cadre) ou encadré selon `variante`.
+ */
 export default function BoutonVote({
   postId,
   initialVote,
   initialScore,
   connecte,
+  variante = "gouttiere",
 }: {
   postId: number;
   initialVote: number;
   initialScore: number;
   connecte: boolean;
+  variante?: "gouttiere" | "encadre";
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -51,14 +59,54 @@ export default function BoutonVote({
     });
   }
 
+  const clsHaut =
+    vote === 1
+      ? "text-cx-accent"
+      : "text-cx-muted-fg hover:text-cx-accent";
+  const clsBas =
+    vote === -1
+      ? "text-cx-primary"
+      : "text-cx-muted-fg hover:text-cx-primary";
+  const clsScore =
+    vote === 1 ? "text-cx-accent" : vote === -1 ? "text-cx-primary" : "text-cx-fg";
+
+  const cadre =
+    variante === "encadre"
+      ? "rounded-lg border border-cx-border bg-cx-card px-2 py-1.5"
+      : "";
+
   return (
-    <div className="flex flex-col items-center gap-0.5 rounded-lg border border-cx-border px-2 py-1 text-sm">
-      <button type="button" aria-label="Upvote" disabled={enCours} onClick={() => void voter(1)} className={vote === 1 ? "text-cx-accent" : "text-cx-muted-fg hover:text-cx-accent"}>
-        ▲
+    <div
+      className={`flex flex-col items-center gap-1 select-none ${cadre}`}
+      role="group"
+      aria-label="Vote"
+    >
+      <button
+        type="button"
+        aria-label="Upvote"
+        aria-pressed={vote === 1}
+        disabled={enCours}
+        onClick={() => void voter(1)}
+        className={`${clsHaut} transition-colors`}
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 19V5" />
+          <path d="M5 12l7-7 7 7" />
+        </svg>
       </button>
-      <span className="font-bold tabular-nums">{score}</span>
-      <button type="button" aria-label="Downvote" disabled={enCours} onClick={() => void voter(-1)} className={vote === -1 ? "text-cx-primary" : "text-cx-muted-fg hover:text-cx-primary"}>
-        ▼
+      <span className={`text-xs font-bold tabular-nums ${clsScore}`}>{score}</span>
+      <button
+        type="button"
+        aria-label="Downvote"
+        aria-pressed={vote === -1}
+        disabled={enCours}
+        onClick={() => void voter(-1)}
+        className={`${clsBas} transition-colors`}
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 5v14" />
+          <path d="M19 12l-7 7-7-7" />
+        </svg>
       </button>
     </div>
   );

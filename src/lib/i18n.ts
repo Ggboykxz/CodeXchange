@@ -59,6 +59,8 @@ const FR: Record<string, string> = {
   "home.latest_empty": "Aucun sujet pour le moment.",
   // Forum
   "forum.title": "Forum",
+  "forum.by": "par",
+  "forum.comments_short": "commentaires",
   "forum.subtitle": "Questions, retours d'expérience et coups de main entre développeurs.",
   "forum.new": "Écrire un sujet",
   "forum.search": "Rechercher (titre ou corps)…",
@@ -353,6 +355,8 @@ const EN: Record<string, string> = {
   "home.latest_title": "Latest posts",
   "home.latest_empty": "No posts yet.",
   "forum.title": "Forum",
+  "forum.by": "by",
+  "forum.comments_short": "comments",
   "forum.subtitle": "Questions, feedback and a helping hand between developers.",
   "forum.new": "Write a post",
   "forum.search": "Search (title or body)…",
