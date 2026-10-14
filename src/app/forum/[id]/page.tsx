@@ -7,8 +7,9 @@ import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonVote from "@/components/bouton-vote";
-import BoutonCopier from "@/components/bouton-copier";
 import BarreReactions from "@/components/barre-reactions";
+import BoutonRepost from "@/components/bouton-repost";
+import { getEtatRepost } from "@/lib/reposts";
 import BoutonSondage from "./bouton-sondage";
 import ArbreReponses from "./arbre-reponses";
 import TexteRepliable from "@/components/texte-repliable";
@@ -50,6 +51,7 @@ export default async function PageSujet({ params }: Props) {
   if (!sujet) notFound();
   const likedByMe = userId === null ? false : await aLike(userId, postId);
   const favoriDuSujet = userId === null ? false : await isFavorite(userId, "post", postId);
+  const etatRepost = await getEtatRepost(postId, userId ?? undefined);
 
   const likesParReponse = new Map<number, boolean>();
   if (userId !== null) {
@@ -131,9 +133,9 @@ export default async function PageSujet({ params }: Props) {
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <BoutonRepost postId={postId} initial={etatRepost} connecte={userId !== null} />
         <BoutonSignaler kind="post" targetId={postId} />
-        <BoutonCopier url={`/forum/${postId}`} />
       </div>
 
       <section className="flex flex-col gap-4">
