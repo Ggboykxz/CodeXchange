@@ -1,5 +1,6 @@
 "use client";
 
+import { IconeAnimee } from "@/components/icone-animee";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -49,7 +50,7 @@ export default function BoutonRsvp({ eventId, connecte, dejaConfirme, compteur }
           title="Vous avez déjà confirmé votre présence"
           className="cursor-not-allowed rounded-lg border border-[var(--cx-accent)] bg-[var(--cx-accent)]/10 px-4 py-2.5 text-sm font-medium text-[var(--cx-accent)] opacity-80"
         >
-          ✓ Présence confirmée
+          <IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" /> Présence confirmée
         </button>
         <span className="text-xs text-[var(--cx-muted)]">
           {nombre} {nombre > 1 ? "participants" : "participant"}

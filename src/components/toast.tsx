@@ -1,5 +1,6 @@
 "use client";
 
+import { IconeAnimee } from "./icone-animee";
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -73,8 +74,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   : "border-emerald-500/40 bg-emerald-500/10 text-cx-fg"
             }`}
           >
-            <span aria-hidden="true" className="mt-0.5 text-sm">
-              {toast.ton === "erreur" ? "⚠️" : toast.ton === "info" ? "ℹ️" : "✅"}
+            <span aria-hidden="true" className="mt-0.5">
+              <IconeAnimee nom={toast.ton === "erreur" ? "erreur" : toast.ton === "info" ? "info" : "succes"} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">{toast.titre}</p>
@@ -100,7 +101,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               aria-label="Fermer"
               className="shrink-0 rounded-md px-1 text-cx-muted-fg hover:bg-cx-muted"
             >
-              ✕
+              <IconeAnimee nom="fermer" className="h-4 w-4" />
             </button>
           </div>
         ))}

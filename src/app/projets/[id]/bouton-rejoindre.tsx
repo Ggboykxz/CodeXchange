@@ -1,5 +1,6 @@
 "use client";
 
+import { IconeAnimee } from "@/components/icone-animee";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -55,7 +56,7 @@ export default function BoutonRejoindre({
           title="Vous êtes l'auteur de ce projet"
           className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm text-[var(--cx-muted)] opacity-60"
         >
-          ✓ Votre projet
+          <IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" /> Votre projet
         </button>
         <span className="text-xs text-[var(--cx-muted)]">
           {nombre} {nombre > 1 ? "membres" : "membre"}
@@ -74,7 +75,7 @@ export default function BoutonRejoindre({
           title="Vous avez déjà rejoint ce projet"
           className="cursor-not-allowed rounded-lg border border-[var(--cx-accent)] bg-[var(--cx-accent)]/10 px-4 py-2.5 text-sm font-medium text-[var(--cx-accent)] opacity-80"
         >
-          ✓ Vous avez rejoint ce projet
+          <IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" /> Vous avez rejoint ce projet
         </button>
         <span className="text-xs text-[var(--cx-muted)]">
           {nombre} {nombre > 1 ? "membres" : "membre"}

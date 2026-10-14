@@ -108,3 +108,39 @@
   outline: 2px solid var(--cx-ring);
   outline-offset: 2px;
 }
+
+/* Keyframes pour icônes animées (reduce-motion désactivé globalement). */
+@keyframes pop-in {
+  0% { transform: scale(0.4); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes tracer {
+  from { stroke-dasharray: 200; stroke-dashoffset: 200; }
+  to { stroke-dasharray: 200; stroke-dashoffset: 0; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 0px transparent); }
+  50% { filter: drop-shadow(0 0 4px currentColor); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-pop-in { animation: pop-in 0.45s cubic-bezier(.2,.9,.3,1.2); }
+.animate-tracer { animation: tracer 0.6s ease-out forwards; }
+.animate-shake { animation: shake 0.45s ease-in-out; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 6s linear infinite; }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IconeAnimee } from "./icone-animee";
 
 /** Bouton flottant « retour en haut » (visible après 300px de défilement). */
 export default function RetourHaut() {
@@ -22,7 +23,7 @@ export default function RetourHaut() {
       aria-label="Retour en haut"
       className="fixed bottom-6 right-6 z-40 rounded-full bg-cx-primary px-4 py-2 text-sm font-bold text-white shadow-lg"
     >
-      ↑
+      <IconeAnimee nom="haut" className="h-4 w-4" />
     </button>
   );
 }

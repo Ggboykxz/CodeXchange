@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IconeAnimee } from "./icone-animee";
 import { useToast } from "./toast";
 
 /** Bouton copier un lien dans le presse-papiers (avec feedback toast). */
@@ -26,7 +27,7 @@ export default function BoutonCopier({ url, libelle }: { url: string; libelle?: 
       onClick={() => void copier()}
       className="rounded-lg border border-cx-border bg-cx-card px-3 py-1.5 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted"
     >
-      {copie ? "✓ Copié" : libelle ?? "Copier le lien"}
+      {copie ? (<><IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" />Copié</>) : (libelle ?? "Copier le lien")}
     </button>
   );
 }

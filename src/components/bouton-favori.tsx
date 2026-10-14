@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
+import { IconeAnimee } from "@/components/icone-animee";
 
 type Props = {
   kind: string;
@@ -51,7 +52,7 @@ export default function BoutonFavori({ kind, targetId, initial, connecte }: Prop
       }`}
       title={connecte ? "Ajouter/retirer des favoris" : "Se connecter pour favoriser"}
     >
-      {favori ? "★" : "☆"} Favori
+      {favori ? <IconeAnimee nom="etoile" className="mr-1 inline h-3 w-3" /> : <IconeAnimee nom="etoile-vide" className="mr-1 inline h-3 w-3" />} Favori
     </button>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
+import { IconeAnimee } from "@/components/icone-animee";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 
 type Props = {
@@ -109,7 +110,7 @@ export default function ActionsReponse({
         disabled={!connecte || busy}
         className={`rounded-md px-2 py-1 transition ${liked ? "bg-cx-primary/10 text-cx-primary" : "text-cx-muted-fg hover:bg-cx-muted"}`}
       >
-        {liked ? "★" : "☆"} {compteur}
+        {liked ? <IconeAnimee nom="like" className="mr-0.5 inline h-3 w-3" /> : <IconeAnimee nom="like-vide" className="mr-0.5 inline h-3 w-3" />} {compteur}
       </button>
       {estAuteur ? (
         <>

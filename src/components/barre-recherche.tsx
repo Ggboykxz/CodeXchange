@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconeAnimee } from "./icone-animee";
 import { cookieLocale, t } from "@/lib/i18n";
 
 const CLE_STOCKAGE = "cx_recherches";
@@ -104,7 +105,7 @@ export default function BarreRecherche({ suggestions }: Props) {
                 className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-cx-muted"
               >
                 <span aria-hidden="true" className="text-cx-muted-fg">
-                  {index < historique.length ? "🕘" : "💡"}
+                  <IconeAnimee nom={index < historique.length ? "horloge" : "ampoule"} className="h-4 w-4" />
                 </span>
                 <span className="truncate">{terme}</span>
               </button>

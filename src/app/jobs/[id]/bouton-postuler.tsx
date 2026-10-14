@@ -1,5 +1,6 @@
 "use client";
 
+import { IconeAnimee } from "@/components/icone-animee";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
@@ -48,7 +49,7 @@ export default function BoutonPostuler({ jobId, connecte, dejaPostule, compteur 
           title="Vous avez déjà postulé à cette offre"
           className="cursor-not-allowed rounded-lg border border-[var(--cx-accent)] bg-[var(--cx-accent)]/10 px-4 py-2.5 text-sm font-medium text-[var(--cx-accent)] opacity-80"
         >
-          ✓ Candidature envoyée
+          <IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" /> Candidature envoyée
         </button>
         <span className="text-xs text-[var(--cx-muted)]">
           {nombre} {nombre > 1 ? "candidatures" : "candidature"}
