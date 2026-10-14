@@ -37,7 +37,7 @@ export default function FormulaireSujet() {
   // Sauvegarde automatique.
   useEffect(() => {
     ecrireBrouillon(CLE_BROUILLON, { titre, corps, tags, sondage });
-  }, [titre, corps, tags]);
+  }, [titre, corps, tags, sondage]);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
