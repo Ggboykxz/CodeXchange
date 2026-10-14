@@ -7,11 +7,11 @@ import { MESSAGE_FR } from "@/lib/errors";
 const CLASS_CHAMP =
   "w-full rounded-lg border border-[var(--cx-muted)]/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--cx-accent)] focus:ring-2 focus:ring-[var(--cx-accent)]/30";
 
-type Props = { postId: number };
+type Props = { postId: number; parentId?: number };
 type CorpsReponse = { message?: string };
 
 /** Formulaire de réponse → POST /api/forum/[id]/replies, puis rafraîchit la page. */
-export default function FormulaireReponse({ postId }: Props) {
+export default function FormulaireReponse({ postId, parentId }: Props) {
   const router = useRouter();
   const [erreur, setErreur] = useState<string | null>(null);
   const [enCours, setEnCours] = useState(false);
@@ -26,7 +26,7 @@ export default function FormulaireReponse({ postId }: Props) {
       const reponse = await fetch(`/api/forum/${postId}/replies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ corps: new FormData(formulaire).get("corps") }),
+        body: JSON.stringify({ corps: new FormData(formulaire).get("corps"), parentId: parentId ?? null }),
       });
       if (!reponse.ok) {
         const corps = (await reponse.json().catch(() => null)) as CorpsReponse | null;

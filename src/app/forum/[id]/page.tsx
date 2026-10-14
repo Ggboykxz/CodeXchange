@@ -8,13 +8,13 @@ import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonVote from "@/components/bouton-vote";
 import BoutonCopier from "@/components/bouton-copier";
+import ArbreReponses from "./arbre-reponses";
 import TexteRepliable from "@/components/texte-repliable";
 import RenduMarkdown from "@/components/rendu-markdown";
 import FilAriane from "@/components/fil-ariane";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
 import FormulaireReponse from "./formulaire-reponse";
-import ActionsReponse from "./bouton-reponse";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -139,34 +139,13 @@ export default async function PageSujet({ params }: Props) {
               : t(locale, "forum.no_answer")}
           </p>
         ) : (
-          <ul className="flex flex-col gap-3">
-            {sujet.replies.map((reponse) => (
-              <li
-                key={reponse.id}
-                className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4"
-              >
-                <p className="text-xs text-[var(--cx-muted)]">
-                  {reponse.author.nom} · {reponse.author.ville}, {reponse.author.pays} ·{" "}
-                  {DATE.format(reponse.createdAt)}
-                  {reponse.createdAt !== reponse.updatedAt ? " · édité" : ""}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">
-                  {reponse.deletedAt ? "[message supprimé]" : <TexteRepliable texte={reponse.corps} />}
-                </p>
-                {reponse.deletedAt === null ? (
-                  <ActionsReponse
-                    replyId={reponse.id}
-                    postId={postId}
-                    corpsInitial={reponse.corps}
-                    estAuteur={userId !== null && userId === reponse.authorId}
-                    connecte={userId !== null}
-                    likedByMe={likesParReponse.get(reponse.id) === true}
-                    likes={reponse._count?.likes ?? 0}
-                  />
-                ) : null}
-              </li>
-            ))}
-          </ul>
+          <ArbreReponses
+            replies={sujet.replies as unknown as Parameters<typeof ArbreReponses>[0]["replies"]}
+            postId={postId}
+            userId={userId}
+            hasReplyLiked={(id) => likesParReponse.get(id) === true}
+            connecte={userId !== null}
+          />
         )}
       </section>
 

@@ -225,7 +225,6 @@ export async function addReply(
   if (parentId) {
     const parent = await prisma.reply.findUnique({ where: { id: parentId }, select: { postId: true, parentId: true, deletedAt: true } });
     if (!parent || parent.postId !== postId || parent.deletedAt) throw new AppError("FORUM_VALIDATION", "Réponse parente introuvable.");
-    if (parent.parentId !== null) throw new AppError("FORUM_VALIDATION", "Imbrication limitée à un seul niveau.");
   }
 
   const reply = await prisma.reply.create({ data: { corps: texte, postId, authorId, parentId: parentId ?? null } });
