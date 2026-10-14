@@ -6,5 +6,13 @@ import typescript from "eslint-config-next/typescript";
 export default defineConfig([
   ...coreWebVitals,
   ...typescript,
-  globalIgnores([".next/**", "node_modules/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "node_modules/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    // Skills UI/UX installées localement par `uipro` (hors code du projet).
+    ".opencode/**",
+  ]),
 ]);
