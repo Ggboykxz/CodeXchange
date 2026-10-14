@@ -60,6 +60,7 @@ export default function BoutonBloquer({ cibleId, bloqueInitialement, connecte }:
         type="button"
         onClick={agir}
         disabled={enCours}
+        aria-busy={enCours}
         aria-pressed={bloque}
         className={`inline-flex min-h-[36px] cursor-pointer items-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-60 ${
           bloque

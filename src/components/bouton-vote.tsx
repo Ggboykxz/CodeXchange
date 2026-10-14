@@ -86,6 +86,7 @@ export default function BoutonVote({
         aria-label="Upvote"
         aria-pressed={vote === 1}
         disabled={enCours}
+          aria-busy={enCours}
         onClick={() => void voter(1)}
         className={`${clsHaut} transition-colors`}
       >

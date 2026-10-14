@@ -17,7 +17,7 @@ export function EmptyState({ titre, description, cta, href }: EmptyProps) {
       {cta && href ? (
         <Link
           href={href}
-          className="mt-6 inline-flex items-center gap-1 rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg transition hover:opacity-90"
+          className="mt-6 inline-flex items-center gap-1 rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg transition hover:opacity-90 active:scale-[0.97]"
         >
           {cta}
         </Link>

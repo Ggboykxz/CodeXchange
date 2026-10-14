@@ -105,7 +105,7 @@ export async function Header() {
                 </Link>
                 <Link
                   href="/inscription"
-                  className="hidden rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg hover:opacity-90 sm:inline-flex"
+                  className="hidden rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg hover:opacity-90 sm:inline-flex active:scale-[0.97]"
                 >
                   {t(locale, "nav.join")}
                 </Link>

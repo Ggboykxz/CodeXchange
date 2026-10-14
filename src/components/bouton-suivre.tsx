@@ -64,6 +64,7 @@ export default function BoutonSuivre({ cibleId, initial, connecte }: Props) {
         type="button"
         onClick={basculer}
         disabled={enCours}
+        aria-busy={enCours}
         aria-pressed={etat.jeLeSuis}
         className={`inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-xs font-semibold transition disabled:opacity-60 ${
           etat.jeLeSuis

@@ -62,7 +62,7 @@ export default function FormulaireMessage({ destinataireId, onEnvoye }: Props) {
       <button
         type="submit"
         disabled={busy || !texte.trim()}
-        className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
+        className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg active:scale-[0.97]"
       >
         Envoyer
       </button>

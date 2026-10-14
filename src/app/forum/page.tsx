@@ -62,7 +62,7 @@ export default async function PageForum({ searchParams }: Props) {
             </div>
             <Link
               href="/forum/nouveau"
-              className="inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-4 py-2 text-sm font-bold text-cx-accent-fg hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-4 py-2 text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]"
             >
               <Icone nom="plus" className="h-4 w-4" />
               {t(locale, "forum.new")}
@@ -143,7 +143,7 @@ export default async function PageForum({ searchParams }: Props) {
                   <p className="text-lg font-semibold">Votre fil d&apos;abonnements est vide</p>
                   <p className="mt-2 text-sm text-cx-muted-fg">Suivez des membres depuis l&apos;annuaire pour voir leurs sujets ici.</p>
                   <div className="mt-5 flex flex-wrap justify-center gap-3">
-                    <Link href="/annuaire" className="rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg">
+                    <Link href="/annuaire" className="rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg active:scale-[0.97]">
                       Découvrir des membres
                     </Link>
                     <Link href="/forum" className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium">
@@ -155,7 +155,7 @@ export default async function PageForum({ searchParams }: Props) {
                 <>
                   <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
                   <p className="mt-2 text-sm text-cx-muted-fg">{t(locale, "forum.empty_desc")}</p>
-                  <Link href="/forum/nouveau" className="mt-5 inline-block rounded-full bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg">
+                  <Link href="/forum/nouveau" className="mt-5 inline-block rounded-full bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg active:scale-[0.97]">
                     {t(locale, "forum.new")}
                   </Link>
                 </>
@@ -197,11 +197,11 @@ export default async function PageForum({ searchParams }: Props) {
                 </div>
               </dl>
               {userId === null ? (
-                <Link href="/inscription" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-cx-accent-fg hover:opacity-90">
+                <Link href="/inscription" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]">
                   {t(locale, "nav.join")}
                 </Link>
               ) : (
-                <Link href="/forum/nouveau" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-cx-accent-fg hover:opacity-90">
+                <Link href="/forum/nouveau" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]">
                   {t(locale, "forum.new")}
                 </Link>
               )}

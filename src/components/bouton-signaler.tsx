@@ -64,7 +64,8 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
               type="button"
               onClick={envoyer}
               disabled={busy}
-              className="rounded-md bg-cx-primary px-2 py-1 text-xs font-semibold text-cx-primary-fg"
+                aria-busy={busy}
+              className="rounded-md bg-cx-primary px-2 py-1 text-xs font-semibold text-cx-primary-fg active:scale-[0.97]"
             >
               Envoyer
             </button>

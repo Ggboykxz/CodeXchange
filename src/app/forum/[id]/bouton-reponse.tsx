@@ -151,7 +151,7 @@ export default function ActionsReponse({
             type="button"
             onClick={enregistrer}
             disabled={busy}
-            className="self-start rounded-lg bg-cx-primary px-3 py-1.5 text-xs font-semibold text-cx-primary-fg"
+            className="self-start rounded-lg bg-cx-primary px-3 py-1.5 text-xs font-semibold text-cx-primary-fg active:scale-[0.97]"
           >
             Enregistrer
           </button>

@@ -41,7 +41,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
         <button
           type="submit"
           aria-label={t(locale, "nav.search")}
-          className="rounded-lg bg-cx-primary px-3 text-cx-primary-fg"
+          className="rounded-lg bg-cx-primary px-3 text-cx-primary-fg active:scale-[0.97]"
         >
           <Icone nom="recherche" className="h-4 w-4" />
         </button>

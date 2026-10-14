@@ -34,6 +34,7 @@ export default function BoutonAbonnement({ tag, initial }: { tag: string; initia
       type="button"
       onClick={() => void basculer()}
       disabled={busy}
+      aria-busy={busy}
       className={`rounded-lg px-3 py-1 text-xs font-semibold ${suivi ? "bg-cx-primary text-cx-primary-fg" : "border border-cx-border text-cx-muted-fg hover:bg-cx-muted"}`}
     >
       {suivi ? "Abonné" : "S'abonner"}

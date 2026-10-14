@@ -143,7 +143,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte }: Pro
               <Link
                 href="/inscription"
                 onClick={fermer}
-                className="flex-1 rounded-lg bg-cx-primary px-3 py-2 text-center text-sm font-semibold text-cx-primary-fg hover:opacity-90"
+                className="flex-1 rounded-lg bg-cx-primary px-3 py-2 text-center text-sm font-semibold text-cx-primary-fg hover:opacity-90 active:scale-[0.97]"
               >
                 {t(locale, "nav.join")}
               </Link>

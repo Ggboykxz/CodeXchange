@@ -84,6 +84,7 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
           type="button"
           onClick={basculer}
           disabled={enCours}
+          aria-busy={enCours}
           aria-pressed={etat.jeLaiReposte}
           className={`inline-flex min-h-[40px] cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition disabled:opacity-60 ${
             etat.jeLaiReposte

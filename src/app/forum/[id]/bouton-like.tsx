@@ -62,6 +62,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
         type="button"
         onClick={basculer}
         disabled={enCours}
+        aria-busy={enCours}
         aria-pressed={aime}
         className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition disabled:opacity-60 ${
           aime

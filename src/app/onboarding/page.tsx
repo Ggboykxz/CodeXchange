@@ -105,7 +105,7 @@ export default function PageOnboarding() {
           type="button"
           onClick={terminer}
           disabled={enCours}
-          className="rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 disabled:opacity-60"
+          className="rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 disabled:opacity-60 active:scale-[0.97]"
         >
           {enCours ? "Enregistrement…" : `Terminer${choisis.size > 0 ? ` (${choisis.size})` : ""}`}
         </button>

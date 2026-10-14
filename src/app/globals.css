@@ -115,6 +115,26 @@ select {
   cursor: pointer;
 }
 
+/* Transitions douces et uniformes sur les éléments interactifs (150 ms,
+   uniquement des propriétés visuelles : aucun impact de mise en page).
+   Les utilitaires Tailwind (`transition-*`) restent prioritaires. */
+a,
+button,
+[role="button"],
+summary,
+select {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Retour tactile : léger enfoncement au clic sur les actions (pas les liens
+   texte, ni les contrôles désactivés). Neutralisé par prefers-reduced-motion. */
+button:not(:disabled):active,
+[role="button"]:not([aria-disabled="true"]):active {
+  transform: scale(0.97);
+}
+
 /* Placeholders lisibles (WCAG AA) : #64748b sur clair, #94a3b8 sur sombre. */
 ::placeholder {
   color: #64748b;
