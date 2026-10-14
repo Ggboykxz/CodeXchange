@@ -38,7 +38,7 @@ export type MembreResume = Omit<MembreBrut, "stack"> & {
 };
 
 export type MembreDetail = MembreResume &
-  Pick<User, "bio" | "github" | "linkedin" | "site" | "avatar">;
+  Pick<User, "bio" | "github" | "linkedin" | "site" | "avatar" | "verified">;
 
 export type FiltreMembres = { pays?: string; stack?: string; q?: string; page?: number; pageSize?: number };
 
@@ -115,6 +115,7 @@ export async function getMemberBySlug(slug: string): Promise<MembreDetail | null
     github: membre.github,
     linkedin: membre.linkedin,
     site: membre.site,
+    verified: membre.verified,
   };
 }
 

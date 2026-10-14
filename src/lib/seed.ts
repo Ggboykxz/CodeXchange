@@ -68,6 +68,7 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
         linkedin: "",
         site: "",
         role: m.role,
+        verified: m.role !== "MEMBER", // mentors + admins : badge de vérification
       },
     });
     users.push({ ...m, id: u.id });

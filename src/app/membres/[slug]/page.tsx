@@ -11,6 +11,8 @@ import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonSuivre from "@/components/bouton-suivre";
+import { BadgeNiveau, BadgeVerification } from "@/components/badges-membre";
+import { prisma } from "@/lib/db";
 import FilAriane from "@/components/fil-ariane";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -48,6 +50,13 @@ export default async function PageMembre({ params }: Props) {
   if (!membre) notFound(); // 404 soignée FR via `src/app/not-found.tsx`
   const favoriDuMembre = userId === null ? false : await isFavorite(userId, "membre", membre.id);
   const compteursSuivi = await getCompteursSuivi(membre.id, userId ?? undefined);
+  const karmaMembre =
+    (
+      await prisma.like.aggregate({
+        _sum: { valeur: true },
+        where: { post: { authorId: membre.id } },
+      })
+    )._sum.valeur ?? 0;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -64,9 +73,13 @@ export default async function PageMembre({ params }: Props) {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
         <div className="min-w-0">
-          <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
+          <h1 className="flex items-center gap-2 text-2xl font-black leading-snug tracking-tight sm:text-3xl">
             {membre.nom}
+            {membre.verified ? <BadgeVerification /> : null}
           </h1>
+          <div className="mt-2">
+            <BadgeNiveau karma={karmaMembre} />
+          </div>
           <p className="mt-1 text-sm text-[var(--cx-muted)]">
             {membre.titre} · {drapeau(membre.pays)} {membre.ville}, {membre.pays}
           </p>
