@@ -81,7 +81,7 @@ export default function PageInscription() {
         return;
       }
       toast.succes("Compte créé, bienvenue !");
-      router.push("/");
+      router.push("/onboarding");
     } catch {
       setErreur(t(locale, "auth.server_error"));
       toast.erreur("Inscription impossible", t(locale, "auth.server_error"));
