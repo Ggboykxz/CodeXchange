@@ -14,6 +14,7 @@ import BoutonSuivre from "@/components/bouton-suivre";
 import BoutonBloquer from "@/components/bouton-bloquer";
 import { BadgeNiveau, BadgeVerification } from "@/components/badges-membre";
 import { isBlocked } from "@/lib/blocks";
+import { visibiliteProfil } from "@/lib/privacy";
 import { prisma } from "@/lib/db";
 import FilAriane from "@/components/fil-ariane";
 
@@ -53,6 +54,7 @@ export default async function PageMembre({ params }: Props) {
   const favoriDuMembre = userId === null ? false : await isFavorite(userId, "membre", membre.id);
   const compteursSuivi = await getCompteursSuivi(membre.id, userId ?? undefined);
   const estBloque = userId === null ? false : await isBlocked(userId, membre.id);
+  const visibilite = await visibiliteProfil(membre.id, userId ?? undefined);
   const karmaMembre =
     (
       await prisma.like.aggregate({
@@ -128,45 +130,56 @@ export default async function PageMembre({ params }: Props) {
         </div>
       </header>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
-        <h2 className="font-semibold">{t(locale, "directory.about")}</h2>
-        {membre.bio ? (
-          <p className="mt-2 whitespace-pre-line leading-relaxed text-[var(--cx-muted)]">
-            {membre.bio}
-          </p>
-        ) : (
-          <p className="mt-2 text-[var(--cx-muted)]">
-            {t(locale, "directory.no_bio")}
-          </p>
-        )}
-      </section>
+      {visibilite.complet ? (
+        <>
+          <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+            <h2 className="font-semibold">{t(locale, "directory.about")}</h2>
+            {membre.bio ? (
+              <p className="mt-2 whitespace-pre-line leading-relaxed text-[var(--cx-muted)]">
+                {membre.bio}
+              </p>
+            ) : (
+              <p className="mt-2 text-[var(--cx-muted)]">
+                {t(locale, "directory.no_bio")}
+              </p>
+            )}
+          </section>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
-        <h2 className="font-semibold">{t(locale, "directory.stack")}</h2>
-        {membre.stack.length > 0 ? (
-          <ul className="mt-2 flex flex-wrap gap-2">
-            {membre.stack.map((technologie) => (
-              <li
-                key={technologie}
-                className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
-              >
-                {technologie}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-2 text-[var(--cx-muted)]">{t(locale, "directory.no_stack")}</p>
-        )}
-      </section>
+          <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+            <h2 className="font-semibold">{t(locale, "directory.stack")}</h2>
+            {membre.stack.length > 0 ? (
+              <ul className="mt-2 flex flex-wrap gap-2">
+                {membre.stack.map((technologie) => (
+                  <li
+                    key={technologie}
+                    className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                  >
+                    {technologie}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-[var(--cx-muted)]">{t(locale, "directory.no_stack")}</p>
+            )}
+          </section>
 
-      {(membre.github || membre.linkedin || membre.site) && (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
-          <h2 className="font-semibold">{t(locale, "directory.links")}</h2>
-          <ul className="mt-3 flex flex-wrap gap-3">
-            {membre.github && <LienExterne url={membre.github} libelle="GitHub" />}
-            {membre.linkedin && <LienExterne url={membre.linkedin} libelle="LinkedIn" />}
-            {membre.site && <LienExterne url={membre.site} libelle="Site personnel" />}
-          </ul>
+          {(membre.github || membre.linkedin || membre.site) && (
+            <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+              <h2 className="font-semibold">{t(locale, "directory.links")}</h2>
+              <ul className="mt-3 flex flex-wrap gap-3">
+                {membre.github && <LienExterne url={membre.github} libelle="GitHub" />}
+                {membre.linkedin && <LienExterne url={membre.linkedin} libelle="LinkedIn" />}
+                {membre.site && <LienExterne url={membre.site} libelle="Site personnel" />}
+              </ul>
+            </section>
+          )}
+        </>
+      ) : (
+        <section className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-8 text-center text-sm text-[var(--cx-muted)]">
+          <p className="font-semibold text-cx-fg">Profil privé</p>
+          <p className="mt-2">
+            Suivez <span className="font-semibold">{membre.nom}</span> pour voir sa bio, sa stack et ses liens.
+          </p>
         </section>
       )}
     </main>

@@ -25,6 +25,7 @@ model User {
   site         String   @default("")
   role         String   @default("MEMBER") // MEMBER | MENTOR | ADMIN
   verified     Boolean  @default(false) // badge de vérification
+  privacy      String   @default("PUBLIC") // PUBLIC | PRIVATE
   bannedAt     DateTime?
   createdAt    DateTime @default(now())
 

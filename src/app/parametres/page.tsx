@@ -25,6 +25,7 @@ export default async function PageParametres() {
       linkedin: true,
       site: true,
       notifEmail: true,
+      privacy: true,
     },
   });
   if (!membre) redirect("/connexion");
@@ -38,7 +39,7 @@ export default async function PageParametres() {
         </Link>
         <h1 className="mt-2 text-3xl font-black tracking-tight">{t(locale, "settings.title")}</h1>
       </header>
-      <FormulaireParametres profil={membre} />
+      <FormulaireParametres profil={{ ...membre, privacy: membre.privacy ?? "PUBLIC" }} />
     </main>
   );
 }

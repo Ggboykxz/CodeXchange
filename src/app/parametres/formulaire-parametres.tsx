@@ -19,6 +19,7 @@ type Profil = {
   linkedin: string;
   site: string;
   notifEmail: boolean;
+  privacy: string;
 };
 
 type Props = { profil: Profil };
@@ -89,7 +90,7 @@ export default function FormulaireParametres({ profil }: Props) {
   }
 
   function champ(cle: keyof Profil, label: string) {
-    if (cle === "notifEmail") return null;
+    if (cle === "notifEmail" || cle === "privacy") return null;
     return (
       <div key={cle}>
         <label className="mb-1 block text-sm font-medium">{label}</label>
@@ -136,6 +137,20 @@ export default function FormulaireParametres({ profil }: Props) {
             />
             Recevoir les emails de notification
           </label>
+          <div>
+            <label className="mb-1 block text-sm font-medium">Confidentialité du profil</label>
+            <select
+              value={profilState.privacy}
+              onChange={(e) => setProfilState((s) => ({ ...s, privacy: e.target.value }))}
+              className={CLASS_CHAMP}
+            >
+              <option value="PUBLIC">Public — visible par tous</option>
+              <option value="PRIVATE">Privé — visible par mes abonnés</option>
+            </select>
+            <p className="mt-1 text-xs text-cx-muted-fg">
+              En privé, seuls tes abonnés voient ta bio, ta stack et tes liens.
+            </p>
+          </div>
           <button
             type="submit"
             disabled={busy}

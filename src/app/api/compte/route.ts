@@ -16,6 +16,7 @@ const schemaProfil = z.object({
   linkedin: z.string().trim().max(120).optional(),
   site: z.string().trim().max(120).optional(),
   notifEmail: z.boolean().optional(),
+  privacy: z.enum(["PUBLIC", "PRIVATE"]).optional(),
 });
 
 const schemaSecurite = z.object({
