@@ -1,5 +1,7 @@
 import Link from "next/link";
 import PastilleNonLues from "@/components/pastille-non-lues";
+import PastilleMessages from "@/components/pastille-messages";
+import { unreadMessages } from "@/lib/messagerie";
 import { getSessionUserId } from "@/lib/session";
 import { unreadCount } from "@/lib/notifications";
 import { prisma } from "@/lib/db";
@@ -23,6 +25,7 @@ const liens = [
 export async function Header() {
   const userId = await getSessionUserId();
   const nonLues = userId !== null ? await unreadCount(userId).catch(() => 0) : 0;
+  const nonLusMessages = userId !== null ? await unreadMessages(userId).catch(() => 0) : 0;
   const estAdmin = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { role: true } }).then((u) => u?.role === "ADMIN") : false;
 
   const locale = await localeCourante();
@@ -97,7 +100,7 @@ export async function Header() {
                 {userId ? (
                   <li>
                     <Link href="/messagerie" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.messages")}
+                      {t(locale, "nav.messages")} <PastilleMessages initial={nonLusMessages} />
                     </Link>
                   </li>
                 ) : null}
@@ -201,7 +204,7 @@ export async function Header() {
                   href="/messagerie"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  {t(locale, "nav.messages")}
+                  {t(locale, "nav.messages")} <PastilleMessages initial={nonLusMessages} />
                 </Link>
               </li>
             ) : null}

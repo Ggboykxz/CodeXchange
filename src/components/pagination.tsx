@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export type PaginationProps = {
@@ -56,6 +58,27 @@ export function Pagination(props: PaginationProps) {
       <span className="text-sm text-[var(--cx-muted)]">
         Page {pageActuelle} sur {totalPages}
       </span>
+      <form
+        className="hidden items-center gap-1 sm:flex"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const formData = new FormData(event.currentTarget);
+          const lien = buildHref(props, Number(formData.get("page")));
+          window.location.assign(lien);
+        }}
+      >
+        <input
+          name="page"
+          type="number"
+          min={1}
+          max={totalPages}
+          defaultValue={pageActuelle}
+          className="w-14 rounded-md border border-cx-border bg-transparent px-2 py-1 text-sm"
+        />
+        <button type="submit" className={CLASSES_LIEN}>
+          Aller
+        </button>
+      </form>
 
       {pageActuelle >= totalPages ? (
         <span className={CLASSES_DESACTIVE} aria-disabled="true">
