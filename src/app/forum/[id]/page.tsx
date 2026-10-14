@@ -8,6 +8,7 @@ import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonVote from "@/components/bouton-vote";
 import BoutonCopier from "@/components/bouton-copier";
+import BarreReactions from "@/components/barre-reactions";
 import BoutonSondage from "./bouton-sondage";
 import ArbreReponses from "./arbre-reponses";
 import TexteRepliable from "@/components/texte-repliable";
@@ -119,6 +120,14 @@ export default async function PageSujet({ params }: Props) {
           <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
             <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
           </article>
+          <div className="rounded-xl border border-cx-border bg-cx-card px-4 py-3">
+            <BarreReactions
+              kind="post"
+              targetId={postId}
+              initial={sujet.reactions}
+              connecte={userId !== null}
+            />
+          </div>
         </div>
       </div>
 

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import ActionsReponse from "./bouton-reponse";
 import FormulaireReponse from "./formulaire-reponse";
+import BarreReactions from "@/components/barre-reactions";
+import type { ReactionCounts } from "@/lib/reactions";
 
 type Auteur = { id: number; nom: string; slug: string; ville: string; pays: string };
 
@@ -16,6 +18,7 @@ type Reponse = {
   createdAt: string | Date;
   updatedAt: string | Date;
   likedByMe?: boolean;
+  reactions?: ReactionCounts;
   _count: { likes: number };
 };
 
@@ -64,6 +67,17 @@ function Noeud({ reply, replies, postId, userId, hasReplyLiked, connecte }: { re
         likedByMe={hasReplyLiked(reply.id)}
         likes={reply._count.likes}
       />
+      {reply.reactions ? (
+        <div className="mt-2">
+          <BarreReactions
+            kind="reply"
+            targetId={reply.id}
+            initial={reply.reactions}
+            connecte={connecte}
+            compact
+          />
+        </div>
+      ) : null}
       {connecte ? (
         <button
           type="button"

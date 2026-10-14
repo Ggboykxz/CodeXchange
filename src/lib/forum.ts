@@ -4,6 +4,7 @@ import { AppError } from "./errors";
 import { createNotification } from "./notifications";
 import type { PaginatedResult } from "./pagination";
 import { paginateArray } from "./pagination";
+import { getReactions, getReactionsPourCibles, type ReactionCounts } from "./reactions";
 
 export type { PaginatedResult } from "./pagination";
 
@@ -36,6 +37,7 @@ export type PostResume = Omit<Post, "author" | "replies" | "likes"> & {
 
 export type ReponseDetail = Omit<Reply, "author" | "post"> & {
   author: AuteurResume;
+  reactions: ReactionCounts;
   _count: { likes: number };
 };
 
@@ -47,6 +49,7 @@ export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   score: number;
   userVote: number;
   poll: PollDetail | null;
+  reactions: ReactionCounts;
   _count: { replies: number; likes: number };
 };
 
@@ -195,16 +198,29 @@ export async function getPost(id: number, userId?: number): Promise<PostDetail |
     };
   }
   if (result.replies) {
-    result.replies.sort((a: ReponseDetail, b: ReponseDetail) => {
+    result.replies.sort((a, b) => {
       const diffLikes = (b._count?.likes ?? 0) - (a._count?.likes ?? 0);
       if (diffLikes !== 0) return diffLikes;
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
   }
-  const { likes: _likes2, poll: _pollRaw, ...rest } = result as unknown as Record<string, unknown>;
+
+  // Réactions : une passe pour le post, une pour toutes les réponses (pas de N+1).
+  const idsReponses = (result.replies ?? []).map((r) => r.id);
+  const [reactionsPost, reactionsReponses] = await Promise.all([
+    getReactions("post", id, userId),
+    getReactionsPourCibles("reply", idsReponses, userId),
+  ]);
+  const repliesAvecReactions = (result.replies ?? []).map((r) => ({
+    ...r,
+    reactions: reactionsReponses.get(r.id) ?? { totaux: {}, maReaction: null, total: 0 },
+  }));
+
+  const { likes: _likes2, poll: _pollRaw, replies: _repliesRaw, ...rest } = result as unknown as Record<string, unknown>;
   void _likes2;
   void _pollRaw;
-  return { ...rest, score, userVote, poll } as PostDetail;
+  void _repliesRaw;
+  return { ...rest, replies: repliesAvecReactions, score, userVote, poll, reactions: reactionsPost } as PostDetail;
 }
 
 /** Création d'un sujet ; lève `FORUM_VALIDATION` (422) en cas de règle violée. */

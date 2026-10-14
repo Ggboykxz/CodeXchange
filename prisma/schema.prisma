@@ -34,6 +34,7 @@ model User {
   posts      Post[]
   replies    Reply[]
   likes      Like[]
+  reactions  Reaction[]
   replyLikes ReplyLike[] @relation("ReplyLikes")
   messagesEnvoyes Message[] @relation("SentMessages")
   messagesRecus   Message[] @relation("ReceivedMessages")
@@ -264,6 +265,19 @@ model Favorite {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, kind, targetId])
+}
+
+model Reaction {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  kind       String   // post | reply
+  targetId   Int
+  emoji      String   // 👍 ❤️ 🎉 🤔 🔥 🚀
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kind, targetId])
+  @@index([kind, targetId])
 }
 
 

@@ -16,6 +16,7 @@ export type SeedResult = {
   users: number;
   posts: number;
   replies: number;
+  reactions: number;
   jobs: number;
   applications: number;
   projects: number;
@@ -33,6 +34,7 @@ function addDays(d: Date, n: number): Date {
 export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
   // Vider (children → parents).
   await db.rsvp.deleteMany();
+  await db.reaction.deleteMany();
   await db.like.deleteMany();
   await db.reply.deleteMany();
   await db.application.deleteMany();
@@ -89,12 +91,14 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
   }
   // 1 réponse pour chacun des 15 sujets -> Replies >= 15.
   let replies = 0;
+  const reponsesCreees: { id: number; postId: number; authorId: number }[] = [];
   for (let i = 0; i < posts.length; i++) {
     const p = posts[i]!;
     const auteur = byIndex(i + 3);
-    await db.reply.create({
+    const r = await db.reply.create({
       data: { corps: "Merci, ça m'a aidé à avancer !", postId: p.id, authorId: auteur.id },
     });
+    reponsesCreees.push({ id: r.id, postId: p.id, authorId: auteur.id });
     replies += 1;
   }
   // likes sur les 10 premiers sujets.
@@ -102,6 +106,33 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
     const likedBy = byIndex(i + 5);
     if (likedBy.id === posts[i]!.auteur.id) continue;
     await db.like.create({ data: { userId: likedBy.id, postId: posts[i]!.id } }).catch(() => {});
+  }
+  // Réactions sociales : réparties sur posts et réponses, pour une démo vivante.
+  const EMOJIS = ["👍", "❤️", "🎉", "🤔", "🔥", "🚀"];
+  let reactions = 0;
+  for (let i = 0; i < posts.length; i++) {
+    const post = posts[i]!;
+    // 2 à 3 réacteurs différents par post (jamais l'auteur lui-même).
+    for (let k = 0; k < 3; k++) {
+      const reacteur = byIndex(i * 2 + k + 1);
+      if (reacteur.id === post.auteur.id) continue;
+      const emoji = EMOJIS[(i + k) % EMOJIS.length]!;
+      await db.reaction
+        .create({ data: { userId: reacteur.id, kind: "post", targetId: post.id, emoji } })
+        .then(() => { reactions += 1; })
+        .catch(() => {});
+    }
+  }
+  for (const r of reponsesCreees) {
+    for (let k = 0; k < 2; k++) {
+      const reacteur = byIndex(r.id + k + 4);
+      if (reacteur.id === r.authorId) continue;
+      const emoji = EMOJIS[(r.id + k) % EMOJIS.length]!;
+      await db.reaction
+        .create({ data: { userId: reacteur.id, kind: "reply", targetId: r.id, emoji } })
+        .then(() => { reactions += 1; })
+        .catch(() => {});
+    }
   }
 
   // --- jobs + candidatures ---
@@ -212,6 +243,7 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
     users: users.length,
     posts: posts.length,
     replies,
+    reactions,
     jobs: jobs.length,
     applications,
     projects: projects.length,

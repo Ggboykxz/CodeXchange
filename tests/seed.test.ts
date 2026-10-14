@@ -14,6 +14,7 @@ test(
     expect(res.users).toBe(31);
     expect(res.posts).toBe(15);
     expect(res.replies).toBeGreaterThanOrEqual(15);
+    expect(res.reactions).toBeGreaterThanOrEqual(10);
     expect(res.jobs).toBe(10);
     expect(res.applications).toBeGreaterThanOrEqual(10);
     expect(res.projects).toBe(8);
