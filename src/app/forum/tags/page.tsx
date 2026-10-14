@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { localeCourante, t } from "@/lib/i18n";
 import { prisma } from "@/lib/db";
+import { getSessionUserId } from "@/lib/session";
+import BoutonAbonnement from "@/components/bouton-abonnement";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Communautés" };
@@ -18,7 +20,10 @@ function compresserTags(liste: { tags: string }[]) {
 }
 
 export default async function PageTags() {
+  const userId = await getSessionUserId();
   const locale = await localeCourante();
+  const follows = userId ? await prisma.tagFollow.findMany({ where: { userId }, select: { tag: true } }) : [];
+  const followsSet = new Set(follows.map((f) => f.tag));
   const postes = await prisma.post.findMany({ select: { tags: true } });
   const tags = compresserTags(postes);
   return (
@@ -29,15 +34,15 @@ export default async function PageTags() {
       <ul className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
         {tags.map(([tag, nombre]) => (
           <li key={tag}>
-            <Link
-              href={`/forum?tag=${encodeURIComponent(tag)}`}
-              className="block rounded-xl border border-cx-border bg-cx-card px-5 py-4 transition hover:border-cx-primary/60"
-            >
-              <p className="font-semibold">#{tag}</p>
-              <p className="mt-1 text-xs text-cx-muted-fg">
-                {nombre} sujet{nombre > 1 ? "s" : ""}
-              </p>
-            </Link>
+            <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
+              <Link href={`/forum?tag=${encodeURIComponent(tag)}`} className="block transition hover:border-cx-primary/60">
+                <p className="font-semibold">#{tag}</p>
+                <p className="mt-1 text-xs text-cx-muted-fg">
+                  {nombre} sujet{nombre > 1 ? "s" : ""}
+                </p>
+              </Link>
+              {userId ? <div className="mt-3"><BoutonAbonnement tag={tag} initial={followsSet.has(tag)} /></div> : null}
+            </div>
           </li>
         ))}
       </ul>

@@ -29,6 +29,7 @@ model User {
 
   sessions   Session[]
   passwordResets PasswordResetToken[]
+  tagFollows TagFollow[]
   posts      Post[]
   replies    Reply[]
   likes      Like[]
@@ -254,4 +255,13 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime @default(now())
+}
+
+model TagFollow {
+  userId Int
+  tag    String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, tag])
 }

@@ -30,16 +30,27 @@ export default async function HomePage() {
 
   let sujetsPourToi: { id: number; titre: string; tags: string }[] = [];
   if (userId !== null) {
-    const moi = await prisma.user.findUnique({ where: { id: userId }, select: { pays: true } });
-    sujetsPourToi = await prisma.post.findMany({
-      take: 3,
-      orderBy: { createdAt: "desc" },
-      where:
-        moi?.pays
-          ? { author: { pays: moi.pays } }
-          : undefined,
-      select: { id: true, titre: true, tags: true },
-    });
+    const follows = await prisma.tagFollow.findMany({ where: { userId }, select: { tag: true } });
+    const tagsSuivis = follows.map((f) => f.tag);
+    if (tagsSuivis.length > 0) {
+      sujetsPourToi = (await prisma.post.findMany({
+        take: 6,
+        orderBy: { createdAt: "desc" },
+        select: { id: true, titre: true, tags: true },
+      })).filter((p) =>
+        p.tags.split(",").map((t) => t.trim().toLowerCase()).some((tag) => tagsSuivis.includes(tag)),
+      ).slice(0, 3);
+    } else {
+      const moi = await prisma.user.findUnique({ where: { id: userId }, select: { pays: true } });
+      if (moi?.pays) {
+        sujetsPourToi = await prisma.post.findMany({
+          take: 3,
+          orderBy: { createdAt: "desc" },
+          where: { author: { pays: moi.pays } },
+          select: { id: true, titre: true, tags: true },
+        });
+      }
+    }
   }
 
   const derniersSujets = await prisma.post.findMany({
