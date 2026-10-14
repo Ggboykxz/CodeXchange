@@ -19,6 +19,8 @@ export default async function PageProfil() {
     select: { nom: true, slug: true, titre: true, ville: true, pays: true, bio: true, avatar: true, stack: true, role: true },
   });
   if (!membre) redirect("/connexion");
+  const postsDuMembre = await prisma.post.findMany({ where: { authorId: userId }, select: { id: true } });
+  const karma = (await prisma.like.aggregate({ _sum: { valeur: true }, where: { postId: { in: postsDuMembre.map((p) => p.id) } } }))._sum.valeur ?? 0;
   const locale = await localeCourante();
 
   return (
@@ -30,6 +32,7 @@ export default async function PageProfil() {
           <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
           <div>
             <p className="text-lg font-semibold">{membre.nom}</p>
+            <p className="text-sm text-cx-muted-fg">Karma : {karma}</p>
             <p className="text-sm text-[var(--cx-muted)]">
               {membre.titre} · {drapeau(membre.pays)} {membre.ville}, {membre.pays}
             </p>
