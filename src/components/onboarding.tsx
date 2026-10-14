@@ -1,0 +1,23 @@
+"use client";
+
+import { useEffect } from "react";
+import { useToast } from "./toast";
+
+/** Guide rapide affiché une seule fois aux nouveaux membres. */
+export default function Onboarding() {
+  const toast = useToast();
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem("cx_onboarded")) {
+        setTimeout(() => {
+          toast.info("Bienvenue sur CodeXchange", "Pose ta première question au forum, consulte les offres, recrute des co-fondateurs.");
+          localStorage.setItem("cx_onboarded", "1");
+        }, 1500);
+      }
+    } catch {
+      // silencieux
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}

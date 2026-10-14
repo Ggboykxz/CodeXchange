@@ -6,6 +6,7 @@ import { ThemeScript } from "@/components/theme-script";
 import { ToastProvider } from "@/components/toast";
 import RaccourciRecherche from "@/components/raccourci-recherche";
 import RetourHaut from "@/components/retour-haut";
+import Onboarding from "@/components/onboarding";
 import { themeCourant } from "@/lib/theme";
 import "./globals.css";
 
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ToastProvider>
           <RaccourciRecherche />
           <RetourHaut />
+          <Onboarding />
           <Header />
           <main id="main" className="min-h-[calc(100vh-3.5rem)]">{children}</main>
           <Footer />

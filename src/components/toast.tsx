@@ -16,6 +16,7 @@ type ContexteToast = {
   notifier: (toast: Omit<Toast, "id" | "ton"> & { ton?: Toast["ton"] }) => void;
   succes: (titre: string, description?: string) => void;
   erreur: (titre: string, description?: string) => void;
+  info: (titre: string, description?: string) => void;
   avecAction: (titre: string, action: NonNullable<Toast["action"]>, description?: string) => void;
 };
 
@@ -46,6 +47,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       notifier,
       succes: (titre, description) => notifier({ titre, description, ton: "succes" }),
       erreur: (titre, description) => notifier({ titre, description, ton: "erreur" }),
+      info: (titre, description) => notifier({ titre, description, ton: "info" }),
       avecAction: (titre, action, description) => notifier({ titre, description, action, ton: "info" }),
     }),
     [notifier],
