@@ -48,9 +48,12 @@ const FR: Record<string, string> = {
   "home.hero_sub":
     "Pose une question sur le forum, trouve une mission, recrute des co-fondateurs, découvre des mentors et des événements locaux. Tout en français, sur mobile.",
   "home.cta_join": "Rejoindre la communauté",
+  "home.cta_join_title": "Rejoins les bâtisseurs africains",
+  "home.cta_join_sub": "Gratuit, en français, sur mobile. Ton premier sujet ou ton premier projet en moins de deux minutes.",
   "home.cta_forum": "Parcourir le forum →",
   "home.stats": "membres inscrits",
   "home.sections_title": "Tout ce dont tu as besoin",
+  "home.sections_sub": "Six ports d'entree complementaires : forum, offres, projets, annuaire, tutos, evenements.",
   "home.latest_title": "Derniers sujets",
   "home.latest_empty": "Aucun sujet pour le moment.",
   // Forum
@@ -333,9 +336,12 @@ const EN: Record<string, string> = {
   "home.hero_sub":
     "Ask a question on the forum, find a mission, recruit co-founders, discover mentors and local events. Mobile-first, in French.",
   "home.cta_join": "Join the community",
+  "home.cta_join_title": "Join the African builders",
+  "home.cta_join_sub": "Free, in French, mobile-ready. Your first post or your first project in under two minutes.",
   "home.cta_forum": "Browse the forum →",
   "home.stats": "members",
   "home.sections_title": "Everything you need",
+  "home.sections_sub": "Six complementary entry points: forum, jobs, projects, directory, tutorials, events."
   "home.latest_title": "Latest posts",
   "home.latest_empty": "No posts yet.",
   "forum.title": "Forum",

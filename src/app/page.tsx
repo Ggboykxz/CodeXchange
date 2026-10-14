@@ -66,7 +66,7 @@ export default async function HomePage() {
           {t(locale, "home.sections_title")}
         </h2>
         <p className="mt-2 max-w-2xl text-cx-muted-fg">
-          {t(locale, "home.hero_sub")}
+          {t(locale, "home.sections_sub")}
         </p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SECTIONS.map((s, index) => (
@@ -121,15 +121,14 @@ export default async function HomePage() {
       {/* CTA */}
       <section className="mx-auto mt-16 max-w-3xl rounded-2xl border border-cx-border bg-cx-card px-6 py-12 text-center">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Rejoins les bâtisseurs africains
+          {t(locale, "home.cta_join_title")}
         </h2>
         <p className="mt-3 text-cx-muted-fg">
-          Gratuit, en français, sur mobile. Ton premier sujet ou ton premier
-          projet en moins de deux minutes.
+          {t(locale, "home.cta_join_sub")}
         </p>
         <div className="mt-6">
           <Button variant="accent" href="/inscription">
-            Créer mon compte
+            {t(locale, "home.cta_join")}
           </Button>
         </div>
       </section>
