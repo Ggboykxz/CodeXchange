@@ -6,6 +6,11 @@
 
 ## Étapes (4 commandes côté local)
 
+> Lance toujours depuis le dossier du projet : `cd /home/user/eeee/CodeXchange`
+
+- Ne jamais coller de secret (URL ou token) dans un chat ; garde la chaîne Neon dans ta variable locale uniquement.
+
+
 ```bash
 # 1) Basculer le provider Prisma en Postgres
 sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
@@ -29,7 +34,9 @@ Notes :
 - `migrate dev` génère les fichiers SQL Postgres dans `prisma/migrations/` ; ne commitez jamais de chaîne secrète.
 - Laissez SQLite pour le dev local ; ne commitez pas un schéma Postgres sur `main` si vous voulez garder la CI SQLite.
 
-## Vérification
+#- **Important** : vérifier le provider après la `sed` : `grep 'provider = "postgres' prisma/schema.prisma`
+
+# Vérification
 
 Après redéploiement, ouvrez : `https://<domaine>/api/sante`.
 
