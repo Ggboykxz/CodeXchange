@@ -4,6 +4,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ThemeScript } from "@/components/theme-script";
 import { ToastProvider } from "@/components/toast";
+import { NavProvider } from "@/components/nav-context";
+import NavigationGauche from "@/components/navigation-gauche";
 import RaccourciRecherche from "@/components/raccourci-recherche";
 import RetourHaut from "@/components/retour-haut";
 import Onboarding from "@/components/onboarding";
@@ -34,12 +36,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Skip to content */}
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-cx-primary focus:px-4 focus:py-2 focus:text-white">Aller au contenu</a>
         <ToastProvider>
-          <RaccourciRecherche />
-          <RetourHaut />
-          <Onboarding />
-          <Header />
-          <main id="main" className="min-h-[calc(100vh-3.5rem)]">{children}</main>
-          <Footer />
+          <NavProvider>
+            <RaccourciRecherche />
+            <RetourHaut />
+            <Onboarding />
+            <Header />
+            {/* Navigation façon Reddit : barre latérale (drawer sur mobile) + contenu. */}
+            <div className="flex">
+              <NavigationGauche />
+              <main id="main" className="min-h-[calc(100vh-3.5rem)] min-w-0 flex-1">
+                {children}
+              </main>
+            </div>
+            <Footer />
+          </NavProvider>
         </ToastProvider>
       </body>
     </html>

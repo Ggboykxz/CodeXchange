@@ -3,11 +3,13 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+  usePathname: () => "/forum",
 }));
 
 import { EmptyState } from "@/components/empty-state";
 import Avatar from "@/components/avatar";
 import { Header } from "@/components/header";
+import PanneauNav from "@/components/panneau-nav";
 
 describe("composants partagés", () => {
   it("EmptyState affiche le titre et le CTA", () => {
@@ -31,9 +33,22 @@ describe("composants partagés", () => {
     expect(a).toBe(b);
   });
 
-  it("Header rend les liens de navigation principaux", async () => {
+  it("Header rend la barre Reddit (logo, recherche, actions)", async () => {
     const element = await Header();
     const html = renderToStaticMarkup(element);
+    // Logo + recherche centrée + actions de compte.
+    expect(html).toContain("/");
+    expect(html).toContain("Rechercher partout…");
+    expect(html).toContain("Connexion");
+    // Le menu ☰ ouvre la navigation latérale.
+    expect(html).toContain("navigation-laterale");
+    expect(html).toContain("Ouvrir le menu");
+  });
+
+  it("Navigation latérale rend les liens Reddit (Fil / Explorer)", () => {
+    const html = renderToStaticMarkup(
+      <PanneauNav locale="fr" theme="light" communautes={[{ tag: "react", count: 3 }]} connecte={false} />,
+    );
     for (const label of [
       "Forum",
       "Emplois",
@@ -42,8 +57,11 @@ describe("composants partagés", () => {
       "Tutos",
       "Événements",
       "Mentorat",
+      "Communautés",
+      "c/react",
     ]) {
       expect(html).toContain(label);
     }
+    expect(html).toContain("/forum?tri=top");
   });
 });
