@@ -53,7 +53,7 @@ export default async function PageForum({ searchParams }: Props) {
           {t(locale, "forum.new")}
         </Link>
       </header>
-      <p className="text-sm text-cx-muted-fg"><a href="/forum/tags" className="text-cx-primary hover:underline">Voir toutes les communautés →</a></p>
+      <p className="text-sm text-cx-muted-fg"><Link href="/forum/tags" className="text-cx-primary hover:underline">Voir toutes les communautés →</Link></p>
 
       <form action="/forum" method="get" className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor="q" className="sr-only">
