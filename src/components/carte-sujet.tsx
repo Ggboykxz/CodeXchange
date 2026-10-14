@@ -84,7 +84,7 @@ export default function CarteSujet({
               <li key={mot}>
                 <Link
                   href={`/forum?tag=${encodeURIComponent(mot)}`}
-                  className="rounded-full bg-cx-primary/10 px-2 py-0.5 text-[11px] font-semibold text-cx-primary hover:bg-cx-primary/20"
+                  className="rounded-full bg-cx-primary/5 px-2 py-0.5 text-[11px] font-semibold text-cx-primary hover:bg-cx-primary/20"
                 >
                   {mot}
                 </Link>

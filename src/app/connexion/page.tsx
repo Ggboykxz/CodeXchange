@@ -64,7 +64,7 @@ export default function PageConnexion() {
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "auth.login_title")}</h1>
-      <p className="mt-2 text-sm text-[var(--cx-muted)]">{t(locale, "home.hero_sub")}</p>
+      <p className="mt-2 text-sm text-cx-muted-fg">{t(locale, "home.hero_sub")}</p>
 
       <form onSubmit={envoyerFormulaire} className="mt-8 flex flex-col gap-4" noValidate>
         <div>
@@ -118,7 +118,7 @@ export default function PageConnexion() {
         </div>
 
         {erreur ? (
-          <p role="alert" className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm font-medium text-cx-destructive">
+          <p role="alert" className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm font-medium text-cx-destructive">
             {erreur}
           </p>
         ) : null}
@@ -126,18 +126,18 @@ export default function PageConnexion() {
         <button
           type="submit"
           disabled={enCours}
-          className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? t(locale, "common.loading") : t(locale, "auth.login_submit")}
         </button>
       </form>
-      <p className="mt-4 text-sm text-[var(--cx-muted)]">
+      <p className="mt-4 text-sm text-cx-muted-fg">
         <Link href="/mot-de-passe-oublie" className="text-[var(--cx-accent)] hover:underline">
           Mot de passe oublié ?
         </Link>
       </p>
 
-      <p className="mt-6 text-sm text-[var(--cx-muted)]">
+      <p className="mt-6 text-sm text-cx-muted-fg">
         {t(locale, "auth.no_account")}{" "}
         <Link href="/inscription" className="font-medium text-[var(--cx-accent)]">
           {t(locale, "auth.register_link")}

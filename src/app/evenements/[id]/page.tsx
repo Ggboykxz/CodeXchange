@@ -64,7 +64,7 @@ export default async function PageEvenement({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {evenement.titre}
         </h1>
-        <p className="text-sm text-[var(--cx-muted)]">
+        <p className="text-sm text-cx-muted-fg">
           <time dateTime={evenement.date.toISOString()}>
             {DATE.format(evenement.date)} à {HEURE.format(evenement.date)}
           </time>
@@ -74,19 +74,19 @@ export default async function PageEvenement({ params }: Props) {
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                 passe
-                  ? "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
-                  : "bg-cx-success/10 text-cx-success"
+                  ? "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
+                  : "bg-cx-success/5 text-cx-success"
               }`}
             >
               {passe ? t(locale, "events.past") : t(locale, "events.upcoming")}
             </span>
           </li>
           <li>
-            <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+            <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
               {evenement.format}
             </span>
           </li>
-          <li className="text-xs text-[var(--cx-muted)]">
+          <li className="text-xs text-cx-muted-fg">
             {evenement.format === "En ligne"
               ? "En ligne"
               : [drapeau(evenement.pays), [evenement.ville, evenement.pays].filter(Boolean).join(", ")]
@@ -104,7 +104,7 @@ export default async function PageEvenement({ params }: Props) {
           <BoutonFavori kind="event" targetId={eventId} initial={favoriDeLevenement} connecte={userId !== null} />
         </div>
         {userId === null && (
-          <p className="text-sm text-[var(--cx-muted)]">
+          <p className="text-sm text-cx-muted-fg">
             <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
               Connectez-vous
             </Link>{" "}
@@ -115,7 +115,7 @@ export default async function PageEvenement({ params }: Props) {
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
         <h2 className="font-semibold">À propos de l&apos;événement</h2>
-        <p className="mt-2 whitespace-pre-line leading-relaxed text-[var(--cx-muted)]">
+        <p className="mt-2 whitespace-pre-line leading-relaxed text-cx-muted-fg">
           {evenement.description}
         </p>
       </section>
@@ -123,7 +123,7 @@ export default async function PageEvenement({ params }: Props) {
       {evenement.format === "En ligne" && evenement.lien && (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
           <h2 className="font-semibold">Rejoindre en ligne</h2>
-          <p className="mt-1 text-[var(--cx-muted)]">
+          <p className="mt-1 text-cx-muted-fg">
             L&apos;événement se déroule à distance : ce lien s&apos;ouvre dans un nouvel onglet.
           </p>
           <a

@@ -108,7 +108,7 @@ export default function FormulaireAvatar({ avatarActuel }: Props) {
             type="button"
             onClick={supprimer}
             disabled={busy}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-cx-destructive hover:bg-cx-destructive/10 disabled:opacity-60"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-cx-destructive hover:bg-cx-destructive/5 disabled:opacity-60"
           >
             Supprimer
           </button>

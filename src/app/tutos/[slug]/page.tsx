@@ -50,7 +50,7 @@ export default async function PageTuto({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {tuto.titre}
         </h1>
-        <p className="text-sm text-[var(--cx-muted)]">
+        <p className="text-sm text-cx-muted-fg">
           {tuto.author.nom} · {drapeau(tuto.author.pays)} {tuto.author.ville}, {tuto.author.pays}{" "}
           · ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
         </p>
@@ -58,7 +58,7 @@ export default async function PageTuto({ params }: Props) {
           {tuto.tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+              className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
             >
               {tag}
             </li>
@@ -78,7 +78,7 @@ export default async function PageTuto({ params }: Props) {
           <Avatar slug={tuto.author.slug} nom={tuto.author.nom} />
           <span>
             <span className="font-medium hover:text-[var(--cx-accent)]">{tuto.author.nom}</span>
-            <span className="block text-xs text-[var(--cx-muted)]">
+            <span className="block text-xs text-cx-muted-fg">
               {t(locale, "tutorials.see_profile")}
             </span>
           </span>

@@ -12,7 +12,7 @@ export default function FilAriane({ items }: { items: LienFil[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-1">
               {index > 0 ? (
-                <span aria-hidden="true" className="text-cx-muted-fg/60">
+                <span aria-hidden="true" className="text-cx-muted-fg">
                   /
                 </span>
               ) : null}

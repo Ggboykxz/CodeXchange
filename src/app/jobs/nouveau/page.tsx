@@ -17,7 +17,7 @@ export default async function PageNouvelleOffre() {
           ← Retour aux offres
         </Link>
         <h1 className="mt-2 text-3xl font-black tracking-tight">Publier une offre</h1>
-        <p className="mt-1 text-sm text-[var(--cx-muted)]">
+        <p className="mt-1 text-sm text-cx-muted-fg">
           Un titre précis, un type de contrat et un lien direct : les candidatures arrivent plus
           vite.
         </p>

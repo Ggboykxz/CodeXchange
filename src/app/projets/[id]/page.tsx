@@ -59,7 +59,7 @@ export default async function PageProjet({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {projet.titre}
         </h1>
-        <p className="text-sm text-[var(--cx-muted)]">
+        <p className="text-sm text-cx-muted-fg">
           {t(locale, "projects.launched_by")} {projet.author.nom} · {projet.author.ville}, {projet.author.pays} ·{" "}
           {DATE.format(projet.createdAt)} ·{" "}
           {projet._count.membres} {projet._count.membres > 1 ? t(locale, "projects.members_many") : t(locale, "projects.members_one")}
@@ -67,7 +67,7 @@ export default async function PageProjet({ params }: Props) {
         {projet.cherche.length > 0 && (
           <p className="text-sm font-medium">
             Recherche&nbsp;:{" "}
-            <span className="rounded-full bg-cx-warning/10 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
+            <span className="rounded-full bg-cx-warning/5 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
               {projet.cherche.join(", ")}
             </span>
           </p>
@@ -83,7 +83,7 @@ export default async function PageProjet({ params }: Props) {
           <BoutonFavori kind="projet" targetId={projectId} initial={favoriDuProjet} connecte={userId !== null} />
         </div>
         {userId === null && (
-          <p className="text-sm text-[var(--cx-muted)]">
+          <p className="text-sm text-cx-muted-fg">
             <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
               Connectez-vous
             </Link>{" "}
@@ -94,7 +94,7 @@ export default async function PageProjet({ params }: Props) {
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
         <h2 className="font-semibold">À propos du projet</h2>
-        <p className="mt-2 whitespace-pre-line leading-relaxed text-[var(--cx-muted)]">
+        <p className="mt-2 whitespace-pre-line leading-relaxed text-cx-muted-fg">
           {projet.description}
         </p>
       </section>
@@ -106,7 +106,7 @@ export default async function PageProjet({ params }: Props) {
             {projet.stack.map((technologie) => (
               <li
                 key={technologie}
-                className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
               >
                 {technologie}
               </li>

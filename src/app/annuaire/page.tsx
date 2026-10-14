@@ -21,7 +21,7 @@ type Props = {
 /** Badge stack : une pastille par technologie (3 max sur les cartes). */
 function BadgeStack({ technologie }: { technologie: string }) {
   return (
-    <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+    <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
       {technologie}
     </span>
   );
@@ -40,8 +40,8 @@ function CarteMembre({ membre }: { membre: MembreResume }) {
           <h2 className="truncate text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
             {membre.nom}
           </h2>
-          <p className="truncate text-sm text-[var(--cx-muted)]">{membre.titre}</p>
-          <p className="mt-1 text-xs text-[var(--cx-muted)]">
+          <p className="truncate text-sm text-cx-muted-fg">{membre.titre}</p>
+          <p className="mt-1 text-xs text-cx-muted-fg">
             {drapeau(membre.pays)} {membre.ville}, {membre.pays}
           </p>
           <ul className="mt-3 flex flex-wrap items-center gap-2">
@@ -51,10 +51,10 @@ function CarteMembre({ membre }: { membre: MembreResume }) {
               </li>
             ))}
             {restantes > 0 && (
-              <li className="text-xs text-[var(--cx-muted)]">+{restantes}</li>
+              <li className="text-xs text-cx-muted-fg">+{restantes}</li>
             )}
             {membre.role === "MENTOR" && (
-              <li className="rounded-full bg-cx-warning/10 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
+              <li className="rounded-full bg-cx-warning/5 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
                 Mentor
               </li>
             )}
@@ -88,13 +88,13 @@ export default async function PageAnnuaire({ searchParams }: Props) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "directory.title")}</h1>
-          <p className="mt-1 text-sm text-[var(--cx-muted)]">
+          <p className="mt-1 text-sm text-cx-muted-fg">
 {t(locale, "directory.subtitle")}
           </p>
         </div>
         <Link
           href="/inscription"
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
+          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           {t(locale, "nav.join")} · {t(locale, "directory.title")}
         </Link>
@@ -155,7 +155,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           {filtreActif ? (
             <>
               <p className="text-lg font-semibold">{t(locale, "directory.empty_title")}</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
+              <p className="mt-2 text-sm text-cx-muted-fg">
                 {t(locale, "directory.empty_desc")}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
@@ -167,7 +167,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
                 </Link>
                 <Link
                   href="/inscription"
-                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-cx-accent-fg"
                 >
                   {t(locale, "auth.register_link")}
                 </Link>
@@ -176,13 +176,13 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           ) : (
             <>
               <p className="text-lg font-semibold">Aucun membre pour le moment.</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
+              <p className="mt-2 text-sm text-cx-muted-fg">
                 Soyez le premier à remplir votre profil : ville, pays, stack et liens. La communauté
                 vous trouve tout de suite.
               </p>
               <Link
                 href="/inscription"
-                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
+                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
               >
                 Créer le premier profil
               </Link>

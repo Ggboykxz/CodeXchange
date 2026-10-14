@@ -97,14 +97,14 @@ export default async function PageMembre({ params }: Props) {
           <div className="mt-2">
             <BadgeNiveau karma={karmaMembre} />
           </div>
-          <p className="mt-1 text-sm text-[var(--cx-muted)]">
+          <p className="mt-1 text-sm text-cx-muted-fg">
             {membre.titre} · {drapeau(membre.pays)} {membre.ville}, {membre.pays}
           </p>
           {membre.role === "MENTOR" && (
             <p className="mt-3">
               <Link
                 href="/mentorat"
-                className="inline-block rounded-full bg-cx-warning/10 px-3 py-1 text-xs font-semibold text-cx-warning hover:bg-cx-warning/20"
+                className="inline-block rounded-full bg-cx-warning/5 px-3 py-1 text-xs font-semibold text-cx-warning hover:bg-cx-warning/20"
               >
                 {t(locale, "directory.mentor_cta")}
               </Link>
@@ -128,7 +128,7 @@ export default async function PageMembre({ params }: Props) {
           )}
           {userId === null && (
             <p className="mt-3">
-              <span className="text-xs text-[var(--cx-muted)]">
+              <span className="text-xs text-cx-muted-fg">
                 {compteursSuivi.abonnes} abonné{compteursSuivi.abonnes > 1 ? "s" : ""} · {compteursSuivi.abonnements} abonnement{compteursSuivi.abonnements > 1 ? "s" : ""}
               </span>
             </p>
@@ -147,11 +147,11 @@ export default async function PageMembre({ params }: Props) {
           <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
             <h2 className="font-semibold">{t(locale, "directory.about")}</h2>
             {membre.bio ? (
-              <p className="mt-2 whitespace-pre-line leading-relaxed text-[var(--cx-muted)]">
+              <p className="mt-2 whitespace-pre-line leading-relaxed text-cx-muted-fg">
                 {membre.bio}
               </p>
             ) : (
-              <p className="mt-2 text-[var(--cx-muted)]">
+              <p className="mt-2 text-cx-muted-fg">
                 {t(locale, "directory.no_bio")}
               </p>
             )}
@@ -164,14 +164,14 @@ export default async function PageMembre({ params }: Props) {
                 {membre.stack.map((technologie) => (
                   <li
                     key={technologie}
-                    className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                    className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
                   >
                     {technologie}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="mt-2 text-[var(--cx-muted)]">{t(locale, "directory.no_stack")}</p>
+              <p className="mt-2 text-cx-muted-fg">{t(locale, "directory.no_stack")}</p>
             )}
           </section>
 
@@ -187,7 +187,7 @@ export default async function PageMembre({ params }: Props) {
           )}
         </>
       ) : (
-        <section className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-8 text-center text-sm text-[var(--cx-muted)]">
+        <section className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-8 text-center text-sm text-cx-muted-fg">
           <p className="font-semibold text-cx-fg">Profil privé</p>
           <p className="mt-2">
             Suivez <span className="font-semibold">{membre.nom}</span> pour voir sa bio, sa stack et ses liens.

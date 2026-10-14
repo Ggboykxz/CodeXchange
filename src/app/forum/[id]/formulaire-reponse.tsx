@@ -58,7 +58,7 @@ export default function FormulaireReponse({ postId, parentId }: Props) {
         className={`${CLASS_CHAMP} resize-y`}
       />
       {erreur && (
-        <p role="alert" className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm text-cx-destructive">
+        <p role="alert" className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm text-cx-destructive">
           {erreur}
         </p>
       )}
@@ -66,7 +66,7 @@ export default function FormulaireReponse({ postId, parentId }: Props) {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? "Envoi…" : "Publier la réponse"}
         </button>

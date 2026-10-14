@@ -108,7 +108,7 @@ export default function ActionsReponse({
         type="button"
         onClick={basculerLike}
         disabled={!connecte || busy}
-        className={`rounded-md px-2 py-1 transition ${liked ? "bg-cx-primary/10 text-cx-primary" : "text-cx-muted-fg hover:bg-cx-muted"}`}
+        className={`rounded-md px-2 py-1 transition ${liked ? "bg-cx-primary/5 text-cx-primary" : "text-cx-muted-fg hover:bg-cx-muted"}`}
       >
         {liked ? <IconeAnimee nom="like" className="mr-0.5 inline h-3 w-3" /> : <IconeAnimee nom="like-vide" className="mr-0.5 inline h-3 w-3" />} {compteur}
       </button>
@@ -124,7 +124,7 @@ export default function ActionsReponse({
           <button
             type="button"
             onClick={supprimer}
-            className="rounded-md px-2 py-1 text-cx-destructive hover:bg-cx-destructive/10"
+            className="rounded-md px-2 py-1 text-cx-destructive hover:bg-cx-destructive/5"
           >
             Supprimer
           </button>

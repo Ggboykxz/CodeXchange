@@ -68,10 +68,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             role="status"
             className={`pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur transition ${
               toast.ton === "erreur"
-                ? "border-cx-destructive/40 bg-cx-destructive/10 text-cx-fg"
+                ? "border-cx-destructive/40 bg-cx-destructive/5 text-cx-fg"
                 : toast.ton === "info"
-                  ? "border-cx-primary/40 bg-cx-primary/10 text-cx-fg"
-                  : "border-cx-success/40 bg-cx-success/10 text-cx-fg"
+                  ? "border-cx-primary/40 bg-cx-primary/5 text-cx-fg"
+                  : "border-cx-success/40 bg-cx-success/5 text-cx-fg"
             }`}
           >
             <span aria-hidden="true" className="mt-0.5">
@@ -90,7 +90,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   toast.action?.onClick();
                   retirer(toast.id);
                 }}
-                className="shrink-0 rounded-md px-2 py-1 text-xs font-bold text-cx-primary hover:bg-cx-primary/10"
+                className="shrink-0 rounded-md px-2 py-1 text-xs font-bold text-cx-primary hover:bg-cx-primary/5"
               >
                 {toast.action.label}
               </button>

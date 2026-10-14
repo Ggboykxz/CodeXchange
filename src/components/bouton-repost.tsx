@@ -86,7 +86,7 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
           aria-pressed={etat.jeLaiReposte}
           className={`inline-flex min-h-[40px] cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition disabled:opacity-60 ${
             etat.jeLaiReposte
-              ? "border-cx-success/60 bg-cx-success/10 text-cx-success"
+              ? "border-cx-success/60 bg-cx-success/5 text-cx-success"
               : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-success/60 hover:text-cx-success"
           }`}
         >

@@ -17,7 +17,7 @@ export default async function PageNouveauProjet() {
           ← Retour aux projets
         </Link>
         <h1 className="mt-2 text-3xl font-black tracking-tight">Lancer un projet</h1>
-        <p className="mt-1 text-sm text-[var(--cx-muted)]">
+        <p className="mt-1 text-sm text-cx-muted-fg">
           Décrivez l&apos;idée et ce que vous cherchez : un designer, un mobile, un backend… Les
           membres qui rejoignent apparaissent sur la page du projet.
         </p>

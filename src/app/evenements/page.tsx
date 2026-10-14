@@ -27,8 +27,8 @@ function StatutEvenement({ date, maintenant, locale }: { date: Date; maintenant:
     <span
       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
         passe
-          ? "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
-          : "bg-cx-success/10 text-cx-success"
+          ? "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
+          : "bg-cx-success/5 text-cx-success"
       }`}
     >
       {passe ? t(locale, "events.past") : t(locale, "events.upcoming")}
@@ -72,7 +72,7 @@ function LieuEvenement({ evenement }: { evenement: EventResume }) {
 /** Compteur de présences, au singulier ou au pluriel. */
 function Compteur({ nombre }: { nombre: number }) {
   return (
-    <span className="text-xs text-[var(--cx-muted)]">
+    <span className="text-xs text-cx-muted-fg">
       {nombre} {nombre > 1 ? "participants" : "participant"}
     </span>
   );
@@ -95,7 +95,7 @@ export default async function PageEvenements({ searchParams }: Props) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "events.title")}</h1>
-          <p className="mt-1 text-sm text-[var(--cx-muted)]">
+          <p className="mt-1 text-sm text-cx-muted-fg">
             {t(locale, "events.subtitle")}
           </p>
         </div>
@@ -104,13 +104,13 @@ export default async function PageEvenements({ searchParams }: Props) {
       {evenements.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           <p className="text-lg font-semibold">Aucun événement programmé pour le moment.</p>
-          <p className="mt-2 text-sm text-[var(--cx-muted)]">
+          <p className="mt-2 text-sm text-cx-muted-fg">
             Vous organisez un meet-up ou un hackathon ? Annoncez-le sur le forum : la communauté
             se mobilise vite.
           </p>
           <Link
             href="/forum/nouveau"
-            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
+            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
           >
             Annoncer un événement sur le forum
           </Link>
@@ -128,7 +128,7 @@ export default async function PageEvenements({ searchParams }: Props) {
                 </h2>
               </Link>
 
-              <p className="mt-1 text-xs text-[var(--cx-muted)]">
+              <p className="mt-1 text-xs text-cx-muted-fg">
                 <time dateTime={evenement.date.toISOString()}>
                   {DATE.format(evenement.date)} · {HEURE.format(evenement.date)}
                 </time>{" "}
@@ -140,7 +140,7 @@ export default async function PageEvenements({ searchParams }: Props) {
                   <StatutEvenement date={evenement.date} maintenant={maintenant} locale={locale} />
                 </li>
                 <li>
-                  <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+                  <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
                     {evenement.format}
                   </span>
                 </li>

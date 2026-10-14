@@ -93,7 +93,7 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
             title={r.label}
             className={`inline-flex items-center gap-1 rounded-full border transition ${taille} disabled:opacity-60 ${
               actif
-                ? "border-cx-primary bg-cx-primary/10 font-semibold"
+                ? "border-cx-primary bg-cx-primary/5 font-semibold"
                 : "border-cx-border hover:border-cx-primary/60 hover:bg-cx-muted"
             }`}
           >

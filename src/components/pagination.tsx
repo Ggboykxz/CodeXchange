@@ -31,7 +31,7 @@ function buildHref(props: PaginationProps, p: number): string {
 const CLASSES_LIEN =
   "rounded-lg border border-[var(--cx-muted)]/40 px-3 py-1.5 text-sm font-medium hover:border-[var(--cx-accent)]";
 const CLASSES_DESACTIVE =
-  "cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/20 px-3 py-1.5 text-sm font-medium opacity-40";
+  "cursor-not-allowed rounded-lg border border-cx-muted/30 px-3 py-1.5 text-sm font-medium text-cx-muted-fg opacity-90";
 
 export function Pagination(props: PaginationProps) {
   const { page, totalPages, className } = props;
@@ -55,7 +55,7 @@ export function Pagination(props: PaginationProps) {
         </Link>
       )}
 
-      <span className="text-sm text-[var(--cx-muted)]">
+      <span className="text-sm text-cx-muted-fg">
         Page {pageActuelle} sur {totalPages}
       </span>
       <form

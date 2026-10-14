@@ -54,7 +54,7 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
         aria-current={actif ? "page" : undefined}
         className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
           actif
-            ? "bg-cx-primary/10 text-cx-primary"
+            ? "bg-cx-primary/5 text-cx-primary"
             : "text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
         }`}
       >

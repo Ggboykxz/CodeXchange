@@ -67,7 +67,7 @@ export default function FormulaireOffre() {
           placeholder="Développeur Flutter pour fintech (remote)"
           className={CLASS_CHAMP}
         />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">3 à 120 caractères.</p>
+        <p className="mt-1 text-xs text-cx-muted-fg">3 à 120 caractères.</p>
       </div>
 
       <div>
@@ -147,13 +147,13 @@ export default function FormulaireOffre() {
           placeholder="https://entreprise.ga/offres/123"
           className={CLASS_CHAMP}
         />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">
+        <p className="mt-1 text-xs text-cx-muted-fg">
           URL complète, en http:// ou https:// — c&apos;est le lien que suivront les candidats.
         </p>
       </div>
 
       {erreur && (
-        <p role="alert" className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm text-cx-destructive">
+        <p role="alert" className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm text-cx-destructive">
           {erreur}
         </p>
       )}
@@ -162,7 +162,7 @@ export default function FormulaireOffre() {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? "Publication…" : "Publier l'offre"}
         </button>

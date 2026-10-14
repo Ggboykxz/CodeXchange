@@ -63,7 +63,7 @@ export default function FormulaireProjet() {
           placeholder="Carnet de bord des pêcheurs de Port-Gentil"
           className={CLASS_CHAMP}
         />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">120 caractères max.</p>
+        <p className="mt-1 text-xs text-cx-muted-fg">120 caractères max.</p>
       </div>
 
       <div>
@@ -79,7 +79,7 @@ export default function FormulaireProjet() {
           placeholder="Le problème réglé, l&apos;état d&apos;avancement, la stack…"
           className={CLASS_CHAMP}
         />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">2 000 caractères max.</p>
+        <p className="mt-1 text-xs text-cx-muted-fg">2 000 caractères max.</p>
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row">
@@ -94,7 +94,7 @@ export default function FormulaireProjet() {
             placeholder="Flutter,Node,Postgres"
             className={CLASS_CHAMP}
           />
-          <p className="mt-1 text-xs text-[var(--cx-muted)]">Séparée par des virgules.</p>
+          <p className="mt-1 text-xs text-cx-muted-fg">Séparée par des virgules.</p>
         </div>
 
         <div className="sm:flex-1">
@@ -108,7 +108,7 @@ export default function FormulaireProjet() {
             placeholder="Designer,Mobile"
             className={CLASS_CHAMP}
           />
-          <p className="mt-1 text-xs text-[var(--cx-muted)]">Séparée par des virgules.</p>
+          <p className="mt-1 text-xs text-cx-muted-fg">Séparée par des virgules.</p>
         </div>
       </div>
 
@@ -123,13 +123,13 @@ export default function FormulaireProjet() {
           placeholder="https://github.com/equipe/projet"
           className={CLASS_CHAMP}
         />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">
+        <p className="mt-1 text-xs text-cx-muted-fg">
           URL complète, en http:// ou https:// — dépôt, site ou maquette.
         </p>
       </div>
 
       {erreur && (
-        <p role="alert" className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm text-cx-destructive">
+        <p role="alert" className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm text-cx-destructive">
           {erreur}
         </p>
       )}
@@ -138,7 +138,7 @@ export default function FormulaireProjet() {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? "Publication…" : "Lancer le projet"}
         </button>

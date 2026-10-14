@@ -24,7 +24,7 @@ export function BadgeNiveau({ karma }: { karma: number }) {
   return (
     <span
       title={`Niveau ${n.niveau} — ${n.titre}`}
-      className="inline-flex items-center gap-1 rounded-full bg-cx-primary/10 px-2 py-0.5 text-[11px] font-semibold text-cx-primary"
+      className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2 py-0.5 text-[11px] font-semibold text-cx-primary"
     >
       <span aria-hidden>★</span>
       N{n.niveau} · {n.titre}

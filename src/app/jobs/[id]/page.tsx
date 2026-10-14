@@ -59,14 +59,14 @@ export default async function PageOffre({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {offre.titre}
         </h1>
-        <p className="text-sm text-[var(--cx-muted)]">
+        <p className="text-sm text-cx-muted-fg">
           {offre.entreprise} ·{" "}
           {offre.ville ? `${offre.ville}, ${offre.pays}` : offre.pays} ·{" "}
           {DATE.format(offre.createdAt)}
         </p>
         <ul className="flex flex-wrap gap-2">
           <li>
-            <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+            <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
               {offre.contrat}
             </span>
           </li>
@@ -74,8 +74,8 @@ export default async function PageOffre({ params }: Props) {
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 offre.remote
-                  ? "bg-cx-success/10 text-cx-success"
-                  : "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
+                  ? "bg-cx-success/5 text-cx-success"
+                  : "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
               }`}
             >
               {offre.remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
@@ -95,7 +95,7 @@ export default async function PageOffre({ params }: Props) {
           <BoutonSignaler kind="job" targetId={jobId} />
         </div>
         {userId === null && (
-          <p className="text-sm text-[var(--cx-muted)]">
+          <p className="text-sm text-cx-muted-fg">
             <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
               Connectez-vous
             </Link>{" "}
@@ -106,14 +106,14 @@ export default async function PageOffre({ params }: Props) {
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "jobs.author")}</h2>
-        <p className="mt-1 text-[var(--cx-muted)]">
+        <p className="mt-1 text-cx-muted-fg">
           {offre.auteur.nom} · {offre.auteur.ville}, {offre.auteur.pays}
         </p>
       </section>
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "jobs.external")}</h2>
-        <p className="mt-1 text-[var(--cx-muted)]">
+        <p className="mt-1 text-cx-muted-fg">
           {t(locale, "jobs.external_desc")}
         </p>
         <a

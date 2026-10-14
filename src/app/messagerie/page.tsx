@@ -45,7 +45,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
                   <Link
                     href={`/messagerie?with=${t.autreId}`}
                     className={`block rounded-lg px-3 py-2 text-sm ${
-                      withId === t.autreId ? "bg-cx-primary/10 text-cx-primary" : "hover:bg-cx-muted"
+                      withId === t.autreId ? "bg-cx-primary/5 text-cx-primary" : "hover:bg-cx-muted"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -84,7 +84,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
                           }`}
                         >
                           {m.corps}
-                          <div className="mt-1 text-[10px] opacity-70 text-right">
+                          <div className="mt-1 text-right text-xs opacity-90">
                             {m.createdAt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                           </div>
                         </div>

@@ -23,7 +23,7 @@ type Props = {
 /** Badge contrat : rempli pour le type de contrat, bordé pour le mode de travail. */
 function BadgeContrat({ contrat }: { contrat: string }) {
   return (
-    <span className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+    <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
       {contrat}
     </span>
   );
@@ -34,8 +34,8 @@ function BadgeRemote({ remote, locale }: { remote: boolean; locale: Locale }) {
     <span
       className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
         remote
-          ? "bg-cx-success/10 text-cx-success"
-          : "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
+          ? "bg-cx-success/5 text-cx-success"
+          : "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
       }`}
     >
       {remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
@@ -74,13 +74,13 @@ export default async function PageJobs({ searchParams }: Props) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "jobs.title")}</h1>
-          <p className="mt-1 text-sm text-[var(--cx-muted)]">
+          <p className="mt-1 text-sm text-cx-muted-fg">
             {t(locale, "jobs.subtitle")}
           </p>
         </div>
         <Link
           href="/jobs/nouveau"
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white"
+          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           {t(locale, "jobs.new")}
         </Link>
@@ -181,7 +181,7 @@ export default async function PageJobs({ searchParams }: Props) {
           {filtreActif ? (
             <>
               <p className="text-lg font-semibold">{t(locale, "jobs.empty_title")}</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
+              <p className="mt-2 text-sm text-cx-muted-fg">
                 {t(locale, "jobs.empty_desc")}
               </p>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
@@ -193,7 +193,7 @@ export default async function PageJobs({ searchParams }: Props) {
                 </Link>
                 <Link
                   href="/jobs/nouveau"
-                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-cx-accent-fg"
                 >
                   {t(locale, "jobs.new")}
                 </Link>
@@ -202,12 +202,12 @@ export default async function PageJobs({ searchParams }: Props) {
           ) : (
             <>
               <p className="text-lg font-semibold">{t(locale, "jobs.empty_title")}</p>
-              <p className="mt-2 text-sm text-[var(--cx-muted)]">
+              <p className="mt-2 text-sm text-cx-muted-fg">
                 {t(locale, "jobs.empty_desc")}
               </p>
               <Link
                 href="/jobs/nouveau"
-                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
+                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
               >
                 {t(locale, "jobs.new")}
               </Link>
@@ -227,7 +227,7 @@ export default async function PageJobs({ searchParams }: Props) {
                 </h2>
               </Link>
 
-              <p className="mt-1 text-xs text-[var(--cx-muted)]">
+              <p className="mt-1 text-xs text-cx-muted-fg">
                 {offre.entreprise} ·{" "}
                 {offre.remote && offre.ville
                   ? `${offre.ville}, ${offre.pays} · remote possible`

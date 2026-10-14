@@ -79,7 +79,7 @@ export default async function PageSujet({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {sujet.titre}
         </h1>
-        <p className="text-sm text-[var(--cx-muted)]">
+        <p className="text-sm text-cx-muted-fg">
           {sujet.author.nom} · {sujet.author.ville}, {sujet.author.pays} ·{" "}
           {DATE.format(sujet.createdAt)}
         </p>
@@ -89,7 +89,7 @@ export default async function PageSujet({ params }: Props) {
               <li key={mot}>
                 <Link
                   href={`/forum?tag=${encodeURIComponent(mot.trim())}`}
-                  className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-medium text-[var(--cx-accent)]"
+                  className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-medium text-[var(--cx-accent)]"
                 >
                   {mot.trim()}
                 </Link>
@@ -148,7 +148,7 @@ export default async function PageSujet({ params }: Props) {
         </h2>
 
         {sujet.replies.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-6 text-sm text-[var(--cx-muted)]">
+          <p className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-6 text-sm text-cx-muted-fg">
             {userId === null
               ? t(locale, "forum.no_answer_cta")
               : t(locale, "forum.no_answer")}
@@ -167,7 +167,7 @@ export default async function PageSujet({ params }: Props) {
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5">
         <h2 className="text-lg font-semibold">{t(locale, "forum.your_answer")}</h2>
         {userId === null ? (
-          <p className="mt-3 text-sm text-[var(--cx-muted)]">
+          <p className="mt-3 text-sm text-cx-muted-fg">
             <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
               Connectez-vous
             </Link>{" "}

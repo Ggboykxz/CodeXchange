@@ -73,13 +73,13 @@ export default function FormulaireSujet() {
       <div>
         <label htmlFor="titre" className="mb-1 block text-sm font-medium">Titre du sujet</label>
         <input id="titre" name="titre" type="text" required minLength={8} maxLength={120} placeholder="Bug Flutter sur Android 14 : crash au démarrage" className={CLASS_CHAMP} value={titre} onChange={(e) => setTitre(e.target.value)} />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">8 à 120 caractères. Brouillon sauvegardé automatiquement.</p>
+        <p className="mt-1 text-xs text-cx-muted-fg">8 à 120 caractères. Brouillon sauvegardé automatiquement.</p>
       </div>
 
       <div>
         <label htmlFor="corps" className="mb-1 block text-sm font-medium">Corps du sujet</label>
         <textarea id="corps" name="corps" required rows={8} maxLength={5000} placeholder="Décrivez le contexte…" className={`${CLASS_CHAMP} resize-y`} value={corps} onChange={(e) => setCorps(e.target.value)} />
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">5 000 caractères maximum.</p>
+        <p className="mt-1 text-xs text-cx-muted-fg">5 000 caractères maximum.</p>
       </div>
 
       <div>
@@ -99,15 +99,15 @@ export default function FormulaireSujet() {
           <option value="jobs" />
           <option value="mentorat" />
         </datalist>
-        <p className="mt-1 text-xs text-[var(--cx-muted)]">1 à 3 tags séparés par des virgules.</p>
+        <p className="mt-1 text-xs text-cx-muted-fg">1 à 3 tags séparés par des virgules.</p>
       </div>
 
       {erreur && (
-        <p role="alert" className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm text-cx-destructive">{erreur}</p>
+        <p role="alert" className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm text-cx-destructive">{erreur}</p>
       )}
 
       <div className="flex flex-wrap gap-3">
-        <button type="submit" disabled={enCours} className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+        <button type="submit" disabled={enCours} className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60">
           {enCours ? "Publication…" : "Publier le sujet"}
         </button>
         <button

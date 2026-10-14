@@ -28,7 +28,7 @@ export default function ActionsMembre({ userId, banni }: Props) {
       onClick={basculer}
       disabled={busy}
       className={`shrink-0 rounded-md px-2 py-1 text-xs font-semibold ${
-        banni ? "bg-cx-success/10 text-cx-success" : "bg-cx-destructive/10 text-cx-destructive"
+        banni ? "bg-cx-success/5 text-cx-success" : "bg-cx-destructive/5 text-cx-destructive"
       }`}
     >
       {banni ? t(locale, "admin.unban") : t(locale, "admin.ban")}

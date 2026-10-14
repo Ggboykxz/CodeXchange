@@ -6,14 +6,14 @@
  */
 
 const PALETTE = [
-  "#E4572E", // terracotta
-  "#F4A259", // ocre
-  "#2A9D8F", // vert profond
+  "#C2410C", // terracotta
+  "#B45309", // ocre
+  "#0F766E", // vert profond
   "#6A4C93", // prune
-  "#BC6C25", // brun chaud
+  "#8A4F12", // brun chaud
   "#457B9D", // bleu savane
   "#D90429", // rouge kola
-  "#40916C", // vert mangue
+  "#166534", // vert mangue
 ] as const;
 
 /** Empreinte FNV-1a 32 bits du slug (stable, sans dépendance). */

@@ -23,13 +23,13 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
               {mentor.nom}
             </h2>
           </Link>
-          <p className="truncate text-sm text-[var(--cx-muted)]">{mentor.titre}</p>
-          <p className="mt-1 text-xs text-[var(--cx-muted)]">
+          <p className="truncate text-sm text-cx-muted-fg">{mentor.titre}</p>
+          <p className="mt-1 text-xs text-cx-muted-fg">
             {drapeau(mentor.pays)} {mentor.ville}, {mentor.pays}
           </p>
 
           {mentor.bio && (
-            <p className="mt-2 text-sm leading-relaxed text-[var(--cx-muted)]">{mentor.bio}</p>
+            <p className="mt-2 text-sm leading-relaxed text-cx-muted-fg">{mentor.bio}</p>
           )}
 
           {mentor.stack.length > 0 && (
@@ -37,7 +37,7 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
               {mentor.stack.map((technologie) => (
                 <li
                   key={technologie}
-                  className="rounded-full bg-[var(--cx-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                  className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
                 >
                   {technologie}
                 </li>
@@ -76,7 +76,7 @@ export default async function PageMentorat({ searchParams }: Props) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "mentorship.title")}</h1>
-          <p className="mt-1 text-sm text-[var(--cx-muted)]">
+          <p className="mt-1 text-sm text-cx-muted-fg">
             {t(locale, "mentorship.subtitle")}
           </p>
         </div>
@@ -87,12 +87,12 @@ export default async function PageMentorat({ searchParams }: Props) {
       {mentors.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           <p className="text-lg font-semibold">{t(locale, "mentorship.empty_title")}</p>
-          <p className="mt-2 text-sm text-[var(--cx-muted)]">
+          <p className="mt-2 text-sm text-cx-muted-fg">
             {t(locale, "mentorship.empty_desc")}
           </p>
           <Link
             href="/inscription"
-            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white"
+            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
           >
             {t(locale, "auth.register_link")}
           </Link>

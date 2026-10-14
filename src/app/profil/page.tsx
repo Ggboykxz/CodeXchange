@@ -33,7 +33,7 @@ export default async function PageProfil() {
           <div>
             <p className="text-lg font-semibold">{membre.nom}</p>
             <p className="text-sm text-cx-muted-fg">Karma : {karma}</p>
-            <p className="text-sm text-[var(--cx-muted)]">
+            <p className="text-sm text-cx-muted-fg">
               {membre.titre} · {drapeau(membre.pays)} {membre.ville}, {membre.pays}
             </p>
           </div>
@@ -43,14 +43,14 @@ export default async function PageProfil() {
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.bio")}</h2>
-        <p className="mt-2 whitespace-pre-line text-[var(--cx-muted)]">
+        <p className="mt-2 whitespace-pre-line text-cx-muted-fg">
           {membre.bio || t(locale, "profile.bio_empty")}
         </p>
       </section>
 
       <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.stack")}</h2>
-        <p className="mt-2 text-[var(--cx-muted)]">{membre.stack || t(locale, "profile.stack_empty")}</p>
+        <p className="mt-2 text-cx-muted-fg">{membre.stack || t(locale, "profile.stack_empty")}</p>
       </section>
 
       <Link href="/parametres" className="text-sm text-cx-accent">

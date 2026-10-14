@@ -27,7 +27,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
         disabled
         aria-disabled="true"
         title="Connectez-vous pour liker ce sujet"
-        className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-3 py-1.5 text-sm text-[var(--cx-muted)] opacity-60"
+        className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-3 py-1.5 text-sm text-cx-muted-fg opacity-60"
       >
         {aime ? "♥" : "♡"} {nombre} · connectez-vous pour liker
       </button>
@@ -64,7 +64,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
         aria-pressed={aime}
         className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition disabled:opacity-60 ${
           aime
-            ? "border-[var(--cx-accent)] bg-[var(--cx-accent)]/10 text-[var(--cx-accent)]"
+            ? "border-[var(--cx-accent)] bg-[var(--cx-accent)]/5 text-[var(--cx-accent)]"
             : "border-[var(--cx-muted)]/40 hover:border-[var(--cx-accent)]"
         }`}
       >

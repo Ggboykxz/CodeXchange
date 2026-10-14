@@ -28,7 +28,7 @@ export default async function PageFavoris() {
     <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header>
         <h1 className="text-3xl font-black tracking-tight">{t(locale, "favorites.title")}</h1>
-        <p className="mt-1 text-sm text-[var(--cx-muted)]">
+        <p className="mt-1 text-sm text-cx-muted-fg">
           {total === 0
             ? t(locale, "favorites.none")
             : `${total} ${t(locale, "favorites.count_many")}`}
@@ -38,10 +38,10 @@ export default async function PageFavoris() {
       {sections.length === 0 ? (
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           <p className="text-lg font-semibold">{t(locale, "favorites.empty_title")}</p>
-          <p className="mt-2 text-sm text-[var(--cx-muted)]">
+          <p className="mt-2 text-sm text-cx-muted-fg">
             Utilisez l&apos;étoile ☆ sur les pages des sujets, offres, projets, tutos, événements ou membres.
           </p>
-          <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-white">
+          <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg">
             {t(locale, "favorites.discover")}
           </Link>
         </section>
@@ -49,7 +49,7 @@ export default async function PageFavoris() {
         <div className="flex flex-col gap-6">
           {sections.map((section) => (
             <section key={section.libelle}>
-              <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--cx-muted)]">{section.libelle}</h2>
+              <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-cx-muted-fg">{section.libelle}</h2>
               <ul className="mt-3 flex flex-col gap-2">
                 {section.items.map((item) => (
                   <li key={item.id}>

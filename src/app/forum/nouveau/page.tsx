@@ -17,7 +17,7 @@ export default async function PageNouveauSujet() {
           ← Retour au forum
         </Link>
         <h1 className="mt-2 text-3xl font-black tracking-tight">Écrire un sujet</h1>
-        <p className="mt-1 text-sm text-[var(--cx-muted)]">
+        <p className="mt-1 text-sm text-cx-muted-fg">
           Un titre clair et 1 à 3 tags, c&apos;est ce qu&apos;il faut pour obtenir une réponse rapide.
         </p>
       </header>

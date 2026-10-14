@@ -93,7 +93,7 @@ export default function PageInscription() {
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "auth.register_title")}</h1>
-      <p className="mt-2 text-sm text-[var(--cx-muted)]">
+      <p className="mt-2 text-sm text-cx-muted-fg">
         {t(locale, "home.hero_sub")}
       </p>
 
@@ -210,7 +210,7 @@ export default function PageInscription() {
         {erreur ? (
           <p
             role="alert"
-            className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm font-medium text-cx-destructive"
+            className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm font-medium text-cx-destructive"
           >
             {erreur}
           </p>
@@ -219,13 +219,13 @@ export default function PageInscription() {
         <button
           type="submit"
           disabled={enCours}
-          className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? t(locale, "common.loading") : t(locale, "auth.register_submit")}
         </button>
       </form>
 
-      <p className="mt-6 text-sm text-[var(--cx-muted)]">
+      <p className="mt-6 text-sm text-cx-muted-fg">
         {t(locale, "auth.has_account")}{" "}
         <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
           {t(locale, "auth.login_link")}

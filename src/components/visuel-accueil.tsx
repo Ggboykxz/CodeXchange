@@ -32,7 +32,7 @@ export default function VisuelAccueil() {
           </div>
         </div>
         <div className="mt-2 flex items-center gap-2 text-[11px] text-cx-muted-fg">
-          <span className="rounded-full bg-cx-primary/10 px-2 py-0.5 font-semibold text-cx-primary">
+          <span className="rounded-full bg-cx-primary/5 px-2 py-0.5 font-semibold text-cx-primary">
             1 240 abonnés
           </span>
           <span className="rounded-full bg-cx-muted px-2 py-0.5">Niveau 6</span>

@@ -71,7 +71,7 @@ export default function PageOnboarding() {
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-12">
       <p className="text-sm font-semibold text-cx-primary">Dernière étape</p>
       <h1 className="mt-1 text-3xl font-black tracking-tight">Que voulez-vous apprendre&nbsp;?</h1>
-      <p className="mt-2 text-sm text-[var(--cx-muted)]">
+      <p className="mt-2 text-sm text-cx-muted-fg">
         Choisissez vos centres d&apos;intérêt : votre fil et vos tendances s&apos;adapteront.
         Vous pouvez en prendre aucun et modifier plus tard.
       </p>
@@ -87,7 +87,7 @@ export default function PageOnboarding() {
                 aria-pressed={actif}
                 className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
                   actif
-                    ? "border-cx-primary bg-cx-primary/10 text-cx-primary"
+                    ? "border-cx-primary bg-cx-primary/5 text-cx-primary"
                     : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-primary/60"
                 }`}
               >
@@ -105,7 +105,7 @@ export default function PageOnboarding() {
           type="button"
           onClick={terminer}
           disabled={enCours}
-          className="rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+          className="rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 disabled:opacity-60"
         >
           {enCours ? "Enregistrement…" : `Terminer${choisis.size > 0 ? ` (${choisis.size})` : ""}`}
         </button>

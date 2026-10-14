@@ -92,7 +92,7 @@ export default function MenuUtilisateur({ locale, nonLues, nonLusMessages, estAd
           type="button"
           role="menuitem"
           onClick={deconnecter}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-cx-destructive hover:bg-cx-destructive/10"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-cx-destructive hover:bg-cx-destructive/5"
         >
           <Icone nom="deconnexion" className="h-4 w-4 shrink-0" />
           {t(locale, "nav.logout")}
