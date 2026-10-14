@@ -106,6 +106,7 @@ model Message {
 model Like {
   userId Int
   postId Int
+  valeur Int @default(1) // +1 upvote, -1 downvote
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 

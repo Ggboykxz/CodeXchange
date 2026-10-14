@@ -29,6 +29,8 @@ export type AuteurResume = Pick<User, keyof typeof SELECT_AUTEUR>;
 
 export type PostResume = Omit<Post, "author" | "replies" | "likes"> & {
   author: AuteurResume;
+  score: number;
+  userVote: number;
   _count: { replies: number; likes: number };
 };
 
@@ -40,10 +42,12 @@ export type ReponseDetail = Omit<Reply, "author" | "post"> & {
 export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   author: AuteurResume;
   replies: ReponseDetail[];
+  score: number;
+  userVote: number;
   _count: { replies: number; likes: number };
 };
 
-export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number; tri?: "recent" | "populaire" };
+export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number; tri?: "hot" | "new" | "top" | "recent" | "populaire"; userId?: number };
 
 export type NouveauSujet = { titre: string; corps: string; tags: string[] };
 
@@ -89,14 +93,27 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
     include: {
       author: { select: SELECT_AUTEUR },
       _count: { select: { replies: true, likes: true } },
+      likes: { select: { valeur: true, userId: true } },
     },
   });
 
+  // Score net + vote de l'utilisateur connecté.
+  type SujetBrut = (typeof sujets)[number] & { likes: { valeur: number; userId: number }[] };
+  const pourUtilisateur = (sujets as unknown as SujetBrut[]).map((s) => {
+    const score = (s.likes as { valeur: number }[]).reduce((acc, x) => acc + x.valeur, 0);
+    const userVote = f?.userId
+      ? (s.likes as { valeur: number; userId: number }[]).find((x) => x.userId === f.userId)?.valeur ?? 0
+      : 0;
+    const { likes: _likes, ...rest } = s;
+    void _likes;
+    return { ...rest, score, userVote };
+  }) as unknown as PostResume[];
+
   const q = f?.q?.trim().toLowerCase() ?? "";
   const tag = f?.tag?.trim().toLowerCase() ?? "";
-  let filtrees = sujets;
+  let filtrees = pourUtilisateur;
   if (q || tag) {
-    filtrees = sujets.filter((sujet) => {
+    filtrees = pourUtilisateur.filter((sujet) => {
       if (q) {
         const dansTitre = sujet.titre.toLowerCase().includes(q);
         const dansCorps = sujet.corps.toLowerCase().includes(q);
@@ -107,13 +124,22 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
     });
   }
 
-  // Tri : « populaire » = score likes + 2×réponses, puis date.
-  if (f?.tri === "populaire") {
+  const now = Date.now();
+  const tri = f?.tri ?? "hot";
+  // Score hot de type Hacker/Reddit : log du score + pondération de l'age.
+  if (tri === "hot" || tri === "recent" || tri === "populaire") {
     filtrees = [...filtrees].sort((a, b) => {
-      const scoreA = a._count.likes + a._count.replies * 2;
-      const scoreB = b._count.likes + b._count.replies * 2;
-      return scoreB - scoreA || b.createdAt.getTime() - a.createdAt.getTime();
+      // hot = score/(age+2)^1.5
+      const ageA = (now - a.createdAt.getTime()) / 1000;
+      const ageB = (now - b.createdAt.getTime()) / 1000;
+      const hotA = (a as { score: number }).score / Math.pow(ageA + 3600, 1.5);
+      const hotB = (b as { score: number }).score / Math.pow(ageB + 3600, 1.5);
+      return hotB - hotA || b.createdAt.getTime() - a.createdAt.getTime();
     });
+  } else if (tri === "top") {
+    filtrees = [...filtrees].sort((a, b) => ((b as { score: number }).score - (a as { score: number }).score) || b.createdAt.getTime() - a.createdAt.getTime());
+  } else if (tri === "new") {
+    filtrees = [...filtrees].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   if (f?.page !== undefined) {
@@ -123,7 +149,7 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
 }
 
 /** Sujet complet : auteur, réponses triées par date, compteur de likes. `null` si inexistant. */
-export async function getPost(id: number): Promise<PostDetail | null> {
+export async function getPost(id: number, userId?: number): Promise<PostDetail | null> {
   if (!Number.isInteger(id) || id <= 0) return null;
   const result = await prisma.post.findUnique({
     where: { id },
@@ -134,16 +160,22 @@ export async function getPost(id: number): Promise<PostDetail | null> {
         include: { author: { select: SELECT_AUTEUR }, _count: { select: { likes: true } } },
       },
       _count: { select: { replies: true, likes: true } },
+      likes: { select: { valeur: true, userId: true } },
     },
   });
-  if (result) {
+  if (!result) return null;
+  const score = result.likes.reduce((acc, x) => acc + x.valeur, 0);
+  const userVote = userId ? result.likes.find((x) => x.userId === userId)?.valeur ?? 0 : 0;
+  if (result.replies) {
     result.replies.sort((a: ReponseDetail, b: ReponseDetail) => {
       const diffLikes = (b._count?.likes ?? 0) - (a._count?.likes ?? 0);
       if (diffLikes !== 0) return diffLikes;
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
   }
-  return result;
+  const { likes: _likes2, ...rest } = result;
+  void _likes2;
+  return { ...rest, score, userVote } as PostDetail;
 }
 
 /** Création d'un sujet ; lève `FORUM_VALIDATION` (422) en cas de règle violée. */
@@ -316,6 +348,48 @@ export async function toggleLike(postId: number, userId: number): Promise<boolea
     }
     throw erreur;
   }
+}
+
+/** Vote Reddit-like : retourne +1, -1 ou 0 (retrait). */
+export async function votePost(postId: number, userId: number, direction: 1 | -1): Promise<number> {
+  const post = await prisma.post.findUnique({ where: { id: postId }, select: { id: true, authorId: true } });
+  if (!post) throw new AppError("FORUM_VALIDATION", "Sujet introuvable.");
+
+  const paire = { userId, postId };
+  const existant = await prisma.like.findUnique({ where: { userId_postId: paire } });
+
+  if (existant) {
+    if (existant.valeur === direction) {
+      await prisma.like.delete({ where: { userId_postId: paire } });
+      return 0;
+    }
+    await prisma.like.update({ where: { userId_postId: paire }, data: { valeur: direction } });
+    if (direction === 1 && post.authorId !== userId) {
+      try {
+        await createNotification({ userId: post.authorId, type: "LIKE_SUJET", text: "Votre sujet a reçu un upvote.", lien: `/forum/${postId}` });
+      } catch {}
+    }
+    return direction;
+  }
+
+  try {
+    await prisma.like.create({ data: { ...paire, valeur: direction } });
+    if (direction === 1 && post.authorId !== userId) {
+      try {
+        await createNotification({ userId: post.authorId, type: "LIKE_SUJET", text: "Votre sujet a reçu un upvote.", lien: `/forum/${postId}` });
+      } catch {}
+    }
+    return direction;
+  } catch (erreur) {
+    if (estDoublon(erreur)) return 0;
+    throw erreur;
+  }
+}
+
+/** Vote actuel d'un membre sur ce sujet (+1/-1/0). */
+export async function aVote(userId: number, postId: number): Promise<number> {
+  const like = await prisma.like.findUnique({ where: { userId_postId: { userId, postId } }, select: { valeur: true } });
+  return like?.valeur ?? 0;
 }
 
 /** Ce membre a-t-il déjà liké ce sujet ? (utilisé par la page de détail) */

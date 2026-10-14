@@ -2,6 +2,7 @@ import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
+import { getSessionUserId } from "@/lib/session";
 import SelecteurTri from "@/components/selecteur-tri";
 import { listPosts } from "@/lib/forum";
 
@@ -24,9 +25,11 @@ export default async function PageForum({ searchParams }: Props) {
   const q = (params.q ?? "").trim();
   const tag = (params.tag ?? "").trim();
   const page = normalizePage(params.page);
-  const tri = params.tri === "populaire" ? "populaire" : "recent";
+  const userId = await getSessionUserId();
+  const triParam = params.tri;
+  const tri = triParam === "new" || triParam === "top" ? triParam : "hot";
   const [resultat, locale] = await Promise.all([
-    listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12, tri }),
+    listPosts({ q: q || undefined, tag: tag || undefined, page, pageSize: 12, tri, userId: userId == null ? undefined : userId }),
     localeCourante(),
   ]);
   const sujets = resultat.items;
@@ -50,6 +53,7 @@ export default async function PageForum({ searchParams }: Props) {
           {t(locale, "forum.new")}
         </Link>
       </header>
+      <p className="text-sm text-cx-muted-fg"><a href="/forum/tags" className="text-cx-primary hover:underline">Voir toutes les communautés →</a></p>
 
       <form action="/forum" method="get" className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor="q" className="sr-only">
@@ -96,8 +100,9 @@ export default async function PageForum({ searchParams }: Props) {
           params={{ q: q || undefined, tag: tag || undefined, tri }}
           actuelle={tri}
           options={[
-            { valeur: "recent", cle: "sort.recent" },
-            { valeur: "populaire", cle: "sort.popular" },
+            { valeur: "hot", cle: "sort.hot" },
+            { valeur: "new", cle: "sort.new" },
+            { valeur: "top", cle: "sort.top" },
           ]}
           libelles={{
             tri: t(locale, "sort.label"),

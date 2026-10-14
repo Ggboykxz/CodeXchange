@@ -239,6 +239,9 @@ const FR: Record<string, string> = {
   "sort.label": "Trier par",
   "sort.recent": "Plus récents",
   "sort.popular": "Plus populaires",
+  "sort.hot": "Hot",
+  "sort.top": "Top",
+  "sort.new": "Nouveaux",
   // Mon espace
   "activity.title": "Mon activité",
   "activity.tab_sujets": "Mes sujets",
@@ -249,6 +252,7 @@ const FR: Record<string, string> = {
   "activity.no_applications": "Vous n'avez pas encore postulé. Les offres sont par ici.",
   "activity.no_projects": "Vous n'êtes membre d'aucun projet pour l'instant.",
   // Recherche
+  "tags.title": "Communautés",
   "search.title": "Recherche",
   "search.subtitle": "Une barre, cinq rubriques.",
   "search.placeholder": "Rechercher partout…",
@@ -520,6 +524,7 @@ const EN: Record<string, string> = {
   "activity.no_posts": "You haven't written any post yet. The forum is waiting!",
   "activity.no_applications": "You haven't applied yet. Jobs are this way.",
   "activity.no_projects": "You're not a member of any project yet.",
+  "tags.title": "Communities",
   "search.title": "Search",
   "search.subtitle": "One bar, five sections.",
   "search.recent": "Recent searches",

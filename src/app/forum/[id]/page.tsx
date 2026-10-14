@@ -6,6 +6,7 @@ import { isFavorite } from "@/lib/favorites";
 import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
+import BoutonVote from "@/components/bouton-vote";
 import BoutonCopier from "@/components/bouton-copier";
 import TexteRepliable from "@/components/texte-repliable";
 import RenduMarkdown from "@/components/rendu-markdown";
@@ -42,10 +43,9 @@ export default async function PageSujet({ params }: Props) {
   const { id } = await params;
   const postId = parseId(id);
   if (postId === null) notFound();
-  const sujet = await getPost(postId);
-  if (!sujet) notFound();
-
   const [userId, locale] = await Promise.all([getSessionUserId(), localeCourante()]);
+  const sujet = await getPost(postId, userId ?? undefined);
+  if (!sujet) notFound();
   const likedByMe = userId === null ? false : await aLike(userId, postId);
   const favoriDuSujet = userId === null ? false : await isFavorite(userId, "post", postId);
 
@@ -109,9 +109,14 @@ export default async function PageSujet({ params }: Props) {
         </div>
       </header>
 
-      <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
+      <div className="flex gap-4">
+        <BoutonVote postId={postId} initialVote={sujet.userVote} initialScore={sujet.score} connecte={userId !== null} />
+        <div className="flex-1">
+          <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
         <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
       </article>
+        </div>
+      </div>
 
       <div className="flex justify-end">
         <BoutonSignaler kind="post" targetId={postId} />
