@@ -6,9 +6,11 @@ import { drapeau } from "@/lib/drapeaux";
 import { getSessionUserId } from "@/lib/session";
 import { getMemberBySlug, type MembreDetail } from "@/lib/members";
 import { isFavorite } from "@/lib/favorites";
+import { getCompteursSuivi } from "@/lib/follows";
 import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
+import BoutonSuivre from "@/components/bouton-suivre";
 import FilAriane from "@/components/fil-ariane";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -45,6 +47,7 @@ export default async function PageMembre({ params }: Props) {
   const [membre, userId, locale] = await Promise.all([lireMembre(slug), getSessionUserId(), localeCourante()]);
   if (!membre) notFound(); // 404 soignée FR via `src/app/not-found.tsx`
   const favoriDuMembre = userId === null ? false : await isFavorite(userId, "membre", membre.id);
+  const compteursSuivi = await getCompteursSuivi(membre.id, userId ?? undefined);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
@@ -78,14 +81,26 @@ export default async function PageMembre({ params }: Props) {
             </p>
           )}
           {userId !== null && userId !== membre.id && (
-            <p className="mt-3 flex flex-wrap gap-2">
+            <p className="mt-3 flex flex-wrap items-start gap-2">
+              <BoutonSuivre
+                cibleId={membre.id}
+                initial={compteursSuivi}
+                connecte={userId !== null}
+              />
               <Link
                 href={`/messagerie?with=${membre.id}`}
-                className="inline-block rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-xs font-semibold text-cx-card-fg hover:bg-cx-muted"
+                className="inline-flex min-h-[40px] items-center rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-xs font-semibold text-cx-card-fg hover:bg-cx-muted"
               >
                 {t(locale, "directory.message")}
               </Link>
               <BoutonFavori kind="membre" targetId={membre.id} initial={favoriDuMembre} connecte={userId !== null} />
+            </p>
+          )}
+          {userId === null && (
+            <p className="mt-3">
+              <span className="text-xs text-[var(--cx-muted)]">
+                {compteursSuivi.abonnes} abonné{compteursSuivi.abonnes > 1 ? "s" : ""} · {compteursSuivi.abonnements} abonnement{compteursSuivi.abonnements > 1 ? "s" : ""}
+              </span>
             </p>
           )}
           {userId !== null && userId !== membre.id ? (

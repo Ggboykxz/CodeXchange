@@ -49,6 +49,8 @@ model User {
   notifications Notification[]
   favoris       Favorite[]
   signalements  Report[] @relation("Reporter")
+  following     UserFollow[] @relation("Following")
+  followers     UserFollow[] @relation("Followers")
 }
 
 model Session {
@@ -311,4 +313,15 @@ model TagFollow {
   createdAt DateTime @default(now())
 
   @@id([userId, tag])
+}
+
+model UserFollow {
+  followerId Int    // qui suit
+  followeeId Int    // qui est suivi
+  createdAt  DateTime @default(now())
+  follower   User @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  followee   User @relation("Followers", fields: [followeeId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followeeId])
+  @@index([followeeId])
 }
