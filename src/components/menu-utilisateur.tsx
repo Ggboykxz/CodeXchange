@@ -42,7 +42,7 @@ function Item({
       <Icone nom={icone} className="h-4 w-4 shrink-0 text-cx-muted-fg" />
       <span className="flex-1">{libelle}</span>
       {badge && badge > 0 ? (
-        <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-cx-primary px-1 text-[10px] font-bold text-cx-primary-fg">
+        <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cx-primary px-1 text-[11px] font-bold text-cx-primary-fg">
           {badge}
         </span>
       ) : null}

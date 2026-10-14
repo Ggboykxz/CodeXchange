@@ -72,7 +72,7 @@ export async function Header() {
                 >
                   <Icone nom="notifications" className="h-5 w-5" />
                   {nonLues > 0 ? (
-                    <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-cx-primary px-1 text-[10px] font-bold text-cx-primary-fg">
+                    <span className="absolute -right-0.5 -top-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cx-primary px-1 text-[11px] font-bold text-cx-primary-fg">
                       {nonLues}
                     </span>
                   ) : null}

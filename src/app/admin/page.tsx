@@ -143,7 +143,7 @@ export default async function PageAdmin() {
                 <span className="truncate font-medium">{m.nom}</span>
                 <span className="text-xs text-cx-muted-fg">{m.titre}</span>
                 {m.bannedAt ? (
-                  <span className="rounded-full bg-cx-destructive/5 px-2 py-0.5 text-[10px] font-bold text-cx-destructive">
+                  <span className="rounded-full bg-cx-destructive/5 px-2 py-0.5 text-xs font-bold text-cx-destructive">
                     {t(locale, "admin.suspended")}
                   </span>
                 ) : null}

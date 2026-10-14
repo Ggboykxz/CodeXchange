@@ -24,14 +24,12 @@ export default function VisuelAccueil() {
           <div className="min-w-0">
             <p className="flex items-center gap-1 truncate text-sm font-semibold">
               Aïcha Ondo
-              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-cx-primary text-[8px] font-bold text-cx-primary-fg">
-                ✓
-              </span>
+              <Icone nom="verifie" className="h-3.5 w-3.5 shrink-0 text-cx-primary" />
             </p>
             <p className="truncate text-xs text-cx-muted-fg">Ingénieure · Cameroun</p>
           </div>
         </div>
-        <div className="mt-2 flex items-center gap-2 text-[11px] text-cx-muted-fg">
+        <div className="mt-2 flex items-center gap-2 text-xs text-cx-muted-fg">
           <span className="rounded-full bg-cx-primary/5 px-2 py-0.5 font-semibold text-cx-primary">
             1 240 abonnés
           </span>
@@ -47,7 +45,7 @@ export default function VisuelAccueil() {
         <p className="mt-1 text-sm font-medium leading-snug">
           Retour d&apos;expérience : Dart isolates en prod 🚀
         </p>
-        <div className="mt-2 flex items-center gap-1.5 text-[11px]">
+        <div className="mt-2 flex items-center gap-1.5 text-xs">
           <span className="rounded-full bg-cx-muted px-2 py-0.5">👍 34</span>
           <span className="rounded-full bg-cx-muted px-2 py-0.5">🔥 21</span>
           <span className="rounded-full bg-cx-muted px-2 py-0.5">❤️ 12</span>

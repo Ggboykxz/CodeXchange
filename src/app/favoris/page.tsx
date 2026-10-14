@@ -39,7 +39,7 @@ export default async function PageFavoris() {
         <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
           <p className="text-lg font-semibold">{t(locale, "favorites.empty_title")}</p>
           <p className="mt-2 text-sm text-cx-muted-fg">
-            Utilisez l&apos;étoile ☆ sur les pages des sujets, offres, projets, tutos, événements ou membres.
+            Utilisez l&apos;icône étoile sur les pages des sujets, offres, projets, tutos, événements ou membres.
           </p>
           <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg">
             {t(locale, "favorites.discover")}

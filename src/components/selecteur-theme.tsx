@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { THEMES, appliquerTheme, themeEffectif, type Theme } from "@/lib/theme";
+import { Icone, type NomIcone } from "@/components/icones";
 
 const LIBELLES: Record<Theme, string> = {
   light: "Clair",
@@ -10,10 +11,10 @@ const LIBELLES: Record<Theme, string> = {
   auto: "Auto",
 };
 
-const ICONES: Record<Theme, string> = {
-  light: "☀",
-  dark: "🌙",
-  auto: "🌓",
+const ICONES: Record<Theme, NomIcone> = {
+  light: "soleil",
+  dark: "lune",
+  auto: "moniteur",
 };
 
 /** Sélecteur de thème : clair / sombre / auto (cookie `cx_theme`, 1 an). */
@@ -40,11 +41,12 @@ export default function SelecteurTheme({ themeInitial }: { themeInitial: Theme }
           onClick={() => changer(valeur)}
           aria-pressed={theme === valeur}
           title={`${LIBELLES[valeur]} (${themeEffectif(valeur)})`}
-          className={`rounded-md px-2 py-0.5 text-xs font-bold ${
+          className={`inline-flex min-h-[28px] cursor-pointer items-center gap-1 rounded-md px-2 py-0.5 text-xs font-bold transition ${
             theme === valeur ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
           }`}
         >
-          {ICONES[valeur]}
+          <Icone nom={ICONES[valeur]} className="h-3.5 w-3.5" />
+          {LIBELLES[valeur]}
         </button>
       ))}
     </div>

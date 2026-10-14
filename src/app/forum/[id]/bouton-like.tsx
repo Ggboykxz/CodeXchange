@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Icone } from "@/components/icones";
 
 type Props = {
   postId: number;
@@ -29,7 +30,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
         title="Connectez-vous pour liker ce sujet"
         className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-3 py-1.5 text-sm text-cx-muted-fg opacity-60"
       >
-        {aime ? "♥" : "♡"} {nombre} · connectez-vous pour liker
+        <Icone nom="coeur" className={`h-4 w-4 ${aime ? "fill-current" : ""}`} /> {nombre} · connectez-vous pour liker
       </button>
     );
   }
@@ -62,13 +63,14 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
         onClick={basculer}
         disabled={enCours}
         aria-pressed={aime}
-        className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition disabled:opacity-60 ${
+        className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition disabled:opacity-60 ${
           aime
             ? "border-[var(--cx-accent)] bg-[var(--cx-accent)]/5 text-[var(--cx-accent)]"
             : "border-[var(--cx-muted)]/40 hover:border-[var(--cx-accent)]"
         }`}
       >
-        {aime ? "♥" : "♡"} {nombre} {aime ? "Aimé" : "J'aime"}
+        <Icone nom="coeur" className={`h-4 w-4 ${aime ? "fill-current" : ""}`} /> {nombre}{" "}
+        {aime ? "Aimé" : "J'aime"}
       </button>
       {erreur && (
         <span role="alert" className="text-xs text-cx-destructive">

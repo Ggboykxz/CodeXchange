@@ -70,7 +70,7 @@ export default function BoutonBloquer({ cibleId, bloqueInitialement, connecte }:
         {bloque ? "Débloquer" : confirme ? "Confirmer le blocage ?" : "Bloquer"}
       </button>
       {erreur ? (
-        <span role="alert" className="text-[11px] text-cx-destructive">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       ) : null}

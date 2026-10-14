@@ -51,7 +51,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
                     <div className="flex items-center justify-between">
                       <span className="font-medium">{t.autreNom}</span>
                       {t.nonLus > 0 ? (
-                        <span className="rounded-full bg-cx-primary px-2 text-[10px] font-bold text-cx-primary-fg">
+                        <span className="rounded-full bg-cx-primary px-2 text-[11px] font-bold text-cx-primary-fg">
                           {t.nonLus}
                         </span>
                       ) : null}

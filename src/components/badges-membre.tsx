@@ -1,4 +1,5 @@
 import { calculerNiveau } from "@/lib/gamification";
+import { Icone } from "@/components/icones";
 
 /**
  * Badges d'identité d'un membre : coche de vérification + niveau (gamification).
@@ -24,9 +25,9 @@ export function BadgeNiveau({ karma }: { karma: number }) {
   return (
     <span
       title={`Niveau ${n.niveau} — ${n.titre}`}
-      className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2 py-0.5 text-[11px] font-semibold text-cx-primary"
+      className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2 py-0.5 text-xs font-semibold text-cx-primary"
     >
-      <span aria-hidden>★</span>
+      <Icone nom="verifie" className="h-3.5 w-3.5" />
       N{n.niveau} · {n.titre}
     </span>
   );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/toast";
 import type { KindSignalement } from "@/lib/reports";
+import { Icone } from "@/components/icones";
 
 type Props = { kind: KindSignalement; targetId: number; libelle?: string };
 
@@ -44,9 +45,10 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
       <button
         type="button"
         onClick={() => setOuvert((v) => !v)}
-        className="rounded-md px-2 py-1 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted"
+        className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted"
       >
-        ⚑ {libelle}
+        <Icone nom="signaler" className="h-3.5 w-3.5" />
+        {libelle}
       </button>
       {ouvert ? (
         <span className="mt-2 flex flex-col gap-2 rounded-lg border border-cx-border bg-cx-card p-2">

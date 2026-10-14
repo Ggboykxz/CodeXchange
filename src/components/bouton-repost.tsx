@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Icone } from "@/components/icones";
 import type { EtatRepost } from "@/lib/reposts";
 
 type Props = {
@@ -104,11 +105,12 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
           onClick={copierLien}
           className="inline-flex min-h-[40px] cursor-pointer items-center gap-1.5 rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-xs font-semibold text-cx-card-fg transition hover:border-cx-primary/60 hover:text-cx-primary"
         >
-          {copie ? "Copié ✓" : "Partager"}
+          {copie ? <Icone nom="copie" className="h-4 w-4" /> : <Icone nom="partage" className="h-4 w-4" />}
+          {copie ? "Lien copié" : "Partager"}
         </button>
       </span>
       {erreur ? (
-        <span role="alert" className="text-[11px] text-cx-destructive">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       ) : null}

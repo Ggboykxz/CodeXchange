@@ -31,7 +31,7 @@ const EXPLORER: { href: string; cle: string; icone: NomIcone }[] = [
 function Section({ titre, children }: { titre: string; children: React.ReactNode }) {
   return (
     <section className="mt-4 first:mt-0">
-      <h2 className="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-cx-muted-fg">
+      <h2 className="px-3 pb-1 text-xs font-bold uppercase tracking-wider text-cx-muted-fg">
         {titre}
       </h2>
       <ul className="space-y-0.5">{children}</ul>

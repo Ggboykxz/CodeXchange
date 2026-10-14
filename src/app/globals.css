@@ -107,6 +107,14 @@
   --font-sans: var(--font-plex, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
 }
 
+/* Curseur pointeur sur tout élément cliquable (checklist livraison). */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary,
+select {
+  cursor: pointer;
+}
+
 /* Placeholders lisibles (WCAG AA) : #64748b sur clair, #94a3b8 sur sombre. */
 ::placeholder {
   color: #64748b;

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Icone } from "@/components/icones";
 import type { CompteursSuivi } from "@/lib/follows";
 
 type Props = {
@@ -70,14 +71,15 @@ export default function BoutonSuivre({ cibleId, initial, connecte }: Props) {
             : "bg-cx-primary text-cx-primary-fg hover:opacity-90"
         }`}
       >
-        {etat.jeLeSuis ? "Abonné ✓" : "Suivre"}
+        {etat.jeLeSuis ? <Icone nom="coche" className="h-4 w-4" /> : null}
+        {etat.jeLeSuis ? "Abonné" : "Suivre"}
       </button>
-      <span className="text-[11px] text-cx-muted-fg">
+      <span className="text-xs text-cx-muted-fg">
         {etat.abonnes} abonné{etat.abonnes > 1 ? "s" : ""} · {etat.abonnements} abonnement
         {etat.abonnements > 1 ? "s" : ""}
       </span>
       {erreur ? (
-        <span role="alert" className="text-[11px] text-cx-destructive">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       ) : null}
