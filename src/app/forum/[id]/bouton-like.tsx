@@ -71,7 +71,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
         {aime ? "♥" : "♡"} {nombre} {aime ? "Aimé" : "J'aime"}
       </button>
       {erreur && (
-        <span role="alert" className="text-xs text-red-600">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       )}

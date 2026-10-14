@@ -55,7 +55,7 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
             onChange={(e) => setRaison(e.target.value)}
             maxLength={500}
             placeholder="Motif du signalement…"
-            className="w-full rounded-md border border-cx-border bg-transparent px-2 py-1 text-xs outline-none focus:border-cx-primary"
+            className="w-full rounded-md border border-cx-border bg-cx-card px-2 py-1 text-xs outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
           />
           <span className="flex gap-2">
             <button

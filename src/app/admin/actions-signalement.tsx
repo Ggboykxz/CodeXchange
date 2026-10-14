@@ -31,7 +31,7 @@ export default function ActionsSignalement({ reportId }: Props) {
         type="button"
         onClick={() => traiter("TRAITE")}
         disabled={busy}
-        className="rounded-md bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-600 hover:bg-red-500/20"
+        className="rounded-md bg-cx-destructive/10 px-2 py-1 text-xs font-semibold text-cx-destructive hover:bg-cx-destructive/20"
       >
         {t(locale, "admin.sanction")}
       </button>

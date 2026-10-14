@@ -31,7 +31,7 @@ export default function BoutonModeration({ type, id, label }: Props) {
       type="button"
       onClick={supprimer}
       disabled={busy}
-      className="rounded-md px-2 py-1 text-xs font-medium text-red-500 hover:bg-red-500/10"
+      className="rounded-md px-2 py-1 text-xs font-medium text-cx-destructive hover:bg-cx-destructive/10"
     >
       {t(locale, "common.report")}
     </button>

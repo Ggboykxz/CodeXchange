@@ -47,7 +47,7 @@ export default function BoutonFavori({ kind, targetId, initial, connecte }: Prop
       disabled={busy}
       className={`inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
         favori
-          ? "border-amber-400/60 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+          ? "border-cx-warning/60 bg-cx-warning/10 text-cx-warning"
           : "border-cx-border bg-cx-card text-cx-muted-fg hover:bg-cx-muted"
       }`}
       title={connecte ? "Ajouter/retirer des favoris" : "Se connecter pour favoriser"}

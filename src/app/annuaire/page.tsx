@@ -9,7 +9,7 @@ import { listCountries, listMembers, type MembreResume } from "@/lib/members";
 export const metadata = { title: "Annuaire" };
 
 const CLASS_CHAMP =
-  "w-full rounded-lg border border-[var(--cx-muted)]/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--cx-accent)] focus:ring-2 focus:ring-[var(--cx-accent)]/30";
+  "w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
 /** Nombre de badges de stack affichés sur une carte d'annuaire. */
 const BADGES_MAX = 3;
@@ -54,7 +54,7 @@ function CarteMembre({ membre }: { membre: MembreResume }) {
               <li className="text-xs text-[var(--cx-muted)]">+{restantes}</li>
             )}
             {membre.role === "MENTOR" && (
-              <li className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
+              <li className="rounded-full bg-cx-warning/10 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
                 Mentor
               </li>
             )}

@@ -17,5 +17,5 @@ export default function PastilleMessages({ initial }: { initial: number }) {
     return () => { actif = false; clearInterval(m); };
   }, []);
   if (compte <= 0) return null;
-  return <span className="ml-1 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">{compte}</span>;
+  return <span className="ml-1 rounded-full bg-cx-destructive px-1.5 py-0.5 text-[10px] font-bold text-cx-destructive-fg">{compte}</span>;
 }

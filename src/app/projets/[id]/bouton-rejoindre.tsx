@@ -118,7 +118,7 @@ export default function BoutonRejoindre({
         {nombre} {nombre > 1 ? "membres" : "membre"}
       </span>
       {erreur && (
-        <span role="alert" className="text-xs text-red-600">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       )}

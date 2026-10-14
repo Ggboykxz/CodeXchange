@@ -93,7 +93,7 @@ export default function BoutonRsvp({ eventId, connecte, dejaConfirme, compteur }
         {nombre} {nombre > 1 ? "participants" : "participant"}
       </span>
       {erreur && (
-        <span role="alert" className="text-xs text-red-600">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       )}

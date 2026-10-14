@@ -6,7 +6,7 @@ import { useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 
 const CLASS_CHAMP =
-  "w-full rounded-lg border border-[var(--cx-muted)]/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--cx-accent)] focus:ring-2 focus:ring-[var(--cx-accent)]/30";
+  "w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
 type CorpsReponse = { id?: number; message?: string };
 
@@ -129,7 +129,7 @@ export default function FormulaireProjet() {
       </div>
 
       {erreur && (
-        <p role="alert" className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-600">
+        <p role="alert" className="rounded-lg bg-cx-destructive/10 px-3 py-2 text-sm text-cx-destructive">
           {erreur}
         </p>
       )}

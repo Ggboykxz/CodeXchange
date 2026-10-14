@@ -67,7 +67,7 @@ export default async function PageProjet({ params }: Props) {
         {projet.cherche.length > 0 && (
           <p className="text-sm font-medium">
             Recherche&nbsp;:{" "}
-            <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
+            <span className="rounded-full bg-cx-warning/10 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
               {projet.cherche.join(", ")}
             </span>
           </p>

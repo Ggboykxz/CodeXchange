@@ -74,7 +74,7 @@ export default async function PageOffre({ params }: Props) {
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 offre.remote
-                  ? "bg-emerald-600/10 text-emerald-700 dark:text-emerald-400"
+                  ? "bg-cx-success/10 text-cx-success"
                   : "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
               }`}
             >

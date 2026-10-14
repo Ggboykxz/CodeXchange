@@ -18,6 +18,10 @@
   --cx-border: #e2e8f0;
   --cx-destructive: #dc2626;
   --cx-destructive-fg: #ffffff;
+  --cx-success: #16a34a;
+  --cx-success-fg: #ffffff;
+  --cx-warning: #d97706;
+  --cx-warning-fg: #ffffff;
   --cx-ring: #2563eb;
 }
 
@@ -38,6 +42,10 @@
   --cx-border: #334155;
   --cx-destructive: #ef4444;
   --cx-destructive-fg: #f8fafc;
+  --cx-success: #4ade80;
+  --cx-success-fg: #0f172a;
+  --cx-warning: #fbbf24;
+  --cx-warning-fg: #0f172a;
   --cx-ring: #60a5fa;
   color-scheme: dark;
 }
@@ -65,6 +73,10 @@
     --cx-border: #334155;
     --cx-destructive: #ef4444;
     --cx-destructive-fg: #f8fafc;
+    --cx-success: #4ade80;
+    --cx-success-fg: #0f172a;
+    --cx-warning: #fbbf24;
+    --cx-warning-fg: #0f172a;
     --cx-ring: #60a5fa;
     color-scheme: dark;
   }
@@ -87,6 +99,10 @@
   --color-cx-border: var(--cx-border);
   --color-cx-destructive: var(--cx-destructive);
   --color-cx-destructive-fg: var(--cx-destructive-fg);
+  --color-cx-success: var(--cx-success);
+  --color-cx-success-fg: var(--cx-success-fg);
+  --color-cx-warning: var(--cx-warning);
+  --color-cx-warning-fg: var(--cx-warning-fg);
   --color-cx-ring: var(--cx-ring);
   --font-sans: var(--font-plex, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
 }

@@ -92,7 +92,7 @@ export default function BoutonPostuler({ jobId, connecte, dejaPostule, compteur 
         {nombre} {nombre > 1 ? "candidatures" : "candidature"}
       </span>
       {erreur && (
-        <span role="alert" className="text-xs text-red-600">
+        <span role="alert" className="text-xs text-cx-destructive">
           {erreur}
         </span>
       )}

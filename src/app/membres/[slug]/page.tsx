@@ -71,7 +71,7 @@ export default async function PageMembre({ params }: Props) {
             <p className="mt-3">
               <Link
                 href="/mentorat"
-                className="inline-block rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-500/20 dark:text-amber-400"
+                className="inline-block rounded-full bg-cx-warning/10 px-3 py-1 text-xs font-semibold text-cx-warning hover:bg-cx-warning/20"
               >
                 {t(locale, "directory.mentor_cta")}
               </Link>

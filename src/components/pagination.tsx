@@ -73,7 +73,7 @@ export function Pagination(props: PaginationProps) {
           min={1}
           max={totalPages}
           defaultValue={pageActuelle}
-          className="w-14 rounded-md border border-cx-border bg-transparent px-2 py-1 text-sm"
+          className="w-14 rounded-md border border-cx-border bg-cx-card px-2 py-1 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
         />
         <button type="submit" className={CLASSES_LIEN}>
           Aller

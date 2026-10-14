@@ -71,7 +71,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 ? "border-cx-destructive/40 bg-cx-destructive/10 text-cx-fg"
                 : toast.ton === "info"
                   ? "border-cx-primary/40 bg-cx-primary/10 text-cx-fg"
-                  : "border-emerald-500/40 bg-emerald-500/10 text-cx-fg"
+                  : "border-cx-success/40 bg-cx-success/10 text-cx-fg"
             }`}
           >
             <span aria-hidden="true" className="mt-0.5">

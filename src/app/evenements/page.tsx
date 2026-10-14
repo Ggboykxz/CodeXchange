@@ -28,7 +28,7 @@ function StatutEvenement({ date, maintenant, locale }: { date: Date; maintenant:
       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
         passe
           ? "border border-[var(--cx-muted)]/40 text-[var(--cx-muted)]"
-          : "bg-emerald-600/10 text-emerald-700 dark:text-emerald-400"
+          : "bg-cx-success/10 text-cx-success"
       }`}
     >
       {passe ? t(locale, "events.past") : t(locale, "events.upcoming")}

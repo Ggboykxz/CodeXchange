@@ -124,7 +124,7 @@ export default function ActionsReponse({
           <button
             type="button"
             onClick={supprimer}
-            className="rounded-md px-2 py-1 text-red-500 hover:bg-red-500/10"
+            className="rounded-md px-2 py-1 text-cx-destructive hover:bg-cx-destructive/10"
           >
             Supprimer
           </button>
