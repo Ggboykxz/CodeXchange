@@ -8,6 +8,7 @@ import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import BoutonRejoindre from "./bouton-rejoindre";
 import BoutonFavori from "@/components/bouton-favori";
+import FilAriane from "@/components/fil-ariane";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -45,7 +46,13 @@ export default async function PageProjet({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/projets" className="text-sm text-[var(--cx-accent)]">
-        {t(locale, "projects.back")}
+        <FilAriane
+          items={[
+            { label: t(locale, "nav.home"), href: "/" },
+            { label: t(locale, "nav.projects"), href: "/projets" },
+            { label: projet.titre },
+          ]}
+        />
       </Link>
 
       <header className="flex flex-col gap-3">

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { getAdminStats } from "@/lib/admin";
 import { listReports, listBannedUsers } from "@/lib/reports";
 import { localeCourante, t } from "@/lib/i18n";
+import FilAriane from "@/components/fil-ariane";
 import BoutonModeration from "./bouton-moderation";
 import CartesStats from "./cartes-stats";
 import ActionsSignalement from "./actions-signalement";
@@ -39,6 +40,12 @@ export default async function PageAdmin() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-10">
+      <FilAriane
+        items={[
+          { label: t(locale, "nav.home"), href: "/" },
+          { label: t(locale, "admin.title") },
+        ]}
+      />
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "admin.title")}</h1>
 
       <CartesStats statsInitiaux={stats} />

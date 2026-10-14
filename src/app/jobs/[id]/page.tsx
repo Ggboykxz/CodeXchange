@@ -9,6 +9,7 @@ import { getSessionUserId } from "@/lib/session";
 import BoutonPostuler from "./bouton-postuler";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
+import FilAriane from "@/components/fil-ariane";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -45,7 +46,13 @@ export default async function PageOffre({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/jobs" className="text-sm text-[var(--cx-accent)]">
-        {t(locale, "jobs.back")}
+        <FilAriane
+          items={[
+            { label: t(locale, "nav.home"), href: "/" },
+            { label: t(locale, "nav.jobs"), href: "/jobs" },
+            { label: offre.titre },
+          ]}
+        />
       </Link>
 
       <header className="flex flex-col gap-3">

@@ -6,6 +6,7 @@ import { isFavorite } from "@/lib/favorites";
 import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
+import FilAriane from "@/components/fil-ariane";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
 import FormulaireReponse from "./formulaire-reponse";
@@ -58,7 +59,13 @@ export default async function PageSujet({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/forum" className="text-sm text-[var(--cx-accent)]">
-        {t(locale, "forum.back")}
+        <FilAriane
+          items={[
+            { label: t(locale, "nav.home"), href: "/" },
+            { label: t(locale, "nav.forum"), href: "/forum" },
+            { label: sujet.titre },
+          ]}
+        />
       </Link>
 
       <header className="flex flex-col gap-3">

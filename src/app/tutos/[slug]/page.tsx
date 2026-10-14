@@ -9,6 +9,7 @@ import { isFavorite } from "@/lib/favorites";
 import { getSessionUserId } from "@/lib/session";
 import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
+import FilAriane from "@/components/fil-ariane";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,7 +37,13 @@ export default async function PageTuto({ params }: Props) {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/tutos" className="text-sm text-[var(--cx-accent)]">
-        {t(locale, "tutorials.back")}
+        <FilAriane
+          items={[
+            { label: t(locale, "nav.home"), href: "/" },
+            { label: t(locale, "nav.tutorials"), href: "/tutos" },
+            { label: tuto.titre },
+          ]}
+        />
       </Link>
 
       <header className="flex flex-col gap-3">
