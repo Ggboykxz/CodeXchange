@@ -16,7 +16,7 @@ export default function GlobalError({
         Oops — quelque chose a cassé
       </h1>
       <p className="text-cx-muted-fg">
-        Une erreur inattendue est survenue pendant le rendu. Vous pouvez
+        {error.message || "Une erreur inattendue est survenue"} pendant le rendu. Vous pouvez
         réessayer, ou revenir à l&apos;accueil. Si ça persiste, ouvrez une issue
         sur GitHub.
       </p>
