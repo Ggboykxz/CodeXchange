@@ -44,7 +44,7 @@ export default async function PageOffre({ params }: Props) {
   const favoriDeLoffre = userId === null ? false : await isFavorite(userId, "job", jobId);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/jobs" className="text-sm text-[var(--cx-accent)]">
         <FilAriane
           items={[
@@ -125,6 +125,6 @@ export default async function PageOffre({ params }: Props) {
           {t(locale, "jobs.external_link")}
         </a>
       </section>
-    </main>
+    </div>
   );
 }

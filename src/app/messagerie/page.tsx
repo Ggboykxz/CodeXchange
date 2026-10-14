@@ -24,7 +24,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
   const courant = threads.find((t) => t.autreId === withId);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-4 px-4 py-6 sm:px-6">
+    <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-4 px-4 py-6 sm:px-6">
       <header>
         <h1 className="text-2xl font-black tracking-tight">{t(locale, "messaging.title")}</h1>
         <p className="mt-1 text-sm text-cx-muted-fg">
@@ -104,6 +104,6 @@ export default async function PageMessagerie({ searchParams }: Props) {
           )}
         </section>
       </div>
-    </main>
+    </div>
   );
 }

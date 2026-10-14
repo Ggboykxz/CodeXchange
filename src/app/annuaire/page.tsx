@@ -84,7 +84,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
   const filtreActif = q !== "" || pays !== "" || stack !== "";
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "directory.title")}</h1>
@@ -203,6 +203,6 @@ export default async function PageAnnuaire({ searchParams }: Props) {
         basePath="/annuaire"
         params={{ q: q || undefined, pays: pays || undefined, stack: stack || undefined }}
       />
-    </main>
+    </div>
   );
 }

@@ -32,7 +32,7 @@ export default async function PageParametres() {
   const locale = await localeCourante();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 px-6 py-10">
       <header>
         <Link href="/mon-espace" className="text-sm text-cx-primary">
           ← Mon activité
@@ -40,6 +40,6 @@ export default async function PageParametres() {
         <h1 className="mt-2 text-3xl font-black tracking-tight">{t(locale, "settings.title")}</h1>
       </header>
       <FormulaireParametres profil={{ ...membre, privacy: membre.privacy ?? "PUBLIC" }} />
-    </main>
+    </div>
   );
 }

@@ -70,7 +70,7 @@ export default async function PageJobs({ searchParams }: Props) {
   const filtreActif = q !== "" || pays !== "" || contrat !== "" || remote !== "";
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "jobs.title")}</h1>
@@ -256,6 +256,6 @@ export default async function PageJobs({ searchParams }: Props) {
         basePath="/jobs"
         params={{ q: q || undefined, pays: pays || undefined, contrat: contrat || undefined, remote: remote || undefined }}
       />
-    </main>
+    </div>
   );
 }

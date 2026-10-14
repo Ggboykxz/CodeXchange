@@ -51,60 +51,9 @@ export default async function PageForum({ searchParams }: Props) {
   const filtreActif = q !== "" || tag !== "";
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <div className="grid items-start gap-6 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[230px_minmax(0,1fr)_320px]">
-        {/* ── Colonne gauche : communautés (≥ lg) ──────────────────── */}
-        <aside className="hidden lg:block lg:sticky lg:top-20">
-          <section className="overflow-hidden rounded-lg border border-cx-border bg-cx-card">
-            <h2 className="border-b border-cx-border px-4 py-3 text-sm font-bold">
-              {t(locale, "nav.directory")} · Communautés
-            </h2>
-            <ul className="p-2">
-              {communautes.map((c) => (
-                <li key={c.tag}>
-                  <Link
-                    href={`/forum?tag=${encodeURIComponent(c.tag)}`}
-                    className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-cx-muted"
-                  >
-                    <span className="flex min-w-0 items-center gap-2">
-                      <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cx-primary/10 text-xs font-bold text-cx-primary">
-                        c
-                      </span>
-                      <span className="truncate font-medium">{c.tag}</span>
-                    </span>
-                    <span className="ml-2 shrink-0 text-xs text-cx-muted-fg">{c.count}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/forum/tags"
-              className="block border-t border-cx-border px-4 py-2.5 text-xs font-semibold text-cx-primary hover:bg-cx-muted"
-            >
-              Voir toutes les communautés →
-            </Link>
-          </section>
-
-          <nav className="mt-4 rounded-lg border border-cx-border bg-cx-card p-2">
-            {[
-              { href: "/jobs", cle: "nav.jobs", icone: "jobs" as const },
-              { href: "/projets", cle: "nav.projects", icone: "projets" as const },
-              { href: "/annuaire", cle: "nav.directory", icone: "annuaire" as const },
-              { href: "/tutos", cle: "nav.tutorials", icone: "tutos" as const },
-            ].map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-              >
-                <Icone nom={l.icone} className="h-4 w-4" />
-                {t(locale, l.cle)}
-              </Link>
-            ))}
-          </nav>
-        </aside>
-
-        {/* ── Colonne centrale : fil ───────────────────────────────── */}
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        {/* Colonne centrale : fil */}
         <div className="min-w-0">
           <header className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -260,6 +209,6 @@ export default async function PageForum({ searchParams }: Props) {
           </section>
         </aside>
       </div>
-    </main>
+    </div>
   );
 }

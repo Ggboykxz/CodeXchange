@@ -25,7 +25,7 @@ export default async function PageFavoris() {
   const total = sections.reduce((acc, s) => acc + s.items.length, 0);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <header>
         <h1 className="text-3xl font-black tracking-tight">{t(locale, "favorites.title")}</h1>
         <p className="mt-1 text-sm text-[var(--cx-muted)]">
@@ -63,6 +63,6 @@ export default async function PageFavoris() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

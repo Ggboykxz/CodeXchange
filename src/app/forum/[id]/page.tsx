@@ -64,7 +64,7 @@ export default async function PageSujet({ params }: Props) {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/forum" className="text-sm text-[var(--cx-accent)]">
         <FilAriane
           items={[
@@ -177,6 +177,6 @@ export default async function PageSujet({ params }: Props) {
           <FormulaireReponse postId={postId} />
         )}
       </section>
-    </main>
+    </div>
   );
 }

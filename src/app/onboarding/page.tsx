@@ -68,7 +68,7 @@ export default function PageOnboarding() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-12">
+    <div className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6 py-12">
       <p className="text-sm font-semibold text-cx-primary">Dernière étape</p>
       <h1 className="mt-1 text-3xl font-black tracking-tight">Que voulez-vous apprendre&nbsp;?</h1>
       <p className="mt-2 text-sm text-[var(--cx-muted)]">
@@ -117,6 +117,6 @@ export default function PageOnboarding() {
           Passer pour l&apos;instant
         </button>
       </div>
-    </main>
+    </div>
   );
 }

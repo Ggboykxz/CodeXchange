@@ -26,7 +26,7 @@ export default function PageMotDePasseOublie() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
+    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
       <h1 className="text-3xl font-black tracking-tight">Mot de passe oublié</h1>
       <form onSubmit={envoyer} className="mt-8 flex flex-col gap-4">
         <input
@@ -49,6 +49,6 @@ export default function PageMotDePasseOublie() {
           Retour à la connexion
         </Link>
       </p>
-    </main>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import { localeCourante, t } from "@/lib/i18n";
 export default async function NotFound() {
   const locale = await localeCourante();
   return (
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4 px-6 text-center">
+    <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4 px-6 text-center">
       <p className="text-7xl font-black tracking-tight text-[var(--cx-accent)]">404</p>
       <h1 className="text-2xl font-bold leading-snug">{t(locale, "status.404_title")}</h1>
       <p className="text-sm text-[var(--cx-muted)]">
@@ -25,6 +25,6 @@ export default async function NotFound() {
           {t(locale, "nav.directory")}
         </Link>
       </div>
-    </main>
+    </div>
   );
 }
