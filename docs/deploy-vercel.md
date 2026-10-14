@@ -1,49 +1,52 @@
 # Déploiement Vercel + Neon — runbook
 
 ## Prérequis
-- Compte Vercel et projet lié au dépôt `Ggboykxz/CodeXchange`.
-- Base Neon créée ; sa chaîne `DATABASE_URL` doit commencer par `postgresql://` avec `sslmode=require`.
+- Compte Vercel avec le repo `Ggboykxz/CodeXchange` lié.
+- Base Neon créée ; chaîne `DATABASE_URL` **réelle** (commence par `postgresql://`).
+- Variable `DATABASE_URL` dans Vercel (`Settings` → `Environment Variables`).
 
-## Étapes (4 commandes côté local)
-
-> Lance toujours depuis le dossier du projet : `cd /home/user/eeee/CodeXchange`
-
-- Ne jamais coller de secret (URL ou token) dans un chat ; garde la chaîne Neon dans ta variable locale uniquement.
-
+## Étapes exactes (local)
 
 ```bash
-# 1) Basculer le provider Prisma en Postgres
-sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
+cd /home/user/eeee/CodeXchange
 
-# 2) Appliquer les migrations + seed sur Neon
-export DATABASE_URL='postgresql://<user>:<pass>@<host>/neondb?sslmode=require'
+# 1) Basculer le provider en Postgres
+sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
+grep 'provider = "postgres' prisma/schema.prisma   # doit afficher postgresql
+
+# 2) URL Neon : sans espaces et entre guillemets doubles (sinon le & met la commande en arrière-plan)
+export DATABASE_URL="postgresql://<user>:<pass>@<host>/neondb?sslmode=require&channel_binding=require"
+
+# 3) Réinitialiser l'historique SQLite et générer le schéma Postgres
+rm -rf prisma/migrations
 npx prisma migrate dev --name init
+
+# 4) Vérifier la connexion
+npx prisma validate
+
+# 5) Seed
 npm run seed
 
-# 3) Commit & push de la migration Postgres
-git add prisma/
-git commit -m "chore: postgresql provider + migrations"
-git push
-
-# 4) Vercel : Settings -> General -> Build Command = npm run vercel-build
-#    Puis Redeploy.
+# 6) Commit + push
+git add prisma/ && git commit -m "chore: postgresql provider + migrations" && git push
 ```
 
-Notes :
-- `vercel-build` (déjà dans `package.json`) exécute `prisma generate && prisma migrate deploy && next build`.
-- `migrate dev` génère les fichiers SQL Postgres dans `prisma/migrations/` ; ne commitez jamais de chaîne secrète.
-- Laissez SQLite pour le dev local ; ne commitez pas un schéma Postgres sur `main` si vous voulez garder la CI SQLite.
+## Vercel
 
-#- **Important** : vérifier le provider après la `sed` : `grep 'provider = "postgres' prisma/schema.prisma`
+- `Settings` → `General` → `Build Command` : `npm run vercel-build`
+- `Settings` → `Environment Variables` → `DATABASE_URL` = chaîne Neon réelle.
+- Redeploy.
 
-# Vérification
+`vercel-build` (déjà dans `package.json`) exécute : `prisma generate && prisma migrate deploy && next build`.
 
-Après redéploiement, ouvrez : `https://<domaine>/api/sante`.
+## Vérification
+
+Ouvrir `https://<site>/api/sante`.
 
 - `{"ok": true, "utilisateurs": N}` → déploiement OK.
-- En cas d'erreur, le JSON renvoyé contient le message Prisma exact (aucun secret).
+- Sinon le JSON contient le message d'erreur exact (Prisma) — sans secret.
 
 ## Sécurité
 
-- Ne collez jamais de `DATABASE_URL` ni de token Vercel dans un chat ou un commit.
-- Si un secret a été exposé, révoquez-le immédiatement (Neon → Security, Vercel → Tokens).
+- Ne colle jamais de mot de passe, de token ou de chaîne DB dans un chat, un commit ou un log.
+- Si un secret a été exposé, révoque-le immédiatement dans les dashboards.
