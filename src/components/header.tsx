@@ -1,5 +1,9 @@
 import Link from "next/link";
-import PastilleNonLues from "@/components/pastille-non-lues";
+import Logo from "@/components/logo";
+import { Icone, type NomIcone } from "@/components/icones";
+import MenuUtilisateur from "@/components/menu-utilisateur";
+import MenuMobile from "@/components/menu-mobile";
+import RechercheDropdown from "@/components/recherche-dropdown";
 import PastilleMessages from "@/components/pastille-messages";
 import { unreadMessages } from "@/lib/messagerie";
 import { getSessionUserId } from "@/lib/session";
@@ -8,25 +12,52 @@ import { prisma } from "@/lib/db";
 import { localeCourante, t } from "@/lib/i18n";
 import SelecteurLangue from "./selecteur-langue";
 import SelecteurTheme from "./selecteur-theme";
-import BarreRecherche from "./barre-recherche";
 import { suggestionsRecherche } from "@/lib/suggestions";
 import { themeCourant } from "@/lib/theme";
 
-const liens = [
-  { href: "/forum", cle: "nav.forum" },
-  { href: "/jobs", cle: "nav.jobs" },
-  { href: "/projets", cle: "nav.projects" },
-  { href: "/annuaire", cle: "nav.directory" },
-  { href: "/tutos", cle: "nav.tutorials" },
-  { href: "/evenements", cle: "nav.events" },
-  { href: "/mentorat", cle: "nav.mentorship" },
+type Lien = { href: string; cle: string; icone: NomIcone };
+
+// Navigation principale : 7 entrées, toujours en DOM (libellé masqué sous 2xl
+// pour ne pas déborder → nav en icônes, libellés visibles sur très grand écran).
+const NAV: Lien[] = [
+  { href: "/forum", cle: "nav.forum", icone: "forum" },
+  { href: "/jobs", cle: "nav.jobs", icone: "jobs" },
+  { href: "/projets", cle: "nav.projects", icone: "projets" },
+  { href: "/annuaire", cle: "nav.directory", icone: "annuaire" },
+  { href: "/tutos", cle: "nav.tutorials", icone: "tutos" },
+  { href: "/evenements", cle: "nav.events", icone: "evenements" },
+  { href: "/mentorat", cle: "nav.mentorship", icone: "mentorat" },
 ];
+
+function ItemNav({ l, locale }: { l: Lien; locale: Awaited<ReturnType<typeof localeCourante>> }) {
+  const libelle = t(locale, l.cle);
+  return (
+    <Link
+      href={l.href}
+      title={libelle}
+      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+    >
+      <Icone nom={l.icone} className="h-4 w-4 shrink-0" />
+      {/* Visible ≥ 2xl ; sous 2xl la nav n'affiche que l'icône (le libellé reste
+          accessible aux lecteurs d'écran via sr-only). */}
+      <span className="hidden 2xl:inline">{libelle}</span>
+      <span className="sr-only 2xl:hidden">{libelle}</span>
+    </Link>
+  );
+}
 
 export async function Header() {
   const userId = await getSessionUserId();
   const nonLues = userId !== null ? await unreadCount(userId).catch(() => 0) : 0;
   const nonLusMessages = userId !== null ? await unreadMessages(userId).catch(() => 0) : 0;
-  const estAdmin = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { role: true } }).then((u) => u?.role === "ADMIN") : false;
+  const membre =
+    userId !== null
+      ? await prisma.user.findUnique({
+          where: { id: userId },
+          select: { nom: true, slug: true, avatar: true, role: true },
+        })
+      : null;
+  const estAdmin = membre?.role === "ADMIN";
 
   const locale = await localeCourante();
   const theme = await themeCourant();
@@ -35,244 +66,84 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
       <Container>
-        <div className="flex h-14 items-center justify-between">
-          <Link href="/" className="text-lg font-bold tracking-tight">
-            CodeXchange
-          </Link>
-          <div className="hidden items-center gap-2 md:flex">
-            <SelecteurLangue localeActuelle={locale} />
-            <SelecteurTheme themeInitial={theme} />
+        <div className="flex h-14 items-center justify-between gap-2">
+          <Logo />
+
+          {/* Navigation principale (≥ lg) : icônes + libellés (2xl). */}
+          <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Navigation principale">
+            {NAV.map((l) => (
+              <ItemNav key={l.href} l={l} locale={locale} />
+            ))}
+          </nav>
+
+          {/* Recherche (≥ lg) : déroulante icône, compacte. En mobile : menu ☰. */}
+          <div className="hidden lg:block">
+            <RechercheDropdown locale={locale} suggestions={suggestions} />
           </div>
-          <details className="md:hidden">
-            <summary
-              className="cursor-pointer rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted"
-              aria-label={t(locale, "nav.search")}
-            >
-              🔍
-            </summary>
-            <form
-              action="/recherche"
-              method="get"
-              className="absolute left-4 right-4 top-14 flex gap-2 rounded-xl border border-cx-border bg-cx-card p-2 shadow-sm"
-            >
-              <input
-                name="q"
-                type="search"
-                autoFocus
-                placeholder={t(locale, "nav.search")}
-                className="w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
-              />
-              <button
-                type="submit"
-                className="rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg"
-              >
-                OK
-              </button>
-            </form>
-          </details>
-          <details className="md:hidden">
-            <summary className="cursor-pointer rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted">
-              ☰
-            </summary>
-            <nav className="absolute right-4 top-14 rounded-xl border border-cx-border bg-cx-card p-2 shadow-sm">
-              <ul className="flex flex-col gap-1">
-                {liens.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, l.cle)}
-                    </Link>
-                  </li>
-                ))}
-                {userId ? (
-                  <li>
-                    <Link href="/notifications" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.notifications")} <PastilleNonLues initial={nonLues} />
-                    </Link>
-                  </li>
-                ) : null}
-                {userId ? (
-                  <li>
-                    <Link href="/favoris" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.favorites")}
-                    </Link>
-                  </li>
-                ) : null}
-                {userId ? (
-                  <li>
-                    <Link href="/messagerie" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.messages")} <PastilleMessages initial={nonLusMessages} />
-                    </Link>
-                  </li>
-                ) : null}
-                {userId ? (
-                  <li>
-                    <Link href="/mon-espace" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "activity.title")}
-                    </Link>
-                  </li>
-                ) : null}
-                {userId ? (
-                  <li>
-                    <Link href="/parametres" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "settings.title")}
-                    </Link>
-                  </li>
-                ) : null}
-                {userId ? (
-                  <li>
-                    <Link href="/profil" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "profile.title")}
-                    </Link>
-                  </li>
-                ) : null}
-                {estAdmin ? (
-                  <li>
-                    <Link href="/admin" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.admin")}
-                    </Link>
-                  </li>
-                ) : null}
-                {userId ? (
-                  <li>
-                    <form action="/api/auth/logout" method="post">
-                      <button
-                        type="submit"
-                        className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted"
-                      >
-                        {t(locale, "nav.logout")}
-                      </button>
-                    </form>
-                  </li>
-                ) : (
-                  <li>
-                    <Link href="/connexion" className="block rounded-lg px-3 py-2 text-sm font-semibold text-cx-primary">
-                      Se connecter
-                    </Link>
-                  </li>
-                )}
-                <li className="flex items-center gap-2 pt-2">
-                  <SelecteurLangue localeActuelle={locale} />
-                  <SelecteurTheme themeInitial={theme} />
-                </li>
-              </ul>
-            </nav>
-          </details>
-          <div className="hidden w-52 md:block">
-            <BarreRecherche suggestions={suggestions} />
-          </div>
-          <nav className="hidden items-center gap-1 md:flex">
-            <ul className="flex items-center gap-1">
-              {liens.map((l) => (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-                  >
-                    {t(locale, l.cle)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+
+          <div className="flex-1" />
+
+          {/* Cluster droit. */}
+          <div className="flex items-center gap-1.5">
+            <div className="hidden items-center gap-1.5 lg:flex">
+              <SelecteurLangue localeActuelle={locale} />
+              <SelecteurTheme themeInitial={theme} />
+            </div>
+
             {userId ? (
-              <li>
+              <>
                 <Link
                   href="/notifications"
-                  className="relative rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  title={t(locale, "nav.notifications")}
+                  className="relative hidden rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg sm:inline-flex"
                 >
-                  {t(locale, "nav.notifications")}
+                  <Icone nom="notifications" className="h-5 w-5" />
                   {nonLues > 0 ? (
-                    <span className="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-cx-primary px-1 text-[10px] font-bold text-cx-primary-fg">
+                    <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-cx-primary px-1 text-[10px] font-bold text-cx-primary-fg">
                       {nonLues}
                     </span>
                   ) : null}
+                  <span className="sr-only">{t(locale, "nav.notifications")}</span>
                 </Link>
-              </li>
-            ) : null}
-            {userId ? (
-              <li>
-                <Link
-                  href="/favoris"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-                >
-                  {t(locale, "nav.favorites")}
-                </Link>
-              </li>
-            ) : null}
-            {userId ? (
-              <li>
                 <Link
                   href="/messagerie"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  title={t(locale, "nav.messages")}
+                  className="relative hidden rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg sm:inline-flex"
                 >
-                  {t(locale, "nav.messages")} <PastilleMessages initial={nonLusMessages} />
+                  <Icone nom="messagerie" className="h-5 w-5" />
+                  <PastilleMessages initial={nonLusMessages} />
+                  <span className="sr-only">{t(locale, "nav.messages")}</span>
                 </Link>
-              </li>
-            ) : null}
-            {userId ? (
-              <li>
+                <MenuUtilisateur
+                  locale={locale}
+                  nonLues={nonLues}
+                  nonLusMessages={nonLusMessages}
+                  estAdmin={estAdmin}
+                  membre={{ nom: membre!.nom, slug: membre!.slug, avatar: membre!.avatar }}
+                />
+              </>
+            ) : (
+              <div className="hidden items-center gap-2 lg:flex">
                 <Link
-                  href="/mon-espace"
+                  href="/connexion"
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  {t(locale, "activity.title")}
+                  {t(locale, "nav.login")}
                 </Link>
-              </li>
-            ) : null}
-            {userId ? (
-              <li>
                 <Link
-                  href="/parametres"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  href="/inscription"
+                  className="rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg hover:opacity-90"
                 >
-                  {t(locale, "settings.title")}
+                  {t(locale, "nav.join")}
                 </Link>
-              </li>
-            ) : null}
-            {userId ? (
-              <li>
-                <Link
-                  href="/profil"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-                >
-                  {t(locale, "profile.title")}
-                </Link>
-              </li>
-            ) : null}
-            {estAdmin ? (
-              <li>
-                <Link
-                  href="/admin"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-                >
-                  {t(locale, "nav.admin")}
-                </Link>
-              </li>
-            ) : null}
-            <div className="ml-3 border-l border-cx-border pl-3">
-              {userId ? (
-                <form action="/api/auth/logout" method="post">
-                  <button
-                    type="submit"
-                    className="rounded-lg px-3 py-2 text-sm font-semibold text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-                  >
-                    {t(locale, "nav.logout")}
-                  </button>
-                </form>
-              ) : (
-                <>
-                  <Link href="/connexion" className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-cx-muted">
-                    Connexion
-                  </Link>
-                  <Link
-                    href="/inscription"
-                    className="ml-1 rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg hover:opacity-90"
-                  >
-                    Rejoindre
-                  </Link>
-                </>
-              )}
+              </div>
+            )}
+
+            {/* Menu hamburger (mobile / tablette). */}
+            <div className="lg:hidden">
+              <MenuMobile locale={locale} theme={theme} connecte={userId !== null} />
             </div>
-          </nav>
+          </div>
         </div>
       </Container>
     </header>
