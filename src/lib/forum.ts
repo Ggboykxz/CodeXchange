@@ -39,17 +39,20 @@ export type ReponseDetail = Omit<Reply, "author" | "post"> & {
   _count: { likes: number };
 };
 
+export type PollOptionDetail = { id: number; label: string; votes: number; userVoted: boolean };
+export type PollDetail = { id: number; question: string; options: PollOptionDetail[]; total: number; userVoted: boolean };
 export type PostDetail = Omit<Post, "author" | "replies" | "likes"> & {
   author: AuteurResume;
   replies: ReponseDetail[];
   score: number;
   userVote: number;
+  poll: PollDetail | null;
   _count: { replies: number; likes: number };
 };
 
 export type FiltrePosts = { tag?: string; q?: string; page?: number; pageSize?: number; tri?: "hot" | "new" | "top" | "recent" | "populaire"; userId?: number };
 
-export type NouveauSujet = { titre: string; corps: string; tags: string[] };
+export type NouveauSujet = { titre: string; corps: string; tags: string[]; sondage?: { question?: string; options?: string[] } };
 
 /** Réponse HTTP standard quand `getSessionUserId()` retourne `null`. */
 export const NON_CONNECTE = {
@@ -161,11 +164,36 @@ export async function getPost(id: number, userId?: number): Promise<PostDetail |
       },
       _count: { select: { replies: true, likes: true } },
       likes: { select: { valeur: true, userId: true } },
+      poll: {
+        include: {
+          options: { include: { votes: true } },
+          votes: { where: { userId: userId ?? -1 } },
+        },
+      },
     },
   });
   if (!result) return null;
   const score = result.likes.reduce((acc, x) => acc + x.valeur, 0);
   const userVote = userId ? result.likes.find((x) => x.userId === userId)?.valeur ?? 0 : 0;
+
+  let poll: PollDetail | null = null;
+  if (result.poll) {
+    const total = result.poll.options.reduce((acc, o) => acc + o.votes.length, 0);
+    poll = {
+      id: result.poll.id,
+      question: result.poll.question,
+      total,
+      userVoted: userId
+        ? result.poll.votes.some((v) => v.userId === userId)
+        : false,
+      options: result.poll.options.map((o) => ({
+        id: o.id,
+        label: o.label,
+        votes: o.votes.length,
+        userVoted: userId ? o.votes.some((v) => v.userId === userId) : false,
+      })),
+    };
+  }
   if (result.replies) {
     result.replies.sort((a: ReponseDetail, b: ReponseDetail) => {
       const diffLikes = (b._count?.likes ?? 0) - (a._count?.likes ?? 0);
@@ -173,9 +201,10 @@ export async function getPost(id: number, userId?: number): Promise<PostDetail |
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     });
   }
-  const { likes: _likes2, ...rest } = result;
+  const { likes: _likes2, poll: _pollRaw, ...rest } = result as unknown as Record<string, unknown>;
   void _likes2;
-  return { ...rest, score, userVote } as PostDetail;
+  void _pollRaw;
+  return { ...rest, score, userVote, poll } as PostDetail;
 }
 
 /** Création d'un sujet ; lève `FORUM_VALIDATION` (422) en cas de règle violée. */
@@ -197,8 +226,25 @@ export async function createPost(authorId: number, i: NouveauSujet): Promise<num
     throw new AppError("FORUM_VALIDATION", `Entre ${TAGS_MIN} et ${TAGS_MAX} tags sont attendus.`);
   }
 
+  const enquete = i.sondage;
+  const options = (enquete?.options ?? []).map((s) => s.trim()).filter(Boolean);
+
   const post = await prisma.post.create({
-    data: { titre, corps, tags: tags.join(","), authorId },
+    data: {
+      titre,
+      corps,
+      tags: tags.join(","),
+      authorId,
+      type: options.length >= 2 ? "poll" : "text",
+      poll: options.length >= 2
+        ? {
+            create: {
+              question: (enquete?.question ?? "").trim() || titre,
+              options: { create: options.map((label) => ({ label })) },
+            },
+          }
+        : undefined,
+    },
     select: { id: true },
   });
   return post.id;
@@ -389,6 +435,15 @@ export async function votePost(postId: number, userId: number, direction: 1 | -1
 export async function aVote(userId: number, postId: number): Promise<number> {
   const like = await prisma.like.findUnique({ where: { userId_postId: { userId, postId } }, select: { valeur: true } });
   return like?.valeur ?? 0;
+}
+
+export async function votePoll(optionId: number, userId: number): Promise<void> {
+  const option = await prisma.pollOption.findUnique({ where: { id: optionId }, include: { poll: true } });
+  if (!option) throw new AppError("FORUM_VALIDATION", "Option introuvable.");
+  const pollId = option.pollId;
+  // Supprime l'ancien vote de cet utilisateur sur ce sondage.
+  await prisma.pollVote.deleteMany({ where: { userId, pollId } });
+  await prisma.pollVote.create({ data: { userId, pollId, optionId } });
 }
 
 /** Ce membre a-t-il déjà liké ce sujet ? (utilisé par la page de détail) */

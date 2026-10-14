@@ -29,10 +29,14 @@ export default function FormulaireSujet() {
     if (typeof window === "undefined") return "";
     return lireBrouillon<{ tags?: string }>(CLE_BROUILLON)?.tags ?? "";
   });
+  const [sondage, setSondage] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return lireBrouillon<{ sondage?: string }>(CLE_BROUILLON)?.sondage ?? "";
+  });
 
   // Sauvegarde automatique.
   useEffect(() => {
-    ecrireBrouillon(CLE_BROUILLON, { titre, corps, tags });
+    ecrireBrouillon(CLE_BROUILLON, { titre, corps, tags, sondage });
   }, [titre, corps, tags]);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
@@ -47,7 +51,7 @@ export default function FormulaireSujet() {
       const reponse = await fetch("/api/forum", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ titre, corps, tags: tagsList }),
+        body: JSON.stringify({ titre, corps, tags: tagsList, sondage: sondage.split("\n").map((x) => x.trim()).filter(Boolean) }),
       });
       if (!reponse.ok) {
         const corps2 = (await reponse.json().catch(() => null)) as CorpsReponse | null;
@@ -76,6 +80,11 @@ export default function FormulaireSujet() {
         <label htmlFor="corps" className="mb-1 block text-sm font-medium">Corps du sujet</label>
         <textarea id="corps" name="corps" required rows={8} maxLength={5000} placeholder="Décrivez le contexte…" className={`${CLASS_CHAMP} resize-y`} value={corps} onChange={(e) => setCorps(e.target.value)} />
         <p className="mt-1 text-xs text-[var(--cx-muted)]">5 000 caractères maximum.</p>
+      </div>
+
+      <div>
+        <label htmlFor="sondage" className="mb-1 block text-sm font-medium">Sondage (optionnel, une option par ligne)</label>
+        <textarea id="sondage" name="sondage" rows={4} placeholder="Option A\nOption B" className={`${CLASS_CHAMP} resize-y`} value={sondage} onChange={(e) => setSondage(e.target.value)} />
       </div>
 
       <div>

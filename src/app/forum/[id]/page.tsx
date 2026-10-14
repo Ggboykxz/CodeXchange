@@ -8,6 +8,7 @@ import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonVote from "@/components/bouton-vote";
 import BoutonCopier from "@/components/bouton-copier";
+import BoutonSondage from "./bouton-sondage";
 import ArbreReponses from "./arbre-reponses";
 import TexteRepliable from "@/components/texte-repliable";
 import RenduMarkdown from "@/components/rendu-markdown";
@@ -111,10 +112,13 @@ export default async function PageSujet({ params }: Props) {
 
       <div className="flex gap-4">
         <BoutonVote postId={postId} initialVote={sujet.userVote} initialScore={sujet.score} connecte={userId !== null} />
-        <div className="flex-1">
+        <div className="flex-1 space-y-4">
+          {sujet.poll ? (
+            <BoutonSondage postId={postId} question={sujet.poll.question} options={sujet.poll.options} total={sujet.poll.total} userVoted={sujet.poll.userVoted} connecte={userId !== null} />
+          ) : null}
           <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
-        <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
-      </article>
+            <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
+          </article>
         </div>
       </div>
 

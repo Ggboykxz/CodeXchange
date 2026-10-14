@@ -40,11 +40,15 @@ export async function POST(request: Request) {
       return NextResponse.json(NON_CONNECTE.body, { status: NON_CONNECTE.status });
     }
 
-    const corps = (await request.json().catch(() => null)) as CorpsSujet | null;
+    const corps = (await request.json().catch(() => null)) as CorpsSujet & { sondage?: unknown } | null;
+    const options = Array.isArray(corps?.sondage)
+      ? (corps?.sondage as unknown[]).map((s) => String(s))
+      : undefined;
     const id = await createPost(userId, {
       titre: String(corps?.titre ?? ""),
       corps: String(corps?.corps ?? ""),
       tags: tagsRecus(corps?.tags),
+      sondage: options ? { options } : undefined,
     });
     return NextResponse.json({ id }, { status: 201 });
   } catch (erreur) {

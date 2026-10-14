@@ -5,12 +5,13 @@
  */
 import { prisma } from "./db";
 
-export type FavoriteKind = "post" | "job" | "projet" | "tuto" | "event" | "membre";
+export type FavoriteKind = "post" | "job" | "projet" | "tuto" | "event" | "membre" | "comment";
 
-export const ALL_KINDS: FavoriteKind[] = ["post", "job", "projet", "tuto", "event", "membre"];
+export const ALL_KINDS: FavoriteKind[] = ["post", "job", "projet", "tuto", "event", "membre", "comment"];
 
 export type FavorisGroupes = {
   posts: Array<{ id: number; titre: string; href: string }>;
+  commentaires: Array<{ id: number; titre: string; href: string }>;
   jobs: Array<{ id: number; titre: string; href: string }>;
   projets: Array<{ id: number; titre: string; href: string }>;
   tutos: Array<{ id: number; titre: string; href: string }>;
@@ -56,13 +57,14 @@ export async function listFavorites(userId: number): Promise<FavorisGroupes> {
   const byKind = await Promise.all(ALL_KINDS.map((k) => ciblesByKind(userId, k)));
   const ids = Object.fromEntries(ALL_KINDS.map((k, i) => [k, byKind[i]])) as Record<FavoriteKind, number[]>;
 
-  const [posts, jobs, projets, tutos, events, membres] = await Promise.all([
+  const [posts, jobs, projets, tutos, events, membres, commentaires] = await Promise.all([
     ids.post.length ? prisma.post.findMany({ where: { id: { in: ids.post } }, select: { id: true, titre: true } }) : Promise.resolve([]),
     ids.job.length ? prisma.job.findMany({ where: { id: { in: ids.job } }, select: { id: true, titre: true } }) : Promise.resolve([]),
     ids.projet.length ? prisma.project.findMany({ where: { id: { in: ids.projet } }, select: { id: true, titre: true } }) : Promise.resolve([]),
     ids.tuto.length ? prisma.tutorial.findMany({ where: { id: { in: ids.tuto } }, select: { id: true, titre: true, slug: true } }) : Promise.resolve([]),
     ids.event.length ? prisma.event.findMany({ where: { id: { in: ids.event } }, select: { id: true, titre: true } }) : Promise.resolve([]),
     ids.membre.length ? prisma.user.findMany({ where: { id: { in: ids.membre } }, select: { id: true, nom: true, slug: true } }) : Promise.resolve([]),
+    ids.comment.length ? prisma.reply.findMany({ where: { id: { in: ids.comment } }, select: { id: true, corps: true, postId: true } }) : Promise.resolve<unknown[]>([]),
   ]);
 
   const byIdUser = new Map(membres.map((m) => [m.id, m]));
@@ -80,6 +82,10 @@ export async function listFavorites(userId: number): Promise<FavorisGroupes> {
       const m = byIdUser.get(id);
       return { id, nom: m?.nom ?? "Membre", href: m?.slug ? `/membres/${m.slug}` : `/annuaire` };
     }),
+    commentaires: ids.comment.map((id) => {
+      const c = (commentaires as unknown as { id: number; corps: string; postId: number }[]).find((x) => x.id === id);
+      return { id, titre: (c?.corps ?? "Commentaire").slice(0, 60), href: c ? `/forum/${c.postId}#reply-${id}` : "/forum" };
+    }),
   };
 }
 
@@ -90,6 +96,7 @@ export const KIND_LABELS: Record<FavoriteKind, string> = {
   tuto: "Tutos",
   event: "Événements",
   membre: "Membres",
+  comment: "Commentaires",
 };
 
 

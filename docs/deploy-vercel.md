@@ -15,7 +15,7 @@ sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
 grep 'provider = "postgres' prisma/schema.prisma   # doit afficher postgresql
 
 # 2) URL Neon : sans espaces et entre guillemets doubles (sinon le & met la commande en arrière-plan)
-export DATABASE_URL="postgresql://<user>:<pass>@<host>/neondb?sslmode=require&channel_binding=require"
+export DATABASE_URL="postgresql://neondb_owner:npg_BWkX13PLINJK@ep-delicate-bread-b5eqhn9i-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 # 3) Réinitialiser l'historique SQLite et générer le schéma Postgres
 rm -rf prisma/migrations

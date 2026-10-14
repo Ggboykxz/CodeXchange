@@ -28,6 +28,7 @@ model User {
   createdAt    DateTime @default(now())
 
   sessions   Session[]
+  pollVotes  PollVote[]
   passwordResets PasswordResetToken[]
   tagFollows TagFollow[]
   posts      Post[]
@@ -62,11 +63,13 @@ model Post {
   titre     String
   corps     String
   tags      String   @default("")
+  type      String   @default("text")
   authorId  Int
   createdAt DateTime @default(now())
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   replies   Reply[]
   likes     Like[]
+  poll      Poll?
 }
 
 model Reply {
@@ -220,6 +223,36 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Poll {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @unique
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  question  String
+  createdAt DateTime @default(now())
+  options   PollOption[]
+  votes     PollVote[]
+}
+
+model PollOption {
+  id      Int      @id @default(autoincrement())
+  pollId  Int
+  poll    Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  label   String
+  votes   PollVote[]
+}
+
+model PollVote {
+  userId   Int
+  pollId   Int
+  optionId Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poll     Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option   PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, pollId])
 }
 
 model Favorite {

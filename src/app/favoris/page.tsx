@@ -19,6 +19,7 @@ export default async function PageFavoris() {
     { libelle: t(locale, "favorites.group_tutorials"), items: f.tutos.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
     { libelle: t(locale, "favorites.group_events"), items: f.events.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
     { libelle: t(locale, "favorites.group_members"), items: f.membres.map((x) => ({ id: x.id, libelle: x.nom, href: x.href })) },
+  { libelle: "Commentaires", items: f.commentaires.map((x) => ({ id: x.id, libelle: x.titre, href: x.href })) },
   ].filter((s) => s.items.length > 0);
 
   const total = sections.reduce((acc, s) => acc + s.items.length, 0);
