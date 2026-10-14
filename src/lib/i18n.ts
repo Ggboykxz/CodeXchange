@@ -341,7 +341,7 @@ const EN: Record<string, string> = {
   "home.cta_forum": "Browse the forum →",
   "home.stats": "members",
   "home.sections_title": "Everything you need",
-  "home.sections_sub": "Six complementary entry points: forum, jobs, projects, directory, tutorials, events."
+  "home.sections_sub": "Six complementary entry points: forum, jobs, projects, directory, tutorials, events.",
   "home.latest_title": "Latest posts",
   "home.latest_empty": "No posts yet.",
   "forum.title": "Forum",
