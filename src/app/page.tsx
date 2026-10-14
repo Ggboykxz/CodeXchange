@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { Button } from "@/components/button";
 import { localeCourante, t } from "@/lib/i18n";
+import { getSessionUserId } from "@/lib/session";
 
 const ICONES = [
   <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
@@ -24,7 +25,23 @@ const SECTIONS = [
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
+  const userId = await getSessionUserId();
   const membres = await prisma.user.count();
+
+  let sujetsPourToi: { id: number; titre: string; tags: string }[] = [];
+  if (userId !== null) {
+    const moi = await prisma.user.findUnique({ where: { id: userId }, select: { pays: true } });
+    sujetsPourToi = await prisma.post.findMany({
+      take: 3,
+      orderBy: { createdAt: "desc" },
+      where:
+        moi?.pays
+          ? { author: { pays: moi.pays } }
+          : undefined,
+      select: { id: true, titre: true, tags: true },
+    });
+  }
+
   const derniersSujets = await prisma.post.findMany({
     take: 3,
     orderBy: { createdAt: "desc" },
@@ -111,6 +128,27 @@ export default async function HomePage() {
                   {s.tags ? (
                     <span className="ml-2 text-cx-muted-fg">· {s.tags}</span>
                   ) : null}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {userId !== null && sujetsPourToi.length > 0 ? (
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Pour toi
+          </h2>
+          <p className="mt-2 text-cx-muted-fg">
+            Sujets postés par des développeurs de ton pays.
+          </p>
+          <ul className="mt-4 divide-y divide-cx-border rounded-xl border border-cx-border bg-cx-card">
+            {sujetsPourToi.map((s) => (
+              <li key={s.id}>
+                <Link href={`/forum/${s.id}`} className="block px-4 py-3 text-sm hover:bg-cx-muted">
+                  <span className="font-medium">{s.titre}</span>
+                  {s.tags ? <span className="ml-2 text-cx-muted-fg">· {s.tags}</span> : null}
                 </Link>
               </li>
             ))}

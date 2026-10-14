@@ -225,6 +225,7 @@ const FR: Record<string, string> = {
   "favorites.group_members": "Membres",
   // Profil
   "profile.title": "Mon profil",
+  "settings.title": "Paramètres",
   "profile.avatar": "Choisir une image",
   "profile.avatar_delete": "Supprimer",
   "profile.avatar_hint": "PNG, JPEG ou WebP — 500 Ko maximum.",
@@ -501,6 +502,7 @@ const EN: Record<string, string> = {
   "favorites.group_events": "Events",
   "favorites.group_members": "Members",
   "profile.title": "My profile",
+  "settings.title": "Settings",
   "profile.avatar": "Choose an image",
   "profile.avatar_delete": "Delete",
   "profile.avatar_hint": "PNG, JPEG or WebP — 500 KB max.",

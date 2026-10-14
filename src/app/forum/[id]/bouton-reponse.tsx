@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 type Props = {
   replyId: number;
@@ -30,6 +31,7 @@ export default function ActionsReponse({
   const [enEdition, setEnEdition] = useState(false);
   const [texte, setTexte] = useState(corpsInitial);
   const [busy, setBusy] = useState(false);
+  const [confirmationOuverte, setConfirmationOuverte] = useState(false);
 
   async function basculerLike() {
     if (!connecte) return;
@@ -50,7 +52,12 @@ export default function ActionsReponse({
 
   async function supprimer() {
     if (!estAuteur || busy) return;
-    if (!confirm("Supprimer cette réponse ?")) return;
+    setConfirmationOuverte(true);
+  }
+
+  async function executerSuppression() {
+    setConfirmationOuverte(false);
+    if (!estAuteur || busy) return;
     setBusy(true);
     // On garde le corps d'origine pour pouvoir annuler la suppression.
     const corpsOriginal = texte;
@@ -122,6 +129,15 @@ export default function ActionsReponse({
           </button>
         </>
       ) : null}
+      <ConfirmDialog
+        open={confirmationOuverte}
+        titre="Supprimer cette réponse ?"
+        description="Tu pourras annuler la suppression pendant quelques secondes."
+        confirmer={() => void executerSuppression()}
+        annuler={() => setConfirmationOuverte(false)}
+        labelConfirmer="Supprimer"
+      />
+
       {enEdition ? (
         <div className="mt-1 w-full flex flex-col gap-2">
           <textarea

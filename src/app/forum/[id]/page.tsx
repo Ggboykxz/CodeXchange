@@ -6,6 +6,7 @@ import { isFavorite } from "@/lib/favorites";
 import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
+import BoutonCopier from "@/components/bouton-copier";
 import FilAriane from "@/components/fil-ariane";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
@@ -112,6 +113,7 @@ export default async function PageSujet({ params }: Props) {
 
       <div className="flex justify-end">
         <BoutonSignaler kind="post" targetId={postId} />
+        <BoutonCopier url={`/forum/${postId}`} />
       </div>
 
       <section className="flex flex-col gap-4">

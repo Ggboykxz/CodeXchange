@@ -50,6 +50,9 @@ export default async function PageProfil() {
         <p className="mt-2 text-[var(--cx-muted)]">{membre.stack || t(locale, "profile.stack_empty")}</p>
       </section>
 
+      <Link href="/parametres" className="text-sm text-cx-accent">
+        Modifier mon profil
+      </Link>
       <Link href={`/membres/${membre.slug}`} className="text-sm text-[var(--cx-accent)]">
         {t(locale, "profile.public")}
       </Link>

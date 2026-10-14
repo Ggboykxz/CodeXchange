@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PastilleNonLues from "@/components/pastille-non-lues";
 import { getSessionUserId } from "@/lib/session";
 import { unreadCount } from "@/lib/notifications";
 import { prisma } from "@/lib/db";
@@ -82,7 +83,7 @@ export async function Header() {
                 {userId ? (
                   <li>
                     <Link href="/notifications" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
-                      {t(locale, "nav.notifications")}{nonLues > 0 ? ` (${nonLues})` : ""}
+                      {t(locale, "nav.notifications")} <PastilleNonLues initial={nonLues} />
                     </Link>
                   </li>
                 ) : null}
@@ -104,6 +105,13 @@ export async function Header() {
                   <li>
                     <Link href="/mon-espace" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
                       {t(locale, "activity.title")}
+                    </Link>
+                  </li>
+                ) : null}
+                {userId ? (
+                  <li>
+                    <Link href="/parametres" className="block rounded-lg px-3 py-2 text-sm hover:bg-cx-muted">
+                      {t(locale, "settings.title")}
                     </Link>
                   </li>
                 ) : null}
@@ -204,6 +212,16 @@ export async function Header() {
                   className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
                   {t(locale, "activity.title")}
+                </Link>
+              </li>
+            ) : null}
+            {userId ? (
+              <li>
+                <Link
+                  href="/parametres"
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                >
+                  {t(locale, "settings.title")}
                 </Link>
               </li>
             ) : null}

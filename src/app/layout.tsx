@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ThemeScript } from "@/components/theme-script";
 import { ToastProvider } from "@/components/toast";
+import RaccourciRecherche from "@/components/raccourci-recherche";
 import { themeCourant } from "@/lib/theme";
 import "./globals.css";
 
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen bg-cx-bg font-sans text-cx-fg antialiased">
         <ToastProvider>
+          <RaccourciRecherche />
           <Header />
           <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
           <Footer />
