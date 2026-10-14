@@ -6,6 +6,7 @@ import { notifierMentions } from "./hashtags";
 import type { PaginatedResult } from "./pagination";
 import { paginateArray } from "./pagination";
 import { getReactions, getReactionsPourCibles, type ReactionCounts } from "./reactions";
+import { idsAEviter } from "./blocks";
 
 export type { PaginatedResult } from "./pagination";
 
@@ -119,9 +120,13 @@ export async function listPosts(f?: FiltrePosts): Promise<PostResume[] | Paginat
   const q = f?.q?.trim().toLowerCase() ?? "";
   const tag = f?.tag?.trim().toLowerCase() ?? "";
   const auteursSuivis = f?.authorIds;
+  // Exclut les membres bloqués (ceux que je bloque + ceux qui me bloquent).
+  const aEviter = f?.userId ? await idsAEviter(f.userId) : [];
   let filtrees = pourUtilisateur;
-  if (q || tag || auteursSuivis) {
+  if (q || tag || auteursSuivis || aEviter.length > 0) {
     filtrees = pourUtilisateur.filter((sujet) => {
+      // Membres bloqués : masqués dans les deux sens.
+      if (aEviter.includes(sujet.authorId)) return false;
       // Fil « Abonnements » : n'inclut que les sujets des membres suivis.
       if (auteursSuivis && !auteursSuivis.includes(sujet.authorId)) return false;
       if (q) {

@@ -11,7 +11,9 @@ import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonSuivre from "@/components/bouton-suivre";
+import BoutonBloquer from "@/components/bouton-bloquer";
 import { BadgeNiveau, BadgeVerification } from "@/components/badges-membre";
+import { isBlocked } from "@/lib/blocks";
 import { prisma } from "@/lib/db";
 import FilAriane from "@/components/fil-ariane";
 
@@ -50,6 +52,7 @@ export default async function PageMembre({ params }: Props) {
   if (!membre) notFound(); // 404 soignée FR via `src/app/not-found.tsx`
   const favoriDuMembre = userId === null ? false : await isFavorite(userId, "membre", membre.id);
   const compteursSuivi = await getCompteursSuivi(membre.id, userId ?? undefined);
+  const estBloque = userId === null ? false : await isBlocked(userId, membre.id);
   const karmaMembre =
     (
       await prisma.like.aggregate({
@@ -117,8 +120,9 @@ export default async function PageMembre({ params }: Props) {
             </p>
           )}
           {userId !== null && userId !== membre.id ? (
-            <p className="mt-2">
+            <p className="mt-2 flex flex-wrap items-center gap-3">
               <BoutonSignaler kind="membre" targetId={membre.id} libelle={t(locale, "directory.report_member")} />
+              <BoutonBloquer cibleId={membre.id} bloqueInitialement={estBloque} connecte={userId !== null} />
             </p>
           ) : null}
         </div>
