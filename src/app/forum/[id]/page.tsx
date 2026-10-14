@@ -7,6 +7,8 @@ import { localeCourante, t } from "@/lib/i18n";
 import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonCopier from "@/components/bouton-copier";
+import TexteRepliable from "@/components/texte-repliable";
+import RenduMarkdown from "@/components/rendu-markdown";
 import FilAriane from "@/components/fil-ariane";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
@@ -108,7 +110,7 @@ export default async function PageSujet({ params }: Props) {
       </header>
 
       <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
-        {sujet.corps}
+        <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
       </article>
 
       <div className="flex justify-end">
@@ -144,7 +146,7 @@ export default async function PageSujet({ params }: Props) {
                   {reponse.createdAt !== reponse.updatedAt ? " · édité" : ""}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">
-                  {reponse.deletedAt ? "[message supprimé]" : reponse.corps}
+                  {reponse.deletedAt ? "[message supprimé]" : <TexteRepliable texte={reponse.corps} />}
                 </p>
                 {reponse.deletedAt === null ? (
                   <ActionsReponse

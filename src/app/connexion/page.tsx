@@ -131,6 +131,11 @@ export default function PageConnexion() {
           {enCours ? t(locale, "common.loading") : t(locale, "auth.login_submit")}
         </button>
       </form>
+      <p className="mt-4 text-sm text-[var(--cx-muted)]">
+        <Link href="/mot-de-passe-oublie" className="text-[var(--cx-accent)] hover:underline">
+          Mot de passe oublié ?
+        </Link>
+      </p>
 
       <p className="mt-6 text-sm text-[var(--cx-muted)]">
         {t(locale, "auth.no_account")}{" "}

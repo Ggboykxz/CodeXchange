@@ -28,6 +28,7 @@ model User {
   createdAt    DateTime @default(now())
 
   sessions   Session[]
+  passwordResets PasswordResetToken[]
   posts      Post[]
   replies    Reply[]
   likes      Like[]
@@ -242,4 +243,14 @@ model Report {
   resolvedAt  DateTime?
   resolvedById Int?
   reporter    User      @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  tokenHash String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
 }

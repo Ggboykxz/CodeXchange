@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { ThemeScript } from "@/components/theme-script";
 import { ToastProvider } from "@/components/toast";
 import RaccourciRecherche from "@/components/raccourci-recherche";
+import RetourHaut from "@/components/retour-haut";
 import { themeCourant } from "@/lib/theme";
 import "./globals.css";
 
@@ -25,12 +26,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="fr" className={jakarta.variable} data-theme={theme} suppressHydrationWarning>
       <head>
         <ThemeScript />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#2563eb" />
       </head>
       <body className="min-h-screen bg-cx-bg font-sans text-cx-fg antialiased">
+        {/* Skip to content */}
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-cx-primary focus:px-4 focus:py-2 focus:text-white">Aller au contenu</a>
         <ToastProvider>
           <RaccourciRecherche />
+          <RetourHaut />
           <Header />
-          <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+          <main id="main" className="min-h-[calc(100vh-3.5rem)]">{children}</main>
           <Footer />
         </ToastProvider>
       </body>
