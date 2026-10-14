@@ -4,6 +4,7 @@ import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import SelecteurTri from "@/components/selecteur-tri";
+import Tendances from "@/components/tendances";
 import { listPosts } from "@/lib/forum";
 
 export const metadata = { title: "Forum" };
@@ -54,6 +55,8 @@ export default async function PageForum({ searchParams }: Props) {
         </Link>
       </header>
       <p className="text-sm text-cx-muted-fg"><Link href="/forum/tags" className="text-cx-primary hover:underline">Voir toutes les communautés →</Link></p>
+
+      <Tendances limite={6} />
 
       <form action="/forum" method="get" className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor="q" className="sr-only">

@@ -30,6 +30,7 @@ export const TYPES_NOTIFICATION = [
   "REJOINDRE_PROJET",
   "DEMANDE_MENTOR",
   "MESSAGE",
+  "MENTION",
 ] as const;
 
 export type NotificationType = (typeof TYPES_NOTIFICATION)[number];
@@ -49,6 +50,7 @@ export const NOTIFICATION_TYPE = {
   REJOINDRE_PROJET: "REJOINDRE_PROJET",
   DEMANDE_MENTOR: "DEMANDE_MENTOR",
   MESSAGE: "MESSAGE",
+  MENTION: "MENTION",
 } as const satisfies Record<NotificationType, NotificationType>;
 
 export type NouvelleNotification = {

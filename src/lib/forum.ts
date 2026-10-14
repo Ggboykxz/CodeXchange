@@ -2,6 +2,7 @@ import type { Post, Reply, User } from "@prisma/client";
 import { prisma } from "./db";
 import { AppError } from "./errors";
 import { createNotification } from "./notifications";
+import { notifierMentions } from "./hashtags";
 import type { PaginatedResult } from "./pagination";
 import { paginateArray } from "./pagination";
 import { getReactions, getReactionsPourCibles, type ReactionCounts } from "./reactions";
@@ -263,6 +264,10 @@ export async function createPost(authorId: number, i: NouveauSujet): Promise<num
     },
     select: { id: true },
   });
+
+  // Mentions @membre dans le titre + corps → notification (fire-and-forget).
+  await notifierMentions(`${titre}\n${corps}`, authorId, `/forum/${post.id}`, "un sujet auquel vous êtes mentionné(e)");
+
   return post.id;
 }
 
@@ -304,6 +309,10 @@ export async function addReply(
       // fire-and-forget : ne jamais interrompre addReply
     }
   }
+
+  // Mentions @membre dans la réponse → notification (fire-and-forget).
+  await notifierMentions(texte, authorId, `/forum/${postId}`, "une réponse où vous êtes mentionné(e)");
+
   return reply.id;
 }
 

@@ -253,6 +253,7 @@ const FR: Record<string, string> = {
   "activity.no_projects": "Vous n'êtes membre d'aucun projet pour l'instant.",
   // Recherche
   "tags.title": "Communautés",
+  "trending.title": "Tendances",
   "search.title": "Recherche",
   "search.subtitle": "Une barre, cinq rubriques.",
   "search.placeholder": "Rechercher partout…",
@@ -525,6 +526,7 @@ const EN: Record<string, string> = {
   "activity.no_applications": "You haven't applied yet. Jobs are this way.",
   "activity.no_projects": "You're not a member of any project yet.",
   "tags.title": "Communities",
+  "trending.title": "Trending",
   "search.title": "Search",
   "search.subtitle": "One bar, five sections.",
   "search.recent": "Recent searches",

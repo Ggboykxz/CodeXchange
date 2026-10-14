@@ -12,7 +12,17 @@ function renduLigne(texte: string): string {
   const code = texte.replace(/`([^`]+)`/g, (_m, code) => `<code class="rounded bg-cx-muted px-1 py-0.5 text-xs font-mono">${echap(code)}</code>`);
   // liens http(s)
   const avecLiens = code.replace(/(https?:\/\/[^\s)]+)/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-cx-primary underline break-all">${url}</a>`);
-  const gras = avecLiens.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  // #hashtag → page forum par tag ; @membre → profil. Frontière de mot pour
+  // éviter de rattraper un "#" ou "@" au milieu d'une URL déjà transformée.
+  const avecTags = avecLiens.replace(
+    /(^|[\s(])#([\p{L}\p{N}_]{2,40})/gu,
+    (_m, pre, tag) => `${pre}<a href="/forum?tag=${encodeURIComponent(tag)}" class="font-semibold text-cx-primary hover:underline">#${tag}</a>`,
+  );
+  const avecMentions = avecTags.replace(
+    /(^|[\s(])@([a-z0-9][a-z0-9-]{1,39})/gi,
+    (_m, pre, slug) => `${pre}<a href="/membres/${encodeURIComponent(slug)}" class="font-semibold text-cx-primary hover:underline">@${slug}</a>`,
+  );
+  const gras = avecMentions.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   const ital = gras.replace(/\*([^*]+)\*/g, "<em>$1</em>");
   return ital;
 }
