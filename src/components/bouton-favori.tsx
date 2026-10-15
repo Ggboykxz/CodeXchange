@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 import { IconeAnimee } from "@/components/icone-animee";
+import { cn } from "@/lib/cn";
 
 type Props = {
   kind: string;
@@ -45,11 +46,10 @@ export default function BoutonFavori({ kind, targetId, initial, connecte }: Prop
       type="button"
       onClick={basculer}
       disabled={busy}
-      className={`inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
-        favori
-          ? "border-cx-warning/60 bg-cx-warning/5 text-cx-warning"
-          : "border-cx-border bg-cx-card text-cx-muted-fg hover:bg-cx-muted"
-      }`}
+      className={cn(
+        "inline-flex min-h-[44px] cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+        favori ? "border-cx-warning/60 bg-cx-warning/5 text-cx-warning" : "border-cx-border bg-cx-card text-cx-muted-fg hover:bg-cx-muted",
+      )}
       title={connecte ? "Ajouter/retirer des favoris" : "Se connecter pour favoriser"}
     >
       {favori ? <IconeAnimee nom="etoile" className="mr-1 inline h-3 w-3" /> : <IconeAnimee nom="etoile-vide" className="mr-1 inline h-3 w-3" />} Favori

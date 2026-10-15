@@ -25,7 +25,7 @@ export default function BoutonPartager({ path, libelle = "Partager" }: { path: s
     <button
       type="button"
       onClick={() => void partager()}
-      className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg"
+      className="inline-flex min-h-[36px] cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg active:scale-[0.97]"
     >
       <Icone nom={copie ? "coche" : "partage"} className="h-4 w-4" />
       {copie ? "Copié !" : libelle}
