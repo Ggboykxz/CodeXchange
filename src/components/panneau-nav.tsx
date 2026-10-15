@@ -84,7 +84,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte }: Pro
         id="navigation-laterale"
         aria-label="Navigation"
         className={[
-          "fixed top-14 bottom-0 left-0 z-40 w-64 shrink-0 overflow-y-auto border-r border-cx-border bg-cx-card px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-200",
+          "fixed top-14 bottom-0 left-0 z-40 w-64 shrink-0 overflow-y-auto border-r border-cx-border bg-cx-card pr-3 pl-[max(0.75rem,env(safe-area-inset-left))] pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-200",
           ouverte ? "translate-x-0 visible" : "-translate-x-full invisible",
           "lg:sticky lg:top-14 lg:z-auto lg:h-[calc(100dvh-3.5rem)] lg:w-60 lg:self-start lg:translate-x-0 lg:visible lg:transition-none",
         ].join(" ")}
