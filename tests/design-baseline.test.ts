@@ -57,9 +57,10 @@ describe("design baseline — échelle z", () => {
 
 describe("design baseline — safe-area", () => {
   test("safe-area", () => {
-    // `fixed` en tant que classe entière (pas `focus:fixed` etc.) : l'élément
-    // est toujours positionné fixed → doit respecter la safe-area.
-    // Le skip-link (focus:fixed, src/app/layout.tsx) est traité en A5.
+    // Classe `fixed` entière ou avec variante (`focus:fixed`, `md:fixed`…) :
+    // l'élément est (au moins sous cette condition) positionné fixed → doit
+    // respecter la safe-area. Le skip-link (`focus:fixed`) est le cas concret.
+    const EST_FIXED = /(^|:)fixed$/;
     const contrevenants: string[] = [];
     for (const f of fichiersSrc()) {
       const contenu = lire(f);
@@ -67,7 +68,7 @@ describe("design baseline — safe-area", () => {
         ...contenu.matchAll(/className="([^"]*)"/g),
         ...contenu.matchAll(/className=\{`([^`]*)`\}/g),
       ].map((m) => m[1] ?? "");
-      const aFixed = classNames.some((cn) => cn.split(/\s+/).includes("fixed"));
+      const aFixed = classNames.some((cn) => cn.split(/\s+/).some((c) => EST_FIXED.test(c)));
       if (aFixed && !/safe-area/.test(contenu)) contrevenants.push(f);
     }
     expect(contrevenants).toEqual([]);
