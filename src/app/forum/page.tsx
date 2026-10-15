@@ -180,7 +180,7 @@ export default async function PageForum({ searchParams }: Props) {
         {/* ── Colonne droite : widget à propos (≥ xl) ──────────────── */}
         <aside className="hidden xl:block xl:sticky xl:top-20">
           <section className="overflow-hidden rounded-lg border border-cx-border bg-cx-card">
-            <div className="h-14 bg-gradient-to-r from-cx-primary/30 to-cx-accent/30" />
+            <div className="h-14 border-b border-cx-border bg-cx-muted" />
             <div className="p-4">
               <h2 className="text-lg font-bold">À propos de CodeXchange</h2>
               <p className="mt-1.5 text-sm text-cx-muted-fg">

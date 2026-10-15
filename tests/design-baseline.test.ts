@@ -77,10 +77,15 @@ describe("design baseline — safe-area", () => {
 
 describe("design baseline — aplats", () => {
   test("aucun dégradé", () => {
-    // La baseline proscrit les dégradés : fonds unis `cx-*` uniquement.
-    // `bg-gradient-*`, `from-cx-*` et `to-cx-*` n'ont d'autre usage qu'un dégradé.
-    const DEGRADE = /bg-gradient|from-cx-|to-cx-/;
-    const contrevenants = fichiersSrc().filter((f) => DEGRADE.test(lire(f)));
+    // La baseline proscrit les dégradés de couleur : fonds unis `cx-*`.
+    // `bg-gradient-*`, `from-cx-*`/`to-cx-*` n'ont d'autre usage qu'un dégradé, et
+    // `linear-gradient` attrape les inline (`style={{ backgroundImage }}`).
+    // `radial-gradient(...1px...)` reste permis : motif de points, pas une couleur.
+    // Exception documentée (ruling) : les images de prévisualisation sociale
+    // (`**/opengraph-image.tsx`) sont des visuels générés, pas de l'UI.
+    const DEGRADE = /bg-gradient|from-cx-|to-cx-|linear-gradient/;
+    const HORS_UI = /opengraph-image\.tsx$/;
+    const contrevenants = fichiersSrc().filter((f) => !HORS_UI.test(f) && DEGRADE.test(lire(f)));
     expect(contrevenants).toEqual([]);
   });
 });
