@@ -73,3 +73,19 @@ describe("design baseline — safe-area", () => {
     expect(contrevenants).toEqual([]);
   });
 });
+
+describe("design baseline — typographie", () => {
+  const css = lire("src/app/globals.css");
+
+  test("balance-pretty", () => {
+    // Titres équilibrés (`text-wrap: balance`) et paragraphes sans orphelin
+    // sur la dernière ligne (`text-wrap: pretty`) en règle de base.
+    expect(css).toContain("text-wrap: balance");
+    expect(css).toContain("text-wrap: pretty");
+  });
+
+  test("tabular-nums", () => {
+    // Chiffres de largeur fixe pour les données alignées (`time`, `[data-numeric]`).
+    expect(css).toContain("tabular-nums");
+  });
+});

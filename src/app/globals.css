@@ -107,6 +107,24 @@
   --font-sans: var(--font-plex, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
 }
 
+/* ===== Typographie de base (A4) ===== */
+/* Dans la couche `base` (après le preflight) : les utilitaires Tailwind
+   (`text-nowrap`, `normal-nums`, …) restent prioritaires grâce à la couche
+   `utilities`, et `:where()` garde ces sélecteurs à spécificité 0. */
+@layer base {
+  :where(h1, h2, h3, h4) {
+    text-wrap: balance;
+  }
+
+  :where(p, li) {
+    text-wrap: pretty;
+  }
+
+  :where(time, [data-numeric]) {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 /* Curseur pointeur sur tout élément cliquable (checklist livraison). */
 button:not(:disabled),
 [role="button"]:not([aria-disabled="true"]),
