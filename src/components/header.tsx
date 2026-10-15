@@ -55,9 +55,10 @@ export async function Header() {
               <RechercheDropdown locale={locale} suggestions={suggestions} />
             </div>
 
+            {/* L'unique action accentuée de la vue (plan : un accent par vue). */}
             <Link
               href="/forum/nouveau"
-              className="hidden items-center gap-1.5 rounded-full border border-cx-border px-3.5 py-1.5 text-sm font-semibold text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg lg:inline-flex"
+              className="hidden items-center gap-1.5 rounded-full bg-cx-accent px-3.5 py-1.5 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 active:scale-[0.97] lg:inline-flex"
             >
               <Icone nom="plus" className="h-4 w-4" />
               {t(locale, "forum.new")}
@@ -105,7 +106,7 @@ export async function Header() {
                 </Link>
                 <Link
                   href="/inscription"
-                  className="hidden rounded-lg bg-cx-primary px-3 py-2 text-sm font-semibold text-cx-primary-fg hover:opacity-90 sm:inline-flex active:scale-[0.97]"
+                  className="hidden rounded-lg border border-cx-border px-3 py-2 text-sm font-semibold text-cx-fg transition hover:bg-cx-muted active:scale-[0.97] sm:inline-flex"
                 >
                   {t(locale, "nav.join")}
                 </Link>

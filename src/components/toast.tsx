@@ -1,7 +1,7 @@
 "use client";
 
 import { IconeAnimee } from "./icone-animee";
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 export type Toast = {
@@ -32,6 +32,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const retirer = useCallback((id: number) => {
     setToasts((liste) => liste.filter((t) => t.id !== id));
   }, []);
+
+  // Fermeture au clavier : Échap retire la notification la plus récente.
+  useEffect(() => {
+    if (toasts.length === 0) return;
+    function surTouche(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setToasts((liste) => liste.slice(0, -1));
+    }
+    document.addEventListener("keydown", surTouche);
+    return () => document.removeEventListener("keydown", surTouche);
+  }, [toasts.length]);
 
   const notifier = useCallback<ContexteToast["notifier"]>(
     (toast) => {
@@ -99,7 +110,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               type="button"
               onClick={() => retirer(toast.id)}
               aria-label="Fermer"
-              className="shrink-0 rounded-md px-1 text-cx-muted-fg hover:bg-cx-muted"
+              className="shrink-0 cursor-pointer rounded-md px-1 text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]"
             >
               <IconeAnimee nom="fermer" className="h-4 w-4" />
             </button>
