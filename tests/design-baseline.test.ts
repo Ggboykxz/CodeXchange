@@ -33,7 +33,10 @@ function lire(cheminRelatif: string): string {
 
 describe("design baseline — viewports", () => {
   test("dvh", () => {
-    const contrevenants = fichiersSrc().filter((f) => /\bh-screen\b/.test(lire(f)));
+    // Toute unité vh non dynamique : classe `h-screen` ou valeur arbitraire
+    // `100vh` (le (?<!d) exclut `dvh`/`100dvh`).
+    const VH_NON_DYNAMIQUE = /\bh-screen\b|(?<!d)\d+vh\b/;
+    const contrevenants = fichiersSrc().filter((f) => VH_NON_DYNAMIQUE.test(lire(f)));
     expect(contrevenants).toEqual([]);
   });
 });

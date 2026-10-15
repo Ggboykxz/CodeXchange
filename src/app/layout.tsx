@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Navigation façon Reddit : barre latérale (drawer sur mobile) + contenu. */}
             <div className="flex">
               <NavigationGauche />
-              <main id="main" className="min-h-[calc(100vh-3.5rem)] min-w-0 flex-1">
+              <main id="main" className="min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1">
                 {children}
               </main>
             </div>
