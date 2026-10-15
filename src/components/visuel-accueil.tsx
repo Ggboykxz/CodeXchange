@@ -12,10 +12,8 @@ export default function VisuelAccueil() {
       aria-hidden="true"
       className="relative mx-auto mt-12 h-72 w-full max-w-3xl sm:h-80"
     >
-      {/* Fond dégradé + halos. */}
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-cx-primary/15 via-cx-accent/10 to-cx-card border border-cx-border" />
-      <div className="absolute -left-6 -top-6 h-28 w-28 rounded-full bg-cx-primary/20 blur-2xl" />
-      <div className="absolute -bottom-8 -right-4 h-32 w-32 rounded-full bg-cx-accent/25 blur-2xl" />
+      {/* Fond aplat (plus de dégradé ni de halos flous : baseline). */}
+      <div className="absolute inset-0 rounded-3xl border border-cx-border bg-cx-muted" />
 
       {/* Carte : profil abonné. */}
       <div className="absolute left-4 top-6 w-56 rounded-2xl border border-cx-border bg-cx-card p-3 shadow-lg sm:left-10">
