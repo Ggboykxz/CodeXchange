@@ -151,21 +151,17 @@ git commit -m "feat(ui): utilitaire cn (clsx + tailwind-merge)"
 ### Task A5: Safe-areas sur les éléments fixes
 
 **Files:**
-- Modify: `src/app/globals.css` (classes utilitaires), `src/components/retour-haut.tsx`, `src/components/panneau-nav.tsx`, `src/components/toast.tsx`, `src/components/confirm-dialog.tsx`, `src/app/layout.tsx`
+- Modify: `src/app/layout.tsx` (skip-link), `src/components/header.tsx` si un élément fixe subsiste
+- Test: `tests/design-baseline.test.ts` (test safe-area existant, créé en A3)
 
 **Interfaces:**
-- Produces : classes `.pt-safe`, `.pb-safe`, `.pl-safe`, `.pr-safe` (ou utilitaires Tailwind `pt-[env(safe-area-inset-bottom)]`) utilisées par les 5 sites fixes.
+- Produces : tout élément `fixed` respecte la safe-area. **Note de ruling (2026-10-15)** : A3 a déjà appliqué la safe-area en inline (`env(safe-area-inset-*)` wrappé dans `max()`, dégradation gracieuse sans utilitaire) sur 4 sites — drawer (`panneau-nav.tsx`), toast (`toast.tsx`), dialogue (`confirm-dialog.tsx`), retour-haut (`retour-haut.tsx`). L'approche inline est **acceptée** : A5 ne crée donc pas de classes utilitaires et se limite aux sites restants, dans le même style inline.
 
-- [ ] **Step 1: Étendre le test existant** `safe-area sur les éléments fixed` pour exiger la présence d'une des 4 classes safe-area dans chacun des 5 fichiers.
-
-- [ ] **Step 2: Le lancer** — FAIL.
-
-- [ ] **Step 3: Ajouter les utilitaires dans `globals.css` et les appliquer** : retour-haut (`pb-safe` + décalage), drawer (`pt-safe pb-safe` en complément de `top-14`), toast (`pb-safe`), dialogue (`pb-safe`), skip-link (`pt-safe pl-safe`).
-
-- [ ] **Step 4: Relancer** — PASS.
-
-- [ ] **Step 5: Vérifier vert** (tsc, lint, tests, build) puis pousser et confirmer le déploiement live.
-
+- [ ] **Step 1: Vérifier l'état actuel** — `grep -rn 'safe-area' src` liste les 4 sites déjà traités ; identifier ce qui reste (skip-link `focus:fixed` de `src/app/layout.tsx`, et tout `fixed` apparu depuis).
+- [ ] **Step 2: Le lancer** (le test safe-area doit déjà être vert ; s'il ne l'est pas, c'est un échec attendu à corriger).
+- [ ] **Step 3: Appliquer la safe-area aux sites restants** dans le même style inline que A3 (`max()` avec l'offset existant).
+- [ ] **Step 4: Relancer** — PASS, y compris le test `dvh` élargi (`(?<!d)\d+vh`) resté vert.
+- [ ] **Step 5: Vérifier** (tsc, lint, tests, build) puis pousser et confirmer le déploiement live.
 - [ ] **Step 6: Committer** — `fix(ui): safe-area-inset sur les éléments fixes`.
 
 ---
