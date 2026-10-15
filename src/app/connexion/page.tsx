@@ -62,7 +62,7 @@ export default function PageConnexion() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
+    <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6 py-12">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "auth.login_title")}</h1>
       <p className="mt-2 text-sm text-cx-muted-fg">{t(locale, "home.hero_sub")}</p>
 

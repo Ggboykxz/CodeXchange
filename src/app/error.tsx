@@ -11,7 +11,7 @@ export default function GlobalError({
 }) {
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-5 px-6 text-center">
+    <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center gap-5 px-6 text-center">
       <h1 className="text-3xl font-black tracking-tight">
         Oops — quelque chose a cassé
       </h1>

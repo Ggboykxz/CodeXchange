@@ -70,7 +70,7 @@ export default async function PageMonEspace({ searchParams }: Props) {
   const compteFavoris = mesFavoris.length;
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />

@@ -27,7 +27,7 @@ export default async function PageTags() {
   const postes = await prisma.post.findMany({ select: { tags: true } });
   const tags = compresserTags(postes);
   return (
-    <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-6 px-6 py-10">
       <header>
         <h1 className="text-3xl font-black tracking-tight">{t(locale, "tags.title")}</h1>
       </header>

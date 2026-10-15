@@ -35,7 +35,7 @@ export async function Header() {
   const suggestions = await suggestionsRecherche().catch(() => []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-cx-border bg-cx-bg/80 backdrop-blur">
       <Container>
         <div className="flex h-14 items-center gap-2">
           {/* Gauche : menu (mobile) + logo. */}

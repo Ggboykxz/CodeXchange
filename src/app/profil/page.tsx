@@ -24,7 +24,7 @@ export default async function PageProfil() {
   const locale = await localeCourante();
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "profile.title")}</h1>
 
       <section className="flex flex-col gap-4 rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5">

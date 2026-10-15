@@ -94,7 +94,7 @@ export default async function PageRecherche({ searchParams }: Props) {
   ];
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6">
+    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6">
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-black tracking-tight">{t(locale, "search.title")}</h1>
         <p className="text-sm text-cx-muted-fg">

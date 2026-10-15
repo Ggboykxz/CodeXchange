@@ -21,7 +21,7 @@ type Props = {
  * - **Ancrage** : le panneau est `absolute` dans un wrapper `relative` → il se
  *   positionne par rapport au **bouton**, pas par rapport au header pleine
  *   largeur (le `backdrop-blur` faisait du header le bloc conteneur).
- * - **Z-index** : `z-50` explicite → le panneau passe au-dessus du contenu.
+ * - **Z-index** : `z-40` explicite → le panneau passe au-dessus du contenu.
  * - **Fermeture** : clic extérieur + `Escape` + clic sur un item.
  * - **Accessibilité** : `aria-expanded`, `aria-haspopup`, `aria-controls`.
  */
@@ -76,7 +76,7 @@ export default function Dropdown({
           id={`menu-${label}`}
           role="menu"
           onClick={() => setOuvert(false)}
-          className={`absolute z-50 mt-2 min-w-56 rounded-xl border border-cx-border bg-cx-card p-1.5 shadow-lg ${
+          className={`absolute z-40 mt-2 min-w-56 rounded-xl border border-cx-border bg-cx-card p-1.5 shadow-lg ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
