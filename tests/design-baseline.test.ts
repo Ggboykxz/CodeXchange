@@ -90,6 +90,34 @@ describe("design baseline — aplats", () => {
   });
 });
 
+describe("design baseline — accessibilité des icônes", () => {
+  test("boutons icône seuls avec aria-label", () => {
+    // Un `<button>` dont le contenu n'est qu'une icône (aucun texte visible)
+    // doit porter un `aria-label` (ou un équivalent `sr-only`) : sans lui,
+    // un lecteur d'écran n'annonce rien.
+    const clandestins: string[] = [];
+    for (const f of fichiersSrc()) {
+      const contenu = lire(f);
+      // Chaque `<button …>` puis son corps jusqu'à `</button>` (fenêtre large).
+      for (const m of contenu.matchAll(/<button\b([^>]*)>([\s\S]{0,320}?)<\/button>/g)) {
+        const props = m[1] ?? "";
+        const corps = m[2] ?? "";
+        const aUneIcone = /<Icone\b|<IconeAnimee\b|<svg\b/.test(corps);
+        if (!aUneIcone) continue;
+        // Texte visible : au moins 3 lettres hors balises et hors commentaires.
+        const texte = corps
+          .replace(/<!--[\s\S]*?-->/g, "")
+          .replace(/<[^>]*>/g, " ")
+          .trim();
+        if (/[A-Za-zÀ-ÿ]{3,}/.test(texte)) continue;
+        if (/aria-label=|aria-labelledby=|sr-only/.test(props)) continue;
+        clandestins.push(`${f} (${texte.slice(0, 20) || "sans texte"})`);
+      }
+    }
+    expect(clandestins).toEqual([]);
+  });
+});
+
 describe("design baseline — typographie", () => {
   const css = lire("src/app/globals.css");
 

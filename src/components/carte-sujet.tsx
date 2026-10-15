@@ -100,7 +100,7 @@ export default function CarteSujet({
             className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg"
           >
             <Icone nom="forum" className="h-4 w-4" />
-            {sujet._count.replies} {t(locale, "forum.comments_short")}
+            <span className="tabular-nums">{sujet._count.replies}</span> {t(locale, "forum.comments_short")}
           </Link>
           <BoutonPartager path={`/forum/${sujet.id}`} />
         </div>

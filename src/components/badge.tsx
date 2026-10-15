@@ -1,24 +1,36 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
-const variants: Record<string, string> = {
-  primary: "bg-cx-primary text-cx-primary-fg hover:opacity-90",
-  secondary: "bg-cx-secondary text-cx-secondary-fg hover:opacity-90",
-  accent: "bg-cx-accent text-cx-accent-fg hover:opacity-90",
-  muted: "bg-cx-muted text-cx-muted-fg hover:opacity-80",
-  danger: "bg-cx-destructive text-cx-destructive-fg hover:opacity-90",
-  ghost: "border border-cx-border bg-transparent text-cx-fg hover:bg-cx-muted",
+// Trois variantes seulement (un accent par vue). Les anciens noms restent des
+// alias pour ne casser aucun appel : `secondary`/`accent` → principal,
+// `muted` → neutre, `ghost` → neutre bordé.
+const variants = {
+  primary: "bg-cx-primary text-cx-primary-fg",
+  neutral: "bg-cx-muted text-cx-muted-fg",
+  danger: "bg-cx-destructive text-cx-destructive-fg",
+} as const;
+
+const alias: Record<string, keyof typeof variants> = {
+  secondary: "primary",
+  accent: "primary",
+  muted: "neutral",
+  ghost: "neutral",
 };
 
 export function Badge({
   children,
-  variant = "muted",
+  variant = "neutral",
 }: {
   children: ReactNode;
-  variant?: keyof typeof variants;
+  variant?: keyof typeof variants | keyof typeof alias;
 }) {
+  const variante = (alias[variant] ?? variant) as keyof typeof variants;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${variants[variant] ?? variants.muted}`}
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+        variants[variante] ?? variants.neutral,
+      )}
     >
       {children}
     </span>
