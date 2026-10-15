@@ -75,6 +75,16 @@ describe("design baseline — safe-area", () => {
   });
 });
 
+describe("design baseline — aplats", () => {
+  test("aucun dégradé", () => {
+    // La baseline proscrit les dégradés : fonds unis `cx-*` uniquement.
+    // `bg-gradient-*`, `from-cx-*` et `to-cx-*` n'ont d'autre usage qu'un dégradé.
+    const DEGRADE = /bg-gradient|from-cx-|to-cx-/;
+    const contrevenants = fichiersSrc().filter((f) => DEGRADE.test(lire(f)));
+    expect(contrevenants).toEqual([]);
+  });
+});
+
 describe("design baseline — typographie", () => {
   const css = lire("src/app/globals.css");
 

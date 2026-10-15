@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/cn";
+import { RAYON } from "@/lib/design";
 import { Icone } from "@/components/icones";
 import type { EtatRepost } from "@/lib/reposts";
 
@@ -86,11 +88,13 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
           disabled={enCours}
           aria-busy={enCours}
           aria-pressed={etat.jeLaiReposte}
-          className={`inline-flex min-h-[40px] cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition disabled:opacity-60 ${
+          className={cn(
+            "inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 border px-3 py-2 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
+            RAYON.md,
             etat.jeLaiReposte
               ? "border-cx-success/60 bg-cx-success/5 text-cx-success"
-              : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-success/60 hover:text-cx-success"
-          }`}
+              : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-success/60 hover:text-cx-success",
+          )}
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M17 1l4 4-4 4" />
@@ -104,7 +108,10 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
         <button
           type="button"
           onClick={copierLien}
-          className="inline-flex min-h-[40px] cursor-pointer items-center gap-1.5 rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-xs font-semibold text-cx-card-fg transition hover:border-cx-primary/60 hover:text-cx-primary"
+          className={cn(
+            "inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 border border-cx-border bg-cx-card px-3 py-2 text-xs font-semibold text-cx-card-fg transition hover:border-cx-primary/60 hover:text-cx-primary active:scale-[0.97]",
+            RAYON.md,
+          )}
         >
           {copie ? <Icone nom="copie" className="h-4 w-4" /> : <Icone nom="partage" className="h-4 w-4" />}
           {copie ? "Lien copié" : "Partager"}

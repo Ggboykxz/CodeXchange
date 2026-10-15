@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/cn";
+import { RAYON } from "@/lib/design";
 import { Icone } from "@/components/icones";
 import type { CompteursSuivi } from "@/lib/follows";
 
@@ -66,11 +68,13 @@ export default function BoutonSuivre({ cibleId, initial, connecte }: Props) {
         disabled={enCours}
         aria-busy={enCours}
         aria-pressed={etat.jeLeSuis}
-        className={`inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-xs font-semibold transition disabled:opacity-60 ${
+        className={cn(
+          "inline-flex min-h-[44px] cursor-pointer items-center justify-center px-4 py-2 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
+          RAYON.md,
           etat.jeLeSuis
             ? "border border-cx-border bg-cx-muted text-cx-fg hover:border-cx-destructive/50 hover:text-cx-destructive"
-            : "bg-cx-primary text-cx-primary-fg hover:opacity-90"
-        }`}
+            : "bg-cx-primary text-cx-primary-fg hover:opacity-90",
+        )}
       >
         {etat.jeLeSuis ? <Icone nom="coche" className="h-4 w-4" /> : null}
         {etat.jeLeSuis ? "Abonné" : "Suivre"}

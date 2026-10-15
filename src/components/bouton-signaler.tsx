@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/cn";
+import { RAYON } from "@/lib/design";
 import { useToast } from "@/components/toast";
 import type { KindSignalement } from "@/lib/reports";
 import { Icone } from "@/components/icones";
@@ -45,7 +47,10 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
       <button
         type="button"
         onClick={() => setOuvert((v) => !v)}
-        className="inline-flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted"
+        className={cn(
+          "inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 px-2 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]",
+          RAYON.md,
+        )}
       >
         <Icone nom="signaler" className="h-3.5 w-3.5" />
         {libelle}
@@ -65,14 +70,20 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
               onClick={envoyer}
               disabled={busy}
                 aria-busy={busy}
-              className="rounded-md bg-cx-primary px-2 py-1 text-xs font-semibold text-cx-primary-fg active:scale-[0.97]"
+              className={cn(
+                "min-h-[44px] cursor-pointer bg-cx-primary px-2 text-xs font-semibold text-cx-primary-fg active:scale-[0.97]",
+                RAYON.md,
+              )}
             >
               Envoyer
             </button>
             <button
               type="button"
               onClick={() => setOuvert(false)}
-              className="rounded-md px-2 py-1 text-xs text-cx-muted-fg hover:bg-cx-muted"
+              className={cn(
+                "min-h-[44px] cursor-pointer px-2 text-xs text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]",
+                RAYON.md,
+              )}
             >
               Annuler
             </button>

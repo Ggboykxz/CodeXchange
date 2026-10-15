@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/cn";
+import { RAYON } from "@/lib/design";
 
 type Props = { cibleId: number; bloqueInitialement: boolean; connecte: boolean };
 
@@ -62,11 +64,13 @@ export default function BoutonBloquer({ cibleId, bloqueInitialement, connecte }:
         disabled={enCours}
         aria-busy={enCours}
         aria-pressed={bloque}
-        className={`inline-flex min-h-[36px] cursor-pointer items-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-60 ${
+        className={cn(
+          "inline-flex min-h-[44px] cursor-pointer items-center border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
+          RAYON.md,
           bloque
             ? "border-cx-destructive/60 bg-cx-destructive/5 text-cx-destructive"
-            : "border-cx-border text-cx-muted-fg hover:border-cx-destructive/50 hover:text-cx-destructive"
-        }`}
+            : "border-cx-border text-cx-muted-fg hover:border-cx-destructive/50 hover:text-cx-destructive",
+        )}
       >
         {bloque ? "Débloquer" : confirme ? "Confirmer le blocage ?" : "Bloquer"}
       </button>

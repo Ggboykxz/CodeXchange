@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/cn";
+import { RAYON } from "@/lib/design";
 import { useToast } from "./toast";
 import { useRouter } from "next/navigation";
 
@@ -35,7 +37,13 @@ export default function BoutonAbonnement({ tag, initial }: { tag: string; initia
       onClick={() => void basculer()}
       disabled={busy}
       aria-busy={busy}
-      className={`rounded-lg px-3 py-1 text-xs font-semibold ${suivi ? "bg-cx-primary text-cx-primary-fg" : "border border-cx-border text-cx-muted-fg hover:bg-cx-muted"}`}
+      className={cn(
+        "inline-flex min-h-[44px] cursor-pointer items-center justify-center px-3 py-1 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
+        RAYON.md,
+        suivi
+          ? "bg-cx-primary text-cx-primary-fg hover:opacity-90"
+          : "border border-cx-border text-cx-muted-fg hover:bg-cx-muted",
+      )}
     >
       {suivi ? "Abonné" : "S'abonner"}
     </button>

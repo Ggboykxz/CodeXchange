@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/cn";
+import { RAYON } from "@/lib/design";
 import { useToast } from "./toast";
 
 /**
@@ -70,14 +72,14 @@ export default function BoutonVote({
   const clsScore =
     vote === 1 ? "text-cx-accent" : vote === -1 ? "text-cx-primary" : "text-cx-fg";
 
-  const cadre =
-    variante === "encadre"
-      ? "rounded-lg border border-cx-border bg-cx-card px-2 py-1.5"
-      : "";
+  const cadre = cn(
+    variante === "encadre" && "border border-cx-border bg-cx-card px-2 py-1.5",
+    variante === "encadre" && RAYON.md,
+  );
 
   return (
     <div
-      className={`flex flex-col items-center gap-1 select-none ${cadre}`}
+      className={cn("flex flex-col items-center gap-1 select-none", cadre)}
       role="group"
       aria-label="Vote"
     >
@@ -86,9 +88,12 @@ export default function BoutonVote({
         aria-label="Upvote"
         aria-pressed={vote === 1}
         disabled={enCours}
-          aria-busy={enCours}
+        aria-busy={enCours}
         onClick={() => void voter(1)}
-        className={`${clsHaut} transition-colors`}
+        className={cn(
+          "inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center transition active:scale-[0.97]",
+          clsHaut,
+        )}
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 19V5" />
@@ -101,8 +106,12 @@ export default function BoutonVote({
         aria-label="Downvote"
         aria-pressed={vote === -1}
         disabled={enCours}
+        aria-busy={enCours}
         onClick={() => void voter(-1)}
-        className={`${clsBas} transition-colors`}
+        className={cn(
+          "inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center transition active:scale-[0.97]",
+          clsBas,
+        )}
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 5v14" />
