@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/toast";
+import { SqueletteBarre } from "@/components/skeleton";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +63,7 @@ export default function PageReinitialisation() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6 py-12">
       <h1 className="text-3xl font-black tracking-tight">Nouveau mot de passe</h1>
-      <Suspense fallback={<div className="mt-8 h-10 animate-pulse rounded-md bg-cx-muted" />}>
+      <Suspense fallback={<SqueletteBarre className="mt-8 h-10" />}>
         <Formulaire />
       </Suspense>
       <p className="mt-6 text-sm">

@@ -1,5 +1,14 @@
 /** Squelettes de chargement (états vides pendant la récupération). */
 
+/**
+ * Barre de squelette : le seul endroit du projet qui porte `animate-pulse`.
+ * Les écrans de chargement l'utilisent pour leurs en-têtes au lieu de
+ * dupliquer le trio `animate-pulse rounded-md bg-cx-muted`.
+ */
+export function SqueletteBarre({ className = "" }: { className?: string }) {
+  return <div className={`animate-pulse rounded-md bg-cx-muted ${className}`} aria-hidden="true" />;
+}
+
 function Barre({ className = "" }: { className?: string }) {
   return <div className={`animate-pulse rounded-md bg-cx-muted ${className}`} />;
 }
@@ -94,7 +103,7 @@ export function SqueletteDetail() {
   return (
     <div className="flex flex-col gap-6" aria-hidden="true">
       <div className="flex items-center gap-4">
-        <Barre className="h-20 w-20 rounded-full" />
+        <Barre className="size-20 rounded-full" />
         <div className="flex-1">
           <Barre className="h-5 w-1/3" />
           <Barre className="mt-3 h-3 w-1/4" />
