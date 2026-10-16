@@ -133,3 +133,21 @@ describe("design baseline — typographie", () => {
     expect(css).toContain("tabular-nums");
   });
 });
+
+describe("design baseline — primitives interactives", () => {
+  test("aucun disclosure maison (<details>/<summary>)", () => {
+    // Les surfaces dépliables passent par Base UI (menu, popover, dialogue) :
+    // aucun `<details>`/`<summary>` interactif ne doit subsister dans `src/`.
+    const BALISE = /<(details|summary)[\s>]/;
+    const contrevenants = fichiersSrc().filter((f) => BALISE.test(lire(f)));
+    expect(contrevenants).toEqual([]);
+  });
+
+  test("les composants interactifs du header sont client et sur Base UI", () => {
+    // Garde-fou d'architecture : menu utilisateur et recherche ne réimplémentent
+    // pas l'ancrage/le clavier à la main (enveloppes `ui/menu` et `ui/popover`).
+    expect(lire("src/components/dropdown.tsx")).toContain("@/components/ui/menu");
+    expect(lire("src/components/recherche-dropdown.tsx")).toContain("@/components/ui/popover");
+    expect(lire("src/components/confirm-dialog.tsx")).toContain("@/components/ui/dialog");
+  });
+});

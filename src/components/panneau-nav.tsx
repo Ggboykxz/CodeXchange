@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useNav } from "@/components/nav-context";
 import { Icone, type NomIcone } from "@/components/icones";
 import SelecteurLangue from "@/components/selecteur-langue";
 import SelecteurTheme from "@/components/selecteur-theme";
+import { cn } from "@/lib/cn";
 import { t, type Locale } from "@/lib/i18n";
 import type { Theme } from "@/lib/theme";
 
@@ -52,11 +54,12 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
         href={href}
         onClick={fermer}
         aria-current={actif ? "page" : undefined}
-        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
+        className={cn(
+          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
           actif
             ? "bg-cx-primary/5 text-cx-primary"
-            : "text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
-        }`}
+            : "text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg",
+        )}
       >
         <Icone nom={icone} className="size-5 shrink-0" />
         {libelle}
@@ -68,6 +71,32 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
 /** Navigation latérale façon Reddit (composant client : route active + drawer). */
 export default function PanneauNav({ locale, theme, communautes, connecte }: Props) {
   const { ouverte, fermer } = useNav();
+  const refAside = useRef<HTMLElement>(null);
+
+  // Drawer mobile = surface modale : le contenu derrière le voile devient
+  // inerte (l'ordre de tabulation ne sort plus du panneau, WCAG 2.4.3), le focus
+  // entre dans le panneau à l'ouverture et revient au ☰ à la fermeture.
+  useEffect(() => {
+    if (!window.matchMedia("(max-width: 1023px)").matches) return;
+    const cibles = [document.getElementById("main"), document.querySelector("footer")].filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    const bouton = document.querySelector<HTMLElement>(
+      'button[aria-controls="navigation-laterale"]',
+    );
+
+    if (ouverte) {
+      for (const el of cibles) el.setAttribute("inert", "");
+      refAside.current?.querySelector<HTMLElement>("a, button")?.focus();
+    } else {
+      for (const el of cibles) el.removeAttribute("inert");
+      bouton?.focus();
+    }
+
+    return () => {
+      for (const el of cibles) el.removeAttribute("inert");
+    };
+  }, [ouverte]);
 
   return (
     <>
@@ -82,6 +111,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte }: Pro
 
       <aside
         id="navigation-laterale"
+        ref={refAside}
         aria-label="Navigation"
         className={[
           "fixed top-14 bottom-0 left-0 z-40 w-64 shrink-0 overflow-y-auto border-r border-cx-border bg-cx-card pr-3 pl-[max(0.75rem,env(safe-area-inset-left))] pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] transition-transform duration-200",
