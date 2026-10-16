@@ -59,7 +59,7 @@ export default async function PageOffre({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {offre.titre}
         </h1>
-        <p className="text-sm text-cx-muted-fg">
+        <p className="text-sm tabular-nums text-cx-muted-fg">
           {offre.entreprise} ·{" "}
           {offre.ville ? `${offre.ville}, ${offre.pays}` : offre.pays} ·{" "}
           {DATE.format(offre.createdAt)}

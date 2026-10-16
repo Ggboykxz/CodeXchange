@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t, type Locale } from "@/lib/i18n";
@@ -96,7 +97,7 @@ export default async function PageJobs({ searchParams }: Props) {
           type="search"
           defaultValue={q}
           placeholder={t(locale, "jobs.search")}
-          className={`${CLASS_CHAMP} sm:max-w-56`}
+          className={cn(CLASS_CHAMP, "sm:max-w-56")}
         />
         <label htmlFor="pays" className="sr-only">
           {t(locale, "jobs.country_filter")}
@@ -107,7 +108,7 @@ export default async function PageJobs({ searchParams }: Props) {
           type="text"
           defaultValue={pays}
           placeholder={t(locale, "jobs.country_filter")}
-          className={`${CLASS_CHAMP} sm:max-w-36`}
+          className={cn(CLASS_CHAMP, "sm:max-w-36")}
         />
         <label htmlFor="contrat" className="sr-only">
           {t(locale, "jobs.contract_filter")}
@@ -116,7 +117,7 @@ export default async function PageJobs({ searchParams }: Props) {
           id="contrat"
           name="contrat"
           defaultValue={contrat}
-          className={`${CLASS_CHAMP} sm:max-w-36`}
+          className={cn(CLASS_CHAMP, "sm:max-w-36")}
         >
           <option value="">Contrat</option>
           {CONTRATS.map((c) => (
@@ -132,7 +133,7 @@ export default async function PageJobs({ searchParams }: Props) {
           id="remote"
           name="remote"
           defaultValue={remote}
-          className={`${CLASS_CHAMP} sm:max-w-36`}
+          className={cn(CLASS_CHAMP, "sm:max-w-36")}
         >
           <option value="">{t(locale, "jobs.remote")} / {t(locale, "jobs.onsite")}</option>
           <option value="1">{t(locale, "jobs.remote")}</option>
@@ -193,7 +194,7 @@ export default async function PageJobs({ searchParams }: Props) {
                 </Link>
                 <Link
                   href="/jobs/nouveau"
-                  className="rounded-lg bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg"
+                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
                 >
                   {t(locale, "jobs.new")}
                 </Link>
@@ -207,7 +208,7 @@ export default async function PageJobs({ searchParams }: Props) {
               </p>
               <Link
                 href="/jobs/nouveau"
-                className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+                className="mt-5 inline-block rounded-lg bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
               >
                 {t(locale, "jobs.new")}
               </Link>
@@ -227,7 +228,7 @@ export default async function PageJobs({ searchParams }: Props) {
                 </h2>
               </Link>
 
-              <p className="mt-1 text-xs text-cx-muted-fg">
+              <p className="mt-1 text-xs tabular-nums text-cx-muted-fg">
                 {offre.entreprise} ·{" "}
                 {offre.remote && offre.ville
                   ? `${offre.ville}, ${offre.pays} · remote possible`
