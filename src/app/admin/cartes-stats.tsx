@@ -43,11 +43,11 @@ export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdm
           <p className="text-xs text-cx-muted-fg">{label}</p>
         </div>
       ))}
-      <button
-        type="button"
-        onClick={() => setPause((p) => !p)}
-        className="col-span-full justify-self-end text-xs text-cx-muted-fg underline-offset-2 hover:underline sm:col-span-5"
-      >
+        <button
+          type="button"
+          onClick={() => setPause((p) => !p)}
+          className="inline-flex items-center min-h-[24px] col-span-full justify-self-end text-xs text-cx-muted-fg underline-offset-2 hover:underline sm:col-span-5"
+        >
         {pause ? t(locale, "admin.refresh_resume") : t(locale, "admin.refresh_pause")}
       </button>
     </section>

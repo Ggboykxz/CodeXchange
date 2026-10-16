@@ -27,7 +27,7 @@ export default function SelecteurLangue({ localeActuelle }: { localeActuelle: Lo
           type="button"
           onClick={() => changer(l)}
           aria-pressed={locale === l}
-          className={`rounded-md px-2 py-0.5 text-xs font-bold uppercase ${
+          className={`inline-flex min-h-[24px] min-w-[24px] items-center justify-center rounded-md px-2 py-0.5 text-xs font-bold uppercase ${
             locale === l ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
           }`}
         >

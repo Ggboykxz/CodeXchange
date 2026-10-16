@@ -133,8 +133,8 @@ export default async function PageForum({ searchParams }: Props) {
             />
           </div>
 
-          {/* Tendances (visible sur toutes les tailles). */}
-          <div className="mt-4">
+          {/* Tendances (visible md+ : evite tout débordement horizontal à 375). */}
+          <div className="mt-4 hidden sm:block">
             <Tendances limite={6} />
           </div>
 

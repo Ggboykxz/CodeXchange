@@ -107,13 +107,13 @@ export default function FormulaireSujet() {
       )}
 
       <div className="flex flex-wrap gap-3">
-        <button type="submit" disabled={enCours} className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60">
+        <button type="submit" disabled={enCours} className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60">
           {enCours ? "Publication…" : "Publier le sujet"}
         </button>
         <button
           type="button"
           onClick={() => { setTitre(""); setCorps(""); setTags(""); effacerBrouillon(CLE_BROUILLON); }}
-          className="rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium"
+          className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium"
         >
           Réinitialiser
         </button>

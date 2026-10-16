@@ -69,7 +69,8 @@ export async function Header() {
                 <Link
                   href="/notifications"
                   title={t(locale, "nav.notifications")}
-                  className="relative rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+
                 >
                   <Icone nom="notifications" className="size-5" />
                   {nonLues > 0 ? (
@@ -82,7 +83,8 @@ export async function Header() {
                 <Link
                   href="/messagerie"
                   title={t(locale, "nav.messages")}
-                  className="relative rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+
                 >
                   <Icone nom="messagerie" className="size-5" />
                   <PastilleMessages initial={nonLusMessages} />

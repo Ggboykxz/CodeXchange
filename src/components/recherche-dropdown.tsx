@@ -40,6 +40,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
           <input
             ref={refChamp}
             type="search"
+            autoFocus
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t(locale, "nav.search")}
