@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { cookieLocale, t } from "@/lib/i18n";
 import type { StatsAdmin } from "@/lib/admin";
+import CompteurAnime from "@/components/compteur-anime";
 
 /** Rafraîchit les compteurs toutes les 10 s (dashboard temps réel). */
 export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdmin }) {
@@ -39,7 +40,8 @@ export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdm
     <section className="grid grid-cols-3 gap-3 sm:grid-cols-5">
       {cartes.map(([label, valeur]) => (
         <div key={label} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
-          <p className="text-2xl font-black text-cx-primary">{valeur}</p>
+...
+<p className="text-2xl font-black text-cx-primary"><CompteurAnime value={valeur} /></p>
           <p className="text-xs text-cx-muted-fg">{label}</p>
         </div>
       ))}
