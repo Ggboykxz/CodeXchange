@@ -41,6 +41,15 @@ function enLigne(texte: string): string {
   });
 
   sortie = sortie.replace(
+    /!\[([^\]\n]*)\]\(([^()\s]+)\)/g,
+    (_trou, libelle: string, url: string) => {
+      if (!estUrlDeLien(url)) return libelle;
+      const alt = libelle.replace(/[&<>"']/g, (c) => ENTITES[c]);
+      return `<figure class="my-4"><img src="${url}" alt="${alt}" loading="lazy" class="w-full rounded-lg border border-cx-border" /></figure>`;
+    },
+  );
+
+  sortie = sortie.replace(
     /\[([^\]\n]+)\]\(([^()\s]+)\)/g,
     (_trou, libelle: string, url: string) => {
       if (!estUrlDeLien(url)) return libelle; // protocole dangereux → simple texte
