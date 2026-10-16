@@ -19,7 +19,20 @@ export const metadata: Metadata = {
   },
   description:
     "Forum, offres d'emploi, projets, mentorat, tutos et événements pour les développeurs en Afrique. Par les devs, pour les devs.",
-  metadataBase: new URL("https://github.com/Ggboykxz/CodeXchange"),
+  metadataBase: new URL("https://code-x-change-seven.vercel.app"),
+  openGraph: {
+    type: "website",
+    locale: "fr-FR",
+    siteName: "CodeXchange",
+    title: "CodeXchange — La plateforme africaine des développeurs",
+    description:
+      "Forum, offres d'emploi, projets, mentorat, tutos et événements pour les développeurs en Afrique.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CodeXchange — La plateforme africaine des développeurs",
+  },
+  icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
