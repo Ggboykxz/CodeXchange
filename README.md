@@ -3,7 +3,8 @@
 **La plateforme africaine pour les développeurs — par les devs, pour les devs.**
 
 > 🏆 Projet de hackathon — démo prévue le **25 octobre 2026**.  
-> Repo : [`Ggboykxz/CodeXchange`](https://github.com/Ggboykxz/CodeXchange) · Stack : Next.js 15, TypeScript, Tailwind CSS, Prisma (SQLite→Postgres), Vitest.
+> Repo : [`Ggboykxz/CodeXchange`](https://github.com/Ggboykxz/CodeXchange) · Stack : Next.js 16, TypeScript, Tailwind CSS v4, Base UI, Prisma (SQLite→Postgres), Vitest.  
+> Démo en ligne : <https://code-x-change-seven.vercel.app> (`/api/sante` pour l'état).
 
 ---
 
@@ -49,6 +50,26 @@ Scripts utiles : `npm run build`, `npm start`, `npm run seed`, `npm run test:wat
 
 Comptes : inscription e-mail/mot de passe, session en cookie `httpOnly` (14 jours), rate-limiting 5 tentatives / 15 min sur la connexion.
 
+## Interface (refonte baseline)
+
+L'interface a été reprise sur une base de design system vérifiable :
+
+- **Tokens** `--cx-*` dans `src/app/globals.css` (clair + sombre), utilitaires
+  `cx-*` mappés par `@theme inline` : un seul accent orange par vue, bleu pour
+  les liens/l'état actif/la donnée.
+- **Primitives Base UI** (`src/components/ui/`) pour menu, popover et
+  dialogue : `role="menu"`, navigation aux flèches, retour du focus sur le
+  déclencheur, `alertdialog` pour les confirmations, focus piégé.
+- **Accessibilité vérifiée** : contrastes WCAG calculés dans les deux thèmes
+  (`tests/contraste.test.ts`), cibles tactiles, anneau de focus global,
+  `text-wrap: balance/pretty`, safe-areas iOS sur tous les éléments `fixed`.
+- **Mouvement sobre** : transitions ≤ 200 ms sur `transform`/`opacity`
+  uniquement, `prefers-reduced-motion` respecté.
+- **Mobile-first** : `h-dvh`, grilles empilées, drawer latéral dès 375 px
+  (contenu derrière le voile en `inert`).
+
+Preuves et checklist navigateur : [`docs/verification-ui.md`](docs/verification-ui.md).
+
 ## Langue
 
 L'interface commune (navigation, pied de page, accueil) est bilingue **FR / EN** avec un sélecteur dans l'en-tête ; les contenus métier (forum, offres, descriptifs) restent en français.
@@ -67,8 +88,8 @@ Mot de passe commun des 30 membres de démo : `CodeXchange2026!`. Les données s
 - **Prisma + SQLite** en dev, bascule PostgreSQL (Neon) au déploiement par l'édition de `provider` dans `schema.prisma` + `prisma migrate deploy`.
 - **Logique métier isolée** dans `src/lib/*.ts` — testable sans HTTP, handlers minces qui traduisent les codes d'erreur (`src/lib/errors.ts`) en statuts HTTP.
 - **Authentification** : `bcryptjs` + table `Session` + cookie signé côté serveur. Aucun service tiers.
-- **Design** : Tailwind CSS v4 (`@theme inline`), tokens dans `src/app/globals.css`, polices via `next/font/google` (Plus Jakarta Sans). Choix et arbitrage dans `docs/design-choices.md`.
-- **Tests** : Vitest 4, **153 tests** à date, lint et tsc bloquants.
+- **Design** : Tailwind CSS v4 (`@theme inline`), tokens dans `src/app/globals.css`, primitives [Base UI](https://base-ui.com) (`src/components/ui/`), polices via `next/font/google` (Plus Jakarta Sans). Choix et arbitrage dans `docs/design-choices.md`, vérification dans `docs/verification-ui.md`.
+- **Tests** : Vitest 4 + Testing Library (jsdom), **237 tests** à date (dont 11 de conformité design, 7 de contraste WCAG, 8 de comportement clavier), lint et tsc bloquants.
 - **Sécurité** : rate-limiting distribué (Redis/Upstash, repli mémoire) sur connexion, inscription, réponses et messages ; signalements communautaires ; bannissement de comptes ; `npm audit` propre côté production (Next 16, React 19.3).
 - **E-mails** : transport Resend (`RESEND_API_KEY`) avec repli console ; e-mail de bienvenue + e-mails de notification.
 - **Stockage** : avatars en base (data URL) en dev, Vercel Blob (`BLOB_READ_WRITE_TOKEN`) en production.
@@ -79,12 +100,13 @@ Mot de passe commun des 30 membres de démo : `CodeXchange2026!`. Les données s
 ```
 src/
   app/                  # pages + route handlers (API)
-  components/           # Header, Footer, EmptyState, Badge, Button, Avatar, Container
+  components/           # Header, Footer, EmptyState, Badge, Button, Avatar, Container, ui/ (menu, popover, dialogue)
   lib/                  # métier (auth, session, forum, jobs, projects, members, events, tutorials, mentorat, notifications, messagerie, favorites, search, admin, mailer, rate-limit, i18n, errors, db, fonts, seed, contrats, drapeaux, markdown)
 docs/
   superpowers/specs/    # spec de design
   superpowers/plans/    # plan d'implémentation (12 tâches)
   design-choices.md     # décision de design (ui-ux-pro-max)
+  verification-ui.md    # preuves de conformité de la refonte + checklist navigateur
   deployment.md         # niveaux de déploiement
 prisma/                 # schema + migrations + seed
 tests/                  # Vitest
