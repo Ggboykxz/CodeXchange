@@ -58,7 +58,7 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
             : "text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
         }`}
       >
-        <Icone nom={icone} className="h-5 w-5 shrink-0" />
+        <Icone nom={icone} className="size-5 shrink-0" />
         {libelle}
       </Link>
     </li>

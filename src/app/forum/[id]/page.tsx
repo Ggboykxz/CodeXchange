@@ -65,15 +65,13 @@ export default async function PageSujet({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/forum" className="text-sm text-[var(--cx-accent)]">
-        <FilAriane
-          items={[
-            { label: t(locale, "nav.home"), href: "/" },
-            { label: t(locale, "nav.forum"), href: "/forum" },
-            { label: sujet.titre },
-          ]}
-        />
-      </Link>
+      <FilAriane
+        items={[
+          { label: t(locale, "nav.home"), href: "/" },
+          { label: t(locale, "nav.forum"), href: "/forum" },
+          { label: sujet.titre },
+        ]}
+      />
 
       <header className="flex flex-col gap-3">
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
@@ -89,7 +87,7 @@ export default async function PageSujet({ params }: Props) {
               <li key={mot}>
                 <Link
                   href={`/forum?tag=${encodeURIComponent(mot.trim())}`}
-                  className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-medium text-[var(--cx-accent)]"
+                  className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-medium text-cx-accent"
                 >
                   {mot.trim()}
                 </Link>
@@ -119,7 +117,7 @@ export default async function PageSujet({ params }: Props) {
           {sujet.poll ? (
             <BoutonSondage postId={postId} question={sujet.poll.question} options={sujet.poll.options} total={sujet.poll.total} userVoted={sujet.poll.userVoted} connecte={userId !== null} />
           ) : null}
-          <article className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
+          <article className="rounded-xl border border-cx-border px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
             <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
           </article>
           <div className="rounded-xl border border-cx-border bg-cx-card px-4 py-3">
@@ -139,7 +137,7 @@ export default async function PageSujet({ params }: Props) {
       </div>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-lg font-semibold tabular-nums">
           {sujet.replies.length === 0
             ? t(locale, "forum.answers_zero")
             : sujet.replies.length === 1
@@ -148,7 +146,7 @@ export default async function PageSujet({ params }: Props) {
         </h2>
 
         {sujet.replies.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-6 text-sm text-cx-muted-fg">
+          <p className="rounded-xl border border-dashed border-cx-border px-5 py-6 text-sm text-cx-muted-fg">
             {userId === null
               ? t(locale, "forum.no_answer_cta")
               : t(locale, "forum.no_answer")}
@@ -164,11 +162,11 @@ export default async function PageSujet({ params }: Props) {
         )}
       </section>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5">
+      <section className="rounded-xl border border-cx-border px-5 py-5">
         <h2 className="text-lg font-semibold">{t(locale, "forum.your_answer")}</h2>
         {userId === null ? (
           <p className="mt-3 text-sm text-cx-muted-fg">
-            <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
+            <Link href="/connexion" className="font-medium text-cx-primary underline-offset-4 hover:underline">
               Connectez-vous
             </Link>{" "}
             pour répondre à ce sujet.

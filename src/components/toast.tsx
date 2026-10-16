@@ -112,7 +112,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               aria-label="Fermer"
               className="shrink-0 cursor-pointer rounded-md px-1 text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]"
             >
-              <IconeAnimee nom="fermer" className="h-4 w-4" />
+              <IconeAnimee nom="fermer" className="size-4" />
             </button>
           </div>
         ))}

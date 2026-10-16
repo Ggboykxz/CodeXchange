@@ -45,7 +45,7 @@ export default function SelecteurTheme({ themeInitial }: { themeInitial: Theme }
             theme === valeur ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
           }`}
         >
-          <Icone nom={ICONES[valeur]} className="h-3.5 w-3.5" />
+          <Icone nom={ICONES[valeur]} className="size-3.5" />
           {LIBELLES[valeur]}
         </button>
       ))}

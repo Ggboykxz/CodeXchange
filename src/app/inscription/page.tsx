@@ -219,7 +219,7 @@ export default function PageInscription() {
         <button
           type="submit"
           disabled={enCours}
-          className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
+          className="mt-2 rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? t(locale, "common.loading") : t(locale, "auth.register_submit")}
         </button>
@@ -227,7 +227,7 @@ export default function PageInscription() {
 
       <p className="mt-6 text-sm text-cx-muted-fg">
         {t(locale, "auth.has_account")}{" "}
-        <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
+        <Link href="/connexion" className="font-medium text-cx-accent">
           {t(locale, "auth.login_link")}
         </Link>
       </p>

@@ -107,17 +107,17 @@ export default function FormulaireSujet() {
       )}
 
       <div className="flex flex-wrap gap-3">
-        <button type="submit" disabled={enCours} className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60">
+        <button type="submit" disabled={enCours} className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60">
           {enCours ? "Publication…" : "Publier le sujet"}
         </button>
         <button
           type="button"
           onClick={() => { setTitre(""); setCorps(""); setTags(""); effacerBrouillon(CLE_BROUILLON); }}
-          className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm font-medium"
+          className="rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium"
         >
           Réinitialiser
         </button>
-        <Link href="/forum" className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm font-medium">
+        <Link href="/forum" className="rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium">
           Annuler
         </Link>
       </div>

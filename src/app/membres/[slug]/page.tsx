@@ -38,7 +38,7 @@ function LienExterne({ url, libelle }: { url: string; libelle: string }) {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm font-medium hover:border-[var(--cx-accent)]"
+        className="inline-block rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium hover:border-cx-accent"
       >
         {libelle} ↗
       </a>
@@ -65,7 +65,7 @@ export default async function PageMembre({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/annuaire" className="text-sm text-[var(--cx-accent)]">
+      <Link href="/annuaire" className="text-sm text-cx-accent">
         <FilAriane
           items={[
             { label: t(locale, "nav.home"), href: "/" },
@@ -141,7 +141,7 @@ export default async function PageMembre({ params }: Props) {
 
       {visibilite.complet ? (
         <>
-          <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+          <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
             <h2 className="font-semibold">{t(locale, "directory.about")}</h2>
             {membre.bio ? (
               <p className="mt-2 whitespace-pre-line leading-relaxed text-cx-muted-fg">
@@ -154,14 +154,14 @@ export default async function PageMembre({ params }: Props) {
             )}
           </section>
 
-          <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+          <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
             <h2 className="font-semibold">{t(locale, "directory.stack")}</h2>
             {membre.stack.length > 0 ? (
               <ul className="mt-2 flex flex-wrap gap-2">
                 {membre.stack.map((technologie) => (
                   <li
                     key={technologie}
-                    className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                    className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
                   >
                     {technologie}
                   </li>
@@ -173,7 +173,7 @@ export default async function PageMembre({ params }: Props) {
           </section>
 
           {(membre.github || membre.linkedin || membre.site) && (
-            <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+            <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
               <h2 className="font-semibold">{t(locale, "directory.links")}</h2>
               <ul className="mt-3 flex flex-wrap gap-3">
                 {membre.github && <LienExterne url={membre.github} libelle="GitHub" />}
@@ -184,7 +184,7 @@ export default async function PageMembre({ params }: Props) {
           )}
         </>
       ) : (
-        <section className="rounded-xl border border-dashed border-[var(--cx-muted)]/40 px-5 py-8 text-center text-sm text-cx-muted-fg">
+        <section className="rounded-xl border border-dashed border-cx-border px-5 py-8 text-center text-sm text-cx-muted-fg">
           <p className="font-semibold text-cx-fg">Profil privé</p>
           <p className="mt-2">
             Suivez <span className="font-semibold">{membre.nom}</span> pour voir sa bio, sa stack et ses liens.

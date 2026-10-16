@@ -35,7 +35,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
 
   if (!connecte) {
     return (
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">Demander un mentorat</h2>
         <p className="mt-2 text-cx-muted-fg">
           Vous devez être connecté pour écrire à un mentor : votre demande est ensuite transmise
@@ -43,7 +43,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
         </p>
         <Link
           href="/connexion"
-          className="mt-3 inline-block rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          className="mt-3 inline-block rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           Se connecter pour demander un mentorat
         </Link>
@@ -53,7 +53,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
 
   if (mentors.length === 0) {
     return (
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">Demander un mentorat</h2>
         <p className="mt-2 text-cx-muted-fg">
           Aucun mentor n&apos;est joignable pour l&apos;instant : revenez bientôt, la communauté
@@ -100,7 +100,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
   }
 
   return (
-    <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5">
+    <section className="rounded-xl border border-cx-border px-5 py-5">
       <h2 className="text-base font-semibold">Demander un mentorat</h2>
       <p className="mt-1 text-sm text-cx-muted-fg">
         Décrivez votre situation en quelques phrases : le mentor reçoit votre demande telle quelle.
@@ -146,7 +146,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
+          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
         >
           {enCours ? "Envoi…" : "Envoyer la demande"}
         </button>

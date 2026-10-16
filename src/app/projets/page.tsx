@@ -22,7 +22,7 @@ type Props = {
 /** Badge stack : une pastille par technologie du projet. */
 function BadgeStack({ technologie }: { technologie: string }) {
   return (
-    <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+    <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
       {technologie}
     </span>
   );
@@ -60,7 +60,7 @@ export default async function PageProjets({ searchParams }: Props) {
         </div>
         <Link
           href="/projets/nouveau"
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           {t(locale, "projects.new")}
         </Link>
@@ -91,14 +91,14 @@ export default async function PageProjets({ searchParams }: Props) {
         />
         <button
           type="submit"
-          className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
+          className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-accent"
         >
           {t(locale, "projects.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/projets"
-            className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
+            className="px-2 py-2 text-sm font-medium text-cx-accent underline-offset-4 hover:underline"
           >
             {t(locale, "projects.reset")}
           </Link>
@@ -106,7 +106,7 @@ export default async function PageProjets({ searchParams }: Props) {
       </form>
 
       {projets.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
           {filtreActif ? (
             <>
               <p className="text-lg font-semibold">{t(locale, "projects.empty_title")}</p>
@@ -116,13 +116,13 @@ export default async function PageProjets({ searchParams }: Props) {
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/projets"
-                  className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
+                  className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium"
                 >
                   {t(locale, "projects.title")}
                 </Link>
                 <Link
                   href="/projets/nouveau"
-                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-cx-accent-fg"
+                  className="rounded-lg bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg"
                 >
                   {t(locale, "projects.new")}
                 </Link>
@@ -136,7 +136,7 @@ export default async function PageProjets({ searchParams }: Props) {
               </p>
               <Link
                 href="/projets/nouveau"
-                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+                className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
               >
                 {t(locale, "projects.new")}
               </Link>
@@ -148,10 +148,10 @@ export default async function PageProjets({ searchParams }: Props) {
           {projets.map((projet) => (
             <li
               key={projet.id}
-              className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
             >
               <Link href={`/projets/${projet.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
                   {projet.titre}
                 </h2>
               </Link>

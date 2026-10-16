@@ -36,12 +36,12 @@ export default async function PageFavoris() {
       </header>
 
       {sections.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
           <p className="text-lg font-semibold">{t(locale, "favorites.empty_title")}</p>
           <p className="mt-2 text-sm text-cx-muted-fg">
             Utilisez l&apos;icône étoile sur les pages des sujets, offres, projets, tutos, événements ou membres.
           </p>
-          <Link href="/forum" className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg">
+          <Link href="/forum" className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg">
             {t(locale, "favorites.discover")}
           </Link>
         </section>
@@ -53,7 +53,7 @@ export default async function PageFavoris() {
               <ul className="mt-3 flex flex-col gap-2">
                 {section.items.map((item) => (
                   <li key={item.id}>
-                    <Link href={item.href} className="block rounded-lg border border-[var(--cx-muted)]/25 px-4 py-3 transition hover:border-[var(--cx-accent)]">
+                    <Link href={item.href} className="block rounded-lg border border-cx-border px-4 py-3 transition hover:border-cx-accent">
                       <span className="font-medium">{item.libelle}</span>
                     </Link>
                   </li>

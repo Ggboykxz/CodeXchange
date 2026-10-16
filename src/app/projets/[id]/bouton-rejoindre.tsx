@@ -39,7 +39,7 @@ export default function BoutonRejoindre({
         disabled
         aria-disabled="true"
         title="Connectez-vous pour rejoindre ce projet"
-        className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
+        className="cursor-not-allowed rounded-lg border border-cx-border px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
       >
         Je veux rejoindre · connectez-vous
       </button>
@@ -54,9 +54,9 @@ export default function BoutonRejoindre({
           disabled
           aria-disabled="true"
           title="Vous êtes l'auteur de ce projet"
-          className="cursor-not-allowed rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
+          className="cursor-not-allowed rounded-lg border border-cx-border px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
         >
-          <IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" /> Votre projet
+          <IconeAnimee nom="coche" className="mr-1 inline size-3" /> Votre projet
         </button>
         <span className="text-xs text-cx-muted-fg">
           {nombre} {nombre > 1 ? "membres" : "membre"}
@@ -73,9 +73,9 @@ export default function BoutonRejoindre({
           disabled
           aria-disabled="true"
           title="Vous avez déjà rejoint ce projet"
-          className="cursor-not-allowed rounded-lg border border-[var(--cx-accent)] bg-[var(--cx-accent)]/5 px-4 py-2.5 text-sm font-medium text-[var(--cx-accent)]"
+          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-accent/5 px-4 py-2.5 text-sm font-medium text-cx-accent"
         >
-          <IconeAnimee nom="coche" className="mr-1 inline h-3 w-3" /> Vous avez rejoint ce projet
+          <IconeAnimee nom="coche" className="mr-1 inline size-3" /> Vous avez rejoint ce projet
         </button>
         <span className="text-xs text-cx-muted-fg">
           {nombre} {nombre > 1 ? "membres" : "membre"}
@@ -110,7 +110,7 @@ export default function BoutonRejoindre({
         type="button"
         onClick={rejoindreProjet}
         disabled={enCours}
-        className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
+        className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
       >
         {enCours ? "Envoi…" : "Je veux rejoindre"}
       </button>

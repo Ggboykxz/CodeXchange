@@ -12,7 +12,7 @@ export default function Logo({ compact = false }: { compact?: boolean }) {
         aria-hidden="true"
         className="inline-flex size-8 items-center justify-center rounded-lg bg-cx-primary text-cx-primary-fg shadow-sm"
       >
-        <Icone nom="projets" className="h-4.5 w-4.5" />
+        <Icone nom="projets" className="size-4.5" />
       </span>
       {compact ? null : <span className="text-lg">CodeXchange</span>}
     </Link>

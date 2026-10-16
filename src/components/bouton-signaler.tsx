@@ -52,7 +52,7 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
           RAYON.md,
         )}
       >
-        <Icone nom="signaler" className="h-3.5 w-3.5" />
+        <Icone nom="signaler" className="size-3.5" />
         {libelle}
       </button>
       {ouvert ? (

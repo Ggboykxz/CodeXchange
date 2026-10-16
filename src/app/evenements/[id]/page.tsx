@@ -50,7 +50,7 @@ export default async function PageEvenement({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/evenements" className="text-sm text-[var(--cx-accent)]">
+      <Link href="/evenements" className="text-sm text-cx-accent">
         <FilAriane
           items={[
             { label: t(locale, "nav.home"), href: "/" },
@@ -74,7 +74,7 @@ export default async function PageEvenement({ params }: Props) {
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                 passe
-                  ? "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
+                  ? "border border-cx-border text-cx-muted-fg"
                   : "bg-cx-success/5 text-cx-success"
               }`}
             >
@@ -82,7 +82,7 @@ export default async function PageEvenement({ params }: Props) {
             </span>
           </li>
           <li>
-            <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+            <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
               {evenement.format}
             </span>
           </li>
@@ -105,7 +105,7 @@ export default async function PageEvenement({ params }: Props) {
         </div>
         {userId === null && (
           <p className="text-sm text-cx-muted-fg">
-            <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
+            <Link href="/connexion" className="font-medium text-cx-accent">
               Connectez-vous
             </Link>{" "}
             pour confirmer votre présence.
@@ -113,7 +113,7 @@ export default async function PageEvenement({ params }: Props) {
         )}
       </header>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">À propos de l&apos;événement</h2>
         <p className="mt-2 whitespace-pre-line leading-relaxed text-cx-muted-fg">
           {evenement.description}
@@ -121,7 +121,7 @@ export default async function PageEvenement({ params }: Props) {
       </section>
 
       {evenement.format === "En ligne" && evenement.lien && (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+        <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
           <h2 className="font-semibold">Rejoindre en ligne</h2>
           <p className="mt-1 text-cx-muted-fg">
             L&apos;événement se déroule à distance : ce lien s&apos;ouvre dans un nouvel onglet.
@@ -130,7 +130,7 @@ export default async function PageEvenement({ params }: Props) {
             href={evenement.lien}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 font-medium hover:border-[var(--cx-accent)]"
+            className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-accent"
           >
             Ouvrir le lien de l&apos;événement ↗
           </a>

@@ -29,7 +29,7 @@ function buildHref(props: PaginationProps, p: number): string {
 }
 
 const CLASSES_LIEN =
-  "rounded-lg border border-[var(--cx-muted)]/40 px-3 py-1.5 text-sm font-medium hover:border-[var(--cx-accent)]";
+  "rounded-lg border border-cx-border px-3 py-1.5 text-sm font-medium hover:border-cx-accent";
 const CLASSES_DESACTIVE =
   "cursor-not-allowed rounded-lg border border-cx-muted/30 px-3 py-1.5 text-sm font-medium text-cx-muted-fg opacity-90";
 

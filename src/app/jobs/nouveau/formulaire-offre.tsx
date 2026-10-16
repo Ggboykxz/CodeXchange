@@ -131,7 +131,7 @@ export default function FormulaireOffre() {
       </div>
 
       <label htmlFor="remote" className="flex items-center gap-2 text-sm font-medium">
-        <input id="remote" name="remote" type="checkbox" className="h-4 w-4 accent-[var(--cx-accent)]" />
+        <input id="remote" name="remote" type="checkbox" className="size-4 accent-cx-accent" />
         Poste en remote possible
       </label>
 
@@ -162,13 +162,13 @@ export default function FormulaireOffre() {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
+          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? "Publication…" : "Publier l'offre"}
         </button>
         <Link
           href="/jobs"
-          className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 text-sm font-medium"
+          className="rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium"
         >
           Annuler
         </Link>

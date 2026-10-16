@@ -126,20 +126,20 @@ export default function PageConnexion() {
         <button
           type="submit"
           disabled={enCours}
-          className="mt-2 rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
+          className="mt-2 rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? t(locale, "common.loading") : t(locale, "auth.login_submit")}
         </button>
       </form>
       <p className="mt-4 text-sm text-cx-muted-fg">
-        <Link href="/mot-de-passe-oublie" className="text-[var(--cx-accent)] hover:underline">
+        <Link href="/mot-de-passe-oublie" className="text-cx-accent hover:underline">
           Mot de passe oublié ?
         </Link>
       </p>
 
       <p className="mt-6 text-sm text-cx-muted-fg">
         {t(locale, "auth.no_account")}{" "}
-        <Link href="/inscription" className="font-medium text-[var(--cx-accent)]">
+        <Link href="/inscription" className="font-medium text-cx-accent">
           {t(locale, "auth.register_link")}
         </Link>
       </p>

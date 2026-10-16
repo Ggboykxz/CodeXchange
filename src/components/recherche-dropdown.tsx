@@ -26,7 +26,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
   return (
     <Dropdown
       label={t(locale, "nav.search")}
-      trigger={<Icone nom="recherche" className="h-5 w-5" />}
+      trigger={<Icone nom="recherche" className="size-5" />}
       triggerClassName="rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cx-primary/50"
     >
       <form onSubmit={envoyer} className="flex gap-2 p-1">
@@ -43,7 +43,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
           aria-label={t(locale, "nav.search")}
           className="rounded-lg bg-cx-primary px-3 text-cx-primary-fg active:scale-[0.97]"
         >
-          <Icone nom="recherche" className="h-4 w-4" />
+          <Icone nom="recherche" className="size-4" />
         </button>
       </form>
       {suggestions.length > 0 ? (
@@ -58,7 +58,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
               onClick={() => router.push(`/recherche?q=${encodeURIComponent(s)}`)}
               className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm text-cx-card-fg hover:bg-cx-muted"
             >
-              <Icone nom="recherche" className="h-3.5 w-3.5 shrink-0 text-cx-muted-fg" />
+              <Icone nom="recherche" className="size-3.5 shrink-0 text-cx-muted-fg" />
               <span className="truncate">{s}</span>
             </button>
           ))}

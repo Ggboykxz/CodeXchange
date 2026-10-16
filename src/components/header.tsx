@@ -60,7 +60,7 @@ export async function Header() {
               href="/forum/nouveau"
               className="hidden items-center gap-1.5 rounded-full bg-cx-accent px-3.5 py-1.5 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 active:scale-[0.97] lg:inline-flex"
             >
-              <Icone nom="plus" className="h-4 w-4" />
+              <Icone nom="plus" className="size-4" />
               {t(locale, "forum.new")}
             </Link>
 
@@ -71,7 +71,7 @@ export async function Header() {
                   title={t(locale, "nav.notifications")}
                   className="relative rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  <Icone nom="notifications" className="h-5 w-5" />
+                  <Icone nom="notifications" className="size-5" />
                   {nonLues > 0 ? (
                     <span className="absolute -right-0.5 -top-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cx-primary px-1 text-[11px] font-bold text-cx-primary-fg">
                       {nonLues}
@@ -84,7 +84,7 @@ export async function Header() {
                   title={t(locale, "nav.messages")}
                   className="relative rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
-                  <Icone nom="messagerie" className="h-5 w-5" />
+                  <Icone nom="messagerie" className="size-5" />
                   <PastilleMessages initial={nonLusMessages} />
                   <span className="sr-only">{t(locale, "nav.messages")}</span>
                 </Link>

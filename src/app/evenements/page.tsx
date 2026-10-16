@@ -27,7 +27,7 @@ function StatutEvenement({ date, maintenant, locale }: { date: Date; maintenant:
     <span
       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
         passe
-          ? "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
+          ? "border border-cx-border text-cx-muted-fg"
           : "bg-cx-success/5 text-cx-success"
       }`}
     >
@@ -49,7 +49,7 @@ function LieuEvenement({ evenement }: { evenement: EventResume }) {
               href={evenement.lien}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--cx-accent)] underline-offset-4 hover:underline"
+              className="text-cx-accent underline-offset-4 hover:underline"
             >
               Rejoindre le live ↗
             </a>
@@ -102,7 +102,7 @@ export default async function PageEvenements({ searchParams }: Props) {
       </header>
 
       {evenements.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
           <p className="text-lg font-semibold">Aucun événement programmé pour le moment.</p>
           <p className="mt-2 text-sm text-cx-muted-fg">
             Vous organisez un meet-up ou un hackathon ? Annoncez-le sur le forum : la communauté
@@ -110,7 +110,7 @@ export default async function PageEvenements({ searchParams }: Props) {
           </p>
           <Link
             href="/forum/nouveau"
-            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+            className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
           >
             Annoncer un événement sur le forum
           </Link>
@@ -120,10 +120,10 @@ export default async function PageEvenements({ searchParams }: Props) {
           {evenements.map((evenement) => (
             <li
               key={evenement.id}
-              className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
             >
               <Link href={`/evenements/${evenement.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
                   {evenement.titre}
                 </h2>
               </Link>
@@ -140,7 +140,7 @@ export default async function PageEvenements({ searchParams }: Props) {
                   <StatutEvenement date={evenement.date} maintenant={maintenant} locale={locale} />
                 </li>
                 <li>
-                  <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+                  <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
                     {evenement.format}
                   </span>
                 </li>

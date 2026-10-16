@@ -45,7 +45,7 @@ export default async function PageOffre({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/jobs" className="text-sm text-[var(--cx-accent)]">
+      <Link href="/jobs" className="text-sm text-cx-accent">
         <FilAriane
           items={[
             { label: t(locale, "nav.home"), href: "/" },
@@ -66,7 +66,7 @@ export default async function PageOffre({ params }: Props) {
         </p>
         <ul className="flex flex-wrap gap-2">
           <li>
-            <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+            <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
               {offre.contrat}
             </span>
           </li>
@@ -75,7 +75,7 @@ export default async function PageOffre({ params }: Props) {
               className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 offre.remote
                   ? "bg-cx-success/5 text-cx-success"
-                  : "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
+                  : "border border-cx-border text-cx-muted-fg"
               }`}
             >
               {offre.remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
@@ -96,7 +96,7 @@ export default async function PageOffre({ params }: Props) {
         </div>
         {userId === null && (
           <p className="text-sm text-cx-muted-fg">
-            <Link href="/connexion" className="font-medium text-[var(--cx-accent)]">
+            <Link href="/connexion" className="font-medium text-cx-accent">
               Connectez-vous
             </Link>{" "}
             pour envoyer votre candidature.
@@ -104,14 +104,14 @@ export default async function PageOffre({ params }: Props) {
         )}
       </header>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "jobs.author")}</h2>
         <p className="mt-1 text-cx-muted-fg">
           {offre.auteur.nom} · {offre.auteur.ville}, {offre.auteur.pays}
         </p>
       </section>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "jobs.external")}</h2>
         <p className="mt-1 text-cx-muted-fg">
           {t(locale, "jobs.external_desc")}
@@ -120,7 +120,7 @@ export default async function PageOffre({ params }: Props) {
           href={offre.lien}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-block rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2.5 font-medium hover:border-[var(--cx-accent)]"
+          className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-accent"
         >
           {t(locale, "jobs.external_link")}
         </a>

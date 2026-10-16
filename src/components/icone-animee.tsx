@@ -21,7 +21,7 @@ export type NomIcone =
   | "coche"
   | "copie";
 
-const CLASSES = "inline-block h-5 w-5";
+const CLASSES = "inline-block size-5";
 
 export function IconeAnimee({ nom, className = CLASSES }: { nom: NomIcone; className?: string }) {
   switch (nom) {

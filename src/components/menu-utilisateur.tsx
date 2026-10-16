@@ -39,7 +39,7 @@ function Item({
         accent ? "font-semibold text-cx-primary" : "text-cx-card-fg"
       }`}
     >
-      <Icone nom={icone} className="h-4 w-4 shrink-0 text-cx-muted-fg" />
+      <Icone nom={icone} className="size-4 shrink-0 text-cx-muted-fg" />
       <span className="flex-1">{libelle}</span>
       {badge && badge > 0 ? (
         <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cx-primary px-1 text-[11px] font-bold text-cx-primary-fg">
@@ -69,7 +69,7 @@ export default function MenuUtilisateur({ locale, nonLues, nonLusMessages, estAd
       trigger={
         <span className="flex items-center gap-1">
           <Avatar slug={membre.slug} nom={membre.nom} avatar={membre.avatar ?? undefined} />
-          <Icone nom="chevron" className="h-3.5 w-3.5 text-cx-muted-fg" />
+          <Icone nom="chevron" className="size-3.5 text-cx-muted-fg" />
         </span>
       }
       triggerClassName="flex items-center rounded-full ring-cx-primary/40 hover:ring-2 focus-visible:outline-none focus-visible:ring-2"
@@ -94,7 +94,7 @@ export default function MenuUtilisateur({ locale, nonLues, nonLusMessages, estAd
           onClick={deconnecter}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-cx-destructive hover:bg-cx-destructive/5"
         >
-          <Icone nom="deconnexion" className="h-4 w-4 shrink-0" />
+          <Icone nom="deconnexion" className="size-4 shrink-0" />
           {t(locale, "nav.logout")}
         </button>
       </div>

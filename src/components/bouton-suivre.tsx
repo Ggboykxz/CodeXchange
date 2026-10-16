@@ -76,7 +76,7 @@ export default function BoutonSuivre({ cibleId, initial, connecte }: Props) {
             : "bg-cx-primary text-cx-primary-fg hover:opacity-90",
         )}
       >
-        {etat.jeLeSuis ? <Icone nom="coche" className="h-4 w-4" /> : null}
+        {etat.jeLeSuis ? <Icone nom="coche" className="size-4" /> : null}
         {etat.jeLeSuis ? "Abonné" : "Suivre"}
       </button>
       <span className="text-xs text-cx-muted-fg">

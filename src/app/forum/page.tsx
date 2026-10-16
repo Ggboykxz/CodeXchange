@@ -11,6 +11,7 @@ import { idsSuivis } from "@/lib/follows";
 import { topHashtags } from "@/lib/hashtags";
 import { prisma } from "@/lib/db";
 import { Icone } from "@/components/icones";
+import { cn } from "@/lib/cn";
 
 export const metadata = { title: "Forum" };
 
@@ -64,7 +65,7 @@ export default async function PageForum({ searchParams }: Props) {
               href="/forum/nouveau"
               className="inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-4 py-2 text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]"
             >
-              <Icone nom="plus" className="h-4 w-4" />
+              <Icone nom="plus" className="size-4" />
               {t(locale, "forum.new")}
             </Link>
           </header>
@@ -78,7 +79,7 @@ export default async function PageForum({ searchParams }: Props) {
             <label htmlFor="tag" className="sr-only">
               {t(locale, "forum.tag_filter")}
             </label>
-            <input id="tag" name="tag" type="text" defaultValue={tag} placeholder={t(locale, "forum.tag_filter")} className={`${CLASS_CHAMP} sm:max-w-40`} />
+            <input id="tag" name="tag" type="text" defaultValue={tag} placeholder={t(locale, "forum.tag_filter")} className={cn(CLASS_CHAMP, "sm:max-w-40")} />
             <button type="submit" className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:bg-cx-muted">
               {t(locale, "forum.filter")}
             </button>
@@ -95,9 +96,10 @@ export default async function PageForum({ searchParams }: Props) {
               <Link
                 href="/forum"
                 aria-current={!filtreSuivis ? "page" : undefined}
-                className={`rounded-full px-3 py-1 text-sm font-semibold transition ${
-                  !filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
-                }`}
+                className={cn(
+                  "rounded-full px-3 py-1 text-sm font-semibold transition",
+                  !filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted",
+                )}
               >
                 Tout
               </Link>
@@ -105,9 +107,10 @@ export default async function PageForum({ searchParams }: Props) {
                 <Link
                   href="/forum?suivis=1"
                   aria-current={filtreSuivis ? "page" : undefined}
-                  className={`rounded-full px-3 py-1 text-sm font-semibold transition ${
-                    filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
-                  }`}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-sm font-semibold transition",
+                    filtreSuivis ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted",
+                  )}
                 >
                   Abonnements
                 </Link>
@@ -155,7 +158,7 @@ export default async function PageForum({ searchParams }: Props) {
                 <>
                   <p className="text-lg font-semibold">{t(locale, "forum.empty_title")}</p>
                   <p className="mt-2 text-sm text-cx-muted-fg">{t(locale, "forum.empty_desc")}</p>
-                  <Link href="/forum/nouveau" className="mt-5 inline-block rounded-full bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg active:scale-[0.97]">
+                  <Link href="/forum/nouveau" className="mt-5 inline-block rounded-full bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg active:scale-[0.97]">
                     {t(locale, "forum.new")}
                   </Link>
                 </>
@@ -189,19 +192,19 @@ export default async function PageForum({ searchParams }: Props) {
               <dl className="mt-3 grid grid-cols-2 gap-2 text-center">
                 <div className="rounded-md bg-cx-muted/60 py-2">
                   <dt className="text-xs text-cx-muted-fg">Membres</dt>
-                  <dd className="text-lg font-bold">{membres}</dd>
+                  <dd className="text-lg font-bold tabular-nums">{membres}</dd>
                 </div>
                 <div className="rounded-md bg-cx-muted/60 py-2">
                   <dt className="text-xs text-cx-muted-fg">Communautés</dt>
-                  <dd className="text-lg font-bold">{communautes.length}</dd>
+                  <dd className="text-lg font-bold tabular-nums">{communautes.length}</dd>
                 </div>
               </dl>
               {userId === null ? (
-                <Link href="/inscription" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]">
+                <Link href="/inscription" className="mt-4 block rounded-full bg-cx-primary py-2 text-center text-sm font-bold text-cx-primary-fg hover:opacity-90 active:scale-[0.97]">
                   {t(locale, "nav.join")}
                 </Link>
               ) : (
-                <Link href="/forum/nouveau" className="mt-4 block rounded-full bg-cx-accent py-2 text-center text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]">
+                <Link href="/forum/nouveau" className="mt-4 block rounded-full bg-cx-primary py-2 text-center text-sm font-bold text-cx-primary-fg hover:opacity-90 active:scale-[0.97]">
                   {t(locale, "forum.new")}
                 </Link>
               )}

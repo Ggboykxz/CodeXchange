@@ -52,7 +52,7 @@ export default function BoutonFavori({ kind, targetId, initial, connecte }: Prop
       )}
       title={connecte ? "Ajouter/retirer des favoris" : "Se connecter pour favoriser"}
     >
-      {favori ? <IconeAnimee nom="etoile" className="mr-1 inline h-3 w-3" /> : <IconeAnimee nom="etoile-vide" className="mr-1 inline h-3 w-3" />} Favori
+      {favori ? <IconeAnimee nom="etoile" className="mr-1 inline size-3" /> : <IconeAnimee nom="etoile-vide" className="mr-1 inline size-3" />} Favori
     </button>
   );
 }

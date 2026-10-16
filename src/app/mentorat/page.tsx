@@ -14,12 +14,12 @@ export const metadata = { title: "Mentorat" };
 /** Carte d'un mentor : avatar, titre, ville/pays, bio, stack, lien profil. */
 function CarteMentor({ mentor }: { mentor: MentorResume }) {
   return (
-    <li className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60">
       <div className="flex items-start gap-4">
         <Avatar slug={mentor.slug} nom={mentor.nom} avatar={mentor.avatar || undefined} />
         <div className="min-w-0">
           <Link href={`/membres/${mentor.slug}`}>
-            <h2 className="truncate text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
+            <h2 className="truncate text-lg font-semibold leading-snug hover:text-cx-accent">
               {mentor.nom}
             </h2>
           </Link>
@@ -37,7 +37,7 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
               {mentor.stack.map((technologie) => (
                 <li
                   key={technologie}
-                  className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                  className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
                 >
                   {technologie}
                 </li>
@@ -85,14 +85,14 @@ export default async function PageMentorat({ searchParams }: Props) {
       <FormulaireMentorat mentors={choix} connecte={userId !== null} />
 
       {mentors.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
           <p className="text-lg font-semibold">{t(locale, "mentorship.empty_title")}</p>
           <p className="mt-2 text-sm text-cx-muted-fg">
             {t(locale, "mentorship.empty_desc")}
           </p>
           <Link
             href="/inscription"
-            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+            className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
           >
             {t(locale, "auth.register_link")}
           </Link>

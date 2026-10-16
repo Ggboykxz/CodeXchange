@@ -54,7 +54,7 @@ export function SqueletteGrille({ nombre = 6 }: { nombre?: number }) {
       {Array.from({ length: nombre }, (_, i) => (
         <li key={i} className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
           <div className="flex items-start gap-4">
-            <Barre className="h-11 w-11 rounded-full" />
+            <Barre className="size-11 rounded-full" />
             <div className="flex-1">
               <Barre className="h-4 w-1/2" />
               <Barre className="mt-2 h-3 w-1/3" />

@@ -27,7 +27,7 @@ export default async function PageProfil() {
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "profile.title")}</h1>
 
-      <section className="flex flex-col gap-4 rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5">
+      <section className="flex flex-col gap-4 rounded-xl border border-cx-border px-5 py-5">
         <div className="flex items-center gap-4">
           <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
           <div>
@@ -41,14 +41,14 @@ export default async function PageProfil() {
         <FormulaireAvatar avatarActuel={membre.avatar} />
       </section>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.bio")}</h2>
         <p className="mt-2 whitespace-pre-line text-cx-muted-fg">
           {membre.bio || t(locale, "profile.bio_empty")}
         </p>
       </section>
 
-      <section className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-5 text-sm">
+      <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.stack")}</h2>
         <p className="mt-2 text-cx-muted-fg">{membre.stack || t(locale, "profile.stack_empty")}</p>
       </section>
@@ -56,7 +56,7 @@ export default async function PageProfil() {
       <Link href="/parametres" className="text-sm text-cx-accent">
         Modifier mon profil
       </Link>
-      <Link href={`/membres/${membre.slug}`} className="text-sm text-[var(--cx-accent)]">
+      <Link href={`/membres/${membre.slug}`} className="text-sm text-cx-accent">
         {t(locale, "profile.public")}
       </Link>
     </div>

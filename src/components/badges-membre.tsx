@@ -11,9 +11,9 @@ export function BadgeVerification() {
     <span
       title="Membre vérifié"
       aria-label="Membre vérifié"
-      className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cx-primary align-middle"
+      className="inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-cx-primary align-middle"
     >
-      <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M20 6 9 17l-5-5" className="text-cx-primary-fg" />
       </svg>
     </span>
@@ -27,7 +27,7 @@ export function BadgeNiveau({ karma }: { karma: number }) {
       title={`Niveau ${n.niveau} — ${n.titre}`}
       className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2 py-0.5 text-xs font-semibold text-cx-primary"
     >
-      <Icone nom="verifie" className="h-3.5 w-3.5" />
+      <Icone nom="verifie" className="size-3.5" />
       N{n.niveau} · {n.titre}
     </span>
   );

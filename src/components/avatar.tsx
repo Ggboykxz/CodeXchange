@@ -51,7 +51,7 @@ type Props = {
 
 /** Pastille Avatar réutilisable (annuaire, profils publics). */
 export default function Avatar({ slug, nom, taille = "sm", avatar }: Props) {
-  const dimension = taille === "lg" ? "h-20 w-20 text-2xl" : "h-11 w-11 text-sm";
+  const dimension = taille === "lg" ? "size-20 text-2xl" : "size-11 text-sm";
   if (avatar) {
     return (
       // eslint-disable-next-line @next/next/no-img-element

@@ -96,7 +96,7 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
               : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-success/60 hover:text-cx-success",
           )}
         >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M17 1l4 4-4 4" />
             <path d="M3 11V9a4 4 0 0 1 4-4h14" />
             <path d="M7 23l-4-4 4-4" />
@@ -113,7 +113,7 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
             RAYON.md,
           )}
         >
-          {copie ? <Icone nom="copie" className="h-4 w-4" /> : <Icone nom="partage" className="h-4 w-4" />}
+          {copie ? <Icone nom="copie" className="size-4" /> : <Icone nom="partage" className="size-4" />}
           {copie ? "Lien copié" : "Partager"}
         </button>
       </span>

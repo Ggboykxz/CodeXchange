@@ -36,14 +36,14 @@ export default async function PageTutos({ searchParams }: Props) {
       </header>
 
       {tutos.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
           <p className="text-lg font-semibold">{t(locale, "tutorials.empty_title")}</p>
           <p className="mt-2 text-sm text-cx-muted-fg">
             {t(locale, "tutorials.empty_desc")}
           </p>
           <Link
             href="/forum/nouveau"
-            className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+            className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
           >
             {t(locale, "forum.new")}
           </Link>
@@ -53,10 +53,10 @@ export default async function PageTutos({ searchParams }: Props) {
           {tutos.map((tuto) => (
             <li
               key={tuto.id}
-              className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
             >
               <Link href={`/tutos/${tuto.slug}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
                   {tuto.titre}
                 </h2>
               </Link>
@@ -64,13 +64,13 @@ export default async function PageTutos({ searchParams }: Props) {
               <p className="mt-1 text-sm text-cx-muted-fg">{tuto.resume}</p>
 
               <ul className="mt-3 flex flex-wrap items-center gap-2">
-                <li className="rounded-full border border-[var(--cx-muted)]/40 px-2.5 py-0.5 text-xs font-medium text-cx-muted-fg">
+                <li className="rounded-full border border-cx-border px-2.5 py-0.5 text-xs font-medium text-cx-muted-fg">
                   ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
                 </li>
                 {tuto.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]"
+                    className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
                   >
                     {tag}
                   </li>

@@ -13,7 +13,7 @@ export default async function PageNouveauProjet() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-2xl flex-col gap-6 px-6 py-10">
       <header>
-        <Link href="/projets" className="text-sm text-[var(--cx-accent)]">
+        <Link href="/projets" className="text-sm text-cx-accent">
           ← Retour aux projets
         </Link>
         <h1 className="mt-2 text-3xl font-black tracking-tight">Lancer un projet</h1>

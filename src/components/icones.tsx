@@ -3,7 +3,7 @@
  * `fill none`). Aucune dépendance externe. `currentColor` épouse la couleur du
  * texte ambiant → les icônes fonctionnent dans les deux thèmes sans réglage.
  *
- * Usage : `<Icone nom="forum" className="h-4 w-4" />`
+ * Usage : `<Icone nom="forum" className="size-4" />`
  */
 
 export type NomIcone =
@@ -238,7 +238,7 @@ const D: Record<NomIcone, React.ReactNode> = {
 type Props = { nom: NomIcone; className?: string };
 
 /** Icône SVG stroke 24×24, couleur héritée via `currentColor`. */
-export function Icone({ nom, className = "h-4 w-4" }: Props) {
+export function Icone({ nom, className = "size-4" }: Props) {
   return (
     <svg
       className={className}

@@ -23,7 +23,7 @@ type Props = {
 /** Badge contrat : rempli pour le type de contrat, bordé pour le mode de travail. */
 function BadgeContrat({ contrat }: { contrat: string }) {
   return (
-    <span className="rounded-full bg-[var(--cx-accent)]/5 px-2.5 py-0.5 text-xs font-semibold text-[var(--cx-accent)]">
+    <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
       {contrat}
     </span>
   );
@@ -35,7 +35,7 @@ function BadgeRemote({ remote, locale }: { remote: boolean; locale: Locale }) {
       className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
         remote
           ? "bg-cx-success/5 text-cx-success"
-          : "border border-[var(--cx-muted)]/40 text-cx-muted-fg"
+          : "border border-cx-border text-cx-muted-fg"
       }`}
     >
       {remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
@@ -80,7 +80,7 @@ export default async function PageJobs({ searchParams }: Props) {
         </div>
         <Link
           href="/jobs/nouveau"
-          className="rounded-lg bg-[var(--cx-accent)] px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           {t(locale, "jobs.new")}
         </Link>
@@ -140,14 +140,14 @@ export default async function PageJobs({ searchParams }: Props) {
         </select>
         <button
           type="submit"
-          className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium hover:border-[var(--cx-accent)]"
+          className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-accent"
         >
           {t(locale, "jobs.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/jobs"
-            className="px-2 py-2 text-sm font-medium text-[var(--cx-accent)] underline-offset-4 hover:underline"
+            className="px-2 py-2 text-sm font-medium text-cx-accent underline-offset-4 hover:underline"
           >
             {t(locale, "jobs.reset")}
           </Link>
@@ -177,7 +177,7 @@ export default async function PageJobs({ searchParams }: Props) {
       </div>
 
       {offres.length === 0 ? (
-        <section className="rounded-xl border border-[var(--cx-muted)]/25 px-6 py-12 text-center">
+        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
           {filtreActif ? (
             <>
               <p className="text-lg font-semibold">{t(locale, "jobs.empty_title")}</p>
@@ -187,13 +187,13 @@ export default async function PageJobs({ searchParams }: Props) {
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/jobs"
-                  className="rounded-lg border border-[var(--cx-muted)]/40 px-4 py-2 text-sm font-medium"
+                  className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium"
                 >
                   {t(locale, "jobs.title")}
                 </Link>
                 <Link
                   href="/jobs/nouveau"
-                  className="rounded-lg bg-[var(--cx-accent)] px-4 py-2 text-sm font-semibold text-cx-accent-fg"
+                  className="rounded-lg bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg"
                 >
                   {t(locale, "jobs.new")}
                 </Link>
@@ -207,7 +207,7 @@ export default async function PageJobs({ searchParams }: Props) {
               </p>
               <Link
                 href="/jobs/nouveau"
-                className="mt-5 inline-block rounded-lg bg-[var(--cx-accent)] px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+                className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
               >
                 {t(locale, "jobs.new")}
               </Link>
@@ -219,10 +219,10 @@ export default async function PageJobs({ searchParams }: Props) {
           {offres.map((offre) => (
             <li
               key={offre.id}
-              className="rounded-xl border border-[var(--cx-muted)]/25 px-5 py-4 transition hover:border-[var(--cx-accent)]/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
             >
               <Link href={`/jobs/${offre.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-[var(--cx-accent)]">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
                   {offre.titre}
                 </h2>
               </Link>

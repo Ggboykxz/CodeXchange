@@ -22,7 +22,7 @@ export default function VisuelAccueil() {
           <div className="min-w-0">
             <p className="flex items-center gap-1 truncate text-sm font-semibold">
               Aïcha Ondo
-              <Icone nom="verifie" className="h-3.5 w-3.5 shrink-0 text-cx-primary" />
+              <Icone nom="verifie" className="size-3.5 shrink-0 text-cx-primary" />
             </p>
             <p className="truncate text-xs text-cx-muted-fg">Ingénieure · Cameroun</p>
           </div>
@@ -51,11 +51,11 @@ export default function VisuelAccueil() {
       </div>
 
       {/* Pastille flottante : icône message. */}
-      <div className="absolute right-8 top-8 hidden h-12 w-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-primary shadow-lg sm:flex">
-        <Icone nom="forum" className="h-6 w-6" />
+      <div className="absolute right-8 top-8 hidden size-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-primary shadow-lg sm:flex">
+        <Icone nom="forum" className="size-6" />
       </div>
-      <div className="absolute left-10 bottom-10 hidden h-12 w-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-accent shadow-lg sm:flex">
-        <Icone nom="annuaire" className="h-6 w-6" />
+      <div className="absolute left-10 bottom-10 hidden size-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-accent shadow-lg sm:flex">
+        <Icone nom="annuaire" className="size-6" />
       </div>
     </div>
   );

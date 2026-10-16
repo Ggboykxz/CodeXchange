@@ -18,7 +18,7 @@ export default function BoutonMenuNav({ libelle }: { libelle: string }) {
       aria-controls="navigation-laterale"
       className="rounded-lg p-2 text-cx-muted-fg transition hover:bg-cx-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cx-primary/50 active:scale-[0.97] lg:hidden"
     >
-      <Icone nom="menu" className="h-5 w-5" />
+      <Icone nom="menu" className="size-5" />
     </button>
   );
 }
