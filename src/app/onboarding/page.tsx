@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { cn } from "@/lib/cn";
 import { useToast } from "@/components/toast";
 
 /**
@@ -85,11 +86,12 @@ export default function PageOnboarding() {
                 type="button"
                 onClick={() => basculer(i.tag)}
                 aria-pressed={actif}
-                className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+                className={cn(
+                  "inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
                   actif
                     ? "border-cx-primary bg-cx-primary/5 text-cx-primary"
-                    : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-primary/60"
-                }`}
+                    : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-primary/60",
+                )}
               >
                 <span aria-hidden>{i.emoji}</span>
                 {i.label}
@@ -105,7 +107,7 @@ export default function PageOnboarding() {
           type="button"
           onClick={terminer}
           disabled={enCours}
-          className="rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 disabled:opacity-60 active:scale-[0.97]"
+          className="min-h-[44px] rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold tabular-nums text-cx-accent-fg transition hover:opacity-90 disabled:opacity-60 active:scale-[0.97]"
         >
           {enCours ? "Enregistrement…" : `Terminer${choisis.size > 0 ? ` (${choisis.size})` : ""}`}
         </button>
