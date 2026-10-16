@@ -63,31 +63,36 @@ export default async function HomePage() {
   const locale = await localeCourante();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Hero */}
-      <section className="py-12 text-center sm:py-20">
-        <p className="inline-flex rounded-full border border-cx-border bg-cx-card px-3 py-1 text-xs font-semibold text-cx-muted-fg">
-          {t(locale, "home.badge")}
-        </p>
-        <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
-          {t(locale, "home.hero_prefix")}{" "}
-          <span className="text-cx-primary">{t(locale, "home.hero_highlight")}</span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-cx-muted-fg">
-          {t(locale, "home.hero_sub")}
-        </p>
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Button variant="primary" href="/inscription">
-            {t(locale, "home.cta_join")}
-          </Button>
-          <Button variant="ghost" href="/forum">
-            {t(locale, "home.cta_forum")}
-          </Button>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Hero : deux colonnes dès `lg` (texte à gauche, visuel à droite). */}
+      <section className="py-12 sm:py-20">
+        <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+          <div className="text-center lg:text-left">
+            <p className="inline-flex rounded-full border border-cx-border bg-cx-card px-3 py-1 text-xs font-semibold text-cx-muted-fg">
+              {t(locale, "home.badge")}
+            </p>
+            <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
+              {t(locale, "home.hero_prefix")}{" "}
+              <span className="text-cx-primary">{t(locale, "home.hero_highlight")}</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-cx-muted-fg lg:mx-0">
+              {t(locale, "home.hero_sub")}
+            </p>
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+              {/* L'unique action accentuée de la vue. */}
+              <Button variant="accent" href="/inscription">
+                {t(locale, "home.cta_join")}
+              </Button>
+              <Button variant="ghost" href="/forum">
+                {t(locale, "home.cta_forum")}
+              </Button>
+            </div>
+            <p className="mt-6 text-sm tabular-nums text-cx-muted-fg">
+              {membres} {t(locale, "home.stats")}
+            </p>
+          </div>
+          <VisuelAccueil />
         </div>
-        <p className="mt-6 text-sm text-cx-muted-fg">
-          {membres} {t(locale, "home.stats")}
-        </p>
-        <VisuelAccueil />
       </section>
 
       {/* Sections */}
@@ -107,7 +112,7 @@ export default async function HomePage() {
             >
               <svg
                 viewBox="0 0 24 24"
-                className="h-7 w-7 text-cx-primary"
+                className="size-7 text-cx-primary"
                 aria-hidden="true"
               >
                 {ICONES[index]}
@@ -170,7 +175,7 @@ export default async function HomePage() {
       ) : null}
 
       {/* CTA */}
-      <section className="mx-auto mt-16 max-w-3xl rounded-2xl border border-cx-border bg-cx-card px-6 py-12 text-center">
+      <section className="mx-auto mt-16 max-w-3xl rounded-xl border border-cx-border bg-cx-card px-6 py-12 text-center">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t(locale, "home.cta_join_title")}
         </h2>
@@ -178,7 +183,7 @@ export default async function HomePage() {
           {t(locale, "home.cta_join_sub")}
         </p>
         <div className="mt-6">
-          <Button variant="accent" href="/inscription">
+          <Button variant="primary" href="/inscription">
             {t(locale, "home.cta_join")}
           </Button>
         </div>

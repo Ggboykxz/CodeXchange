@@ -10,7 +10,7 @@ export default function VisuelAccueil() {
   return (
     <div
       aria-hidden="true"
-      className="relative mx-auto mt-12 h-72 w-full max-w-3xl sm:h-80"
+      className="relative mx-auto mt-12 h-72 w-full max-w-3xl sm:h-80 lg:mt-0"
     >
       {/* Fond aplat (plus de dégradé ni de halos flous : baseline). */}
       <div className="absolute inset-0 rounded-3xl border border-cx-border bg-cx-muted" />
