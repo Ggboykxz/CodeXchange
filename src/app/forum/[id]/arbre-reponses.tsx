@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ActionsReponse from "./bouton-reponse";
+import RenduMarkdown from "@/components/rendu-markdown";
 import FormulaireReponse from "./formulaire-reponse";
 import BarreReactions from "@/components/barre-reactions";
 import type { ReactionCounts } from "@/lib/reactions";
@@ -61,7 +62,7 @@ function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Rep
         {reply.createdAt !== reply.updatedAt ? " · édité" : ""}
       </p>
       <div className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">
-        {reply.deletedAt ? "[message supprimé]" : reply.corps}
+        {reply.deletedAt ? "[message supprimé]" : <RenduMarkdown texte={reply.corps} />}
       </div>
       <ActionsReponse
         replyId={reply.id}

@@ -9,22 +9,54 @@ function echap(valeur: string) {
 }
 
 function renduLigne(texte: string): string {
-  const code = texte.replace(/`([^`]+)`/g, (_m, code) => `<code class="rounded bg-cx-muted px-1 py-0.5 text-xs font-mono">${echap(code)}</code>`);
-  // liens http(s)
-  const avecLiens = code.replace(/(https?:\/\/[^\s)]+)/g, (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-cx-primary underline break-all">${url}</a>`);
-  // #hashtag → page forum par tag ; @membre → profil. Frontière de mot pour
-  // éviter de rattraper un "#" ou "@" au milieu d'une URL déjà transformée.
-  const avecTags = avecLiens.replace(
+  const codes: string[] = [];
+  let sortie = texte.replace(/`([^`\n]+)`/g, (_m, contenu: string) => {
+    codes.push(contenu);
+    return `\u0000${codes.length - 1}\u0000`;
+  });
+
+  // Images : valider l'URL puis neutraliser pour éviter que la règle des liens
+  // ne réécrit l'URL à l'intérieur de l'attribut src.
+  const images: { alt: string; url: string }[] = [];
+  sortie = sortie.replace(/!\[([^\]\n]*)\]\(([^()\s]+)\)/g, (_m, alt: string, url: string) => {
+    if (!estUrlDeLien(url)) return alt;
+    images.push({ alt, url });
+    return `\u0001${images.length - 1}\u0001`;
+  });
+
+  // Liens http(s).
+  sortie = sortie.replace(/\[([^\]\n]+)\]\(([^()\s]+)\)/g, (_m, libelle: string, url: string) => {
+    if (!estUrlDeLien(url)) return libelle;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-cx-primary underline break-all">${echap(libelle)}</a>`;
+  });
+
+  function estUrlDeLien(url: string): boolean {
+    return /^https?:\/\//i.test(url);
+  }
+
+  // #hashtag → page forum par tag ; @membre → profil.
+  sortie = sortie.replace(
     /(^|[\s(])#([\p{L}\p{N}_]{2,40})/gu,
-    (_m, pre, tag) => `${pre}<a href="/forum?tag=${encodeURIComponent(tag)}" class="font-semibold text-cx-primary hover:underline">#${tag}</a>`,
+    (_m, pre: string, tag: string) => `${pre}<a href="/forum?tag=${encodeURIComponent(tag)}" class="font-semibold text-cx-primary hover:underline">#${tag}</a>`,
   );
-  const avecMentions = avecTags.replace(
+  sortie = sortie.replace(
     /(^|[\s(])@([a-z0-9][a-z0-9-]{1,39})/gi,
-    (_m, pre, slug) => `${pre}<a href="/membres/${encodeURIComponent(slug)}" class="font-semibold text-cx-primary hover:underline">@${slug}</a>`,
+    (_m, pre: string, slug: string) => `${pre}<a href="/membres/${encodeURIComponent(slug)}" class="font-semibold text-cx-primary hover:underline">@${slug}</a>`,
   );
-  const gras = avecMentions.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-  const ital = gras.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-  return ital;
+  sortie = sortie.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+  sortie = sortie.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+
+  sortie = sortie.replace(/\u0001(\d+)\u0001/g, (_m, index: string) => {
+    const image = images[Number(index)];
+    if (!image) return "";
+    const style = "loading=\'lazy\' class=\'my-2 w-full rounded-lg border border-cx-border\'";
+    return `<img src="${image.url}" alt="${echap(image.alt)}" ${style} />`;
+  });
+  sortie = sortie.replace(/\u0000(\d+)\u0000/g, (_m, index: string) => {
+    return `<code class="rounded bg-cx-muted px-1 py-0.5 text-xs font-mono">${echap(codes[Number(index)] ?? "")}</code>`;
+  });
+
+  return sortie;
 }
 
 export default function RenduMarkdown({ texte }: { texte: string }) {
