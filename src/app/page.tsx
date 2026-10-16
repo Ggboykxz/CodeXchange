@@ -4,12 +4,12 @@ import { Button } from "@/components/button";
 import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import VisuelAccueil from "@/components/visuel-accueil";
-import { Icone } from "@/components/icones";
 import Avatar from "@/components/avatar";
 import CarteSujet from "@/components/carte-sujet";
 import CompteurAnime from "@/components/compteur-anime";
 import { topHashtags } from "@/lib/hashtags";
 import { listPosts } from "@/lib/forum";
+import { Icone } from "@/components/icones";
 
 const ICONES = [
   <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
@@ -21,12 +21,12 @@ const ICONES = [
 ];
 
 const SECTIONS = [
-  { href: "/forum", cle: "nav.forum", descFr: "Pose tes questions, partage tes retours, discute avec des devs qui savent.", descEn: "Ask questions, share feedback, and talk with developers who know." },
-  { href: "/jobs", cle: "nav.jobs", descFr: "CDI, freelance, stages — remote ou sur place en Afrique.", descEn: "Full-time, freelance, internships — remote or onsite across Africa." },
-  { href: "/projets", cle: "nav.projects", descFr: "Lance un projet et recrute ses premiers co-fondateurs.", descEn: "Start a project and recruit its first co-founders." },
-  { href: "/annuaire", cle: "nav.directory", descFr: "Trouve un profil, un mentor, un prochain co-fondateur.", descEn: "Find a profile, a mentor, your next co-founder." },
-  { href: "/tutos", cle: "nav.tutorials", descFr: "Des articles courts et pratiques par la communauté.", descEn: "Short, practical articles from the community." },
-  { href: "/evenements", cle: "nav.events", descFr: "Meetups et hackathons : confirme ta présence.", descEn: "Meetups and hackathons: confirm you'll be there." },
+  { href: "/forum", cle: "nav.forum", descFr: "Discute avec des devs qui savent.", descEn: "Talk with developers who know." },
+  { href: "/jobs", cle: "nav.jobs", descFr: "Offres remote ou sur place.", descEn: "Remote or onsite jobs." },
+  { href: "/projets", cle: "nav.projects", descFr: "Lance et recrute.", descEn: "Start and recruit." },
+  { href: "/annuaire", cle: "nav.directory", descFr: "Trouve ton prochain co-dev.", descEn: "Find your next dev." },
+  { href: "/tutos", cle: "nav.tutorials", descFr: "Articles courts et pratiques.", descEn: "Short, practical posts." },
+  { href: "/evenements", cle: "nav.events", descFr: "Meetups et hackathons.", descEn: "Meetups & hackathons." },
 ];
 
 export const dynamic = "force-dynamic";
@@ -40,7 +40,7 @@ export default async function HomePage() {
     prisma.project.count(),
     prisma.event.count(),
     prisma.user.findMany({ take: 8, orderBy: { createdAt: "desc" }, select: { id: true, nom: true, slug: true, avatar: true } }),
-    listPosts({ page: 1, pageSize: 8, tri: "hot", userId: userId == null ? undefined : userId }),
+    listPosts({ page: 1, pageSize: 10, tri: "hot", userId: userId == null ? undefined : userId }),
   ]);
   const [dernieres, prochainEvenement, tendances] = await Promise.all([
     prisma.reply.findMany({
@@ -83,107 +83,96 @@ export default async function HomePage() {
     }
   }
 
-  const derniersSujets = await prisma.post.findMany({
-    take: 3,
-    orderBy: { createdAt: "desc" },
-    select: { id: true, titre: true, tags: true },
-  });
-
   const locale = await localeCourante();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Hero : deux colonnes dès `lg` (texte à gauche, visuel à droite). */}
-      <section
-        className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950 px-6 py-12 text-white shadow-xl sm:px-10 sm:py-20"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 18% 18%, rgba(255,255,255,.12) 1px, transparent 1px), radial-gradient(circle at 82% 74%, rgba(255,255,255,.10) 1px, transparent 1px)",
-          backgroundSize: "24px 24px, 32px 32px",
-        }}
-      >
-        <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
-          <div className="text-center lg:text-left">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      {/* Hero compact (sobre, coût zéro). */}
+      <section className="relative overflow-hidden rounded-3xl border border-cx-border bg-slate-950 px-6 py-10 text-white shadow-xl sm:py-14">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-60"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 22% 18%, rgba(255,255,255,.14) 1px, transparent 1px), radial-gradient(circle at 78% 72%, rgba(255,255,255,.10) 1px, transparent 1px)",
+            backgroundSize: "26px 26px, 34px 34px",
+          }}
+        />
+        <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
             <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">
               {me ? `👋 ${me.nom}` : t(locale, "home.badge")}
             </p>
-            <h1 className="mt-6 text-balance text-4xl font-extrabold tracking-tighter text-white sm:text-6xl">
-              {t(locale, "home.hero_prefix")}{" "}
-              <span className="text-orange-400">{t(locale, "home.hero_highlight")}</span>
+            <h1 className="mt-4 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
+              La communauté africaine des devs, <span className="text-orange-400">à portée de main</span>.
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-slate-300 lg:mx-0">
+            <p className="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
               {t(locale, "home.hero_sub")}
             </p>
-            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
-              {/* L'unique action accentuée de la vue. */}
+            <div className="mt-5 flex flex-wrap gap-2">
               <Button variant="accent" href="/inscription">
-                {t(locale, "home.cta_join")}
+                Créer un compte
               </Button>
               <Button variant="ghost" href="/forum">
-                {t(locale, "home.cta_forum")}
+                Explorer le fil
               </Button>
             </div>
-            <p className="mt-6 text-sm tabular-nums text-cx-muted-fg">
-              {membres} {t(locale, "home.stats")}
-            </p>
-            {/* Preuve sociale : avatars récents. */}
-            {membresRecents.length > 0 ? (
-              <div className="mt-6 flex items-center gap-3">
-                <div className="flex -space-x-2">
-                  {membresRecents.map((m) => (
-                    <Link key={m.id} href={`/membres/${m.slug}`} className="ring-2 ring-cx-bg">
-                      <Avatar slug={m.slug} nom={m.nom} avatar={m.avatar ?? undefined} />
-                    </Link>
-                  ))}
-                </div>
-                <p className="text-sm text-cx-muted-fg">
-                  +{Math.max(0, membres - membresRecents.length)} {t(locale, "home.stats_join")}
-                </p>
-              </div>
-            ) : null}
           </div>
-          <VisuelAccueil
-            membres={membresRecents}
-            tendance={tendances[0]?.tag}
-            conversation={dernieres[0] ? { titre: dernieres[0].post.titre, auteur: dernieres[0].author.nom, extrait: dernieres[0].corps } : undefined}
-          />
+          {membresRecents.length > 0 ? (
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {membresRecents.slice(0, 6).map((m) => (
+                  <Link key={m.id} href={`/membres/${m.slug}`} className="ring-2 ring-white/20">
+                    <Avatar slug={m.slug} nom={m.nom} avatar={m.avatar ?? undefined} />
+                  </Link>
+                ))}
+              </div>
+              <p className="text-sm text-slate-200">
+                <span className="font-bold tabular-nums text-orange-400">{membres}</span> membres actifs
+              </p>
+            </div>
+          ) : null}
         </div>
       </section>
 
-      {/* Fils Reddit-way : feed live avec gouttière de vote. */}
+      {/* Fil façon Reddit. */}
       <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="min-w-0 rounded-2xl border border-cx-border bg-cx-card/60 p-2 backdrop-blur">
-          <div className="mb-2 flex items-center justify-between px-3 py-1">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Dans ton feed
-            </h2>
-            <Link href="/forum" className="text-sm font-semibold text-cx-primary hover:underline">
-              {t(locale, "home.cta_forum")}
+        <div className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-cx-border pb-2">
+            <div className="flex flex-wrap gap-1">
+              <Link href="/forum" className="rounded-full bg-cx-primary px-3 py-1 text-xs font-semibold text-cx-primary-fg">
+                Accueil
+              </Link>
+              <Link href="/forum?tri=hot" className="rounded-full px-3 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted">
+                Tendance
+              </Link>
+              <Link href="/forum?tri=new" className="rounded-full px-3 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted">
+                Nouveau
+              </Link>
+              <Link href="/forum?tri=top" className="rounded-full px-3 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted">
+                Top
+              </Link>
+            </div>
+            <Link href="/forum/nouveau" className="inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-3 py-1 text-xs font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]">
+              <Icone nom="plus" className="size-3.5" />
+              Sujet
             </Link>
           </div>
-          <ul className="flex flex-col gap-2">
+          <ul className="space-y-3">
             {feedReddit.items.map((sujet) => (
               <li key={sujet.id}>
                 <CarteSujet sujet={sujet} locale={locale} connecte={userId !== null} />
               </li>
             ))}
           </ul>
-        </div>
-        <aside className="sticky top-24 min-w-0 space-y-4">
-          <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
-            <p className="text-sm font-bold">Communautés tendances</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tendances.map((trend) => (
-                <Link
-                  key={trend.tag}
-                  href={`/forum?tag=${encodeURIComponent(trend.tag)}`}
-                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/10"
-                >
-                  #{trend.tag}
-                </Link>
-              ))}
-            </div>
+          <div className="mt-6 text-center">
+            <Link href="/forum" className="inline-flex rounded-full border border-cx-border px-4 py-2 text-sm text-cx-muted-fg hover:bg-cx-muted">
+              Voir tout le fil →
+            </Link>
           </div>
+        </div>
+
+        <aside className="sticky top-24 hidden space-y-4 self-start lg:block">
           <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
             <p className="text-sm font-bold">Créer un sujet</p>
             <p className="mt-1 text-xs text-cx-muted-fg">Partage un retour, demande de l'aide, trouve des contributeurs.</p>
@@ -195,10 +184,56 @@ export default async function HomePage() {
               Écrire un sujet
             </Link>
           </div>
+          <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
+              Communautés tendances
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tendances.map((trend) => (
+                <Link
+                  key={trend.tag}
+                  href={`/forum?tag=${encodeURIComponent(trend.tag)}`}
+                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/10"
+                >
+                  c/{trend.tag}
+                </Link>
+              ))}
+            </div>
+          </div>
+          {userId !== null && sujetsPourToi.length > 0 ? (
+            <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
+                Pour toi
+              </p>
+              <ul className="mt-2 space-y-2 text-sm">
+                {sujetsPourToi.slice(0, 4).map((s) => (
+                  <li key={s.id}>
+                    <Link href={`/forum/${s.id}`} className="block text-sm text-cx-muted-fg hover:text-cx-primary">
+                      {s.titre}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {prochainEvenement && (
+            <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">Prochain événement</p>
+              <p className="mt-1 text-sm font-bold">{prochainEvenement.titre}</p>
+              <p className="mt-1 text-xs text-cx-muted-fg">
+                {prochainEvenement.format} · {prochainEvenement.date.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+              </p>
+            </div>
+          )}
+          <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4 text-xs text-cx-muted-fg">
+            <p className="font-bold text-cx-fg">CodeXchange</p>
+            <p className="mt-1">{membres} membres · {posts} sujets · {projets} projets</p>
+            <p className="mt-2">Par les devs, pour les devs.</p>
+          </div>
         </aside>
       </section>
 
-      {/* Counts animés. */}
+      {/* Compteurs. */}
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           ["Membres", membres],
@@ -206,7 +241,7 @@ export default async function HomePage() {
           ["Projets", projets],
           ["Événements", evenements],
         ].map(([label, valeur]) => (
-          <div key={label} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
+          <div key={label as string} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
             <p className="text-2xl font-black text-cx-primary tabular-nums">
               <CompteurAnime value={valeur as number} />
             </p>
@@ -244,35 +279,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Derniers sujets */}
-      {derniersSujets.length > 0 ? (
-        <section className="mt-12">
-          <div className="flex items-end justify-between">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              {t(locale, "home.latest_title")}
-            </h2>
-            <Link
-              href="/forum"
-              className="text-sm font-semibold text-cx-primary hover:underline"
-            >
-              {t(locale, "home.cta_forum")}
-            </Link>
-          </div>
-          <ul className="mt-4 divide-y divide-cx-border rounded-xl border border-cx-border bg-cx-card">
-            {derniersSujets.map((s) => (
-              <li key={s.id}>
-                <Link href={`/forum/${s.id}`} className="block px-4 py-3 text-sm hover:bg-cx-muted">
-                  <span className="font-medium">{s.titre}</span>
-                  {s.tags ? (
-                    <span className="ml-2 text-cx-muted-fg">· {s.tags}</span>
-                  ) : null}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
       {userId !== null && sujetsPourToi.length > 0 ? (
         <section className="mt-12">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -293,69 +299,6 @@ export default async function HomePage() {
           </ul>
         </section>
       ) : null}
-
-      {/* Activité de la communauté : conversations + tendances + événement. */}
-      <section className="mt-12 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-5">
-          <h2 className="text-xl font-bold tracking-tight">
-            Conversations récentes
-          </h2>
-          <p className="mt-1 text-sm text-cx-muted-fg">
-            Pose tes questions, partage tes retours.
-          </p>
-          <ul className="mt-3 divide-y divide-cx-border">
-            {dernieres.map((r) => (
-              <li key={r.id} className="py-2">
-                <Link href={`/forum/${r.post.id}`} className="group block">
-                  <p className="truncate text-sm font-medium group-hover:text-cx-primary">
-                    {r.post.titre}
-                  </p>
-                  <p className="truncate text-xs text-cx-muted-fg">
-                    ↳ {r.author.nom} · {new Date(r.createdAt).toLocaleDateString("fr-FR")}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          {prochainEvenement && (
-            <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
-                Prochain événement
-              </p>
-              <p className="mt-1 text-base font-bold">{prochainEvenement.titre}</p>
-              <p className="mt-1 text-xs text-cx-muted-fg">
-                {prochainEvenement.format} · {prochainEvenement.date.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}{prochainEvenement.ville ? " · " + prochainEvenement.ville : ""}
-              </p>
-              <a
-                href={prochainEvenement.lien || `/evenements/${prochainEvenement.id}`}
-                className="mt-3 inline-block text-xs font-semibold text-cx-primary hover:underline"
-              >
-                Voir les détails →
-              </a>
-            </div>
-          )}
-
-          <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
-              Tendances de la communauté
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tendances.map((trend) => (
-                <Link
-                  key={trend.tag}
-                  href={`/forum?tag=${encodeURIComponent(trend.tag)}`}
-                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/10"
-                >
-                  #{trend.tag} <span className="tabular-nums text-cx-muted-fg">({trend.count})</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="mx-auto mt-16 max-w-3xl rounded-xl border border-cx-border bg-cx-card px-6 py-12 text-center">
