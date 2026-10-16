@@ -72,11 +72,18 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
 export default function PanneauNav({ locale, theme, communautes, connecte }: Props) {
   const { ouverte, fermer } = useNav();
   const refAside = useRef<HTMLElement>(null);
+  const premierRendu = useRef(true);
 
   // Drawer mobile = surface modale : le contenu derrière le voile devient
   // inerte (l'ordre de tabulation ne sort plus du panneau, WCAG 2.4.3), le focus
   // entre dans le panneau à l'ouverture et revient au ☰ à la fermeture.
+  // Au premier rendu on ne touche à rien : voler le focus au chargement de la
+  // page serait hostile (le ☰ apparaîtrait entouré sans action de l'utilisateur).
   useEffect(() => {
+    if (premierRendu.current) {
+      premierRendu.current = false;
+      return;
+    }
     if (!window.matchMedia("(max-width: 1023px)").matches) return;
     const cibles = [document.getElementById("main"), document.querySelector("footer")].filter(
       (el): el is HTMLElement => el !== null,

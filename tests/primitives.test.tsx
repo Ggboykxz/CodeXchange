@@ -9,11 +9,15 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn(), replace: vi.fn() }),
+  usePathname: () => "/",
 }));
 
+import BoutonMenuNav from "@/components/bouton-menu-nav";
 import MenuUtilisateur from "@/components/menu-utilisateur";
+import PanneauNav from "@/components/panneau-nav";
 import RechercheDropdown from "@/components/recherche-dropdown";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { NavProvider } from "@/components/nav-context";
 import { t } from "@/lib/i18n";
 
 const MEMBRE = { nom: "Awa Diallo", slug: "awa", avatar: null };
@@ -104,6 +108,57 @@ describe("primitives — popover de recherche", () => {
 
     await waitFor(() => expect(screen.queryByRole("searchbox")).toBeNull());
     expect(document.activeElement).toBe(declencheur);
+  });
+});
+
+describe("primitives — drawer mobile", () => {
+  /** Viewport mobile simulé : `max-width` → vrai, le reste → faux. */
+  function simulerMobile() {
+    vi.stubGlobal("matchMedia", (requete: string) => ({
+      matches: requete.includes("max-width"),
+      media: requete,
+      onchange: null,
+      addListener() {},
+      removeListener() {},
+      addEventListener() {},
+      removeEventListener() {},
+      dispatchEvent: () => false,
+    }));
+  }
+
+  function rendreDrawer() {
+    return render(
+      <NavProvider>
+        <BoutonMenuNav libelle="Ouvrir le menu" />
+        <main id="main">Contenu</main>
+        <PanneauNav locale="fr" theme="light" communautes={[]} connecte={false} />
+      </NavProvider>,
+    );
+  }
+
+  test("au chargement, le ☰ ne vole pas le focus", async () => {
+    simulerMobile();
+    rendreDrawer();
+    const bouton = screen.getByRole("button", { name: "Ouvrir le menu" });
+    await waitFor(() => expect(document.activeElement).not.toBe(bouton));
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  test("ouverture : focus dans le panneau + contenu en inert ; fermeture : focus rendu au ☰", async () => {
+    simulerMobile();
+    const user = userEvent.setup();
+    rendreDrawer();
+    const bouton = screen.getByRole("button", { name: "Ouvrir le menu" });
+
+    await user.click(bouton);
+    const aside = document.getElementById("navigation-laterale");
+    expect(aside).not.toBeNull();
+    await waitFor(() => expect(aside?.contains(document.activeElement)).toBe(true));
+    expect(document.getElementById("main")?.hasAttribute("inert")).toBe(true);
+
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(document.activeElement).toBe(bouton));
+    expect(document.getElementById("main")?.hasAttribute("inert")).toBe(false);
   });
 });
 
