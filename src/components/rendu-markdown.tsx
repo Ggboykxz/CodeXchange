@@ -1,8 +1,36 @@
 "use client";
 
 import { useMemo } from "react";
+import { useToast } from "@/components/toast";
+import { IconeAnimee } from "@/components/icone-animee";
 
-/** Mini rendu Markdown sûr (gras, italique, code inline et blocs, liens). */
+/** Mini rendu Markdown sûr (gras, italique, code inline et blocs, liens, images). */
+
+function BlocCodeCopiable({ code }: { code: string }) {
+  const toast = useToast();
+  return (
+    <div className="group relative">
+      <button
+        type="button"
+        onClick={() => {
+          navigator.clipboard?.writeText(code).then(
+            () => toast.succes("Code copié"),
+            () => toast.erreur("Copie impossible"),
+          );
+        }}
+        aria-label="Copier le code"
+        title="Copier le code"
+        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md border border-cx-border bg-cx-card px-2 py-1 text-[10px] font-semibold text-cx-muted-fg opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100 hover:text-cx-fg"
+      >
+        <IconeAnimee nom="copie" className="size-3" />
+        Copier
+      </button>
+      <pre className="overflow-x-auto rounded-lg bg-cx-muted p-3 text-xs">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
 
 function echap(valeur: string) {
   return valeur.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -67,11 +95,7 @@ export default function RenduMarkdown({ texte }: { texte: string }) {
         // bloc code
         const lignes = seg.split("\n").slice(1); // drop language hint line
         const contenu = lignes.join("\n").trimEnd();
-        return (
-          <pre key={i} className="overflow-x-auto rounded-lg bg-cx-muted p-3 text-xs">
-            <code>{contenu}</code>
-          </pre>
-        );
+        return <BlocCodeCopiable key={i} code={contenu} />;
       }
       // texte normal avec lignes
       return (

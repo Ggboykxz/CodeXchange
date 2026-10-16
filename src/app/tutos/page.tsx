@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
+import { formatDureeLecture } from "@/lib/lecture";
 import { localeCourante, t } from "@/lib/i18n";
 import { listTutorials } from "@/lib/tutorials";
 
@@ -65,7 +66,7 @@ export default async function PageTutos({ searchParams }: Props) {
 
               <ul className="mt-3 flex flex-wrap items-center gap-2">
                 <li className="rounded-full border border-cx-border px-2.5 py-0.5 text-xs font-medium tabular-nums text-cx-muted-fg">
-                  ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
+                  ⏱ {formatDureeLecture(tuto.corps)} {t(locale, "tutorials.reading")}
                 </li>
                 {tuto.tags.map((tag) => (
                   <li

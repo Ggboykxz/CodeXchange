@@ -6,8 +6,15 @@ import LogoTechno, { logoTechno } from "@/components/logo-techno";
 import type { PostResume } from "@/lib/forum";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import TempsRelatif from "@/components/temps-relatif";
 
 const DATE = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+
+/** « Nouveau » si le sujet a moins de 48 h. */
+function estNouveau(date: Date | string): boolean {
+  const cible = typeof date === "string" ? new Date(date) : date;
+  return Date.now() - cible.getTime() < 48 * 3_600_000;
+}
 
 /** Aperçu du corps en texte brut, tronqué (le markdown n'est pas rendu en fil). */
 function apercu(texte: string, max = 180): string | null {
@@ -68,7 +75,12 @@ export default function CarteSujet({
             {t(locale, "forum.by")} {sujet.author.nom}
           </span>
           <span aria-hidden>·</span>
-          <span>{DATE.format(sujet.createdAt)}</span>
+          <span className="inline-flex items-center gap-1">
+            <TempsRelatif date={sujet.createdAt} />
+            {estNouveau(sujet.createdAt) ? (
+              <span className="rounded-full bg-cx-accent/10 px-1.5 py-px text-[10px] font-bold text-cx-accent">Nouveau</span>
+            ) : null}
+          </span>
         </p>
 
         <h2 className="mt-1 text-base font-semibold leading-snug">

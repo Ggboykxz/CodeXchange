@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Avatar from "@/components/avatar";
 import { drapeau } from "@/lib/drapeaux";
+import { formatDureeLecture } from "@/lib/lecture";
 import { renderMarkdown } from "@/lib/markdown";
 import { getTutorial } from "@/lib/tutorials";
 import { isFavorite } from "@/lib/favorites";
@@ -52,7 +53,7 @@ export default async function PageTuto({ params }: Props) {
         </h1>
         <p className="text-sm tabular-nums text-cx-muted-fg">
           {tuto.author.nom} · {drapeau(tuto.author.pays)} {tuto.author.ville}, {tuto.author.pays}{" "}
-          · ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
+          · ⏱ {formatDureeLecture(tuto.corps)} {t(locale, "tutorials.reading")}
         </p>
         <ul className="flex flex-wrap gap-2">
           {tuto.tags.map((tag) => (

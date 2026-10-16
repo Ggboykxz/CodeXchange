@@ -6,6 +6,8 @@ import { drapeau } from "@/lib/drapeaux";
 import { getSessionUserId } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import FormulaireAvatar from "./formulaire-avatar";
+import ParcoursDev from "@/components/parcours-dev";
+import { parcoursUtilisateur } from "@/lib/parcours";
 import { localeCourante, t } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +31,7 @@ export default async function PageProfil() {
     prisma.favorite.count({ where: { userId } }),
   ]);
   const locale = await localeCourante();
+  const parcours = await parcoursUtilisateur(userId);
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
@@ -54,6 +57,8 @@ export default async function PageProfil() {
           {membre.bio || t(locale, "profile.bio_empty")}
         </p>
       </section>
+
+      <ParcoursDev etapes={parcours} />
 
       <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.stack")}</h2>

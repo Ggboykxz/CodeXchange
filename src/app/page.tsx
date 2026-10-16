@@ -9,6 +9,8 @@ import CarteSujet from "@/components/carte-sujet";
 import CompteurAnime from "@/components/compteur-anime";
 import { topHashtags } from "@/lib/hashtags";
 import { listPosts } from "@/lib/forum";
+import { parcoursUtilisateur } from "@/lib/parcours";
+import ParcoursDev from "@/components/parcours-dev";
 import { Icone } from "@/components/icones";
 
 const ICONES = [
@@ -84,6 +86,7 @@ export default async function HomePage() {
   }
 
   const locale = await localeCourante();
+  const parcours = await parcoursUtilisateur(userId);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -136,6 +139,7 @@ export default async function HomePage() {
       </section>
 
       {/* Fil façon Reddit. */}
+      <ParcoursDev etapes={parcours} />
       <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-cx-border pb-2">

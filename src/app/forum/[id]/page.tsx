@@ -11,6 +11,7 @@ import BarreReactions from "@/components/barre-reactions";
 import LogoTechno, { logoTechno } from "@/components/logo-techno";
 import BoutonRepost from "@/components/bouton-repost";
 import { getEtatRepost } from "@/lib/reposts";
+import { formatDureeLecture } from "@/lib/lecture";
 import BoutonSondage from "./bouton-sondage";
 import ArbreReponses from "./arbre-reponses";
 import TexteRepliable from "@/components/texte-repliable";
@@ -81,7 +82,7 @@ export default async function PageSujet({ params }: Props) {
         </h1>
         <p className="text-sm text-cx-muted-fg">
           {sujet.author.nom} · {sujet.author.ville}, {sujet.author.pays} ·{" "}
-          {DATE.format(sujet.createdAt)}
+          {DATE.format(sujet.createdAt)} · ⏱ {formatDureeLecture(sujet.corps)}
         </p>
         {sujet.tags && (
           <ul className="flex flex-wrap gap-2">

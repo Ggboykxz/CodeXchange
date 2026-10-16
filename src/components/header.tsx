@@ -11,6 +11,7 @@ import { unreadCount } from "@/lib/notifications";
 import { prisma } from "@/lib/db";
 import { localeCourante, t } from "@/lib/i18n";
 import BarreRecherche from "./barre-recherche";
+import PaletteCommandes from "@/components/palette-commandes";
 import { suggestionsRecherche } from "@/lib/suggestions";
 
 /**
@@ -53,6 +54,9 @@ export async function Header() {
 
           {/* Droite : actions. */}
           <div className="ml-auto flex items-center gap-1.5">
+            <div className="hidden md:block">
+              <PaletteCommandes />
+            </div>
             <div className="md:hidden">
               <RechercheDropdown locale={locale} suggestions={suggestions} />
             </div>
