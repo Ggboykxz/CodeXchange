@@ -179,6 +179,14 @@ button:not(:disabled):active,
   }
 }
 
+/* Navigation fluide (désactivée automatiquement sous reduced-motion). */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
+  }
+}
+
 /* Focus visible cohérent pour la navigation clavier. */
 :focus-visible {
   outline: 2px solid var(--cx-ring);
