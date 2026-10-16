@@ -13,15 +13,24 @@ export default function CartesStats({ statsInitiaux }: { statsInitiaux: StatsAdm
 
   useEffect(() => {
     if (pause) return;
-    const minuteur = setInterval(async () => {
+    let actif = true;
+    async function recharger() {
+      if (document.visibilityState !== "visible") return;
       try {
         const r = await fetch("/api/admin/stats");
-        if (r.ok) setStats(await r.json());
+        if (r.ok && actif) setStats(await r.json());
       } catch {
         // on garde les valeurs affichées
       }
-    }, 10_000);
-    return () => clearInterval(minuteur);
+    }
+    recharger().catch(() => {});
+    const minuteur = setInterval(recharger, 60_000);
+    document.addEventListener("visibilitychange", recharger);
+    return () => {
+      actif = false;
+      clearInterval(minuteur);
+      document.removeEventListener("visibilitychange", recharger);
+    };
   }, [pause]);
 
   const cartes: Array<[string, number]> = [

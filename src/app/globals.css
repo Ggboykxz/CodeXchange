@@ -170,6 +170,7 @@ button:not(:disabled):active,
 /* Petites améliorations UX : prévisualisation tactile, retour haut. */
 * {
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 ::selection {
