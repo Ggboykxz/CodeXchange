@@ -9,7 +9,7 @@ import { validerEmail, validerMotDePasse, validerObligatoire } from "@/lib/valid
 import { useToast } from "@/components/toast";
 
 const CLASS_CHAMP =
-  "w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
+  "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
 const CLASSE_ERREUR = "mt-1 text-xs font-medium text-cx-destructive";
 

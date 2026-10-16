@@ -145,7 +145,7 @@ export default function ActionsReponse({
             value={texte}
             onChange={(e) => setTexte(e.target.value)}
             rows={3}
-            className="w-full rounded-lg border border-cx-border bg-transparent p-2 text-sm outline-none focus:border-cx-primary"
+            className="w-full rounded-lg border border-cx-border-fort bg-transparent p-2 text-sm outline-none focus:border-cx-primary"
           />
           <button
             type="button"

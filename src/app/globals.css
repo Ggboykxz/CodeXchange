@@ -16,6 +16,8 @@
   --cx-muted: #e9eff8;
   --cx-muted-fg: #475569;
   --cx-border: #cbd5e1;
+  /* Bordure des champs de saisie : contraste >= 3:1 sur bg ET card (WCAG 1.4.11). */
+  --cx-border-fort: #64748b;
   --cx-destructive: #b91c1c;
   --cx-destructive-fg: #ffffff;
   --cx-success: #166534;
@@ -40,6 +42,7 @@
   --cx-muted: #334155;
   --cx-muted-fg: #cbd5e1;
   --cx-border: #475569;
+  --cx-border-fort: #64748b;
   --cx-destructive: #f87171;
   --cx-destructive-fg: #0f172a;
   --cx-success: #4ade80;

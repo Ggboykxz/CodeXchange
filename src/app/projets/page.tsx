@@ -7,7 +7,7 @@ import { listProjects } from "@/lib/projects";
 export const metadata = { title: "Projets" };
 
 const CLASS_CHAMP =
-  "w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
+  "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
 const DATE = new Intl.DateTimeFormat("fr-FR", {
   day: "numeric",

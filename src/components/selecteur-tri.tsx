@@ -38,7 +38,7 @@ export default function SelecteurTri({
       <select
         value={actuelle}
         onChange={(e) => changer(e.target.value)}
-        className="rounded-lg border border-cx-border bg-cx-card px-2 py-1.5 text-sm font-medium text-cx-fg outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
+        className="rounded-lg border border-cx-border-fort bg-cx-card px-2 py-1.5 text-sm font-medium text-cx-fg outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
       >
         {options.map((option) => (
           <option key={option.valeur} value={option.valeur}>

@@ -98,7 +98,7 @@ export default function BarreRecherche({ suggestions }: Props) {
           aria-label={t(locale, "nav.search")}
           data-cx-search="true"
           onFocus={() => setOuvert(true)}
-          className="w-full rounded-lg border border-cx-border bg-cx-card px-3 py-1.5 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
+          className="w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-1.5 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
         />
       </form>
 

@@ -9,7 +9,7 @@ import { SqueletteBarre } from "@/components/skeleton";
 
 export const dynamic = "force-dynamic";
 
-const CLASS_CHAMP = "w-full rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
+const CLASS_CHAMP = "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
 function Formulaire() {
   const params = useSearchParams();

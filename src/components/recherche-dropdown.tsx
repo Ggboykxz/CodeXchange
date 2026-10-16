@@ -43,7 +43,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t(locale, "nav.search")}
-            className="w-full rounded-lg border border-cx-border bg-cx-bg px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
+            className="w-full rounded-lg border border-cx-border-fort bg-cx-bg px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
           />
           <button
             type="submit"

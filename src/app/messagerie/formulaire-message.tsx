@@ -57,7 +57,7 @@ export default function FormulaireMessage({ destinataireId, onEnvoye }: Props) {
         placeholder="Écrire un message…"
         maxLength={2000}
         aria-label="Écrire un message"
-        className="flex-1 rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
+        className="flex-1 rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30"
       />
       <button
         type="submit"

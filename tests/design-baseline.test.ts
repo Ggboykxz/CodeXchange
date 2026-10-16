@@ -151,3 +151,41 @@ describe("design baseline — primitives interactives", () => {
     expect(lire("src/components/confirm-dialog.tsx")).toContain("@/components/ui/dialog");
   });
 });
+
+describe("design baseline — mouvement", () => {
+  test("aucune durée de transition > 200 ms", () => {
+    // Le retour visuel doit rester sous 200 ms (perception « instantanée »).
+    // Les animations `@keyframes` décoratives (entrée, tracé d'icône) ne sont
+    // pas concernées : ce sont des animations, pas des transitions, et elles
+    // sont désactivées par `prefers-reduced-motion`.
+    const DUREE = /\bduration-(\d+)\b|duration-\[(\d+)ms\]/g;
+    const contrevenants: string[] = [];
+    for (const f of fichiersSrc()) {
+      for (const m of lire(f).matchAll(DUREE)) {
+        const ms = Number(m[1] ?? m[2]);
+        // `duration-150` = 150 ms (Tailwind) ; `duration-[120ms]` = ms directes.
+        if (ms > 200) contrevenants.push(`${f} : duration-${m[1] ?? `[${m[2]}ms]`}`);
+      }
+    }
+    expect(contrevenants).toEqual([]);
+  });
+
+  test("aucune propriété de layout animée", () => {
+    // Seuls `transform` et `opacity` sont animés (pas de reflow par frame) :
+    // ni `transition-all`, ni transition sur width/height/margin/padding/inset.
+    const INTERDIT = /\btransition-all\b|\btransition-\[(width|height|margin|padding|top|left|right|bottom)\b/;
+    const contrevenants = fichiersSrc().filter((f) => INTERDIT.test(lire(f)));
+    expect(contrevenants).toEqual([]);
+
+    // La règle globale de `globals.css` liste elle aussi des propriétés sûres.
+    const css = lire("src/app/globals.css");
+    const bloc = /transition-property:\s*([^;]+);/.exec(css);
+    expect(bloc).not.toBeNull();
+    const proprietes = (bloc?.[1] ?? "").split(",").map((p) => p.trim());
+    for (const interdite of ["width", "height", "margin", "padding", "top", "left"]) {
+      expect(proprietes).not.toContain(interdite);
+    }
+    expect(proprietes).toContain("transform");
+    expect(proprietes).toContain("opacity");
+  });
+});
