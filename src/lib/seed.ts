@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { REACTIONS } from "@/lib/reactions";
 import { prisma } from "@/lib/db";
 import {
   demandesDemo,
@@ -121,7 +122,7 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
     await db.like.create({ data: { userId: likedBy.id, postId: posts[i]!.id } }).catch(() => {});
   }
   // Réactions sociales : réparties sur posts et réponses, pour une démo vivante.
-  const EMOJIS = ["👍", "❤️", "🎉", "🤔", "🔥", "🚀"];
+const EMOJIS = REACTIONS.map((reaction) => reaction.emoji);
   let reactions = 0;
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i]!;

@@ -21,6 +21,13 @@ export const REACTIONS = [
   { emoji: "🤔", cle: "think", label: "Réfléchit" },
   { emoji: "🔥", cle: "fire", label: "Impressionné" },
   { emoji: "🚀", cle: "rocket", label: "Top" },
+  { emoji: "🐛", cle: "bug", label: "Bug" },
+  { emoji: "💡", cle: "idea", label: "Idée" },
+  { emoji: "⚡", cle: "perf", label: "Perf" },
+  { emoji: "🛠️", cle: "tool", label: "Fix" },
+  { emoji: "📚", cle: "docs", label: "Doc" },
+  { emoji: "🤝", cle: "collab", label: "Collab" },
+  { emoji: "🏆", cle: "champ", label: "Champion" },
 ] as const;
 
 const EMOJIS_VALIDES: Set<string> = new Set(REACTIONS.map((r) => r.emoji));
