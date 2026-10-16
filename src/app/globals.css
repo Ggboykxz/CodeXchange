@@ -167,6 +167,23 @@ button:not(:disabled):active,
   opacity: 1;
 }
 
+/* Petites améliorations UX : prévisualisation tactile, retour haut. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.2);
+  color: inherit;
+}
+
+/* Limiter l'overscroll (pull-to-refresh) sur les zones scrollables. */
+main,
+aside.fixed,
+div[role="dialog"] {
+  overscroll-behavior-y: contain;
+}
+
 /* Respecte les préférences de mouvement. */
 @media (prefers-reduced-motion: reduce) {
   *,
