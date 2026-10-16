@@ -192,6 +192,17 @@ button:not(:disabled):active,
   100% { transform: scale(1); }
 }
 
+@keyframes count-pop {
+  0% { transform: scale(0.4); opacity: 0; filter: blur(2px); }
+  100% { transform: scale(1); opacity: 1; filter: blur(0); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-10deg) scale(1.15); }
+  75% { transform: rotate(10deg) scale(1.15); }
+}
+
 @keyframes tracer {
   from { stroke-dasharray: 200; stroke-dashoffset: 200; }
   to { stroke-dasharray: 200; stroke-dashoffset: 0; }
@@ -216,6 +227,8 @@ button:not(:disabled):active,
 }
 
 .animate-pop-in { animation: pop-in 0.45s cubic-bezier(.2,.9,.3,1.2); }
+.animate-count-pop { animation: count-pop 0.32s cubic-bezier(.2,.9,.3,1.2); }
+.animate-wiggle { animation: wiggle 0.5s cubic-bezier(.2,.9,.3,1.2); }
 .animate-tracer { animation: tracer 0.6s ease-out forwards; }
 .animate-shake { animation: shake 0.45s ease-in-out; }
 .animate-glow { animation: glow 2s ease-in-out infinite; }

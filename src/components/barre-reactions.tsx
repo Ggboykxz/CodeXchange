@@ -75,10 +75,10 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
     });
   }
 
-  const taille = compact ? "px-1.5 py-0.5 text-base" : "px-2 py-1 text-lg";
+  const taille = compact ? "px-1.5 py-0.5 text-base" : "px-2.5 py-1.5 text-sm";
 
   return (
-    <div className="flex flex-wrap items-center gap-1">
+    <div className="flex flex-wrap items-center gap-1.5">
       {REACTIONS.map((r) => {
         const actif = etat.maReaction === r.emoji;
         const n = etat.totaux[r.emoji] ?? 0;
@@ -91,17 +91,21 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
             aria-pressed={actif}
             aria-label={`${r.label}${n > 0 ? `, ${n}` : ""}`}
             title={r.label}
-            className={`inline-flex items-center gap-1 rounded-full border transition ${taille} disabled:opacity-60 ${
+            className={`group inline-flex items-center gap-1.5 rounded-full border ${taille} font-medium transition-all duration-200 disabled:opacity-60 ${
               actif
-                ? "border-cx-primary bg-cx-primary/5 font-semibold"
-                : "border-cx-border hover:border-cx-primary/60 hover:bg-cx-muted"
+                ? "border-cx-primary bg-cx-primary/[.08] text-cx-primary shadow-sm ring-2 ring-cx-primary/25 scale-[1.04]"
+                : "border-cx-border bg-cx-card/50 hover:border-cx-primary/60 hover:bg-cx-muted hover:-translate-y-0.5 hover:shadow-sm active:scale-[0.97]"
             }`}
           >
-            <span aria-hidden className={actif ? "animate-[pop-in_0.25s_ease]" : ""}>
+            <span className={`transition-transform duration-200 ${
+              actif ? "animate-wiggle" : "group-hover:scale-110"
+            }`} aria-hidden>
               {r.emoji}
             </span>
             {n > 0 ? (
-              <span className={`text-xs tabular-nums ${actif ? "text-cx-primary" : "text-cx-muted-fg"}`}>
+              <span key={n} className={`min-w-[1ch] tabular-nums transition-colors duration-150 ${
+                actif ? "text-cx-primary animate-count-pop" : "text-cx-muted-fg"
+              }`}>
                 {n}
               </span>
             ) : null}
