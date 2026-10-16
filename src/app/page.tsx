@@ -131,7 +131,11 @@ export default async function HomePage() {
               </div>
             ) : null}
           </div>
-          <VisuelAccueil />
+          <VisuelAccueil
+            membres={membresRecents}
+            tendance={tendances[0]?.tag}
+            conversation={dernieres[0] ? { titre: dernieres[0].post.titre, auteur: dernieres[0].author.nom, extrait: dernieres[0].corps } : undefined}
+          />
         </div>
       </section>
 
