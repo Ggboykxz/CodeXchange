@@ -14,7 +14,7 @@
 | `tests/serialisation.test.ts` | 2 | Garde-fou RSC : aucun props-fonction passé d'un composant serveur à un composant client (la cause du P0 `/forum/[id]`), scan non vacant (≥ 20 composants clients reconnus) |
 | `tests/forum-reponses.test.tsx` | 2 | Contrat de l'arbre de réponses : rendu imbriqué à 2 niveaux, état `likesReponses` restitué sans fonction |
 
-Total de la suite : **243 tests / 37 fichiers**, tous verts au 2026-10-16.
+Total de la suite : **247 tests / 38 fichiers**, tous verts au 2026-10-16.
 - `tests/seed.test.ts` : verrouille l'absence de pages vides à la démo (messagerie 10 msgs dont 2 non lus, notifications 5 dont 2 non lues, 8 favoris couvrant les 6 types, 3 demandes mentorat, fil imbriqué).
 
 ## 2. Audité statiquement (recherche dans `src/`)
