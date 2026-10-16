@@ -54,7 +54,7 @@ export default function VisuelAccueil() {
       <div className="absolute right-8 top-8 hidden size-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-primary shadow-lg sm:flex">
         <Icone nom="forum" className="size-6" />
       </div>
-      <div className="absolute left-10 bottom-10 hidden size-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-accent shadow-lg sm:flex">
+      <div className="absolute left-10 bottom-10 hidden size-12 items-center justify-center rounded-2xl border border-cx-border bg-cx-card text-cx-primary shadow-lg sm:flex">
         <Icone nom="annuaire" className="size-6" />
       </div>
     </div>

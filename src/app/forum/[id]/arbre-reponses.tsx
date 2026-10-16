@@ -50,7 +50,7 @@ function Noeud({ reply, replies, postId, userId, hasReplyLiked, connecte }: { re
 
   return (
     <li className="rounded-xl border border-cx-border bg-cx-card/30 px-5 py-4">
-      <p className="text-xs text-cx-muted-fg">
+      <p className="text-xs tabular-nums text-cx-muted-fg">
         {reply.author.nom} · {reply.author.ville}, {reply.author.pays} ·{" "}
         {new Date(reply.createdAt).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" })}
         {reply.createdAt !== reply.updatedAt ? " · édité" : ""}
@@ -91,7 +91,7 @@ function Noeud({ reply, replies, postId, userId, hasReplyLiked, connecte }: { re
         <FormulaireReponse postId={postId} parentId={reply.id} />
       ) : null}
       {enfants.length > 0 ? (
-        <div className="mt-3 border-l-2 border-cx-border pl-4">
+        <div className="mt-3 border-l-2 border-cx-border pl-3 sm:pl-4">
           <ArbreReponses replies={enfants} postId={postId} userId={userId} hasReplyLiked={hasReplyLiked} connecte={connecte} />
         </div>
       ) : null}

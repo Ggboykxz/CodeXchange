@@ -47,7 +47,7 @@ export default function BoutonPostuler({ jobId, connecte, dejaPostule, compteur 
           disabled
           aria-disabled="true"
           title="Vous avez déjà postulé à cette offre"
-          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-accent/5 px-4 py-2.5 text-sm font-medium text-cx-accent"
+          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-primary/5 px-4 py-2.5 text-sm font-medium text-cx-primary"
         >
           <IconeAnimee nom="coche" className="mr-1 inline size-3" /> Candidature envoyée
         </button>

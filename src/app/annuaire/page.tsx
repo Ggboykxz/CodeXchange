@@ -5,6 +5,7 @@ import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
 import { listCountries, listMembers, type MembreResume } from "@/lib/members";
+import { cn } from "@/lib/cn";
 
 export const metadata = { title: "Annuaire" };
 
@@ -21,7 +22,7 @@ type Props = {
 /** Badge stack : une pastille par technologie (3 max sur les cartes). */
 function BadgeStack({ technologie }: { technologie: string }) {
   return (
-    <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
+    <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
       {technologie}
     </span>
   );
@@ -33,11 +34,11 @@ function CarteMembre({ membre }: { membre: MembreResume }) {
   const restantes = membre.stack.length - visibles.length;
 
   return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
       <Link href={`/membres/${membre.slug}`} className="flex items-start gap-4">
         <Avatar slug={membre.slug} nom={membre.nom} avatar={membre.avatar || undefined} />
         <div className="min-w-0">
-          <h2 className="truncate text-lg font-semibold leading-snug hover:text-cx-accent">
+          <h2 className="truncate text-lg font-semibold leading-snug hover:text-cx-primary">
             {membre.nom}
           </h2>
           <p className="truncate text-sm text-cx-muted-fg">{membre.titre}</p>
@@ -51,7 +52,7 @@ function CarteMembre({ membre }: { membre: MembreResume }) {
               </li>
             ))}
             {restantes > 0 && (
-              <li className="text-xs text-cx-muted-fg">+{restantes}</li>
+              <li className="text-xs tabular-nums text-cx-muted-fg">+{restantes}</li>
             )}
             {membre.role === "MENTOR" && (
               <li className="rounded-full bg-cx-warning/5 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
@@ -89,7 +90,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "directory.title")}</h1>
           <p className="mt-1 text-sm text-cx-muted-fg">
-{t(locale, "directory.subtitle")}
+            {t(locale, "directory.subtitle")}
           </p>
         </div>
         <Link
@@ -110,12 +111,12 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           type="search"
           defaultValue={q}
           placeholder={t(locale, "directory.search")}
-          className={`${CLASS_CHAMP} sm:max-w-64`}
+          className={cn(CLASS_CHAMP, "sm:max-w-64")}
         />
         <label htmlFor="pays" className="sr-only">
           {t(locale, "directory.country_filter")}
         </label>
-        <select id="pays" name="pays" defaultValue={pays} className={`${CLASS_CHAMP} sm:max-w-44`}>
+        <select id="pays" name="pays" defaultValue={pays} className={cn(CLASS_CHAMP, "sm:max-w-44")}>
           <option value="">Tous les pays</option>
           {paysListes.map((paysVu) => (
             <option key={paysVu} value={paysVu}>
@@ -132,18 +133,18 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           type="text"
           defaultValue={stack}
           placeholder={t(locale, "directory.stack_filter")}
-          className={`${CLASS_CHAMP} sm:max-w-40`}
+          className={cn(CLASS_CHAMP, "sm:max-w-40")}
         />
         <button
           type="submit"
-          className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-accent"
+          className="min-h-[44px] rounded-lg border border-cx-border px-4 py-2 text-sm font-medium transition hover:border-cx-primary active:scale-[0.97]"
         >
           {t(locale, "directory.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/annuaire"
-            className="px-2 py-2 text-sm font-medium text-cx-accent underline-offset-4 hover:underline"
+            className="px-2 py-2 text-sm font-medium text-cx-primary underline-offset-4 hover:underline"
           >
             {t(locale, "directory.reset")}
           </Link>
@@ -167,7 +168,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
                 </Link>
                 <Link
                   href="/inscription"
-                  className="rounded-lg bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg"
+                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
                 >
                   {t(locale, "auth.register_link")}
                 </Link>
@@ -182,7 +183,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
               </p>
               <Link
                 href="/inscription"
-                className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+                className="mt-5 inline-block rounded-lg bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
               >
                 Créer le premier profil
               </Link>

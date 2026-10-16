@@ -49,7 +49,7 @@ function LieuEvenement({ evenement }: { evenement: EventResume }) {
               href={evenement.lien}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cx-accent underline-offset-4 hover:underline"
+              className="text-cx-primary underline-offset-4 hover:underline"
             >
               Rejoindre le live ↗
             </a>
@@ -120,10 +120,10 @@ export default async function PageEvenements({ searchParams }: Props) {
           {evenements.map((evenement) => (
             <li
               key={evenement.id}
-              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60"
             >
               <Link href={`/evenements/${evenement.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">
                   {evenement.titre}
                 </h2>
               </Link>
@@ -140,7 +140,7 @@ export default async function PageEvenements({ searchParams }: Props) {
                   <StatutEvenement date={evenement.date} maintenant={maintenant} locale={locale} />
                 </li>
                 <li>
-                  <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
+                  <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
                     {evenement.format}
                   </span>
                 </li>

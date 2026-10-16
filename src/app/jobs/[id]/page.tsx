@@ -45,7 +45,7 @@ export default async function PageOffre({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/jobs" className="text-sm text-cx-accent">
+      <Link href="/jobs" className="text-sm text-cx-primary">
         <FilAriane
           items={[
             { label: t(locale, "nav.home"), href: "/" },
@@ -66,7 +66,7 @@ export default async function PageOffre({ params }: Props) {
         </p>
         <ul className="flex flex-wrap gap-2">
           <li>
-            <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
+            <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
               {offre.contrat}
             </span>
           </li>
@@ -96,7 +96,7 @@ export default async function PageOffre({ params }: Props) {
         </div>
         {userId === null && (
           <p className="text-sm text-cx-muted-fg">
-            <Link href="/connexion" className="font-medium text-cx-accent">
+            <Link href="/connexion" className="font-medium text-cx-primary">
               Connectez-vous
             </Link>{" "}
             pour envoyer votre candidature.
@@ -120,7 +120,7 @@ export default async function PageOffre({ params }: Props) {
           href={offre.lien}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-accent"
+          className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-primary"
         >
           {t(locale, "jobs.external_link")}
         </a>

@@ -22,7 +22,7 @@ type Props = {
 /** Badge stack : une pastille par technologie du projet. */
 function BadgeStack({ technologie }: { technologie: string }) {
   return (
-    <span className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent">
+    <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
       {technologie}
     </span>
   );
@@ -91,14 +91,14 @@ export default async function PageProjets({ searchParams }: Props) {
         />
         <button
           type="submit"
-          className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-accent"
+          className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-primary"
         >
           {t(locale, "projects.filter")}
         </button>
         {filtreActif && (
           <Link
             href="/projets"
-            className="px-2 py-2 text-sm font-medium text-cx-accent underline-offset-4 hover:underline"
+            className="px-2 py-2 text-sm font-medium text-cx-primary underline-offset-4 hover:underline"
           >
             {t(locale, "projects.reset")}
           </Link>
@@ -148,10 +148,10 @@ export default async function PageProjets({ searchParams }: Props) {
           {projets.map((projet) => (
             <li
               key={projet.id}
-              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60"
             >
               <Link href={`/projets/${projet.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">
                   {projet.titre}
                 </h2>
               </Link>

@@ -14,12 +14,12 @@ export const metadata = { title: "Mentorat" };
 /** Carte d'un mentor : avatar, titre, ville/pays, bio, stack, lien profil. */
 function CarteMentor({ mentor }: { mentor: MentorResume }) {
   return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
       <div className="flex items-start gap-4">
         <Avatar slug={mentor.slug} nom={mentor.nom} avatar={mentor.avatar || undefined} />
         <div className="min-w-0">
           <Link href={`/membres/${mentor.slug}`}>
-            <h2 className="truncate text-lg font-semibold leading-snug hover:text-cx-accent">
+            <h2 className="truncate text-lg font-semibold leading-snug hover:text-cx-primary">
               {mentor.nom}
             </h2>
           </Link>
@@ -37,7 +37,7 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
               {mentor.stack.map((technologie) => (
                 <li
                   key={technologie}
-                  className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
+                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
                 >
                   {technologie}
                 </li>

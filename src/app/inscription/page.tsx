@@ -227,7 +227,7 @@ export default function PageInscription() {
 
       <p className="mt-6 text-sm text-cx-muted-fg">
         {t(locale, "auth.has_account")}{" "}
-        <Link href="/connexion" className="font-medium text-cx-accent">
+        <Link href="/connexion" className="font-medium text-cx-primary">
           {t(locale, "auth.login_link")}
         </Link>
       </p>

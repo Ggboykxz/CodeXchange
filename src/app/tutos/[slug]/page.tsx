@@ -36,7 +36,7 @@ export default async function PageTuto({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/tutos" className="text-sm text-cx-accent">
+      <Link href="/tutos" className="text-sm text-cx-primary">
         <FilAriane
           items={[
             { label: t(locale, "nav.home"), href: "/" },
@@ -58,7 +58,7 @@ export default async function PageTuto({ params }: Props) {
           {tuto.tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
+              className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
             >
               {tag}
             </li>
@@ -68,7 +68,7 @@ export default async function PageTuto({ params }: Props) {
       </header>
 
       <article
-        className="rounded-xl border border-cx-border px-5 py-5 leading-relaxed [&_a]:text-cx-accent [&_a]:underline [&_code]:rounded [&_code]:bg-cx-muted/15 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-sm [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:mt-6 [&_h2]:text-xl [&_h2]:font-bold [&_li]:mt-1 [&_p]:mt-3 [&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-cx-muted/10 [&_pre]:p-4 [&_strong]:font-semibold [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-6"
+        className="rounded-xl border border-cx-border px-5 py-5 leading-relaxed [&_a]:text-cx-primary [&_a]:underline [&_code]:rounded [&_code]:bg-cx-muted/15 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-sm [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:mt-6 [&_h2]:text-xl [&_h2]:font-bold [&_li]:mt-1 [&_p]:mt-3 [&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-cx-muted/10 [&_pre]:p-4 [&_strong]:font-semibold [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-6"
         dangerouslySetInnerHTML={{ __html: html }}
       />
 
@@ -77,7 +77,7 @@ export default async function PageTuto({ params }: Props) {
         <Link href={`/membres/${tuto.author.slug}`} className="mt-3 flex items-center gap-3">
           <Avatar slug={tuto.author.slug} nom={tuto.author.nom} />
           <span>
-            <span className="font-medium hover:text-cx-accent">{tuto.author.nom}</span>
+            <span className="font-medium hover:text-cx-primary">{tuto.author.nom}</span>
             <span className="block text-xs text-cx-muted-fg">
               {t(locale, "tutorials.see_profile")}
             </span>

@@ -132,14 +132,14 @@ export default function PageConnexion() {
         </button>
       </form>
       <p className="mt-4 text-sm text-cx-muted-fg">
-        <Link href="/mot-de-passe-oublie" className="text-cx-accent hover:underline">
+        <Link href="/mot-de-passe-oublie" className="text-cx-primary hover:underline">
           Mot de passe oublié ?
         </Link>
       </p>
 
       <p className="mt-6 text-sm text-cx-muted-fg">
         {t(locale, "auth.no_account")}{" "}
-        <Link href="/inscription" className="font-medium text-cx-accent">
+        <Link href="/inscription" className="font-medium text-cx-primary">
           {t(locale, "auth.register_link")}
         </Link>
       </p>

@@ -53,10 +53,10 @@ export default async function PageTutos({ searchParams }: Props) {
           {tutos.map((tuto) => (
             <li
               key={tuto.id}
-              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-accent/60"
+              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60"
             >
               <Link href={`/tutos/${tuto.slug}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-cx-accent">
+                <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">
                   {tuto.titre}
                 </h2>
               </Link>
@@ -70,7 +70,7 @@ export default async function PageTutos({ searchParams }: Props) {
                 {tuto.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
+                    className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
                   >
                     {tag}
                   </li>

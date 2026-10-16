@@ -45,7 +45,7 @@ export default async function PageProjet({ params }: Props) {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
-      <Link href="/projets" className="text-sm text-cx-accent">
+      <Link href="/projets" className="text-sm text-cx-primary">
         <FilAriane
           items={[
             { label: t(locale, "nav.home"), href: "/" },
@@ -84,7 +84,7 @@ export default async function PageProjet({ params }: Props) {
         </div>
         {userId === null && (
           <p className="text-sm text-cx-muted-fg">
-            <Link href="/connexion" className="font-medium text-cx-accent">
+            <Link href="/connexion" className="font-medium text-cx-primary">
               Connectez-vous
             </Link>{" "}
             pour rejoindre ce projet.
@@ -106,7 +106,7 @@ export default async function PageProjet({ params }: Props) {
             {projet.stack.map((technologie) => (
               <li
                 key={technologie}
-                className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-semibold text-cx-accent"
+                className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
               >
                 {technologie}
               </li>
@@ -122,7 +122,7 @@ export default async function PageProjet({ params }: Props) {
             href={projet.lien}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-accent"
+            className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-primary"
           >
             Ouvrir le lien du projet ↗
           </a>

@@ -13,7 +13,7 @@ export default async function PageNouvelleOffre() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-2xl flex-col gap-6 px-6 py-10">
       <header>
-        <Link href="/jobs" className="text-sm text-cx-accent">
+        <Link href="/jobs" className="text-sm text-cx-primary">
           ← Retour aux offres
         </Link>
         <h1 className="mt-2 text-3xl font-black tracking-tight">Publier une offre</h1>

@@ -53,7 +53,7 @@ export default async function PageFavoris() {
               <ul className="mt-3 flex flex-col gap-2">
                 {section.items.map((item) => (
                   <li key={item.id}>
-                    <Link href={item.href} className="block rounded-lg border border-cx-border px-4 py-3 transition hover:border-cx-accent">
+                    <Link href={item.href} className="block rounded-lg border border-cx-border px-4 py-3 transition hover:border-cx-primary">
                       <span className="font-medium">{item.libelle}</span>
                     </Link>
                   </li>

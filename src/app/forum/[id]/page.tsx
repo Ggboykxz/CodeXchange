@@ -87,7 +87,7 @@ export default async function PageSujet({ params }: Props) {
               <li key={mot}>
                 <Link
                   href={`/forum?tag=${encodeURIComponent(mot.trim())}`}
-                  className="rounded-full bg-cx-accent/5 px-2.5 py-0.5 text-xs font-medium text-cx-accent"
+                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-medium text-cx-primary"
                 >
                   {mot.trim()}
                 </Link>

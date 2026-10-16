@@ -84,7 +84,7 @@ export default async function PageForum({ searchParams }: Props) {
               {t(locale, "forum.filter")}
             </button>
             {filtreActif ? (
-              <Link href="/forum" className="px-2 py-2 text-sm font-medium text-cx-accent underline-offset-4 hover:underline">
+              <Link href="/forum" className="px-2 py-2 text-sm font-medium text-cx-primary underline-offset-4 hover:underline">
                 {t(locale, "forum.reset")}
               </Link>
             ) : null}

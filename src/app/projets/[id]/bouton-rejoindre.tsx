@@ -73,7 +73,7 @@ export default function BoutonRejoindre({
           disabled
           aria-disabled="true"
           title="Vous avez déjà rejoint ce projet"
-          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-accent/5 px-4 py-2.5 text-sm font-medium text-cx-accent"
+          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-primary/5 px-4 py-2.5 text-sm font-medium text-cx-primary"
         >
           <IconeAnimee nom="coche" className="mr-1 inline size-3" /> Vous avez rejoint ce projet
         </button>
