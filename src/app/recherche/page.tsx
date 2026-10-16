@@ -97,7 +97,7 @@ export default async function PageRecherche({ searchParams }: Props) {
     <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6">
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-black tracking-tight">{t(locale, "search.title")}</h1>
-        <p className="text-sm text-cx-muted-fg">
+        <p className="text-sm tabular-nums text-cx-muted-fg">
           {t(locale, "search.subtitle")} — {total}
         </p>
         <div className="max-w-md">
@@ -125,7 +125,7 @@ export default async function PageRecherche({ searchParams }: Props) {
                 <div className="flex items-end justify-between">
                   <h2 className="text-xl font-bold tracking-tight">
                     {section.titre}{" "}
-                    <span className="text-sm font-normal text-cx-muted-fg">
+                    <span className="text-sm font-normal tabular-nums text-cx-muted-fg">
                       ({section.items.length})
                     </span>
                   </h2>
@@ -141,7 +141,7 @@ export default async function PageRecherche({ searchParams }: Props) {
                     <li key={item.id}>
                       <Link
                         href={item.href}
-                        className="block px-4 py-3 text-sm hover:bg-cx-muted"
+                        className="block px-4 py-3 text-sm transition hover:bg-cx-muted"
                       >
                         <span className="font-medium">{item.titre}</span>
                         {item.meta ? (

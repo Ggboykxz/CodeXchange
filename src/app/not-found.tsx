@@ -14,15 +14,15 @@ export default async function NotFound() {
       <div className="mt-3 flex flex-wrap justify-center gap-3">
         <Link
           href="/"
-          className="rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium"
+          className="min-h-[44px] rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium transition hover:bg-cx-muted active:scale-[0.97]"
         >
           {t(locale, "common.back_home")}
         </Link>
         <Link
-          href="/annuaire"
-          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          href="/inscription"
+          className="min-h-[44px] rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition active:scale-[0.97]"
         >
-          {t(locale, "nav.directory")}
+          {t(locale, "nav.join")}
         </Link>
       </div>
     </div>

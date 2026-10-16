@@ -27,7 +27,7 @@ export default async function PageTags() {
   const postes = await prisma.post.findMany({ select: { tags: true } });
   const tags = compresserTags(postes);
   return (
-    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-6 px-6 py-10">
       <header>
         <h1 className="text-3xl font-black tracking-tight">{t(locale, "tags.title")}</h1>
       </header>
@@ -37,7 +37,7 @@ export default async function PageTags() {
             <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
               <Link href={`/forum?tag=${encodeURIComponent(tag)}`} className="block transition hover:border-cx-primary/60">
                 <p className="font-semibold">#{tag}</p>
-                <p className="mt-1 text-xs text-cx-muted-fg">
+                <p className="mt-1 text-xs tabular-nums text-cx-muted-fg">
                   {nombre} sujet{nombre > 1 ? "s" : ""}
                 </p>
               </Link>

@@ -45,13 +45,20 @@ export default function BarreRecherche({ suggestions }: Props) {
   const [ouvert, setOuvert] = useState(false);
   const conteneur = useRef<HTMLDivElement>(null);
 
-  // Ferme le panneau au clic extérieur.
+  // Ferme le panneau au clic extérieur ou à Échap.
   useEffect(() => {
     function surClic(e: MouseEvent) {
       if (conteneur.current && !conteneur.current.contains(e.target as Node)) setOuvert(false);
     }
+    function surTouche(e: KeyboardEvent) {
+      if (e.key === "Escape") setOuvert(false);
+    }
     document.addEventListener("mousedown", surClic);
-    return () => document.removeEventListener("mousedown", surClic);
+    document.addEventListener("keydown", surTouche);
+    return () => {
+      document.removeEventListener("mousedown", surClic);
+      document.removeEventListener("keydown", surTouche);
+    };
   }, []);
 
   function memoriser(terme: string) {
@@ -96,13 +103,13 @@ export default function BarreRecherche({ suggestions }: Props) {
       </form>
 
       {listeVisible.length > 0 ? (
-        <ul className="absolute left-0 right-0 top-10 z-40 overflow-hidden rounded-xl border border-cx-border bg-cx-card py-1 shadow-lg">
+        <ul className="absolute left-0 right-0 top-10 z-30 overflow-hidden rounded-xl border border-cx-border bg-cx-card py-1 shadow-lg">
           {listeVisible.map((terme, index) => (
             <li key={`${terme}-${index}`}>
               <button
                 type="button"
                 onClick={() => aller(terme)}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-cx-muted"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition hover:bg-cx-muted"
               >
                 <span aria-hidden="true" className="text-cx-muted-fg">
                   <IconeAnimee nom={index < historique.length ? "horloge" : "ampoule"} className="size-4" />
@@ -119,7 +126,7 @@ export default function BarreRecherche({ suggestions }: Props) {
                   setHistorique([]);
                   ecrireHistorique([]);
                 }}
-                className="w-full px-3 py-2 text-left text-xs text-cx-muted-fg hover:bg-cx-muted"
+                className="w-full px-3 py-2 text-left text-xs text-cx-muted-fg transition hover:bg-cx-muted"
               >
                 {t(locale, "common.cancel")} · {t(locale, "search.title")}
               </button>

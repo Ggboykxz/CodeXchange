@@ -39,7 +39,7 @@ export default async function PageAdmin() {
 
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-4xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-6 px-6 py-10">
       <FilAriane
         items={[
           { label: t(locale, "nav.home"), href: "/" },
@@ -87,7 +87,7 @@ export default async function PageAdmin() {
       </section>
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
-        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">
+        <h2 className="border-b border-cx-border px-5 py-3 font-semibold tabular-nums">
           {t(locale, "admin.reports")} ({signalements.length})
         </h2>
         {signalements.length === 0 ? (
@@ -97,7 +97,7 @@ export default async function PageAdmin() {
             {signalements.map((rep) => (
               <li key={rep.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 text-sm">
                 <div className="min-w-0">
-                  <p className="font-medium">{rep.kind} #{rep.targetId} — {rep.reporter.nom}</p>
+                  <p className="font-medium tabular-nums">{rep.kind} #{rep.targetId} — {rep.reporter.nom}</p>
                   <p className="truncate text-cx-muted-fg">{rep.raison}</p>
                 </div>
                 {rep.statut === "PENDING" ? (
@@ -112,7 +112,7 @@ export default async function PageAdmin() {
       </section>
 
       <section className="rounded-xl border border-cx-border bg-cx-card">
-        <h2 className="border-b border-cx-border px-5 py-3 font-semibold">
+        <h2 className="border-b border-cx-border px-5 py-3 font-semibold tabular-nums">
           {t(locale, "admin.banned")} ({bannis.length})
         </h2>
         {bannis.length === 0 ? (
