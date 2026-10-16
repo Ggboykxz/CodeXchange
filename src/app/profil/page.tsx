@@ -22,6 +22,12 @@ export default async function PageProfil() {
   if (!membre) redirect("/connexion");
   const postsDuMembre = await prisma.post.findMany({ where: { authorId: userId }, select: { id: true } });
   const karma = (await prisma.like.aggregate({ _sum: { valeur: true }, where: { postId: { in: postsDuMembre.map((p) => p.id) } } }))._sum.valeur ?? 0;
+  const [postsCreations, reponsesCrees, reactionsDonnees, favorisSauves] = await Promise.all([
+    prisma.post.count({ where: { authorId: userId } }),
+    prisma.reply.count({ where: { authorId: userId } }),
+    prisma.reaction.count({ where: { userId } }),
+    prisma.favorite.count({ where: { userId } }),
+  ]);
   const locale = await localeCourante();
 
   return (
@@ -66,6 +72,20 @@ export default async function PageProfil() {
         ) : (
           <p className="mt-2 text-cx-muted-fg">{t(locale, "profile.stack_empty")}</p>
         )}
+      </section>
+
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          ["Sujets créés", postsCreations],
+          ["Réponses", reponsesCrees],
+          ["Réactions", reactionsDonnees],
+          ["Favoris", favorisSauves],
+        ].map(([label, valeur]) => (
+          <div key={label} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
+            <p className="text-2xl font-black text-cx-primary tabular-nums">{valeur}</p>
+            <p className="text-xs text-cx-muted-fg">{label}</p>
+          </div>
+        ))}
       </section>
 
       <Link href="/parametres" className="text-sm text-cx-primary">

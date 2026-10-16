@@ -64,6 +64,11 @@ export default async function PageMembre({ params }: Props) {
       })
     )._sum.valeur ?? 0;
 
+  const [nbSujets, nbReponses] = await Promise.all([
+    prisma.post.count({ where: { authorId: membre.id } }),
+    prisma.reply.count({ where: { authorId: membre.id } }),
+  ]);
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/annuaire" className="text-sm text-cx-primary">
@@ -142,6 +147,20 @@ export default async function PageMembre({ params }: Props) {
 
       {visibilite.complet ? (
         <>
+          <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              ["Sujets", nbSujets],
+              ["Réponses", nbReponses],
+              ["Réputation", karmaMembre],
+              ["Favoris", 0],
+            ].map(([label, valeur]) => (
+              <div key={label} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
+                <p className="text-lg font-black text-cx-primary tabular-nums">{valeur}</p>
+                <p className="text-xs text-cx-muted-fg">{label}</p>
+              </div>
+            ))}
+          </section>
+
           <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
             <h2 className="font-semibold">{t(locale, "directory.about")}</h2>
             {membre.bio ? (
