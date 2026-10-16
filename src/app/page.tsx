@@ -4,9 +4,12 @@ import { Button } from "@/components/button";
 import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import VisuelAccueil from "@/components/visuel-accueil";
+import { Icone } from "@/components/icones";
 import Avatar from "@/components/avatar";
+import CarteSujet from "@/components/carte-sujet";
 import CompteurAnime from "@/components/compteur-anime";
 import { topHashtags } from "@/lib/hashtags";
+import { listPosts } from "@/lib/forum";
 
 const ICONES = [
   <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
@@ -32,11 +35,12 @@ export default async function HomePage() {
   const userId = await getSessionUserId();
   const membres = await prisma.user.count();
   const me = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { nom: true, slug: true } }) : null;
-  const [posts, projets, evenements, membresRecents] = await Promise.all([
+  const [posts, projets, evenements, membresRecents, feedReddit] = await Promise.all([
     prisma.post.count(),
     prisma.project.count(),
     prisma.event.count(),
     prisma.user.findMany({ take: 8, orderBy: { createdAt: "desc" }, select: { id: true, nom: true, slug: true, avatar: true } }),
+    listPosts({ page: 1, pageSize: 8, tri: "hot", userId: userId == null ? undefined : userId }),
   ]);
   const [dernieres, prochainEvenement, tendances] = await Promise.all([
     prisma.reply.findMany({
@@ -144,6 +148,54 @@ export default async function HomePage() {
             conversation={dernieres[0] ? { titre: dernieres[0].post.titre, auteur: dernieres[0].author.nom, extrait: dernieres[0].corps } : undefined}
           />
         </div>
+      </section>
+
+      {/* Fils Reddit-way : feed live avec gouttière de vote. */}
+      <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="min-w-0 rounded-2xl border border-cx-border bg-cx-card/60 p-2 backdrop-blur">
+          <div className="mb-2 flex items-center justify-between px-3 py-1">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Dans ton feed
+            </h2>
+            <Link href="/forum" className="text-sm font-semibold text-cx-primary hover:underline">
+              {t(locale, "home.cta_forum")}
+            </Link>
+          </div>
+          <ul className="flex flex-col gap-2">
+            {feedReddit.items.map((sujet) => (
+              <li key={sujet.id}>
+                <CarteSujet sujet={sujet} locale={locale} connecte={userId !== null} />
+              </li>
+            ))}
+          </ul>
+        </div>
+        <aside className="sticky top-24 min-w-0 space-y-4">
+          <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
+            <p className="text-sm font-bold">Communautés tendances</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tendances.map((trend) => (
+                <Link
+                  key={trend.tag}
+                  href={`/forum?tag=${encodeURIComponent(trend.tag)}`}
+                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/10"
+                >
+                  #{trend.tag}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
+            <p className="text-sm font-bold">Créer un sujet</p>
+            <p className="mt-1 text-xs text-cx-muted-fg">Partage un retour, demande de l'aide, trouve des contributeurs.</p>
+            <Link
+              href="/forum/nouveau"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-4 py-2 text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]"
+            >
+              <Icone nom="plus" className="size-4" />
+              Écrire un sujet
+            </Link>
+          </div>
+        </aside>
       </section>
 
       {/* Counts animés. */}
