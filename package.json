@@ -26,7 +26,11 @@
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
+    "@astryxdesign/cli": "^0.4.3",
+    "@astryxdesign/core": "^0.7.1",
+    "@astryxdesign/theme-neutral": "^0.7.1",
     "@prisma/client": "^6.19.3",
+    "@stylexjs/stylex": "^0.19.1",
     "@tailwindcss/postcss": "^4.0.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
