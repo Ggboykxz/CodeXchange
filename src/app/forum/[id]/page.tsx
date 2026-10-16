@@ -8,6 +8,7 @@ import BoutonFavori from "@/components/bouton-favori";
 import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonVote from "@/components/bouton-vote";
 import BarreReactions from "@/components/barre-reactions";
+import LogoTechno, { logoTechno } from "@/components/logo-techno";
 import BoutonRepost from "@/components/bouton-repost";
 import { getEtatRepost } from "@/lib/reposts";
 import BoutonSondage from "./bouton-sondage";
@@ -90,6 +91,7 @@ export default async function PageSujet({ params }: Props) {
                   href={`/forum?tag=${encodeURIComponent(mot.trim())}`}
                   className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-medium text-cx-primary"
                 >
+                  {logoTechno(mot.trim()) && <LogoTechno nom={mot.trim()} className="mr-1 inline-block size-3" />}
                   {mot.trim()}
                 </Link>
               </li>

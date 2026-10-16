@@ -13,6 +13,7 @@ import BoutonSignaler from "@/components/bouton-signaler";
 import BoutonSuivre from "@/components/bouton-suivre";
 import BoutonBloquer from "@/components/bouton-bloquer";
 import { BadgeNiveau, BadgeVerification } from "@/components/badges-membre";
+import LogoTechno from "@/components/logo-techno";
 import { isBlocked } from "@/lib/blocks";
 import { visibiliteProfil } from "@/lib/privacy";
 import { prisma } from "@/lib/db";
@@ -161,8 +162,9 @@ export default async function PageMembre({ params }: Props) {
                 {membre.stack.map((technologie) => (
                   <li
                     key={technologie}
-                    className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
+                    className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
                   >
+                    <LogoTechno nom={technologie} className="size-3.5" />
                     {technologie}
                   </li>
                 ))}

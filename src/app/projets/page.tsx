@@ -3,6 +3,7 @@ import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
 import { listProjects } from "@/lib/projects";
+import LogoTechno from "@/components/logo-techno";
 
 export const metadata = { title: "Projets" };
 
@@ -22,7 +23,8 @@ type Props = {
 /** Badge stack : une pastille par technologie du projet. */
 function BadgeStack({ technologie }: { technologie: string }) {
   return (
-    <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
+    <span className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
+      <LogoTechno nom={technologie} className="size-3.5" />
       {technologie}
     </span>
   );

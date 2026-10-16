@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Avatar from "@/components/avatar";
+import LogoTechno from "@/components/logo-techno";
 import { drapeau } from "@/lib/drapeaux";
 import { getSessionUserId } from "@/lib/session";
 import { prisma } from "@/lib/db";
@@ -50,7 +51,21 @@ export default async function PageProfil() {
 
       <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.stack")}</h2>
-        <p className="mt-2 text-cx-muted-fg">{membre.stack || t(locale, "profile.stack_empty")}</p>
+        {membre.stack.trim() ? (
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {membre.stack.split(",").map((tech) => tech.trim()).filter(Boolean).map((tech) => (
+              <li
+                key={tech}
+                className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
+              >
+                <LogoTechno nom={tech} className="size-3.5" />
+                {tech}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-2 text-cx-muted-fg">{t(locale, "profile.stack_empty")}</p>
+        )}
       </section>
 
       <Link href="/parametres" className="text-sm text-cx-primary">

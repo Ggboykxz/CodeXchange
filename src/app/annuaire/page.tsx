@@ -5,6 +5,7 @@ import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
 import { listCountries, listMembers, type MembreResume } from "@/lib/members";
+import LogoTechno from "@/components/logo-techno";
 import { cn } from "@/lib/cn";
 
 export const metadata = { title: "Annuaire" };
@@ -22,7 +23,8 @@ type Props = {
 /** Badge stack : une pastille par technologie (3 max sur les cartes). */
 function BadgeStack({ technologie }: { technologie: string }) {
   return (
-    <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
+    <span className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
+      <LogoTechno nom={technologie} className="size-3.5" />
       {technologie}
     </span>
   );

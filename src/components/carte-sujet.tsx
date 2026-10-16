@@ -2,6 +2,7 @@ import Link from "next/link";
 import BoutonVote from "@/components/bouton-vote";
 import BoutonPartager from "@/components/bouton-partager";
 import { Icone } from "@/components/icones";
+import LogoTechno, { logoTechno } from "@/components/logo-techno";
 import type { PostResume } from "@/lib/forum";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
@@ -86,6 +87,7 @@ export default function CarteSujet({
                   href={`/forum?tag=${encodeURIComponent(mot)}`}
                   className="rounded-full bg-cx-primary/5 px-2 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/20"
                 >
+                  {logoTechno(mot) && <LogoTechno nom={mot} className="mr-1 inline-block size-3" />}
                   {mot}
                 </Link>
               </li>

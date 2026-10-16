@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Avatar from "@/components/avatar";
+import LogoTechno from "@/components/logo-techno";
 import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
@@ -37,8 +38,9 @@ function CarteMentor({ mentor }: { mentor: MentorResume }) {
               {mentor.stack.map((technologie) => (
                 <li
                   key={technologie}
-                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
+                  className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
                 >
+                  <LogoTechno nom={technologie} className="size-3.5" />
                   {technologie}
                 </li>
               ))}

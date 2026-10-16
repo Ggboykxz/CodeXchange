@@ -8,6 +8,7 @@ import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import BoutonRejoindre from "./bouton-rejoindre";
 import BoutonFavori from "@/components/bouton-favori";
+import LogoTechno from "@/components/logo-techno";
 import FilAriane from "@/components/fil-ariane";
 
 type Props = { params: Promise<{ id: string }> };
@@ -106,8 +107,9 @@ export default async function PageProjet({ params }: Props) {
             {projet.stack.map((technologie) => (
               <li
                 key={technologie}
-                className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
+                className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
               >
+                <LogoTechno nom={technologie} className="size-3.5" />
                 {technologie}
               </li>
             ))}
