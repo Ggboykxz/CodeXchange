@@ -26,9 +26,5 @@ export default function PastilleNonLues({ initial }: { initial: number }) {
   }, []);
 
   if (compte <= 0) return null;
-  return (
-    <span className="ml-1 rounded-full bg-cx-accent px-1.5 py-0.5 text-[11px] font-bold text-cx-accent-fg">
-      {compte}
-    </span>
-  );
+  return <span key={compte} className="ml-1 rounded-full bg-cx-accent px-1.5 py-0.5 text-[11px] font-bold text-cx-accent-fg animate-count-pop">{compte}</span>;
 }
