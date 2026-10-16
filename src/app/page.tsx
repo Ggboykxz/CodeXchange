@@ -6,6 +6,7 @@ import { getSessionUserId } from "@/lib/session";
 import VisuelAccueil from "@/components/visuel-accueil";
 import Avatar from "@/components/avatar";
 import CompteurAnime from "@/components/compteur-anime";
+import { topHashtags } from "@/lib/hashtags";
 
 const ICONES = [
   <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
@@ -31,13 +32,27 @@ export default async function HomePage() {
   const userId = await getSessionUserId();
   const membres = await prisma.user.count();
   const me = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { nom: true, slug: true } }) : null;
-  const [posts, projets, evenements, tachesMembres] = await Promise.all([
+  const [posts, projets, evenements, membresRecents] = await Promise.all([
     prisma.post.count(),
     prisma.project.count(),
     prisma.event.count(),
-    prisma.user.findMany({ take: 8, orderBy: { createdAt: "desc" }, select: { id: true, nom: true, slug: true, avatar: true } as any }),
+    prisma.user.findMany({ take: 8, orderBy: { createdAt: "desc" }, select: { id: true, nom: true, slug: true, avatar: true } }),
   ]);
-  const membresRecents = (tachesMembres as any[]) ?? [];
+  const [dernieres, prochainEvenement, tendances] = await Promise.all([
+    prisma.reply.findMany({
+      take: 4,
+      orderBy: { createdAt: "desc" },
+      include: {
+        author: { select: { nom: true, slug: true } },
+        post: { select: { id: true, titre: true } },
+      },
+    }),
+    prisma.event.findFirst({
+      where: { date: { gte: new Date() } },
+      orderBy: { date: "asc" },
+    }),
+    topHashtags(6),
+  ]);
 
   let sujetsPourToi: { id: number; titre: string; tags: string }[] = [];
   if (userId !== null) {
@@ -104,7 +119,7 @@ export default async function HomePage() {
             {membresRecents.length > 0 ? (
               <div className="mt-6 flex items-center gap-3">
                 <div className="flex -space-x-2">
-                  {membresRecents.map((m: any) => (
+                  {membresRecents.map((m) => (
                     <Link key={m.id} href={`/membres/${m.slug}`} className="ring-2 ring-cx-bg">
                       <Avatar slug={m.slug} nom={m.nom} avatar={m.avatar ?? undefined} />
                     </Link>
@@ -120,7 +135,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Counts animés */}
+      {/* Counts animés. */}
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
           ["Membres", membres],
@@ -128,7 +143,7 @@ export default async function HomePage() {
           ["Projets", projets],
           ["Événements", evenements],
         ].map(([label, valeur]) => (
-          <div key={label as string} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
+          <div key={label} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
             <p className="text-2xl font-black text-cx-primary tabular-nums">
               <CompteurAnime value={valeur as number} />
             </p>
@@ -136,6 +151,8 @@ export default async function HomePage() {
           </div>
         ))}
       </section>
+
+      {/* Sections */}
       <section className="mt-6">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t(locale, "home.sections_title")}
@@ -213,6 +230,69 @@ export default async function HomePage() {
           </ul>
         </section>
       ) : null}
+
+      {/* Activité de la communauté : conversations + tendances + événement. */}
+      <section className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-5">
+          <h2 className="text-xl font-bold tracking-tight">
+            Conversations récentes
+          </h2>
+          <p className="mt-1 text-sm text-cx-muted-fg">
+            Pose tes questions, partage tes retours.
+          </p>
+          <ul className="mt-3 divide-y divide-cx-border">
+            {dernieres.map((r) => (
+              <li key={r.id} className="py-2">
+                <Link href={`/forum/${r.post.id}`} className="group block">
+                  <p className="truncate text-sm font-medium group-hover:text-cx-primary">
+                    {r.post.titre}
+                  </p>
+                  <p className="truncate text-xs text-cx-muted-fg">
+                    ↳ {r.author.nom} · {new Date(r.createdAt).toLocaleDateString("fr-FR")}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {prochainEvenement && (
+            <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
+                Prochain événement
+              </p>
+              <p className="mt-1 text-base font-bold">{prochainEvenement.titre}</p>
+              <p className="mt-1 text-xs text-cx-muted-fg">
+                {prochainEvenement.format} · {prochainEvenement.date.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}{prochainEvenement.ville ? " · " + prochainEvenement.ville : ""}
+              </p>
+              <a
+                href={prochainEvenement.lien || `/evenements/${prochainEvenement.id}`}
+                className="mt-3 inline-block text-xs font-semibold text-cx-primary hover:underline"
+              >
+                Voir les détails →
+              </a>
+            </div>
+          )}
+
+          <div className="rounded-xl border border-cx-border bg-cx-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
+              Tendances de la communauté
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tendances.map((trend) => (
+                <Link
+                  key={trend.tag}
+                  href={`/forum?tag=${encodeURIComponent(trend.tag)}`}
+                  className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/10"
+                >
+                  #{trend.tag} <span className="tabular-nums text-cx-muted-fg">({trend.count})</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="mx-auto mt-16 max-w-3xl rounded-xl border border-cx-border bg-cx-card px-6 py-12 text-center">
