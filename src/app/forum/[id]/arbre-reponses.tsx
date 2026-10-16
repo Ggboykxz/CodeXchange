@@ -50,6 +50,7 @@ export default function ArbreReponses({ replies, postId, userId, likesReponses, 
 
 function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Reponse; replies: Reponse[]; postId: number; userId: number | null; likes: Set<number>; connecte: boolean }) {
   const [afficherFormulaire, setAfficherFormulaire] = useState(false);
+  const [afficheEnfants, setAfficheEnfants] = useState(true);
 
   const estAuteur = userId !== null && reply.author.id === userId;
   const enfants = replies.filter((r) => r.parentId === reply.id);
@@ -97,8 +98,23 @@ function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Rep
         <FormulaireReponse postId={postId} parentId={reply.id} />
       ) : null}
       {enfants.length > 0 ? (
-        <div className="mt-3 border-l-2 border-cx-border pl-3 sm:pl-4">
-          <ArbreReponses replies={enfants} postId={postId} userId={userId} likesReponses={[...likes]} connecte={connecte} />
+        <div className="mt-3">
+          {enfants.length > 1 ? (
+            <button
+              type="button"
+              onClick={() => setAfficheEnfants((v) => !v)}
+              aria-expanded={afficheEnfants}
+              aria-controls={`reponses-${reply.id}`}
+              className="rounded-md px-2 py-1 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+            >
+              {afficheEnfants ? `▾ Masquer ${enfants.length} réponses` : `▸ Afficher ${enfants.length} réponses`}
+            </button>
+          ) : null}
+          {afficheEnfants ? (
+            <div id={`reponses-${reply.id}`} className="mt-2 ml-3 border-l-2 border-cx-border pl-3 sm:pl-4">
+              <ArbreReponses replies={enfants} postId={postId} userId={userId} likesReponses={[...likes]} connecte={connecte} />
+            </div>
+          ) : null}
         </div>
       ) : null}
     </li>
