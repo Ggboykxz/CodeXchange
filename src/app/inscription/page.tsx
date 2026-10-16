@@ -155,7 +155,7 @@ export default function PageInscription() {
           <ErreurChamp id="password" message={erreurs.password} actif={Boolean(touches.password)} />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="ville" className="mb-1 block text-sm font-medium">
               {t(locale, "auth.city")}
