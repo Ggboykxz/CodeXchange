@@ -25,6 +25,8 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
   const [etat, setEtat] = useState<ReactionCounts>(initial);
   const [enCours, demarrer] = useTransition();
   const [erreur, setErreur] = useState<string | null>(null);
+  const [burst, setBurst] = useState(0);
+  const [burstEmoji, setBurstEmoji] = useState<string | null>(null);
 
   function choisir(emoji: string) {
     if (!connecte) {
@@ -33,6 +35,10 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
     }
     const precedent = etat;
     setErreur(null);
+    // Rebond visuel.
+    setBurst((b) => b + 1);
+    setBurstEmoji(emoji);
+    window.setTimeout(() => setBurstEmoji(null), 650);
     // Mise à jour optimiste immédiate.
     setEtat((e) => {
       const totaux = { ...e.totaux };
@@ -91,7 +97,7 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
             aria-pressed={actif}
             aria-label={`${r.label}${n > 0 ? `, ${n}` : ""}`}
             title={r.label}
-            className={`group inline-flex items-center gap-1.5 rounded-full border ${taille} font-medium transition duration-150 ease-out disabled:opacity-60 ${
+            className={`group relative inline-flex items-center gap-1.5 rounded-full border ${taille} font-medium transition duration-150 ease-out disabled:opacity-60 ${
               actif
                 ? "border-cx-primary bg-cx-primary/[.08] text-cx-primary shadow-sm ring-2 ring-cx-primary/25 scale-[1.04]"
                 : "border-cx-border bg-cx-card/50 hover:border-cx-primary/60 hover:bg-cx-muted hover:-translate-y-0.5 hover:shadow-sm active:scale-[0.97]"
@@ -102,6 +108,25 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
             }`} aria-hidden>
               {r.emoji}
             </span>
+            {burstEmoji === r.emoji ? (
+              <span className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
+                {Array.from({ length: 6 }, (_, i) => {
+                  const angle = (i / 6) * Math.PI * 2;
+                  const dist = 18;
+                  const x = Math.round(Math.cos(angle) * dist);
+                  const y = Math.round(Math.sin(angle) * dist);
+                  return (
+                    <span
+                      key={`p-${burst}-${i}`}
+                      style={{ "--bx": `${x}px`, "--by": `${y}px` } as React.CSSProperties}
+                      className="absolute left-1/2 top-1/2 text-xs animate-react-burst opacity-0"
+                    >
+                      {r.emoji}
+                    </span>
+                  );
+                })}
+              </span>
+            ) : null}
             {n > 0 ? (
               <span key={n} className={`min-w-[1ch] tabular-nums transition-colors duration-150 ${
                 actif ? "text-cx-primary animate-count-pop" : "text-cx-muted-fg"
