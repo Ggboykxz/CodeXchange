@@ -90,17 +90,24 @@ export default async function HomePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Hero : deux colonnes dès `lg` (texte à gauche, visuel à droite). */}
-      <section className="py-12 sm:py-20">
+      <section
+        className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950 px-6 py-12 text-white shadow-xl sm:px-10 sm:py-20"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 18% 18%, rgba(255,255,255,.12) 1px, transparent 1px), radial-gradient(circle at 82% 74%, rgba(255,255,255,.10) 1px, transparent 1px)",
+          backgroundSize: "24px 24px, 32px 32px",
+        }}
+      >
         <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
           <div className="text-center lg:text-left">
-            <p className="inline-flex rounded-full border border-cx-border bg-cx-card px-3 py-1 text-xs font-semibold text-cx-muted-fg">
+            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">
               {me ? `👋 ${me.nom}` : t(locale, "home.badge")}
             </p>
-            <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="mt-6 text-balance text-4xl font-extrabold tracking-tighter text-white sm:text-6xl">
               {t(locale, "home.hero_prefix")}{" "}
-              <span className="text-cx-primary">{t(locale, "home.hero_highlight")}</span>
+              <span className="text-orange-400">{t(locale, "home.hero_highlight")}</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-cx-muted-fg lg:mx-0">
+            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-slate-300 lg:mx-0">
               {t(locale, "home.hero_sub")}
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
