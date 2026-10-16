@@ -91,7 +91,7 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
             aria-pressed={actif}
             aria-label={`${r.label}${n > 0 ? `, ${n}` : ""}`}
             title={r.label}
-            className={`group inline-flex items-center gap-1.5 rounded-full border ${taille} font-medium transition-all duration-200 disabled:opacity-60 ${
+            className={`group inline-flex items-center gap-1.5 rounded-full border ${taille} font-medium transition duration-150 ease-out disabled:opacity-60 ${
               actif
                 ? "border-cx-primary bg-cx-primary/[.08] text-cx-primary shadow-sm ring-2 ring-cx-primary/25 scale-[1.04]"
                 : "border-cx-border bg-cx-card/50 hover:border-cx-primary/60 hover:bg-cx-muted hover:-translate-y-0.5 hover:shadow-sm active:scale-[0.97]"
