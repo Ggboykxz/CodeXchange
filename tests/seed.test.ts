@@ -59,6 +59,32 @@ test(
     const mentorsList = await prisma.user.findMany({ where: { role: "MENTOR" } });
     expect(mentorsList.length).toBe(6);
 
+    // Aucune page vide à la démo : messagerie, notifications, favoris peuplés.
+    expect(res.messages).toBeGreaterThanOrEqual(8);
+    expect(res.notifications).toBeGreaterThanOrEqual(4);
+    expect(res.favoris).toBeGreaterThanOrEqual(6);
+    expect(res.mentorRequests).toBeGreaterThanOrEqual(2);
+
+    const admin = await prisma.user.findUniqueOrThrow({ where: { email: "admin@cx.test" } });
+    const nonLus = await prisma.message.count({ where: { recipientId: admin.id, isRead: false } });
+    expect(nonLus).toBeGreaterThanOrEqual(1); // badge messagerie visible
+    const nonLues = await prisma.notification.count({ where: { userId: admin.id, isRead: false } });
+    expect(nonLues).toBeGreaterThanOrEqual(1); // badge notifications visible
+    const favorisAdmin = await prisma.favorite.findMany({ where: { userId: admin.id }, select: { kind: true } });
+    expect(new Set(favorisAdmin.map((f) => f.kind))).toEqual(
+      new Set(["post", "job", "projet", "tuto", "event", "membre"]),
+    );
+    // Le compte de démo a signé une réponse : le dialogue « Supprimer » est démontrable.
+    const reponsesAdmin = await prisma.reply.count({ where: { authorId: admin.id } });
+    expect(reponsesAdmin).toBeGreaterThanOrEqual(1);
+    // Le premier sujet a un fil vivant (réponse admin + réponse variée + générique).
+    const premierSujet = await prisma.post.findFirstOrThrow({ orderBy: { id: "asc" } });
+    const reponsesPremier = await prisma.reply.count({ where: { postId: premierSujet.id } });
+    expect(reponsesPremier).toBeGreaterThanOrEqual(3);
+    // Le fil contient une réponse imbriquée (arbre à 2 niveaux démontrable).
+    const imbriquees = await prisma.reply.count({ where: { parentId: { not: null } } });
+    expect(imbriquees).toBeGreaterThanOrEqual(1);
+
     // rebuild reproducibility: relancer seed, les counts sont identiques.
     const r2 = await runSeed(prisma);
     expect(r2.users).toBe(31);

@@ -1,10 +1,15 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import {
+  demandesDemo,
   evenementsDemo,
+  favorisDemo,
   membresDemo,
+  messagesDemo,
+  notificationsDemo,
   offresDemo,
   projetsDemo,
+  reponsesDemo,
   sujetsDemo,
   tutosDemo,
   type SeedMember,
@@ -23,6 +28,10 @@ export type SeedResult = {
   events: number;
   tutorials: number;
   mentors: number;
+  messages: number;
+  notifications: number;
+  favoris: number;
+  mentorRequests: number;
 };
 
 function addDays(d: Date, n: number): Date {
@@ -40,6 +49,9 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
   await db.application.deleteMany();
   await db.projectMember.deleteMany();
   await db.mentorRequest?.deleteMany?.().catch(() => {});
+  await db.message.deleteMany();
+  await db.notification.deleteMany();
+  await db.favorite.deleteMany();
   await db.session.deleteMany();
   await db.post.deleteMany();
   await db.job.deleteMany();
@@ -240,6 +252,96 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
 
   const mentors = membresDemo.filter((m) => m.role === "MENTOR").length;
 
+  // --- réponses variées (au-delà du « Merci » générique) ---
+  const baseReponses = reponsesCreees.length;
+  for (let i = 0; i < reponsesDemo.length; i++) {
+    const rep = reponsesDemo[i]!;
+    const sujet = posts[rep.sujetIndex];
+    const auteur = users[rep.auteurIndex];
+    if (!sujet || !auteur) continue;
+    // `repondA` : index (dans reponsesDemo) de la réponse parente pour un fil imbriqué.
+    const parentId = rep.repondA !== undefined ? reponsesCreees[baseReponses + rep.repondA]?.id : undefined;
+    const r = await db.reply.create({
+      data: { corps: rep.corps, postId: sujet.id, authorId: auteur.id, parentId },
+    });
+    reponsesCreees.push({ id: r.id, postId: sujet.id, authorId: auteur.id });
+    replies += 1;
+  }
+
+  // --- demandes de mentorat ---
+  const parEmail = (email: string) => users.find((u) => u.email === email);
+  let mentorRequests = 0;
+  for (const d of demandesDemo) {
+    const demandeur = parEmail(d.demandeur);
+    const mentor = parEmail(d.mentor);
+    if (!demandeur || !mentor) continue;
+    await db.mentorRequest
+      .create({ data: { mentorId: mentor.id, requesterId: demandeur.id, message: d.message } })
+      .then(() => { mentorRequests += 1; })
+      .catch(() => {});
+  }
+
+  // --- messagerie : fils de discussion du compte de démo (et d'autres membres) ---
+  let messages = 0;
+  for (const m of messagesDemo) {
+    const de = parEmail(m.de);
+    const vers = parEmail(m.vers);
+    if (!de || !vers) continue;
+    await db.message.create({
+      data: {
+        senderId: de.id,
+        recipientId: vers.id,
+        corps: m.corps,
+        isRead: m.lu,
+        createdAt: addDays(now, m.jours),
+      },
+    });
+    messages += 1;
+  }
+
+  // --- notifications (2 non lues, réparties sur aujourd'hui / semaine / plus ancien) ---
+  const liens: Record<string, string> = {
+    "@sujet0": `/forum/${posts[0]!.id}`,
+    "@job0": `/jobs/${jobs[0]!.id}`,
+    "@mentorat": "/mentorat",
+  };
+  let notifications = 0;
+  for (const n of notificationsDemo) {
+    const destinataire = parEmail(n.destinataire);
+    if (!destinataire) continue;
+    await db.notification.create({
+      data: {
+        userId: destinataire.id,
+        type: n.type,
+        text: n.text,
+        lien: liens[n.lien] ?? n.lien,
+        isRead: n.lue,
+        createdAt: addDays(now, n.jours),
+      },
+    });
+    notifications += 1;
+  }
+
+  // --- favoris (un de chaque type pour le compte de démo) ---
+  const ciblesFavoris: Record<string, number[]> = {
+    post: posts.map((p) => p.id),
+    job: jobs.map((j) => j.id),
+    projet: projects.map((p) => p.id),
+    tuto: tutorials.map((t) => t.id),
+    event: events.map((e) => e.id),
+    membre: users.map((u) => u.id),
+  };
+  let favoris = 0;
+  for (const f of favorisDemo) {
+    const proprietaire = parEmail(f.utilisateur);
+    const targetId = ciblesFavoris[f.kind]?.[f.cibleIndex];
+    if (!proprietaire || targetId === undefined) continue;
+    await db.favorite
+      .create({ data: { userId: proprietaire.id, kind: f.kind, targetId } })
+      .then(() => { favoris += 1; })
+      .catch(() => {});
+  }
+
   return {
     users: users.length,
     posts: posts.length,
@@ -251,5 +353,9 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
     events: events.length,
     tutorials: tutorials.length,
     mentors,
+    messages,
+    notifications,
+    favoris,
+    mentorRequests,
   };
 }

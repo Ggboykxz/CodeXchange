@@ -144,3 +144,73 @@ export const tutosDemo: SeedTuto[] = [
   { slug: "markdown-editeur-dev", titre: "Écrire du markdown secure et accessible", resume: "Échapper avant de parser, rien d'autre.", tags: ["markdown", "security"], dureeMin: 4, corps: "Trois règles :\n1. Échapper `&`, `<`, `>` en premier\n2. Limiter les liens à `http(s)://`\n3. `dangerouslySetInnerHTML` uniquement sur la sortie escape+parsing" },
   { slug: "plan-hackathon-12-jours", titre: "Plan de hackathon en 12 jours", resume: "Ordre, priorités, préservation de l'essentiel.", tags: ["hackathon", "productivite"], dureeMin: 15, corps: "# Le plan\n\n- J1 : spec + squelette + auth + DB\n- J2–3 : forum + annuaire\n- J4–5 : jobs + projets\n- J6 : événements + tutos + mentorat\n- J7–8 : design system\n- J9 : déploiement\n- J10–11 : polish, perf, accessibilité\n- J12 : pitch, vidéo de secours\n- J13 : **démo**" },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Messages, notifications, favoris et réponses variées : garantit     */
+/* qu'aucune page (messagerie, notifications, favoris, forum) n'est    */
+/* vide à la démo. Les liens utilisent des index résolus au moment du  */
+/* seed (voir src/lib/seed.ts).                                        */
+/* ------------------------------------------------------------------ */
+
+/** Réponse supplémentaire : `sujetIndex` = index dans `sujetsDemo`. */
+export type SeedReponse = { sujetIndex: number; auteurIndex: number; corps: string; repondA?: number };
+
+export const reponsesDemo: SeedReponse[] = [
+  { sujetIndex: 0, auteurIndex: 1, corps: "J'ai eu exactement la même erreur après la mise à jour. Chez moi c'était le `keystore` re-signé avec un JKS vide : `keytool -list -v -keystore upload-keystore.jks` montrait un alias en double. Supprime le JKS et régénère-le, puis réattache-le dans les secrets CI." },
+  { sujetIndex: 0, auteurIndex: 0, corps: "Petit up : après vérification, l'erreur venait bien d'un alias dupliqué. Merci Kossi, ça débloque la release de l'app." },
+  { sujetIndex: 0, auteurIndex: 0, repondA: 0, corps: "Merci Kossi ! Le `keytool -list` a confirmé l'alias en double. J'ai régénéré le JKS et le `.aab` se signe à nouveau. Je lance la release ce soir." },
+  { sujetIndex: 3, auteurIndex: 13, corps: "Le cold start vient du pool : en serverless chaque instance ouvre sa propre connexion. Chez nous on est passés par un `globalThis.__prisma` + `connection_limit=1` dans l'URL, et le p95 est descendu sous 800 ms. Si tu peux, ajoute aussi `prisma.$connect()` dans une route /health pingée par uptime." },
+  { sujetIndex: 4, auteurIndex: 16, corps: "On fait tourner du SQLite + une queue de sync en production sur ce type d'app. Le point clé : une table `outbox` avec `updatedAt` monodirectionnel, et la résolution de conflits par « dernière écriture locale gagne ». Realm est très bien mais lourd pour des agents administratifs, SQLite suffit largement." },
+  { sujetIndex: 9, auteurIndex: 24, corps: "Sur Laravel, le `OPTIONS` passe souvent par le routeur alors que le `GET` échoue si le middleware CORS est enregistré APRÈS `VerifyCsrfToken`. Vérifie l'ordre dans `Kernel.php` et pense à `supports_credentials` si tu envoies des cookies. Sinon `php artisan route:list --middleware=cors` t'aide à voir la pile réelle." },
+  { sujetIndex: 11, auteurIndex: 27, corps: "On a lancé notre SaaS depuis Kigali exactement comme ça : 3 clients pilotes recrutés dans un groupe WhatsApp métier, facture locale, paiement mobile money. Ce qui a marché : montrer un prototype cliquable avant d'écrire la moitié du produit. Et l'incubateur local a fourni le premier mentor commercial." },
+];
+
+/** Demande de mentorat : identifiants par e-mail. */
+export type SeedDemande = { demandeur: string; mentor: string; message: string };
+
+export const demandesDemo: SeedDemande[] = [
+  { demandeur: "admin@cx.test", mentor: "fatou.ndiaye@cx.test", message: "Salut Fatou, j'aimerais un accompagnement de 3 semaines pour structurer le pilotage de la plateforme (tableaux de bord, métriques clés). Tu aurais un créneau ?" },
+  { demandeur: "admin@cx.test", mentor: "yaye.soumare@cx.test", message: "Bonjour Yaye, besoin d'un oeil senior sur notre architecture Next.js + Prisma avant la mise en prod. 2 séances nous suffiraient." },
+  { demandeur: "boris.mendogo@cx.test", mentor: "aicha.ondo@cx.test", message: "Aïcha, j'aimerais revoir l'accessibilité de notre back-office : audit rapide + priorités d'action." },
+];
+
+/** Message privé : identifiants par e-mail, `jours` = décalage en jours. */
+export type SeedMessage = { de: string; vers: string; corps: string; jours: number; lu: boolean };
+
+export const messagesDemo: SeedMessage[] = [
+  { de: "aicha.ondo@cx.test", vers: "admin@cx.test", corps: "Salut ! J'ai vu ton sujet sur Android 14 — tu as essayé de régénérer le keystore ?", jours: -4, lu: true },
+  { de: "admin@cx.test", vers: "aicha.ondo@cx.test", corps: "Oui, sans succès. Je soupçonne un souci d'encodage du mot de passe.", jours: -4, lu: true },
+  { de: "aicha.ondo@cx.test", vers: "admin@cx.test", corps: "Envoie-moi le `keytool -list`, je regarde ce soir.", jours: -3, lu: true },
+  { de: "admin@cx.test", vers: "aicha.ondo@cx.test", corps: "Merci beaucoup ! Je te partage ça juste après le standup.", jours: -3, lu: true },
+  { de: "boris.mendogo@cx.test", vers: "admin@cx.test", corps: "Mon retour d'expérience NestJS est presque prêt, je t'envoie le doc demain matin.", jours: -1, lu: false },
+  { de: "kwame.agyeman@cx.test", vers: "admin@cx.test", corps: "Tu prépares le pitch du hackathon ? Je peux t'aider sur la partie démo live si tu veux.", jours: -1, lu: false },
+  { de: "fatou.ndiaye@cx.test", vers: "admin@cx.test", corps: "Les jeux de données pour le meet-up sont prêts, le lien du dashboard arrive.", jours: 0, lu: true },
+  { de: "admin@cx.test", vers: "fatou.ndiaye@cx.test", corps: "Top, merci Fatou ! On en discute à la prochaine visio mentorat.", jours: 0, lu: true },
+  { de: "boris.mendogo@cx.test", vers: "fatou.ndiaye@cx.test", corps: "Tu aurais 20 minutes cette semaine pour relire mon schéma de base ?", jours: -2, lu: false },
+  { de: "fatou.ndiaye@cx.test", vers: "boris.mendogo@cx.test", corps: "Vendredi 15 h, ça te va ? Je prépare deux ou trois requêtes à optimiser en direct.", jours: -1, lu: true },
+];
+
+/** Notification : `lien` résolu à la volée si préfixé par `@` (voir seed.ts). */
+export type SeedNotification = { destinataire: string; type: string; text: string; lien: string; jours: number; lue: boolean };
+
+export const notificationsDemo: SeedNotification[] = [
+  { destinataire: "admin@cx.test", type: "reponse", text: "Kossi Aho a répondu à ton sujet « Bug Flutter Android 14 : imposible de signer le .aab ».", lien: "@sujet0", jours: 0, lue: false },
+  { destinataire: "admin@cx.test", type: "message", text: "Boris Mendogo t'a envoyé un message privé.", lien: "/messagerie", jours: 0, lue: false },
+  { destinataire: "admin@cx.test", type: "reaction", text: "Aïcha Ondo ❤️ a réagi à ton sujet sur Flutter.", lien: "@sujet0", jours: -2, lue: true },
+  { destinataire: "admin@cx.test", type: "mentorat", text: "Fatou Ndiaye a répondu à ta demande de mentorat « pilotage de données ».", lien: "@mentorat", jours: -3, lue: true },
+  { destinataire: "admin@cx.test", type: "favoris", text: "L'offre « Développeur Flutter junior » chez MboupTech correspond à tes favoris.", lien: "@job0", jours: -9, lue: true },
+];
+
+/** Favori : `kind` et `cibleIndex` = index dans la liste correspondante. */
+export type SeedFavori = { utilisateur: string; kind: "post" | "job" | "projet" | "tuto" | "event" | "membre"; cibleIndex: number };
+
+export const favorisDemo: SeedFavori[] = [
+  { utilisateur: "admin@cx.test", kind: "post", cibleIndex: 0 },
+  { utilisateur: "admin@cx.test", kind: "job", cibleIndex: 0 },
+  { utilisateur: "admin@cx.test", kind: "projet", cibleIndex: 2 },
+  { utilisateur: "admin@cx.test", kind: "tuto", cibleIndex: 0 },
+  { utilisateur: "admin@cx.test", kind: "event", cibleIndex: 1 },
+  { utilisateur: "admin@cx.test", kind: "membre", cibleIndex: 4 }, // Fatou Ndiaye (MENTOR)
+  { utilisateur: "fatou.ndiaye@cx.test", kind: "post", cibleIndex: 3 },
+  { utilisateur: "fatou.ndiaye@cx.test", kind: "tuto", cibleIndex: 4 },
+];
