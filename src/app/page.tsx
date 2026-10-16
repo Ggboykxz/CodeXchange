@@ -4,6 +4,8 @@ import { Button } from "@/components/button";
 import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import VisuelAccueil from "@/components/visuel-accueil";
+import Avatar from "@/components/avatar";
+import CompteurAnime from "@/components/compteur-anime";
 
 const ICONES = [
   <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
@@ -28,6 +30,14 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const userId = await getSessionUserId();
   const membres = await prisma.user.count();
+  const me = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { nom: true, slug: true } }) : null;
+  const [posts, projets, evenements, tachesMembres] = await Promise.all([
+    prisma.post.count(),
+    prisma.project.count(),
+    prisma.event.count(),
+    prisma.user.findMany({ take: 8, orderBy: { createdAt: "desc" }, select: { id: true, nom: true, slug: true, avatar: true } as any }),
+  ]);
+  const membresRecents = (tachesMembres as any[]) ?? [];
 
   let sujetsPourToi: { id: number; titre: string; tags: string }[] = [];
   if (userId !== null) {
@@ -69,7 +79,7 @@ export default async function HomePage() {
         <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
           <div className="text-center lg:text-left">
             <p className="inline-flex rounded-full border border-cx-border bg-cx-card px-3 py-1 text-xs font-semibold text-cx-muted-fg">
-              {t(locale, "home.badge")}
+              {me ? `👋 ${me.nom}` : t(locale, "home.badge")}
             </p>
             <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-6xl">
               {t(locale, "home.hero_prefix")}{" "}
@@ -90,12 +100,42 @@ export default async function HomePage() {
             <p className="mt-6 text-sm tabular-nums text-cx-muted-fg">
               {membres} {t(locale, "home.stats")}
             </p>
+            {/* Preuve sociale : avatars récents. */}
+            {membresRecents.length > 0 ? (
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {membresRecents.map((m: any) => (
+                    <Link key={m.id} href={`/membres/${m.slug}`} className="ring-2 ring-cx-bg">
+                      <Avatar slug={m.slug} nom={m.nom} avatar={m.avatar ?? undefined} />
+                    </Link>
+                  ))}
+                </div>
+                <p className="text-sm text-cx-muted-fg">
+                  +{Math.max(0, membres - membresRecents.length)} {t(locale, "home.stats_join")}
+                </p>
+              </div>
+            ) : null}
           </div>
           <VisuelAccueil />
         </div>
       </section>
 
-      {/* Sections */}
+      {/* Counts animés */}
+      <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          ["Membres", membres],
+          ["Sujets", posts],
+          ["Projets", projets],
+          ["Événements", evenements],
+        ].map(([label, valeur]) => (
+          <div key={label as string} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
+            <p className="text-2xl font-black text-cx-primary tabular-nums">
+              <CompteurAnime value={valeur as number} />
+            </p>
+            <p className="text-xs text-cx-muted-fg">{label}</p>
+          </div>
+        ))}
+      </section>
       <section className="mt-6">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t(locale, "home.sections_title")}
