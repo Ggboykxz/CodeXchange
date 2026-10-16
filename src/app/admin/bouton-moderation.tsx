@@ -3,6 +3,7 @@ import { cookieLocale, t } from "@/lib/i18n";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 type Props = {
   type: "post" | "reply" | "job";
@@ -13,10 +14,11 @@ type Props = {
 export default function BoutonModeration({ type, id, label }: Props) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
   const locale = cookieLocale();
 
   async function supprimer() {
-    if (!confirm(`${t(locale, "common.report")} ${label} ?`)) return;
+    setConfirmation(false);
     setBusy(true);
     try {
       await fetch(`/api/admin/${type}s/${id}`, { method: "DELETE" });
@@ -27,13 +29,23 @@ export default function BoutonModeration({ type, id, label }: Props) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={supprimer}
-      disabled={busy}
-      className="rounded-md px-2 py-1 text-xs font-medium text-cx-destructive hover:bg-cx-destructive/5"
-    >
-      {t(locale, "common.report")}
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={() => setConfirmation(true)}
+        disabled={busy}
+        className="rounded-md px-2 py-1 text-xs font-medium text-cx-destructive transition hover:bg-cx-destructive/5 disabled:opacity-60"
+      >
+        {t(locale, "admin.delete")}
+      </button>
+      <ConfirmDialog
+        open={confirmation}
+        titre={t(locale, "admin.delete_question")}
+        description={`${label} — ${t(locale, "admin.delete_warning")}`}
+        confirmer={() => void supprimer()}
+        annuler={() => setConfirmation(false)}
+        labelConfirmer={t(locale, "admin.delete")}
+      />
+    </>
   );
 }

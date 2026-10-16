@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Avatar from "@/components/avatar";
 import Dropdown from "@/components/dropdown";
 import { Icone } from "@/components/icones";
+import { MenuElement, MenuLien, MenuSeparateur } from "@/components/ui/menu";
+import { cn } from "@/lib/cn";
 import { t, type Locale } from "@/lib/i18n";
 
 type Membre = { nom: string; slug: string; avatar?: string | null };
@@ -17,7 +18,7 @@ type Props = {
   membre: Membre;
 };
 
-/** Ligne de menu commune (lien + icône). */
+/** Ligne de menu commune (lien + icône) — item Base UI pour la navigation clavier. */
 function Item({
   href,
   icone,
@@ -32,21 +33,18 @@ function Item({
   accent?: boolean;
 }) {
   return (
-    <Link
+    <MenuLien
       href={href}
-      role="menuitem"
-      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-cx-muted ${
-        accent ? "font-semibold text-cx-primary" : "text-cx-card-fg"
-      }`}
+      className={cn("flex items-center gap-3", accent && "font-semibold text-cx-primary")}
     >
       <Icone nom={icone} className="size-4 shrink-0 text-cx-muted-fg" />
       <span className="flex-1">{libelle}</span>
       {badge && badge > 0 ? (
-        <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cx-primary px-1 text-[11px] font-bold text-cx-primary-fg">
+        <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cx-primary px-1 text-[11px] font-bold tabular-nums text-cx-primary-fg">
           {badge}
         </span>
       ) : null}
-    </Link>
+    </MenuLien>
   );
 }
 
@@ -74,7 +72,7 @@ export default function MenuUtilisateur({ locale, nonLues, nonLusMessages, estAd
       }
       triggerClassName="flex items-center rounded-full ring-cx-primary/40 hover:ring-2 focus-visible:outline-none focus-visible:ring-2"
     >
-      <div className="border-b border-cx-border px-3 py-2">
+      <div role="presentation" className="border-b border-cx-border px-3 py-2">
         <p className="truncate text-sm font-semibold text-cx-card-fg">{membre.nom}</p>
         <p className="truncate text-xs text-cx-muted-fg">@{membre.slug}</p>
       </div>
@@ -87,17 +85,14 @@ export default function MenuUtilisateur({ locale, nonLues, nonLusMessages, estAd
         <Item href="/parametres" icone="parametres" libelle={t(locale, "settings.title")} />
         {estAdmin ? <Item href="/admin" icone="admin" libelle={t(locale, "nav.admin")} /> : null}
       </div>
-      <div className="border-t border-cx-border pt-1">
-        <button
-          type="button"
-          role="menuitem"
-          onClick={deconnecter}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-cx-destructive hover:bg-cx-destructive/5"
-        >
-          <Icone nom="deconnexion" className="size-4 shrink-0" />
-          {t(locale, "nav.logout")}
-        </button>
-      </div>
+      <MenuSeparateur />
+      <MenuElement
+        onClick={deconnecter}
+        className="w-full text-cx-destructive data-highlighted:bg-cx-destructive/5"
+      >
+        <Icone nom="deconnexion" className="size-4 shrink-0" />
+        {t(locale, "nav.logout")}
+      </MenuElement>
     </Dropdown>
   );
 }

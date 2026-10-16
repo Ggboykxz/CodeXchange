@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useRef } from "react";
+import {
+  DialogueDescription,
+  DialoguePanneau,
+  DialogueRacine,
+  DialogueTitre,
+} from "@/components/ui/dialog";
 
 type Props = {
   open: boolean;
@@ -12,7 +18,14 @@ type Props = {
   labelAnnuler?: string;
 };
 
-/** Modale de confirmation stylée (remplace `confirm()`). */
+/**
+ * Modale de confirmation portée par Base UI (`role="alertdialog"`) :
+ * le clic extérieur ne ferme pas, Échap annule, le focus est piégé dans le
+ * panneau et posé sur « Annuler » à l'ouverture (l'action non destructive), puis
+ * rendu au déclencheur à la fermeture. Les ids du titre et de la description
+ * sont générés par la librairie : deux dialogues ouverts ne se marchent pas
+ * dessus.
+ */
 export function ConfirmDialog({
   open,
   titre,
@@ -22,45 +35,40 @@ export function ConfirmDialog({
   labelConfirmer = "Confirmer",
   labelAnnuler = "Annuler",
 }: Props) {
-  useEffect(() => {
-    if (!open) return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") annuler();
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open, annuler]);
+  const refAnnuler = useRef<HTMLButtonElement>(null);
 
-  if (!open) return null;
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-titre"
-      className="fixed inset-0 z-30 flex items-center justify-center bg-black/50 p-[max(1rem,env(safe-area-inset-top))_max(1rem,env(safe-area-inset-right))_max(1rem,env(safe-area-inset-bottom))_max(1rem,env(safe-area-inset-left))]"
+    <DialogueRacine
+      open={open}
+      onOpenChange={(ouvert) => {
+        if (!ouvert) annuler();
+      }}
     >
-      <div className="w-full max-w-md rounded-xl bg-cx-card p-6 shadow-xl">
-        <h3 id="confirm-titre" className="text-lg font-bold">
-          {titre}
-        </h3>
-        {description ? <p className="mt-2 text-sm text-cx-muted-fg">{description}</p> : null}
+      <DialoguePanneau focusInitial={refAnnuler}>
+        <DialogueTitre className="text-lg font-bold">{titre}</DialogueTitre>
+        {description ? (
+          <DialogueDescription className="mt-2 text-sm text-cx-muted-fg">
+            {description}
+          </DialogueDescription>
+        ) : null}
         <div className="mt-6 flex justify-end gap-2">
           <button
+            ref={refAnnuler}
             type="button"
             onClick={annuler}
-            className="rounded-lg border border-cx-border px-3 py-2 text-sm font-medium hover:bg-cx-muted"
+            className="min-h-[44px] rounded-lg border border-cx-border px-3 py-2 text-sm font-medium transition outline-none hover:bg-cx-muted focus-visible:ring-2 focus-visible:ring-cx-primary/40 active:scale-[0.97]"
           >
             {labelAnnuler}
           </button>
           <button
             type="button"
             onClick={confirmer}
-            className="rounded-lg bg-cx-destructive px-3 py-2 text-sm font-bold text-cx-destructive-fg"
+            className="min-h-[44px] rounded-lg bg-cx-destructive px-3 py-2 text-sm font-bold text-cx-destructive-fg transition outline-none focus-visible:ring-2 focus-visible:ring-cx-destructive/40 active:scale-[0.97]"
           >
             {labelConfirmer}
           </button>
         </div>
-      </div>
-    </div>
+      </DialoguePanneau>
+    </DialogueRacine>
   );
 }

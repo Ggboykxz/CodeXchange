@@ -217,3 +217,14 @@ button:not(:disabled):active,
 .animate-shake { animation: shake 0.45s ease-in-out; }
 .animate-glow { animation: glow 2s ease-in-out infinite; }
 .animate-spin-slow { animation: spin-slow 6s linear infinite; }
+
+/* Dialogue centré (Base UI AlertDialog) : inséré sous les zones sûres
+   (safe-area) et jamais plus haut que la fenêtre visible. */
+.dialogue-centre {
+  inset: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  margin: auto;
+  inline-size: min(28rem, 100%);
+  max-block-size: calc(100dvh - 2rem);
+  overflow-y: auto;
+}

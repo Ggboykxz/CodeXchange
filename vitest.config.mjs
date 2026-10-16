@@ -22,6 +22,7 @@ export default defineConfig(async () => {
     test: {
       globalSetup: "tests/global-setup.ts",
       environment: "node",
+      setupFiles: ["tests/setup-dom.ts"],
       include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
       fileParallelism: false,
       sequence: { sequencer: LexicalSequencer },
