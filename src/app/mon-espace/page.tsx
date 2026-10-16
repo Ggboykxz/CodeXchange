@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 import { redirect } from "next/navigation";
 import Avatar from "@/components/avatar";
 import { localeCourante, t } from "@/lib/i18n";
@@ -92,11 +93,12 @@ export default async function PageMonEspace({ searchParams }: Props) {
             key={valeur}
             href={`/mon-espace?onglet=${valeur}`}
             aria-current={onglet === valeur ? "page" : undefined}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm font-medium transition",
               onglet === valeur
                 ? "bg-cx-primary text-cx-primary-fg"
-                : "text-cx-muted-fg hover:bg-cx-muted"
-            }`}
+                : "text-cx-muted-fg hover:bg-cx-muted",
+            )}
           >
             {t(locale, `activity.tab_${valeur}`)}
           </Link>
@@ -117,7 +119,7 @@ export default async function PageMonEspace({ searchParams }: Props) {
                   className="block rounded-xl border border-cx-border bg-cx-card px-5 py-4 transition hover:border-cx-primary/60"
                 >
                   <h2 className="font-semibold leading-snug">{sujet.titre}</h2>
-                  <p className="mt-1 text-xs text-cx-muted-fg">
+                  <p className="mt-1 text-xs tabular-nums text-cx-muted-fg">
                     {sujet._count.replies} {t(locale, "forum.answers_many")} · {sujet._count.likes} ·
                     {" "}
                     {new Date(sujet.createdAt).toLocaleDateString(locale === "en" ? "en-GB" : "fr-FR")}
@@ -143,7 +145,7 @@ export default async function PageMonEspace({ searchParams }: Props) {
                   className="block rounded-xl border border-cx-border bg-cx-card px-5 py-4 transition hover:border-cx-primary/60"
                 >
                   <h2 className="font-semibold leading-snug">{candidature.job.titre}</h2>
-                  <p className="mt-1 text-xs text-cx-muted-fg">
+                  <p className="mt-1 text-xs tabular-nums text-cx-muted-fg">
                     {candidature.job.entreprise} · {candidature.job.pays} ·{" "}
                     {new Date(candidature.createdAt).toLocaleDateString(locale === "en" ? "en-GB" : "fr-FR")}
                   </p>
@@ -173,7 +175,7 @@ export default async function PageMonEspace({ searchParams }: Props) {
                       {projet.authorId === userId ? t(locale, "projects.owner") : t(locale, "projects.joined")}
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-cx-muted-fg">
+                  <p className="mt-1 text-xs tabular-nums text-cx-muted-fg">
                     {projet._count.membres}{" "}
                     {projet._count.membres > 1
                       ? t(locale, "projects.members_many")

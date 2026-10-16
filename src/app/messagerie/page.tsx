@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 import { redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/session";
 import { listThreads, listMessages } from "@/lib/messagerie";
@@ -28,7 +29,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
       <header>
         <h1 className="text-2xl font-black tracking-tight">{t(locale, "messaging.title")}</h1>
         <p className="mt-1 text-sm text-cx-muted-fg">
-{t(locale, "messaging.subtitle")}
+          {t(locale, "messaging.subtitle")}
         </p>
       </header>
 
@@ -44,14 +45,15 @@ export default async function PageMessagerie({ searchParams }: Props) {
                 <li key={t.autreId}>
                   <Link
                     href={`/messagerie?with=${t.autreId}`}
-                    className={`block rounded-lg px-3 py-2 text-sm ${
-                      withId === t.autreId ? "bg-cx-primary/5 text-cx-primary" : "hover:bg-cx-muted"
-                    }`}
+                    className={cn(
+                      "block rounded-lg px-3 py-2 text-sm transition",
+                      withId === t.autreId ? "bg-cx-primary/5 text-cx-primary" : "hover:bg-cx-muted",
+                    )}
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-medium">{t.autreNom}</span>
                       {t.nonLus > 0 ? (
-                        <span className="rounded-full bg-cx-primary px-2 text-[11px] font-bold text-cx-primary-fg">
+                        <span className="rounded-full bg-cx-primary px-2 text-[11px] font-bold tabular-nums text-cx-primary-fg">
                           {t.nonLus}
                         </span>
                       ) : null}
@@ -77,14 +79,15 @@ export default async function PageMessagerie({ searchParams }: Props) {
                   conversation.map((m) => {
                     const estLeMien = m.senderId === userId;
                     return (
-                      <div key={m.id} className={`flex ${estLeMien ? "justify-end" : "justify-start"}`}>
+                      <div key={m.id} className={cn("flex", estLeMien ? "justify-end" : "justify-start")}>
                         <div
-                          className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
-                            estLeMien ? "bg-cx-primary text-cx-primary-fg" : "bg-cx-muted text-cx-fg"
-                          }`}
+                          className={cn(
+                            "max-w-[80%] rounded-xl px-3 py-1.5 text-sm",
+                            estLeMien ? "bg-cx-primary text-cx-primary-fg" : "bg-cx-muted text-cx-fg",
+                          )}
                         >
                           {m.corps}
-                          <div className="mt-1 text-right text-xs opacity-90">
+                          <div className="mt-1 text-right text-xs tabular-nums opacity-90">
                             {m.createdAt.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                           </div>
                         </div>
@@ -92,7 +95,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
                     );
                   })
                 )}
-    </DefileurMessages>
+              </DefileurMessages>
               <footer className="border-t border-cx-border p-3">
                 <FormulaireMessage destinataireId={withId} onEnvoye={() => {}} />
               </footer>
