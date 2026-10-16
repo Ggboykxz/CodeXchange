@@ -53,12 +53,13 @@ export default async function PageSujet({ params }: Props) {
   const favoriDuSujet = userId === null ? false : await isFavorite(userId, "post", postId);
   const etatRepost = await getEtatRepost(postId, userId ?? undefined);
 
-  const likesParReponse = new Map<number, boolean>();
+  // État « aimé » par réponse : uniquement des données sérialisables passées
+  // au composant client (jamais de fonctions — cf. tests/serialisation.test.ts).
+  const likesReponses: number[] = [];
   if (userId !== null) {
     await Promise.all(
       sujet.replies.map(async (reponse) => {
-        const a = await hasReplyLiked(userId, reponse.id);
-        likesParReponse.set(reponse.id, a);
+        if (await hasReplyLiked(userId, reponse.id)) likesReponses.push(reponse.id);
       })
     );
   }
@@ -156,7 +157,7 @@ export default async function PageSujet({ params }: Props) {
             replies={sujet.replies as unknown as Parameters<typeof ArbreReponses>[0]["replies"]}
             postId={postId}
             userId={userId}
-            hasReplyLiked={(id) => likesParReponse.get(id) === true}
+            likesReponses={likesReponses}
             connecte={userId !== null}
           />
         )}

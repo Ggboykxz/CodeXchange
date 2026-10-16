@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast";
 
-type Props = { destinataireId: number; onEnvoye: () => void };
+type Props = { destinataireId: number };
 
-export default function FormulaireMessage({ destinataireId, onEnvoye }: Props) {
+export default function FormulaireMessage({ destinataireId }: Props) {
   const router = useRouter();
   const toast = useToast();
   const [texte, setTexte] = useState("");
@@ -29,7 +29,6 @@ export default function FormulaireMessage({ destinataireId, onEnvoye }: Props) {
       }
       setTexte("");
       toast.succes("Message envoyé");
-      onEnvoye?.();
       router.refresh();
     } finally {
       setBusy(false);

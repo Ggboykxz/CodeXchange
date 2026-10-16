@@ -97,7 +97,7 @@ export default async function PageMessagerie({ searchParams }: Props) {
                 )}
               </DefileurMessages>
               <footer className="border-t border-cx-border p-3">
-                <FormulaireMessage destinataireId={withId} onEnvoye={() => {}} />
+                <FormulaireMessage destinataireId={withId} />
               </footer>
             </>
           ) : (

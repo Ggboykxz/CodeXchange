@@ -26,23 +26,28 @@ type Props = {
   replies: Reponse[];
   postId: number;
   userId: number | null;
-  hasReplyLiked: (replyId: number) => boolean;
+  /** Ids des réponses aimées par le membre (données sérialisables, pas de fonction). */
+  likesReponses: number[];
   connecte: boolean;
 };
 
 /** Affiche récursivement l'arbre de réponses (Reddit-like). */
-export default function ArbreReponses({ replies, postId, userId, hasReplyLiked, connecte }: Props) {
-  const racines = replies.filter((r) => !r.parentId);
+export default function ArbreReponses({ replies, postId, userId, likesReponses, connecte }: Props) {
+  // Racines de CE niveau : sans parent, ou dont le parent n'est pas dans la
+  // liste passée (appel récursif sur une sous-branche d'enfants).
+  const ids = new Set(replies.map((r) => r.id));
+  const racines = replies.filter((r) => !r.parentId || !ids.has(r.parentId));
+  const likes = new Set(likesReponses);
   return (
     <ul className="flex flex-col gap-3">
       {racines.map((r) => (
-        <Noeud key={r.id} reply={r} replies={replies} postId={postId} userId={userId} hasReplyLiked={hasReplyLiked} connecte={connecte} />
+        <Noeud key={r.id} reply={r} replies={replies} postId={postId} userId={userId} likes={likes} connecte={connecte} />
       ))}
     </ul>
   );
 }
 
-function Noeud({ reply, replies, postId, userId, hasReplyLiked, connecte }: { reply: Reponse; replies: Reponse[]; postId: number; userId: number | null; hasReplyLiked: (id: number) => boolean; connecte: boolean }) {
+function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Reponse; replies: Reponse[]; postId: number; userId: number | null; likes: Set<number>; connecte: boolean }) {
   const [afficherFormulaire, setAfficherFormulaire] = useState(false);
 
   const estAuteur = userId !== null && reply.author.id === userId;
@@ -64,7 +69,7 @@ function Noeud({ reply, replies, postId, userId, hasReplyLiked, connecte }: { re
         corpsInitial={reply.corps}
         estAuteur={estAuteur}
         connecte={connecte}
-        likedByMe={hasReplyLiked(reply.id)}
+        likedByMe={likes.has(reply.id)}
         likes={reply._count.likes}
       />
       {reply.reactions ? (
@@ -92,7 +97,7 @@ function Noeud({ reply, replies, postId, userId, hasReplyLiked, connecte }: { re
       ) : null}
       {enfants.length > 0 ? (
         <div className="mt-3 border-l-2 border-cx-border pl-3 sm:pl-4">
-          <ArbreReponses replies={enfants} postId={postId} userId={userId} hasReplyLiked={hasReplyLiked} connecte={connecte} />
+          <ArbreReponses replies={enfants} postId={postId} userId={userId} likesReponses={[...likes]} connecte={connecte} />
         </div>
       ) : null}
     </li>
