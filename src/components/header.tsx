@@ -40,7 +40,9 @@ export async function Header() {
         <div className="flex h-14 items-center gap-2">
           {/* Gauche : menu (mobile) + logo. */}
           <BoutonMenuNav libelle={t(locale, "nav.menu")} />
-          <Logo />
+          <div className="transition-transform duration-200 hover:scale-105">
+            <Logo />
+          </div>
 
           {/* Centre : recherche centrée (Reddit). En mobile : icône à droite. */}
           <div className="hidden flex-1 justify-center px-4 md:flex">
@@ -69,7 +71,7 @@ export async function Header() {
                 <Link
                   href="/notifications"
                   title={t(locale, "nav.notifications")}
-                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg transition-transform duration-150 hover:scale-105 hover:bg-cx-muted hover:text-cx-fg"
 
                 >
                   <Icone nom="notifications" className="size-5" />
@@ -83,7 +85,7 @@ export async function Header() {
                 <Link
                   href="/messagerie"
                   title={t(locale, "nav.messages")}
-                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg transition-transform duration-150 hover:scale-105 hover:bg-cx-muted hover:text-cx-fg"
 
                 >
                   <Icone nom="messagerie" className="size-5" />

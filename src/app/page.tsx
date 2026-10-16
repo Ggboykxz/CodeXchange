@@ -159,8 +159,8 @@ export default async function HomePage() {
             </Link>
           </div>
           <ul className="space-y-3">
-            {feedReddit.items.map((sujet) => (
-              <li key={sujet.id}>
+            {feedReddit.items.map((sujet, index) => (
+              <li key={sujet.id} className="animate-fade-up" style={{ animationDelay: `${index * 55}ms` }}>
                 <CarteSujet sujet={sujet} locale={locale} connecte={userId !== null} />
               </li>
             ))}
