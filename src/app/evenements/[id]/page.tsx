@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 import { notFound } from "next/navigation";
 import { drapeau } from "@/lib/drapeaux";
 import { aRsvp, getEvent } from "@/lib/events";
@@ -64,7 +65,7 @@ export default async function PageEvenement({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {evenement.titre}
         </h1>
-        <p className="text-sm text-cx-muted-fg">
+        <p className="text-sm tabular-nums text-cx-muted-fg">
           <time dateTime={evenement.date.toISOString()}>
             {DATE.format(evenement.date)} à {HEURE.format(evenement.date)}
           </time>
@@ -72,11 +73,10 @@ export default async function PageEvenement({ params }: Props) {
         <ul className="flex flex-wrap items-center gap-2">
           <li>
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                passe
-                  ? "border border-cx-border text-cx-muted-fg"
-                  : "bg-cx-success/5 text-cx-success"
-              }`}
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                passe ? "border border-cx-border text-cx-muted-fg" : "bg-cx-success/5 text-cx-success",
+              )}
             >
               {passe ? t(locale, "events.past") : t(locale, "events.upcoming")}
             </span>

@@ -50,7 +50,7 @@ export default async function PageTuto({ params }: Props) {
         <h1 className="text-2xl font-black leading-snug tracking-tight sm:text-3xl">
           {tuto.titre}
         </h1>
-        <p className="text-sm text-cx-muted-fg">
+        <p className="text-sm tabular-nums text-cx-muted-fg">
           {tuto.author.nom} · {drapeau(tuto.author.pays)} {tuto.author.ville}, {tuto.author.pays}{" "}
           · ⏱ {tuto.dureeMin} {t(locale, "tutorials.reading")}
         </p>

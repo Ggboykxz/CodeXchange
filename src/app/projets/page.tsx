@@ -50,7 +50,7 @@ export default async function PageProjets({ searchParams }: Props) {
   const filtreActif = q !== "" || stack !== "";
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black tracking-tight">{t(locale, "projects.title")}</h1>
@@ -122,7 +122,7 @@ export default async function PageProjets({ searchParams }: Props) {
                 </Link>
                 <Link
                   href="/projets/nouveau"
-                  className="rounded-lg bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg"
+                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
                 >
                   {t(locale, "projects.new")}
                 </Link>
@@ -136,7 +136,7 @@ export default async function PageProjets({ searchParams }: Props) {
               </p>
               <Link
                 href="/projets/nouveau"
-                className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+                className="mt-5 inline-block rounded-lg bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
               >
                 {t(locale, "projects.new")}
               </Link>
