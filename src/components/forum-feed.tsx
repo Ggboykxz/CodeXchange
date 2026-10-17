@@ -27,6 +27,7 @@ type Props = {
  * annoncée une seule fois (toast non dupliqué, message inline persistant).
  */
 export function ForumFeed({ initialItems, totalPages, currentPage, locale, connecte, params }: Props) {
+  const toast = useToast();
   const [hidden, setHidden] = useState<Set<number>>(new Set());
   const [items, setItems] = useState<PostResume[]>(initialItems);
   // Charger les sujets masqués depuis localStorage (1 tap = contrôle du fil).
@@ -53,7 +54,26 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
       }
       return next;
     });
-  }, []);
+    toast.avecAction(
+      "Sujet masqué",
+      {
+        label: "Annuler",
+        onClick: () => {
+          setHidden((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            try {
+              localStorage.setItem("cx-hidden-posts", JSON.stringify(Array.from(next)));
+            } catch {
+              /* ignoré */
+            }
+            return next;
+          });
+        },
+      },
+      "Tu peux l'afficher à nouveau.",
+    );
+  }, [toast]);
 
   const visibles = items.filter((s) => !hidden.has(s.id));
   const [pageSuivante, setPageSuivante] = useState(currentPage + 1);
@@ -61,8 +81,6 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
   const [isLoading, setIsLoading] = useState(false);
   const [enErreur, setEnErreur] = useState(false);
   const sentinelleRef = useRef<HTMLDivElement>(null);
-  const toast = useToast();
-
   const charger = useCallback(async () => {
     if (!hasMore || isLoading) return;
     setIsLoading(true);

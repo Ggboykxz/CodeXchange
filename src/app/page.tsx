@@ -5,13 +5,13 @@ import { localeCourante, t } from "@/lib/i18n";
 import { getSessionUserId } from "@/lib/session";
 import VisuelAccueil from "@/components/visuel-accueil";
 import Avatar from "@/components/avatar";
-import CarteSujet from "@/components/carte-sujet";
 import { topHashtags } from "@/lib/hashtags";
 import { listPosts } from "@/lib/forum";
 import { parcoursUtilisateur } from "@/lib/parcours";
 import ParcoursDev from "@/components/parcours-dev";
 import Composeur from "@/components/composeur";
 import SelecteurTri from "@/components/selecteur-tri";
+import FilAccueil from "@/components/fil-accueil";
 import { Icone } from "@/components/icones";
 
 
@@ -170,11 +170,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               }}
             />
           </div>
-          <ul>
-            {feedReddit.items.map((sujet) => (
-              <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={userId !== null} />
-            ))}
-          </ul>
+          <FilAccueil items={feedReddit.items} locale={locale} connecte={userId !== null} />
           <div className="mt-4 text-center lg:hidden">
             <Link href="/forum" className="inline-flex rounded-full border border-cx-border px-4 py-2 text-sm text-cx-muted-fg hover:bg-cx-muted">
               Voir tout le fil →
