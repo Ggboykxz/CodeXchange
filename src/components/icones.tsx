@@ -38,6 +38,7 @@ export type NomIcone =
   | "coche"
   | "plus"
   | "image"
+  | "traduire"
   | "lien"
   | "partage"
   | "copie";
@@ -210,6 +211,12 @@ const D: Record<NomIcone, React.ReactNode> = {
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <circle cx="8.5" cy="8.5" r="1.5" />
       <polyline points="21 15 16 10 5 21" />
+    </>
+  ),
+  traduire: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3c2.5 2.6 4 5.7 4 9s-1.5 6.4-4 9c-2.5-2.6-4-5.7-4-9s1.5-6.4 4-9z" />
     </>
   ),
   lien: (

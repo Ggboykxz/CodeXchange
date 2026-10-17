@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const pageBrut = Number.parseInt(url.searchParams.get("page") ?? "1", 10);
     const page = Number.isFinite(pageBrut) && pageBrut > 0 ? pageBrut : 1;
 
-    const resultat = await listTutorials({ page, pageSize: 12 });
+    const resultat = await listTutorials({ page, pageSize: 5 });
     return NextResponse.json({
       items: resultat.items,
       page: resultat.page,

@@ -2,8 +2,9 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
-import { localeCourante, t, type Locale } from "@/lib/i18n";
+import { localeCourante, t } from "@/lib/i18n";
 import SelecteurTri from "@/components/selecteur-tri";
+import { JobsFeed } from "@/components/fils-listes";
 import { CONTRATS, listJobs } from "@/lib/jobs";
 
 export const metadata = { title: "Offres d'emploi" };
@@ -11,38 +12,9 @@ export const metadata = { title: "Offres d'emploi" };
 const CLASS_CHAMP =
   "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
-const DATE = new Intl.DateTimeFormat("fr-FR", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
-
 type Props = {
   searchParams: Promise<{ remote?: string; pays?: string; contrat?: string; q?: string; page?: string; tri?: string }>;
 };
-
-/** Badge contrat : rempli pour le type de contrat, bordé pour le mode de travail. */
-function BadgeContrat({ contrat }: { contrat: string }) {
-  return (
-    <span className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
-      {contrat}
-    </span>
-  );
-}
-
-function BadgeRemote({ remote, locale }: { remote: boolean; locale: Locale }) {
-  return (
-    <span
-      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-        remote
-          ? "bg-cx-success/5 text-cx-success"
-          : "border border-cx-border text-cx-muted-fg"
-      }`}
-    >
-      {remote ? t(locale, "jobs.remote") : t(locale, "jobs.onsite")}
-    </span>
-  );
-}
 
 /** /jobs — liste des offres + filtres persistés en query string. */
 export default async function PageJobs({ searchParams }: Props) {
@@ -60,7 +32,7 @@ export default async function PageJobs({ searchParams }: Props) {
     contrat: contrat || undefined,
     remote: remote === "" ? undefined : remote === "1",
     page,
-    pageSize: 12,
+    pageSize: 6,
     tri,
   }),
     localeCourante(),
@@ -87,7 +59,7 @@ export default async function PageJobs({ searchParams }: Props) {
         </Link>
       </header>
 
-      <form action="/jobs" method="get" className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <form action="/jobs" method="get" className="sticky top-0 z-10 -mx-6 flex flex-col gap-3 bg-cx-bg/85 px-6 py-2 backdrop-blur sm:flex-row sm:flex-wrap">
         <label htmlFor="q" className="sr-only">
           {t(locale, "jobs.search")}
         </label>
@@ -216,39 +188,19 @@ export default async function PageJobs({ searchParams }: Props) {
           )}
         </section>
       ) : (
-        <ul className="flex flex-col gap-3">
-          {offres.map((offre) => (
-            <li
-              key={offre.id}
-              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60"
-            >
-              <Link href={`/jobs/${offre.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">
-                  {offre.titre}
-                </h2>
-              </Link>
-
-              <p className="mt-1 text-xs tabular-nums text-cx-muted-fg">
-                {offre.entreprise} ·{" "}
-                {offre.remote && offre.ville
-                  ? `${offre.ville}, ${offre.pays} · remote possible`
-                  : offre.ville
-                    ? `${offre.ville}, ${offre.pays}`
-                    : offre.pays}{" "}
-                · {DATE.format(offre.createdAt)}
-              </p>
-
-              <ul className="mt-3 flex flex-wrap gap-2">
-                <li>
-                  <BadgeContrat contrat={offre.contrat} />
-                </li>
-                <li>
-                  <BadgeRemote remote={offre.remote} locale={locale} />
-                </li>
-              </ul>
-            </li>
-          ))}
-        </ul>
+        <JobsFeed
+          initialItems={offres}
+          totalPages={totalPages}
+          currentPage={pageActuelle}
+          locale={locale}
+          params={{
+            q: q || undefined,
+            pays: pays || undefined,
+            contrat: contrat || undefined,
+            remote: remote || undefined,
+            tri: tri === "populaire" ? "populaire" : undefined,
+          }}
+        />
       )}
 
       <Pagination

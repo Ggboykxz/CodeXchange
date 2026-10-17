@@ -20,6 +20,7 @@ import FilAriane from "@/components/fil-ariane";
 import { getSessionUserId } from "@/lib/session";
 import BoutonLike from "./bouton-like";
 import FormulaireReponse from "./formulaire-reponse";
+import Traduction from "@/components/traduction";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -122,7 +123,7 @@ export default async function PageSujet({ params }: Props) {
             <BoutonSondage postId={postId} question={sujet.poll.question} options={sujet.poll.options} total={sujet.poll.total} userVoted={sujet.poll.userVoted} connecte={userId !== null} />
           ) : null}
           <article className="rounded-xl border border-cx-border px-5 py-5 text-sm leading-relaxed whitespace-pre-wrap">
-            <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /></TexteRepliable>
+            <TexteRepliable texte={sujet.corps}><RenduMarkdown texte={sujet.corps} /><Traduction texte={sujet.corps} locale={locale} /></TexteRepliable>
           </article>
           <div className="rounded-xl border border-cx-border bg-cx-card px-4 py-3">
             <BarreReactions
@@ -162,6 +163,7 @@ export default async function PageSujet({ params }: Props) {
             userId={userId}
             likesReponses={likesReponses}
             connecte={userId !== null}
+            locale={locale}
           />
         )}
       </section>

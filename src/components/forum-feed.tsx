@@ -5,6 +5,7 @@ import { useToast } from "@/components/toast";
 import CarteSujet from "@/components/carte-sujet";
 import type { PostResume } from "@/lib/forum";
 import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 
 type Props = {
   initialItems: PostResume[];
@@ -51,14 +52,13 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
       setHasMore(donnees.page < donnees.totalPages);
       setEnErreur(false);
     } catch {
-      if (!enErreur) {
-        toast.erreur("Impossible de charger la suite du fil. Réessaie avec « Charger plus ».");
-      }
+      // Toast dédupliqué : une seule alerte, puis stop-auto (bouton manuel).
+      if (!enErreur) toast.erreur(t(locale, "feed.erreur"));
       setEnErreur(true);
     } finally {
       setIsLoading(false);
     }
-  }, [hasMore, isLoading, pageSuivante, params, enErreur, toast]);
+  }, [hasMore, isLoading, pageSuivante, params, enErreur, toast, locale]);
 
   // Auto-chargement au défilement, suspendu après un échec (reprise manuelle).
   useEffect(() => {
@@ -82,7 +82,7 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
       </ul>
       {enErreur ? (
         <p className="py-2 text-center text-sm text-cx-destructive" role="status">
-          La suite du fil n’a pas pu être chargée. Aucune auto-reprise : utilise le bouton ci-dessous.
+          {t(locale, "feed.erreur")}
         </p>
       ) : null}
       {hasMore ? (
@@ -94,7 +94,7 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
             disabled={isLoading}
             aria-live="polite"
           >
-            {isLoading ? "Chargement…" : "Charger plus de sujets"}
+            {isLoading ? t(locale, "common.loading") : t(locale, "feed.load_more")}
           </button>
         </div>
       ) : null}

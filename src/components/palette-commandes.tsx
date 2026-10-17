@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
+import { cookieLocale, t } from "@/lib/i18n";
 import { Icone, type NomIcone } from "@/components/icones";
 
 type ItemPalette = {
@@ -54,6 +55,7 @@ type ResultatRecherche = {
  */
 export default function PaletteCommandes({ pleine = false }: { pleine?: boolean }) {
   const router = useRouter();
+  const [locale] = useState(() => cookieLocale());
   const [ouvert, setOuvert] = useState(false);
   const [q, setQ] = useState("");
   const [resultats, setResultats] = useState<ResultatRecherche | null>(null);
@@ -169,7 +171,7 @@ export default function PaletteCommandes({ pleine = false }: { pleine?: boolean 
         type="button"
         onClick={() => setOuvert(true)}
         aria-keyshortcuts="Meta+K Control+K"
-        title="Recherche rapide (Ctrl/⌘+K)"
+        title={t(locale, "palette.rapide_title")}
         className={
           pleine
             ? "flex w-full items-center gap-2 rounded-full border border-cx-border-fort bg-cx-muted/40 px-4 py-2.5 text-sm text-cx-muted-fg transition hover:border-cx-border hover:bg-cx-muted"
@@ -177,7 +179,7 @@ export default function PaletteCommandes({ pleine = false }: { pleine?: boolean 
         }
       >
         <Icone nom="recherche" className="size-4" />
-        <span>Rechercher…</span>
+        <span>{t(locale, "palette.champ")}</span>
         <kbd className={pleine ? "ml-auto rounded-md border border-cx-border px-1.5 py-0.5 text-[11px] font-medium text-cx-muted-fg" : "ml-2 rounded border border-cx-border px-1.5 py-0.5 text-[11px] text-cx-muted-fg"}>⌘K</kbd>
       </button>
 
@@ -189,7 +191,7 @@ export default function PaletteCommandes({ pleine = false }: { pleine?: boolean 
           <div
             role="dialog"
             aria-modal="true"
-            aria-label="Palette de commandes"
+            aria-label={t(locale, "palette.titre")}
             className="w-full max-w-xl overflow-hidden rounded-2xl border border-cx-border bg-cx-bg text-cx-fg shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
@@ -203,8 +205,8 @@ export default function PaletteCommandes({ pleine = false }: { pleine?: boolean 
                   setActif(0);
                 }}
                 onKeyDown={surToucheListe}
-                placeholder="Rechercher une page, un sujet, un membre…"
-                aria-label="Rechercher sur CodeXchange"
+                placeholder={t(locale, "palette.placeholder")}
+                aria-label={t(locale, "palette.placeholder")}
                 className="w-full bg-transparent text-sm outline-none placeholder:text-cx-muted-fg"
               />
               <kbd className="rounded border border-cx-border px-1.5 py-0.5 text-[11px] text-cx-muted-fg">ESC</kbd>
@@ -212,7 +214,7 @@ export default function PaletteCommandes({ pleine = false }: { pleine?: boolean 
 
             <div ref={listeRef} className="max-h-[55dvh] overflow-y-auto overscroll-contain py-2">
               {items.length === 0 ? (
-                <p className="px-4 py-8 text-center text-sm text-cx-muted-fg">Aucun résultat.</p>
+                <p className="px-4 py-8 text-center text-sm text-cx-muted-fg">{t(locale, "palette.vide")}</p>
               ) : (
                 items.map((item, i) => (
                   <a

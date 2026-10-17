@@ -26,7 +26,7 @@ export default async function PageTutos({ searchParams }: Props) {
 
   // Requête initiale côté serveur (page 1).
   const [resultat, locale] = await Promise.all([
-    listTutorials({ page, pageSize: 12 }),
+    listTutorials({ page, pageSize: 5 }),
     localeCourante(),
   ]);
   const tutos = resultat.items;

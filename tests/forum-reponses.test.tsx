@@ -57,6 +57,7 @@ function rendre(likesReponses: number[]) {
         userId={7}
         likesReponses={likesReponses}
         connecte={true}
+        locale="fr"
       />
     </ToastProvider>,
   );

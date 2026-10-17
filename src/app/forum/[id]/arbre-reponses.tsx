@@ -5,6 +5,8 @@ import ActionsReponse from "./bouton-reponse";
 import RenduMarkdown from "@/components/rendu-markdown";
 import FormulaireReponse from "./formulaire-reponse";
 import BarreReactions from "@/components/barre-reactions";
+import Traduction from "@/components/traduction";
+import type { Locale } from "@/lib/i18n";
 import type { ReactionCounts } from "@/lib/reactions";
 
 type Auteur = { id: number; nom: string; slug: string; ville: string; pays: string };
@@ -30,10 +32,11 @@ type Props = {
   /** Ids des réponses aimées par le membre (données sérialisables, pas de fonction). */
   likesReponses: number[];
   connecte: boolean;
+  locale: Locale;
 };
 
 /** Affiche récursivement l'arbre de réponses (Reddit-like). */
-export default function ArbreReponses({ replies, postId, userId, likesReponses, connecte }: Props) {
+export default function ArbreReponses({ replies, postId, userId, likesReponses, connecte, locale }: Props) {
   // Racines de CE niveau : sans parent, ou dont le parent n'est pas dans la
   // liste passée (appel récursif sur une sous-branche d'enfants).
   const ids = new Set(replies.map((r) => r.id));
@@ -42,13 +45,13 @@ export default function ArbreReponses({ replies, postId, userId, likesReponses, 
   return (
     <ul className="flex flex-col gap-3">
       {racines.map((r) => (
-        <Noeud key={r.id} reply={r} replies={replies} postId={postId} userId={userId} likes={likes} connecte={connecte} />
+        <Noeud key={r.id} reply={r} replies={replies} postId={postId} userId={userId} likes={likes} connecte={connecte} locale={locale} />
       ))}
     </ul>
   );
 }
 
-function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Reponse; replies: Reponse[]; postId: number; userId: number | null; likes: Set<number>; connecte: boolean }) {
+function Noeud({ reply, replies, postId, userId, likes, connecte, locale }: { reply: Reponse; replies: Reponse[]; postId: number; userId: number | null; likes: Set<number>; connecte: boolean; locale: Locale }) {
   const [afficherFormulaire, setAfficherFormulaire] = useState(false);
   const [afficheEnfants, setAfficheEnfants] = useState(true);
 
@@ -65,6 +68,7 @@ function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Rep
       <div className="mt-2 text-sm leading-relaxed whitespace-pre-wrap">
         {reply.deletedAt ? "[message supprimé]" : <RenduMarkdown texte={reply.corps} />}
       </div>
+      {reply.deletedAt ? null : <Traduction texte={reply.corps} locale={locale} />}
       <ActionsReponse
         replyId={reply.id}
         postId={postId}
@@ -112,7 +116,7 @@ function Noeud({ reply, replies, postId, userId, likes, connecte }: { reply: Rep
           ) : null}
           {afficheEnfants ? (
             <div id={`reponses-${reply.id}`} className="mt-2 ml-3 border-l-2 border-cx-border pl-3 sm:pl-4">
-              <ArbreReponses replies={enfants} postId={postId} userId={userId} likesReponses={[...likes]} connecte={connecte} />
+              <ArbreReponses replies={enfants} postId={postId} userId={userId} likesReponses={[...likes]} connecte={connecte} locale={locale} />
             </div>
           ) : null}
         </div>

@@ -77,7 +77,7 @@ function renduLigne(texte: string): string {
   sortie = sortie.replace(/\u0001(\d+)\u0001/g, (_m, index: string) => {
     const image = images[Number(index)];
     if (!image) return "";
-    const style = "loading=\'lazy\' class=\'my-2 w-full rounded-lg border border-cx-border\'";
+    const style = "loading=\'lazy\' class=\'my-2 max-h-[480px] w-full rounded-2xl border border-cx-border object-cover\'";
     return `<img src="${image.url}" alt="${echap(image.alt)}" ${style} />`;
   });
   sortie = sortie.replace(/\u0000(\d+)\u0000/g, (_m, index: string) => {

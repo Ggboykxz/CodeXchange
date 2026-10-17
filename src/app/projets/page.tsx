@@ -3,32 +3,16 @@ import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
 import { listProjects } from "@/lib/projects";
-import LogoTechno from "@/components/logo-techno";
+import { ProjetsFeed } from "@/components/fils-listes";
 
 export const metadata = { title: "Projets" };
 
 const CLASS_CHAMP =
   "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
-const DATE = new Intl.DateTimeFormat("fr-FR", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
-
 type Props = {
   searchParams: Promise<{ stack?: string; q?: string; page?: string }>;
 };
-
-/** Badge stack : une pastille par technologie du projet. */
-function BadgeStack({ technologie }: { technologie: string }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
-      <LogoTechno nom={technologie} className="size-3.5" />
-      {technologie}
-    </span>
-  );
-}
 
 /** /projets — liste des projets + recherche et filtre stack en query string. */
 export default async function PageProjets({ searchParams }: Props) {
@@ -42,7 +26,7 @@ export default async function PageProjets({ searchParams }: Props) {
       q: q || undefined,
       stack: stack || undefined,
       page,
-      pageSize: 12,
+      pageSize: 5,
     }),
     localeCourante(),
   ]);
@@ -68,7 +52,7 @@ export default async function PageProjets({ searchParams }: Props) {
         </Link>
       </header>
 
-      <form action="/projets" method="get" className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <form action="/projets" method="get" className="sticky top-0 z-10 -mx-6 flex flex-col gap-3 bg-cx-bg/85 px-6 py-2 backdrop-blur sm:flex-row sm:flex-wrap">
         <label htmlFor="q" className="sr-only">
           {t(locale, "projects.search")}
         </label>
@@ -146,43 +130,13 @@ export default async function PageProjets({ searchParams }: Props) {
           )}
         </section>
       ) : (
-        <ul className="flex flex-col gap-3">
-          {projets.map((projet) => (
-            <li
-              key={projet.id}
-              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60"
-            >
-              <Link href={`/projets/${projet.id}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">
-                  {projet.titre}
-                </h2>
-              </Link>
-
-              <p className="mt-1 line-clamp-2 text-sm text-cx-muted-fg">
-                {projet.description}
-              </p>
-
-              <p className="mt-2 text-xs text-cx-muted-fg">
-                {projet.author.nom} · {projet.author.ville}, {projet.author.pays} ·{" "}
-                {DATE.format(projet.createdAt)} ·{" "}
-                {projet._count.membres} {projet._count.membres > 1 ? t(locale, "projects.members_many") : t(locale, "projects.members_one")}
-              </p>
-
-              <ul className="mt-3 flex flex-wrap items-center gap-2">
-                {projet.stack.map((technologie) => (
-                  <li key={technologie}>
-                    <BadgeStack technologie={technologie} />
-                  </li>
-                ))}
-                {projet.cherche.length > 0 && (
-                  <li className="text-xs font-medium text-cx-muted-fg">
-                    {t(locale, "projects.search")}&nbsp;: {projet.cherche.join(", ")}
-                  </li>
-                )}
-              </ul>
-            </li>
-          ))}
-        </ul>
+        <ProjetsFeed
+          initialItems={projets}
+          totalPages={totalPages}
+          currentPage={pageActuelle}
+          locale={locale}
+          params={{ q: q || undefined, stack: stack || undefined }}
+        />
       )}
 
       <Pagination

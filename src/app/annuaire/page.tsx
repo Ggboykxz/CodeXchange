@@ -1,11 +1,10 @@
 import Link from "next/link";
-import Avatar from "@/components/avatar";
 import Pagination from "@/components/pagination";
 import { drapeau } from "@/lib/drapeaux";
 import { normalizePage } from "@/lib/pagination";
 import { localeCourante, t } from "@/lib/i18n";
-import { listCountries, listMembers, type MembreResume } from "@/lib/members";
-import LogoTechno from "@/components/logo-techno";
+import { listCountries, listMembers } from "@/lib/members";
+import { AnnuaireFeed } from "@/components/fils-listes";
 import { cn } from "@/lib/cn";
 
 export const metadata = { title: "Annuaire" };
@@ -13,60 +12,9 @@ export const metadata = { title: "Annuaire" };
 const CLASS_CHAMP =
   "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
-/** Nombre de badges de stack affichés sur une carte d'annuaire. */
-const BADGES_MAX = 3;
-
 type Props = {
   searchParams: Promise<{ pays?: string; stack?: string; q?: string; page?: string }>;
 };
-
-/** Badge stack : une pastille par technologie (3 max sur les cartes). */
-function BadgeStack({ technologie }: { technologie: string }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary">
-      <LogoTechno nom={technologie} className="size-3.5" />
-      {technologie}
-    </span>
-  );
-}
-
-/** Carte d'un membre : avatar, nom, titre, ville+pays avec drapeau, stack. */
-function CarteMembre({ membre }: { membre: MembreResume }) {
-  const visibles = membre.stack.slice(0, BADGES_MAX);
-  const restantes = membre.stack.length - visibles.length;
-
-  return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
-      <Link href={`/membres/${membre.slug}`} className="flex items-start gap-4">
-        <Avatar slug={membre.slug} nom={membre.nom} avatar={membre.avatar || undefined} />
-        <div className="min-w-0">
-          <h2 className="truncate text-lg font-semibold leading-snug hover:text-cx-primary">
-            {membre.nom}
-          </h2>
-          <p className="truncate text-sm text-cx-muted-fg">{membre.titre}</p>
-          <p className="mt-1 text-xs text-cx-muted-fg">
-            {drapeau(membre.pays)} {membre.ville}, {membre.pays}
-          </p>
-          <ul className="mt-3 flex flex-wrap items-center gap-2">
-            {visibles.map((technologie) => (
-              <li key={technologie}>
-                <BadgeStack technologie={technologie} />
-              </li>
-            ))}
-            {restantes > 0 && (
-              <li className="text-xs tabular-nums text-cx-muted-fg">+{restantes}</li>
-            )}
-            {membre.role === "MENTOR" && (
-              <li className="rounded-full bg-cx-warning/5 px-2.5 py-0.5 text-xs font-semibold text-cx-warning">
-                Mentor
-              </li>
-            )}
-          </ul>
-        </div>
-      </Link>
-    </li>
-  );
-}
 
 /** /annuaire — grille de membres + filtres pays/stack/recherche en query string. */
 export default async function PageAnnuaire({ searchParams }: Props) {
@@ -103,7 +51,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
         </Link>
       </header>
 
-      <form action="/annuaire" method="get" className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <form action="/annuaire" method="get" className="sticky top-0 z-10 -mx-6 flex flex-col gap-3 bg-cx-bg/85 px-6 py-2 backdrop-blur sm:flex-row sm:flex-wrap">
         <label htmlFor="q" className="sr-only">
           {t(locale, "directory.search")}
         </label>
@@ -193,11 +141,13 @@ export default async function PageAnnuaire({ searchParams }: Props) {
           )}
         </section>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {membres.map((membre) => (
-            <CarteMembre key={membre.id} membre={membre} />
-          ))}
-        </ul>
+        <AnnuaireFeed
+          initialItems={membres}
+          totalPages={totalPages}
+          currentPage={pageActuelle}
+          locale={locale}
+          params={{ q: q || undefined, pays: pays || undefined, stack: stack || undefined }}
+        />
       )}
 
       <Pagination

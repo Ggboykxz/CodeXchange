@@ -20,7 +20,7 @@ export default async function Tendances({ limite = 8 }: { limite?: number }) {
               <span className="font-medium text-cx-primary group-hover:underline">#{h.tag}</span>
             </Link>
             <span className="shrink-0 text-xs text-cx-muted-fg">
-              {h.count} sujet{h.count > 1 ? "s" : ""}
+              {h.count} {h.count > 1 ? t(locale, "trending.posts_many") : t(locale, "trending.posts_one")}
             </span>
           </li>
         ))}

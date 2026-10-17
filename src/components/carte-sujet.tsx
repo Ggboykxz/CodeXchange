@@ -24,6 +24,14 @@ function formatNombre(n: number): string {
 }
 
 /** Aperçu du corps en texte brut, tronqué (le markdown n'est pas rendu en fil). */
+/** Première image du corps : markdown `![alt](url)` ou URL image brute. */
+function premiereImage(texte: string): string | null {
+  const md = /!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/.exec(texte);
+  if (md) return md[1];
+  const nue = /(^|[\s])(https?:\/\/[^\s)]+\.(?:png|jpe?g|webp|gif))(?:$|[\s)])/i.exec(texte);
+  return nue ? nue[2] : null;
+}
+
 function apercu(texte: string, max = 180): string | null {
   const brut = texte
     .replace(/```[\s\S]*?```/g, " [code] ")
@@ -54,6 +62,7 @@ export default function CarteSujet({
     .map((m) => m.trim())
     .filter(Boolean);
   const texte = apercu(sujet.corps);
+  const media = premiereImage(sujet.corps);
 
   return (
     <li className="group relative border-b border-cx-border transition-colors duration-150 hover:bg-cx-muted/30">
@@ -84,7 +93,7 @@ export default function CarteSujet({
             </span>
             {estNouveau(sujet.createdAt) ? (
               <span className="rounded-md bg-cx-accent/10 px-1.5 py-px text-[11px] font-bold uppercase tracking-wide text-cx-accent-fort">
-                Nouveau
+                {t(locale, "sujet.nouveau")}
               </span>
             ) : null}
           </p>
@@ -98,6 +107,13 @@ export default function CarteSujet({
           </h2>
 
           {texte ? <p className="mt-0.5 max-w-[62ch] line-clamp-2 text-sm leading-5 text-cx-muted-fg">{texte}</p> : null}
+
+          {media ? (
+            <div className="relative mt-2 overflow-hidden rounded-2xl border border-cx-border">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={media} alt="" loading="lazy" className="max-h-72 w-full object-cover" />
+            </div>
+          ) : null}
 
           {tags.length > 0 ? (
             <ul className="relative z-10 mt-2 flex flex-wrap gap-1.5">
@@ -132,7 +148,7 @@ export default function CarteSujet({
               connecte={connecte}
               variante="action"
             />
-            <BoutonPartager path={`/forum/${sujet.id}`} />
+            <BoutonPartager path={`/forum/${sujet.id}`} libelle={t(locale, "forum.share")} />
           </div>
         </div>
       </article>

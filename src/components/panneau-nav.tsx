@@ -7,12 +7,14 @@ import { useNav } from "@/components/nav-context";
 import { Icone, type NomIcone } from "@/components/icones";
 import SelecteurLangue from "@/components/selecteur-langue";
 import SelecteurTheme from "@/components/selecteur-theme";
+import Avatar from "@/components/avatar";
 import { cn } from "@/lib/cn";
 import { t, type Locale } from "@/lib/i18n";
 import type { Theme } from "@/lib/theme";
 
 type Communaute = { tag: string; count: number };
-type Props = { locale: Locale; theme: Theme; communautes: Communaute[]; connecte: boolean };
+type Moi = { nom: string; slug: string; avatar?: string } | null;
+type Props = { locale: Locale; theme: Theme; communautes: Communaute[]; connecte: boolean; me?: Moi };
 
 const FIL: { href: string; cle: string; icone: NomIcone }[] = [
   { href: "/", cle: "nav.home", icone: "accueil" },
@@ -55,10 +57,10 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
         onClick={fermer}
         aria-current={actif ? "page" : undefined}
         className={cn(
-          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
+          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition",
           actif
-            ? "bg-cx-primary/5 text-cx-primary"
-            : "text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg",
+            ? "bg-cx-primary/5 font-bold text-cx-primary"
+            : "text-cx-muted-fg hover:bg-cx-muted/60 hover:text-cx-fg",
         )}
       >
         <Icone nom={icone} className="size-5 shrink-0" />
@@ -69,7 +71,7 @@ function Lien({ href, icone, libelle }: { href: string; icone: NomIcone; libelle
 }
 
 /** Navigation latérale façon Reddit (composant client : route active + drawer). */
-export default function PanneauNav({ locale, theme, communautes, connecte }: Props) {
+export default function PanneauNav({ locale, theme, communautes, connecte, me }: Props) {
   const { ouverte, fermer } = useNav();
   const refAside = useRef<HTMLElement>(null);
   const premierRendu = useRef(true);
@@ -197,6 +199,20 @@ export default function PanneauNav({ locale, theme, communautes, connecte }: Pro
               </Link>
             </div>
           )}
+          {/* Bloc utilisateur façon X : avatar + nom + @slug, tout en bas. */}
+          {connecte && me ? (
+            <Link
+              href="/profil"
+              onClick={fermer}
+              className="mt-3 flex items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-cx-muted/60"
+            >
+              <Avatar slug={me.slug} nom={me.nom} avatar={me.avatar} taille="sm" />
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-bold text-cx-fg">{me.nom}</span>
+                <span className="block truncate text-xs text-cx-muted-fg">@{me.slug}</span>
+              </span>
+            </Link>
+          ) : null}
         </nav>
       </aside>
     </>
