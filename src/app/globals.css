@@ -3,30 +3,30 @@
 /* ===== Tokens — style « developer community SaaS » (ui-ux-pro-max) ===== */
 /* Base claire (mode par défaut : meilleur contraste pour une démo en salle). */
 :root {
-  --cx-bg: #f8fafc;
-  --cx-fg: #1e293b;
-  --cx-primary: #2563eb;
+  --cx-bg: #fafaf9;
+  --cx-fg: #1c1917;
+  --cx-primary: #0f766e;
   --cx-primary-fg: #ffffff;
-  --cx-secondary: #1d4ed8;
+  --cx-secondary: #115e59;
   --cx-secondary-fg: #ffffff;
   --cx-accent: #c2410c;
   /* Variante de texte pour fonds teintés accent/10 (contraste ≥ 4,5:1). */
   --cx-accent-fort: #9a3412;
   --cx-accent-fg: #ffffff;
   --cx-card: #ffffff;
-  --cx-card-fg: #1e293b;
-  --cx-muted: #e9eff8;
-  --cx-muted-fg: #475569;
-  --cx-border: #cbd5e1;
+  --cx-card-fg: #1c1917;
+  --cx-muted: #f5f5f4;
+  --cx-muted-fg: #57534e;
+  --cx-border: #d6d3d1;
   /* Bordure des champs de saisie : contraste >= 3:1 sur bg ET card (WCAG 1.4.11). */
-  --cx-border-fort: #64748b;
+  --cx-border-fort: #78716c;
   --cx-destructive: #b91c1c;
   --cx-destructive-fg: #ffffff;
   --cx-success: #166534;
   --cx-success-fg: #ffffff;
   --cx-warning: #b45309;
   --cx-warning-fg: #ffffff;
-  --cx-ring: #2563eb;
+  --cx-ring: #0f766e;
   /* Ombres teintées slate-bleu (pas de #000 générique) — direction de lumière unique. */
   --cx-shadow-sm: 0 1px 2px 0 rgb(23 37 84 / 0.07);
   --cx-shadow-md: 0 2px 8px -2px rgb(23 37 84 / 0.10);
@@ -37,28 +37,28 @@
 
 /* Thème sombre explicite : `data-theme="dark"` sur <html>. */
 :root[data-theme="dark"] {
-  --cx-bg: #0f172a;
-  --cx-fg: #f8fafc;
-  --cx-primary: #60a5fa;
-  --cx-primary-fg: #0f172a;
-  --cx-secondary: #3b82f6;
-  --cx-secondary-fg: #0f172a;
+  --cx-bg: #1c1917;
+  --cx-fg: #fafaf9;
+  --cx-primary: #2dd4bf;
+  --cx-primary-fg: #1c1917;
+  --cx-secondary: #14b8a6;
+  --cx-secondary-fg: #1c1917;
   --cx-accent: #fb923c;
   --cx-accent-fort: #fdba74;
-  --cx-accent-fg: #0f172a;
-  --cx-card: #1e293b;
-  --cx-card-fg: #f8fafc;
-  --cx-muted: #334155;
-  --cx-muted-fg: #cbd5e1;
-  --cx-border: #475569;
-  --cx-border-fort: #64748b;
+  --cx-accent-fg: #1c1917;
+  --cx-card: #292524;
+  --cx-card-fg: #fafaf9;
+  --cx-muted: #44403c;
+  --cx-muted-fg: #d6d3d1;
+  --cx-border: #57534e;
+  --cx-border-fort: #78716c;
   --cx-destructive: #f87171;
-  --cx-destructive-fg: #0f172a;
+  --cx-destructive-fg: #1c1917;
   --cx-success: #4ade80;
-  --cx-success-fg: #0f172a;
+  --cx-success-fg: #1c1917;
   --cx-warning: #fbbf24;
-  --cx-warning-fg: #0f172a;
-  --cx-ring: #60a5fa;
+  --cx-warning-fg: #1c1917;
+  --cx-ring: #2dd4bf;
   --cx-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.40);
   --cx-shadow-md: 0 2px 8px -2px rgb(0 0 0 / 0.45);
   --cx-shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.50);
@@ -201,7 +201,7 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: -1;
-  background-image: radial-gradient(circle, rgb(37 99 235 / 0.06) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgb(15 118 110 / 0.06) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 * {
