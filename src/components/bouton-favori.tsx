@@ -11,9 +11,11 @@ type Props = {
   targetId: number;
   initial: boolean;
   connecte: boolean;
+  /** `action` = étoile seule façon X (barre d'actions du détail). */
+  variante?: "encadre" | "action";
 };
 
-export default function BoutonFavori({ kind, targetId, initial, connecte }: Props) {
+export default function BoutonFavori({ kind, targetId, initial, connecte, variante = "encadre" }: Props) {
   const router = useRouter();
   const toast = useToast();
   const [favori, setFavori] = useState(initial);
@@ -46,13 +48,23 @@ export default function BoutonFavori({ kind, targetId, initial, connecte }: Prop
       type="button"
       onClick={basculer}
       disabled={busy}
+      aria-pressed={favori}
       className={cn(
-        "inline-flex min-h-[44px] cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
-        favori ? "border-cx-warning/60 bg-cx-warning/5 text-cx-warning" : "border-cx-border bg-cx-card text-cx-muted-fg hover:bg-cx-muted",
+        variante === "action"
+          ? "inline-flex min-h-[33px] cursor-pointer items-center rounded-full px-2.5 py-1.5 text-xs font-semibold transition active:scale-[0.97] disabled:opacity-60"
+          : "inline-flex min-h-[44px] cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+        variante === "action"
+          ? favori
+            ? "text-cx-warning hover:bg-cx-warning/10"
+            : "text-cx-muted-fg hover:bg-cx-warning/10 hover:text-cx-warning"
+          : favori
+            ? "border-cx-warning/60 bg-cx-warning/5 text-cx-warning"
+            : "border-cx-border bg-cx-card text-cx-muted-fg hover:bg-cx-muted",
       )}
       title={connecte ? "Ajouter/retirer des favoris" : "Se connecter pour favoriser"}
     >
-      {favori ? <IconeAnimee nom="etoile" className="mr-1 inline size-3" /> : <IconeAnimee nom="etoile-vide" className="mr-1 inline size-3" />} Favori
+      {favori ? <IconeAnimee nom="etoile" className="inline size-4" /> : <IconeAnimee nom="etoile-vide" className="inline size-4" />}
+      {variante === "encadre" ? " Favori" : null}
     </button>
   );
 }

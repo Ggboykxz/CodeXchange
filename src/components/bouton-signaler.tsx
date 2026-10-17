@@ -47,12 +47,14 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
       <button
         type="button"
         onClick={() => setOuvert((v) => !v)}
+        aria-label={libelle === "" ? "Signaler" : undefined}
         className={cn(
-          "inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 px-2 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]",
+          "inline-flex min-h-[33px] cursor-pointer items-center gap-1.5 px-2.5 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]",
+          "hover:text-cx-fg",
           RAYON.md,
         )}
       >
-        <Icone nom="signaler" className="size-3.5" />
+        <Icone nom="signaler" className="size-4" />
         {libelle}
       </button>
       {ouvert ? (

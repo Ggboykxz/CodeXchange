@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 import { Icone } from "@/components/icones";
 
 type Props = {
@@ -9,12 +10,14 @@ type Props = {
   connecte: boolean;
   likedByMe: boolean;
   compteur: number;
+  /** `action` = pastille compacte façon X (barre d'actions du détail). */
+  variante?: "encadre" | "action";
 };
 
 type CorpsReponse = { actif?: boolean; message?: string };
 
 /** Bouton like : POST /api/forum/[id]/like ; grisé et inactif si non connecté. */
-export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Props) {
+export default function BoutonLike({ postId, connecte, likedByMe, compteur, variante = "encadre" }: Props) {
   const router = useRouter();
   const [aime, setAime] = useState(likedByMe);
   const [nombre, setNombre] = useState(compteur);
@@ -22,6 +25,20 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
   const [erreur, setErreur] = useState<string | null>(null);
 
   if (!connecte) {
+    if (variante === "action") {
+      // Façon X : l'action reste rendue mais renvoie à la connexion.
+      return (
+        <Link
+          href="/connexion"
+          aria-label="Connectez-vous pour liker ce sujet"
+          title="Connectez-vous pour liker ce sujet"
+          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-accent/10 hover:text-cx-accent"
+        >
+          <Icone nom="coeur" className={`size-4 ${aime ? "fill-current" : ""}`} />{" "}
+          <span className="tabular-nums">{nombre}</span>
+        </Link>
+      );
+    }
     return (
       <button
         type="button"
@@ -56,6 +73,32 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur }: Pr
     }
   }
 
+  const etiquete = aime ? "Aimé" : "J'aime";
+  if (variante === "action") {
+    return (
+      <span className="inline-flex items-center">
+        <button
+          type="button"
+          onClick={basculer}
+          disabled={enCours}
+          aria-busy={enCours}
+          aria-pressed={aime}
+          aria-label={`${etiquete} · ${nombre}`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition disabled:opacity-60 ${
+            aime ? "text-cx-accent hover:bg-cx-accent/10" : "text-cx-muted-fg hover:bg-cx-accent/10 hover:text-cx-accent"
+          }`}
+        >
+          <Icone nom="coeur" className={`size-4 ${aime ? "fill-current" : ""}`} />{" "}
+          <span className="tabular-nums">{nombre}</span>
+        </button>
+        {erreur && (
+          <span role="alert" className="ml-1 text-xs text-cx-destructive">
+            !
+          </span>
+        )}
+      </span>
+    );
+  }
   return (
     <span className="flex flex-wrap items-center gap-2">
       <button

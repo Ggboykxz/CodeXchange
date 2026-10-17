@@ -12,6 +12,8 @@ type Props = {
   slug?: string;
   initial: EtatRepost;
   connecte: boolean;
+  /** `action` = pastille compacte façon X ; omet la copie de lien interne. */
+  variante?: "encadre" | "action";
 };
 
 type CorpsErr = { message?: string };
@@ -21,7 +23,7 @@ type CorpsErr = { message?: string };
  * Toggle optimiste : repost → annulation. La copie du lien utilise le
  * presse-papiers avec repli `execCommand` et un retour visuel « Copié ✓ ».
  */
-export default function BoutonRepost({ postId, initial, connecte }: Props) {
+export default function BoutonRepost({ postId, initial, connecte, variante = "encadre" }: Props) {
   const router = useRouter();
   const [etat, setEtat] = useState<EtatRepost>(initial);
   const [enCours, demarrer] = useTransition();
@@ -82,6 +84,30 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
   return (
     <span className="inline-flex flex-col gap-1">
       <span className="inline-flex items-center gap-2">
+        {variante === "action" ? (
+          <button
+            type="button"
+            onClick={basculer}
+            disabled={enCours}
+            aria-busy={enCours}
+            aria-pressed={etat.jeLaiReposte}
+            aria-label={`Repost · ${etat.repostes}`}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition disabled:opacity-60",
+              etat.jeLaiReposte
+                ? "text-cx-success hover:bg-cx-success/10"
+                : "text-cx-muted-fg hover:bg-cx-success/10 hover:text-cx-success",
+            )}
+          >
+            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M17 1l4 4-4 4" />
+              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+              <path d="M7 23l-4-4 4-4" />
+              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+            </svg>
+            {etat.repostes > 0 ? <span className="tabular-nums">{etat.repostes}</span> : null}
+          </button>
+        ) : (
         <button
           type="button"
           onClick={basculer}
@@ -105,6 +131,8 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
           Repost
           {etat.repostes > 0 ? <span className="tabular-nums">{etat.repostes}</span> : null}
         </button>
+        )}
+        {variante === "action" ? null : (
         <button
           type="button"
           onClick={copierLien}
@@ -116,6 +144,7 @@ export default function BoutonRepost({ postId, initial, connecte }: Props) {
           {copie ? <Icone nom="copie" className="size-4" /> : <Icone nom="partage" className="size-4" />}
           {copie ? "Lien copié" : "Partager"}
         </button>
+        )}
       </span>
       {erreur ? (
         <span role="alert" className="text-xs text-cx-destructive">
