@@ -182,7 +182,7 @@ export default async function PageSujet({ params }: Props) {
         </div>
       </article>
 
-      <section id="repondre" className="flex flex-col gap-4 border-t border-cx-border pt-4">
+      <section id="repondre" className="flex scroll-mt-16 flex-col gap-4 border-t border-cx-border pt-4">
         <h2 className="text-sm font-bold uppercase tracking-wide text-cx-muted-fg">
           {sujet.replies.length === 0
             ? t(locale, "forum.answers_zero")
