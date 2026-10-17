@@ -1,0 +1,11 @@
+query,intent,monthly_volume,difficulty,target_url,status,current_position,last_checked
+communauté développeurs Afrique,informational,unknown,unknown,/,gap,,,2026-10-17
+forum développeurs francophone,informational,unknown,unknown,/forum,gap,,,2026-10-17
+offres emploi développeur Afrique,transactional,unknown,unknown,/jobs,gap,,,2026-10-17
+mentorat développeur,informational,unknown,unknown,/mentorat,gap,,,2026-10-17
+projets open source Afrique,informational,unknown,unknown,/projets,gap,,,2026-10-17
+événements tech Afrique,informational,unknown,unknown,/evenements,gap,,,2026-10-17
+tutoriels développeur français,informational,unknown,unknown,/tutos,gap,,,2026-10-17
+annuaire développeurs Afrique,informational,unknown,unknown,/annuaire,gap,,,2026-10-17
+recruter développeur Afrique,transactional,unknown,unknown,/jobs,gap,,,2026-10-17
+co-fondateur développeur,transactional,unknown,unknown,/projets,gap,,,2026-10-17
