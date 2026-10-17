@@ -19,10 +19,11 @@ export default async function PageProfil() {
 
   const membre = await prisma.user.findUnique({
     where: { id: userId },
-    select: { nom: true, slug: true, titre: true, ville: true, pays: true, bio: true, avatar: true, stack: true, role: true },
+    select: { nom: true, slug: true, titre: true, ville: true, pays: true, bio: true, avatar: true, stack: true, role: true, github: true, linkedin: true, site: true },
   });
   if (!membre) redirect("/connexion");
-  const postsDuMembre = await prisma.post.findMany({ where: { authorId: userId }, select: { id: true } });
+  const postsDuMembre = await prisma.post.findMany({ where: { authorId: userId }, select: { id: true, titre: true }, orderBy: { createdAt: "desc" }, take: 1 });
+  const postEpingle = postsDuMembre[0] ?? null;
   const karma = (await prisma.like.aggregate({ _sum: { valeur: true }, where: { postId: { in: postsDuMembre.map((p) => p.id) } } }))._sum.valeur ?? 0;
   const [postsCreations, reponsesCrees, reactionsDonnees, favorisSauves] = await Promise.all([
     prisma.post.count({ where: { authorId: userId } }),
@@ -37,19 +38,67 @@ export default async function PageProfil() {
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
       <h1 className="text-3xl font-black tracking-tight">{t(locale, "profile.title")}</h1>
 
-      <section className="flex flex-col gap-4 rounded-xl border border-cx-border px-5 py-5">
-        <div className="flex items-center gap-4">
-          <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
-          <div>
-            <p className="text-lg font-semibold">{membre.nom}</p>
-            <p className="text-sm text-cx-muted-fg">Karma : {karma}</p>
+      <section className="overflow-hidden rounded-2xl border border-cx-border">
+        {/* Bannière déterministe à partir du slug (pas de champ supplémentaire). */}
+        <div
+          className="h-32 w-full bg-cx-primary/10"
+          aria-hidden
+        />
+        <div className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-end sm:gap-5">
+          <div className="-mt-12 shrink-0">
+            <Avatar slug={membre.slug} nom={membre.nom} taille="lg" avatar={membre.avatar || undefined} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xl font-bold">{membre.nom}</p>
+            <p className="text-sm text-cx-muted-fg">@{membre.slug}</p>
             <p className="text-sm text-cx-muted-fg">
               {membre.titre} · {drapeau(membre.pays)} {membre.ville}, {membre.pays}
             </p>
+            <p className="text-sm text-cx-muted-fg">Karma : {karma}</p>
           </div>
         </div>
-        <FormulaireAvatar avatarActuel={membre.avatar} />
+        <div className="px-5 pb-5">
+          <FormulaireAvatar avatarActuel={membre.avatar} />
+        </div>
       </section>
+
+      {(membre.github || membre.linkedin || membre.site) ? (
+        <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
+          <h2 className="font-semibold">Liens</h2>
+          <ul className="mt-2 flex flex-wrap gap-3">
+            {membre.github ? (
+              <li>
+                <a href={membre.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-cx-primary hover:underline">
+                  GitHub
+                </a>
+              </li>
+            ) : null}
+            {membre.linkedin ? (
+              <li>
+                <a href={membre.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-cx-primary hover:underline">
+                  LinkedIn
+                </a>
+              </li>
+            ) : null}
+            {membre.site ? (
+              <li>
+                <a href={membre.site} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-cx-primary hover:underline">
+                  Site web
+                </a>
+              </li>
+            ) : null}
+          </ul>
+        </section>
+      ) : null}
+
+      {postEpingle ? (
+        <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
+          <h2 className="font-semibold">Sujet épinglé</h2>
+          <Link href={`/forum/${postEpingle.id}`} className="mt-2 block font-medium text-cx-primary hover:underline">
+            {postEpingle.titre}
+          </Link>
+        </section>
+      ) : null}
 
       <section className="rounded-xl border border-cx-border px-5 py-5 text-sm">
         <h2 className="font-semibold">{t(locale, "profile.bio")}</h2>

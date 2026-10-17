@@ -159,7 +159,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte, me }:
                 {communautes.slice(0, 4).map((c) => (
                   <Lien
                     key={c.tag}
-                    href={`/forum?tag=${encodeURIComponent(c.tag)}`}
+                    href={`/c/${encodeURIComponent(c.tag)}`}
                     icone="forum"
                     libelle={`c/${c.tag}`}
                   />

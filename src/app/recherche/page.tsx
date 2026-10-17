@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Recherche" };
 
 
-type Props = { searchParams: Promise<{ q?: string }> };
+type Props = { searchParams: Promise<{ q?: string; type?: string }> };
 
 function encodage(q: string): string {
   return encodeURIComponent(q);
@@ -18,6 +18,7 @@ function encodage(q: string): string {
 export default async function PageRecherche({ searchParams }: Props) {
   const params = await searchParams;
   const q = (params.q ?? "").trim();
+  const typeFiltre = params.type ?? "all";
   const [resultat, locale, suggestions] = await Promise.all([
     searchCodeXchange(q),
     localeCourante(),
@@ -32,12 +33,14 @@ export default async function PageRecherche({ searchParams }: Props) {
     resultat.tutos.length;
 
   const sections: {
+    cle: string;
     titre: string;
     hrefBase: string;
     voirTout: string;
     items: { id: string; titre: string; href: string; meta?: string }[];
   }[] = [
     {
+      cle: "forum",
       titre: t(locale, "nav.forum"),
       hrefBase: "/forum",
       voirTout: `/forum?q=${encodage(q)}`,
@@ -48,6 +51,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
+      cle: "jobs",
       titre: t(locale, "nav.jobs"),
       hrefBase: "/jobs",
       voirTout: `/jobs?q=${encodage(q)}`,
@@ -59,6 +63,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
+      cle: "projets",
       titre: t(locale, "nav.projects"),
       hrefBase: "/projets",
       voirTout: `/projets?q=${encodage(q)}`,
@@ -70,6 +75,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
+      cle: "membres",
       titre: t(locale, "nav.directory"),
       hrefBase: "/annuaire",
       voirTout: `/annuaire?q=${encodage(q)}`,
@@ -81,6 +87,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       })),
     },
     {
+      cle: "tutos",
       titre: t(locale, "nav.tutorials"),
       hrefBase: "/tutos",
       voirTout: `/tutos?q=${encodage(q)}`,
@@ -103,6 +110,28 @@ export default async function PageRecherche({ searchParams }: Props) {
         <div className="max-w-md">
           <BarreRecherche suggestions={suggestions} />
         </div>
+        <nav className="flex flex-wrap gap-2" aria-label="Filtre de recherche">
+          {[
+            { cle: "all", libelle: "Tout" },
+            { cle: "forum", libelle: t(locale, "nav.forum") },
+            { cle: "jobs", libelle: t(locale, "nav.jobs") },
+            { cle: "projets", libelle: t(locale, "nav.projects") },
+            { cle: "membres", libelle: t(locale, "nav.directory") },
+            { cle: "tutos", libelle: t(locale, "nav.tutorials") },
+          ].map((f) => (
+            <Link
+              key={f.cle}
+              href={`/recherche?q=${encodage(q)}&type=${f.cle}`}
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                typeFiltre === f.cle
+                  ? "bg-cx-primary text-cx-primary-fg"
+                  : "border border-cx-border text-cx-muted-fg hover:bg-cx-muted"
+              }`}
+            >
+              {f.libelle}
+            </Link>
+          ))}
+        </nav>
       </header>
 
       {total === 0 ? (
@@ -119,7 +148,7 @@ export default async function PageRecherche({ searchParams }: Props) {
       ) : (
         <div className="flex flex-col gap-8">
           {sections
-            .filter((section) => section.items.length > 0)
+            .filter((section) => section.items.length > 0 && (typeFiltre === "all" || section.cle === typeFiltre))
             .map((section) => (
               <section key={section.titre} className="flex flex-col gap-3">
                 <div className="flex items-end justify-between">
