@@ -194,7 +194,16 @@ button:not(:disabled):active,
   opacity: 1 !important;
 }
 
-/* Petites améliorations UX : prévisualisation tactile, retour haut. */
+/* Motif de points subtil (identité visuelle, pas un dégradé de couleur). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image: radial-gradient(circle, rgb(37 99 235 / 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
 * {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
