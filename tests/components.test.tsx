@@ -33,12 +33,13 @@ describe("composants partagés", () => {
     expect(a).toBe(b);
   });
 
-  it("Header rend la barre Reddit (logo, recherche, actions)", async () => {
+  it("Header rend la barre (logo, recherche unique via palette ⌘K, actions)", async () => {
     const element = await Header();
     const html = renderToStaticMarkup(element);
-    // Logo + recherche centrée + actions de compte.
+    // Logo + palette de recherche (une seule interface de recherche) + actions.
     expect(html).toContain("/");
-    expect(html).toContain("Rechercher partout…");
+    expect(html).toContain("Rechercher…");
+    expect(html).toContain("⌘K");
     expect(html).toContain("Connexion");
     // Le menu ☰ ouvre la navigation latérale.
     expect(html).toContain("navigation-laterale");

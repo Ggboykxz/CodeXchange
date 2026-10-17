@@ -129,7 +129,7 @@ export default async function PageEvenements({ searchParams }: Props) {
               </Link>
 
               <p className="mt-1 text-xs text-cx-muted-fg">
-                <time dateTime={evenement.date.toISOString()}>
+                <time dateTime={evenement.date.toISOString()} suppressHydrationWarning>
                   {DATE.format(evenement.date)} · {HEURE.format(evenement.date)}
                 </time>{" "}
                 · <LieuEvenement evenement={evenement} />

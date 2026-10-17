@@ -47,8 +47,12 @@ type ResultatRecherche = {
 /**
  * Palette de commandes façon « Cmd+K » : recherche instantanée sur toutes les
  * rubriques (pages + contenus réels), navigation clavier complète.
+ *
+ * Un seul endroit pour chercher : la zone de recherche du header (desktop)
+ * OUVRIT cette palette — pas deux interfaces divergentes. `pleine` rend la
+ * déclencheuse en faux champ pleine largeur (look X).
  */
-export default function PaletteCommandes() {
+export default function PaletteCommandes({ pleine = false }: { pleine?: boolean }) {
   const router = useRouter();
   const [ouvert, setOuvert] = useState(false);
   const [q, setQ] = useState("");
@@ -166,16 +170,20 @@ export default function PaletteCommandes() {
         onClick={() => setOuvert(true)}
         aria-keyshortcuts="Meta+K Control+K"
         title="Recherche rapide (Ctrl/⌘+K)"
-        className="hidden items-center gap-2 rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm text-cx-muted-fg transition hover:bg-cx-muted sm:inline-flex"
+        className={
+          pleine
+            ? "flex w-full items-center gap-2 rounded-full border border-cx-border-fort bg-cx-muted/40 px-4 py-2.5 text-sm text-cx-muted-fg transition hover:border-cx-border hover:bg-cx-muted"
+            : "hidden items-center gap-2 rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm text-cx-muted-fg transition hover:bg-cx-muted sm:inline-flex"
+        }
       >
         <Icone nom="recherche" className="size-4" />
         <span>Rechercher…</span>
-        <kbd className="ml-2 rounded border border-cx-border px-1.5 py-0.5 text-[10px] text-cx-muted-fg">⌘K</kbd>
+        <kbd className={pleine ? "ml-auto rounded-md border border-cx-border px-1.5 py-0.5 text-[11px] font-medium text-cx-muted-fg" : "ml-2 rounded border border-cx-border px-1.5 py-0.5 text-[11px] text-cx-muted-fg"}>⌘K</kbd>
       </button>
 
       {ouvert ? (
         <div
-          className="fixed inset-0 z-[60] flex items-start justify-center bg-black/40 px-4 pt-[max(12dvh,env(safe-area-inset-top))]"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 pt-[max(12dvh,env(safe-area-inset-top))]"
           onClick={fermer}
         >
           <div
@@ -199,7 +207,7 @@ export default function PaletteCommandes() {
                 aria-label="Rechercher sur CodeXchange"
                 className="w-full bg-transparent text-sm outline-none placeholder:text-cx-muted-fg"
               />
-              <kbd className="rounded border border-cx-border px-1.5 py-0.5 text-[10px] text-cx-muted-fg">ESC</kbd>
+              <kbd className="rounded border border-cx-border px-1.5 py-0.5 text-[11px] text-cx-muted-fg">ESC</kbd>
             </div>
 
             <div ref={listeRef} className="max-h-[55dvh] overflow-y-auto overscroll-contain py-2">

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import ForumFeed from "@/components/forum-feed";
 import Pagination from "@/components/pagination";
@@ -52,13 +51,34 @@ export default async function PageForum({ searchParams }: Props) {
           href="/forum/nouveau"
         />
       ) : (
+        <>
+          <SelecteurTri
+          basePath="/forum"
+          params={{ q: params.q, tag: params.tag }}
+          actuelle={tri ?? "hot"}
+          options={[
+            { valeur: "hot", cle: "hot" },
+            { valeur: "new", cle: "new" },
+            { valeur: "top", cle: "top" },
+          ]}
+          libelles={{
+            tri: t(locale, "sort.label"),
+            hot: t(locale, "sort.hot"),
+            new: t(locale, "sort.new"),
+            top: t(locale, "sort.top"),
+          }}
+        />
+
         <ForumFeed
           initialItems={sujets}
           totalPages={totalPages}
           currentPage={pageActuelle}
           basePath="/forum"
           locale={locale}
+          connecte={userId !== null}
+          params={{ q: params.q, tag: params.tag, tri }}
         />
+        </>
       )}
 
       {/* Pagination traditionnelle en pied de page pour le partage direct / SEO */}

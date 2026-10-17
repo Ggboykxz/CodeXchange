@@ -226,7 +226,7 @@ export default function LogoTechno({ nom, className = "size-4" }: { nom: string;
       <span
         aria-hidden="true"
         className={cn(
-          "inline-flex shrink-0 items-center justify-center rounded-md bg-cx-muted/40 text-[10px] font-bold leading-none text-cx-muted-fg",
+          "inline-flex shrink-0 items-center justify-center rounded-md bg-cx-muted/40 text-[11px] font-bold leading-none text-cx-muted-fg",
           className,
         )}
       >

@@ -66,7 +66,7 @@ export default async function PageEvenement({ params }: Props) {
           {evenement.titre}
         </h1>
         <p className="text-sm tabular-nums text-cx-muted-fg">
-          <time dateTime={evenement.date.toISOString()}>
+          <time dateTime={evenement.date.toISOString()} suppressHydrationWarning>
             {DATE.format(evenement.date)} à {HEURE.format(evenement.date)}
           </time>
         </p>

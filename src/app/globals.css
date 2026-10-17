@@ -10,6 +10,8 @@
   --cx-secondary: #1d4ed8;
   --cx-secondary-fg: #ffffff;
   --cx-accent: #c2410c;
+  /* Variante de texte pour fonds teintés accent/10 (contraste ≥ 4,5:1). */
+  --cx-accent-fort: #9a3412;
   --cx-accent-fg: #ffffff;
   --cx-card: #ffffff;
   --cx-card-fg: #1e293b;
@@ -42,6 +44,7 @@
   --cx-secondary: #3b82f6;
   --cx-secondary-fg: #0f172a;
   --cx-accent: #fb923c;
+  --cx-accent-fort: #fdba74;
   --cx-accent-fg: #0f172a;
   --cx-card: #1e293b;
   --cx-card-fg: #f8fafc;
@@ -110,6 +113,7 @@
   --color-cx-secondary: var(--cx-secondary);
   --color-cx-secondary-fg: var(--cx-secondary-fg);
   --color-cx-accent: var(--cx-accent);
+  --color-cx-accent-fort: var(--cx-accent-fort);
   --color-cx-accent-fg: var(--cx-accent-fg);
   --color-cx-card: var(--cx-card);
   --color-cx-card-fg: var(--cx-card-fg);

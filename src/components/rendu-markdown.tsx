@@ -20,7 +20,7 @@ function BlocCodeCopiable({ code }: { code: string }) {
         }}
         aria-label="Copier le code"
         title="Copier le code"
-        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md border border-cx-border bg-cx-card px-2 py-1 text-[10px] font-semibold text-cx-muted-fg opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100 hover:text-cx-fg"
+        className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-md border border-cx-border bg-cx-card px-2 py-1 text-[11px] font-semibold text-cx-muted-fg opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100 hover:text-cx-fg"
       >
         <IconeAnimee nom="copie" className="size-3" />
         Copier

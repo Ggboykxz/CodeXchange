@@ -84,16 +84,16 @@ export const membresDemo: SeedMember[] = [
 ];
 
 export const sujetsDemo: SeedSujet[] = [
-  { titre: "Bug Flutter Android 14 : imposible de signer le .aab", tags: ["flutter", "android"], corps: "Depuis la mise à jour Android 14, `flutter build appbundle` refuse de signer. L'erreur est `Keystore was tampered with, or password was incorrect`. J'ai tout vérifié — mot de passe, alias, keytool. Quelqu'un a déjà eu cette erreur ?" },
+  { titre: "Bug Flutter Android 14 : impossible de signer le .aab", tags: ["flutter", "android"], corps: "Depuis la mise à jour Android 14, `flutter build appbundle` refuse de signer. L'erreur est `Keystore was tampered with, or password was incorrect`. J'ai tout vérifié — mot de passe, alias, keytool. Quelqu'un a déjà eu cette erreur ?" },
   { titre: "Freelance : comment facturer depuis le Gabon en euros ?", tags: ["business", "freelance"], corps: "Je reçois mes paiements en EUR mais mon compte est en FCFA. Taux changeant, frais de conversion, TVA. Quelle méthode vous utilisez (PayPal, Wise, cryptomonnaie) ?" },
   { titre: "Retour sur mon premier portfolio de dev : ce qu'il faut garder", tags: ["carriere", "portfolio"], corps: "Après 6 mois de recherche, j'ai réduit mon portfolio de 12 à 4 projets. Émergence de 3 entretiens directs. Leçons à partager." },
   { titre: "Prisma + Next.js 15 : cold start sur Vercel serverless", tags: ["nextjs", "prisma", "vercel"], corps: "Ma route handler met 4,5 s au premier call. connexion DB ré-ouverte à chaque fois. J'ai essayé globalForPrisma, sans effet. Comment structurez-vous le client ?" },
   { titre: "Mode hors-ligne avec React Native : SQLite ou Realm ?", tags: ["reactnative", "offline"], corps: "App terrain pour agents de santé. Données locales synchronisées au retour au réseau. Realm semble lourd, SQLite manuel aussi. Vos recommandations ?" },
-  { titre: "Comment structurer un projet Flutter vRfavorisement multi-flaveurs?", tags: ["flutter", "architecture"], corps: "Environnements dev, staging, prod. Je cherche une base propre des flavors, des targets et des variables d'environnement sans bricole." },
+  { titre: "Comment structurer un projet Flutter avec plusieurs flavors ?", tags: ["flutter", "architecture"], corps: "Environnements dev, staging, prod. Je cherche une base propre des flavors, des targets et des variables d'environnement sans bricole." },
   { titre: "De mon avis : TypeScript strict casse-t-il la productivité ?", tags: ["typescript", "debats"], corps: "Je passe de JS à TS strict. Grâce aux tests, je détecte des erreurs tôt. Mais certains collègues disent que ça ralentit. Opinions ?" },
   { titre: "Réseau Dev @ Libreville — prochain meet-up octobre", tags: ["evenement", "reseau"], corps: "Meet-up prévu le 19 octobre au Centre Culturel, quartier Charbonnage. Inscription gratuite, 3 talks (Flutter, IA, DevOps). Venez nombreux." },
   { titre: "Migration de mon backend Django vers NestJS : leçons", tags: ["django", "nestjs", "migration"], corps: "Après 3 mois, migration faite. Tests réduits de 2 h à 12 min. Retour d'expérience pour qui envisage." },
-  { titre: "Aide : erreur CORS sur Vercel + API Laravel", tags: ["api", "cors", "laravel"], corps: "Route sur `api.kodexample.com` consommée par le front Vercel. OPTIONS ok, GET échoue. Config CORS côté Laravel, mais rien. Béret, suggestions." },
+  { titre: "Aide : erreur CORS sur Vercel + API Laravel", tags: ["api", "cors", "laravel"], corps: "Route sur `api.kodexample.com` consommée par le front Vercel. OPTIONS ok, GET échoue. Config CORS côté Laravel, mais rien. Bref, suggestions." },
   { titre: "Prompts efficaces pour coder avec DeepSeek dans le terminal", tags: ["ia", "deepseek"], corps: "Je termine l'installation DeepSeek-Coder en CLI. Quels contextes, vapiseaux et prompts donnez-vous pour ne pas perdre le fil." },
   { titre: "Comment lancer une petite startup SaaS depuis le Cameroun ?", tags: ["business", "saas"], corps: "Trouver les premiers clients, mentionner Facebook/WhatsApp groupes dev, partenariats incubateurs. Votre parcours ?" },
   { titre: "Next.js 15 + cache : invalidation manuelle dans les routes", tags: ["nextjs", "cache"], corps: "RevalidateTag, RevalidatePath. En production serveur serverless, cache semble parfois désynchronisé. Que vérifiez-vous ?" },
@@ -194,7 +194,7 @@ export const messagesDemo: SeedMessage[] = [
 export type SeedNotification = { destinataire: string; type: string; text: string; lien: string; jours: number; lue: boolean };
 
 export const notificationsDemo: SeedNotification[] = [
-  { destinataire: "admin@cx.test", type: "reponse", text: "Kossi Aho a répondu à ton sujet « Bug Flutter Android 14 : imposible de signer le .aab ».", lien: "@sujet0", jours: 0, lue: false },
+  { destinataire: "admin@cx.test", type: "reponse", text: "Kossi Aho a répondu à ton sujet « Bug Flutter Android 14 : impossible de signer le .aab ».", lien: "@sujet0", jours: 0, lue: false },
   { destinataire: "admin@cx.test", type: "message", text: "Boris Mendogo t'a envoyé un message privé.", lien: "/messagerie", jours: 0, lue: false },
   { destinataire: "admin@cx.test", type: "reaction", text: "Aïcha Ondo ❤️ a réagi à ton sujet sur Flutter.", lien: "@sujet0", jours: -2, lue: true },
   { destinataire: "admin@cx.test", type: "mentorat", text: "Fatou Ndiaye a répondu à ta demande de mentorat « pilotage de données ».", lien: "@mentorat", jours: -3, lue: true },

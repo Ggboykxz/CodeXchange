@@ -44,7 +44,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <ThemeScript />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a" />
       </head>
       <body className="min-h-dvh bg-cx-bg font-sans text-cx-fg antialiased">
         {/* Skip to content */}

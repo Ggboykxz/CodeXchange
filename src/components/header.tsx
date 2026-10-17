@@ -10,8 +10,7 @@ import { getSessionUserId } from "@/lib/session";
 import { unreadCount } from "@/lib/notifications";
 import { prisma } from "@/lib/db";
 import { localeCourante, t } from "@/lib/i18n";
-import BarreRecherche from "./barre-recherche";
-import PaletteCommandes from "@/components/palette-commandes";
+import PaletteCommandes from "./palette-commandes";
 import { suggestionsRecherche } from "@/lib/suggestions";
 
 /**
@@ -45,18 +44,16 @@ export async function Header() {
             <Logo />
           </div>
 
-          {/* Centre : recherche centrée (Reddit). En mobile : icône à droite. */}
+          {/* Centre : LA recherche — la palette ⌘K façon X (desktop). En
+              mobile : menu dropdown via l'icône à droite. Pas deux interfaces. */}
           <div className="hidden flex-1 justify-center px-4 md:flex">
             <div className="w-full max-w-md">
-              <BarreRecherche suggestions={suggestions} />
+              <PaletteCommandes pleine />
             </div>
           </div>
 
           {/* Droite : actions. */}
           <div className="ml-auto flex items-center gap-1.5">
-            <div className="hidden md:block">
-              <PaletteCommandes />
-            </div>
             <div className="md:hidden">
               <RechercheDropdown locale={locale} suggestions={suggestions} />
             </div>

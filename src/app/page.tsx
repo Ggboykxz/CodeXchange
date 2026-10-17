@@ -6,30 +6,13 @@ import { getSessionUserId } from "@/lib/session";
 import VisuelAccueil from "@/components/visuel-accueil";
 import Avatar from "@/components/avatar";
 import CarteSujet from "@/components/carte-sujet";
-import CompteurAnime from "@/components/compteur-anime";
 import { topHashtags } from "@/lib/hashtags";
 import { listPosts } from "@/lib/forum";
 import { parcoursUtilisateur } from "@/lib/parcours";
 import ParcoursDev from "@/components/parcours-dev";
 import { Icone } from "@/components/icones";
 
-const ICONES = [
-  <path key="f" d="M5 6h14M5 12h10M5 18h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
-  <path key="j" d="M3 7h18v13H3zM8 7V4h8v3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />,
-  <path key="p" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />,
-  <path key="a" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />,
-  <path key="t" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5V6a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />,
-  <path key="e" d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" strokeWidth="2" />,
-];
 
-const SECTIONS = [
-  { href: "/forum", cle: "nav.forum", descFr: "Discute avec des devs qui savent.", descEn: "Talk with developers who know." },
-  { href: "/jobs", cle: "nav.jobs", descFr: "Offres remote ou sur place.", descEn: "Remote or onsite jobs." },
-  { href: "/projets", cle: "nav.projects", descFr: "Lance et recrute.", descEn: "Start and recruit." },
-  { href: "/annuaire", cle: "nav.directory", descFr: "Trouve ton prochain co-dev.", descEn: "Find your next dev." },
-  { href: "/tutos", cle: "nav.tutorials", descFr: "Articles courts et pratiques.", descEn: "Short, practical posts." },
-  { href: "/evenements", cle: "nav.events", descFr: "Meetups et hackathons.", descEn: "Meetups & hackathons." },
-];
 
 export const dynamic = "force-dynamic";
 
@@ -109,7 +92,7 @@ export default async function HomePage() {
             <h1 className="mt-4 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
               La communauté africaine des devs, <span className="text-orange-400">à portée de main</span>.
             </h1>
-            <p className="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
+            <p className="mt-3 max-w-[60ch] text-sm text-slate-300 sm:text-base">
               {t(locale, "home.hero_sub")}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
@@ -131,45 +114,50 @@ export default async function HomePage() {
                 ))}
               </div>
               <p className="text-sm text-slate-200">
-                <span className="font-bold tabular-nums text-orange-400">{membres}</span> membres actifs
+                <span className="font-bold tabular-nums text-orange-400">{membres}</span> membres
               </p>
             </div>
           ) : null}
         </div>
       </section>
 
-      {/* Fil façon Reddit. */}
-      <ParcoursDev etapes={parcours} />
+      {/* Visuel signature (desktop) : la carte membre + la conversation tendance,
+          alimentées par les vraies données (réponses récentes, hashtags). */}
+      <div className="mt-8 hidden justify-center lg:flex">
+        <VisuelAccueil
+          membres={membresRecents.slice(0, 4).map((m) => ({ slug: m.slug, nom: m.nom, avatar: m.avatar }))}
+          tendance={tendances[0]?.tag}
+          conversation={
+            dernieres[0]
+              ? {
+                  titre: dernieres[0].post.titre,
+                  auteur: dernieres[0].author.nom,
+                  extrait: dernieres[0].corps.replace(/\s+/g, " ").slice(0, 96),
+                }
+              : undefined
+          }
+        />
+      </div>
+
+      {/* Parcours — jauge masquée pour les visiteurs anonymes (zéro « 0 % »
+          culpabilisant : le hero et le fil font office d'invitation). */}
+      {userId !== null ? <ParcoursDev etapes={parcours} /> : null}
       <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-cx-border pb-2">
-            <div className="flex flex-wrap gap-1">
-              <Link href="/forum" className="rounded-full bg-cx-primary px-3 py-1 text-xs font-semibold text-cx-primary-fg">
-                Accueil
-              </Link>
-              <Link href="/forum?tri=hot" className="rounded-full px-3 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted">
-                Tendance
-              </Link>
-              <Link href="/forum?tri=new" className="rounded-full px-3 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted">
-                Nouveau
-              </Link>
-              <Link href="/forum?tri=top" className="rounded-full px-3 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted">
-                Top
-              </Link>
-            </div>
-            <Link href="/forum/nouveau" className="inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-3 py-1 text-xs font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]">
-              <Icone nom="plus" className="size-3.5" />
-              Sujet
+          <div className="mb-3 flex items-center justify-between border-b border-cx-border pb-2">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-cx-muted-fg">
+              Fil d’actualité
+            </h2>
+            <Link href="/forum" className="text-sm font-semibold text-cx-primary hover:underline">
+              Voir tout le fil →
             </Link>
           </div>
-          <ul className="space-y-3">
-            {feedReddit.items.map((sujet, index) => (
-              <li key={sujet.id} className="animate-fade-up" style={{ animationDelay: `${index * 55}ms` }}>
-                <CarteSujet sujet={sujet} locale={locale} connecte={userId !== null} />
-              </li>
+          <ul>
+            {feedReddit.items.map((sujet) => (
+              <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={userId !== null} />
             ))}
           </ul>
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center lg:hidden">
             <Link href="/forum" className="inline-flex rounded-full border border-cx-border px-4 py-2 text-sm text-cx-muted-fg hover:bg-cx-muted">
               Voir tout le fil →
             </Link>
@@ -179,10 +167,10 @@ export default async function HomePage() {
         <aside className="sticky top-24 hidden space-y-4 self-start lg:block">
           <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
             <p className="text-sm font-bold">Créer un sujet</p>
-            <p className="mt-1 text-xs text-cx-muted-fg">Partage un retour, demande de l'aide, trouve des contributeurs.</p>
+            <p className="mt-1 text-xs text-cx-muted-fg">Partage un retour, demande de l’aide, trouve des contributeurs.</p>
             <Link
               href="/forum/nouveau"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-cx-accent px-4 py-2 text-sm font-bold text-cx-accent-fg hover:opacity-90 active:scale-[0.97]"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-cx-primary px-4 py-2 text-sm font-bold text-cx-primary-fg hover:opacity-90 active:scale-[0.97]"
             >
               <Icone nom="plus" className="size-4" />
               Écrire un sujet
@@ -204,22 +192,6 @@ export default async function HomePage() {
               ))}
             </div>
           </div>
-          {userId !== null && sujetsPourToi.length > 0 ? (
-            <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">
-                Pour toi
-              </p>
-              <ul className="mt-2 space-y-2 text-sm">
-                {sujetsPourToi.slice(0, 4).map((s) => (
-                  <li key={s.id}>
-                    <Link href={`/forum/${s.id}`} className="block text-sm text-cx-muted-fg hover:text-cx-primary">
-                      {s.titre}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
           {prochainEvenement && (
             <div className="rounded-2xl border border-cx-border bg-cx-card/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-cx-muted-fg">Prochain événement</p>
@@ -235,52 +207,6 @@ export default async function HomePage() {
             <p className="mt-2">Par les devs, pour les devs.</p>
           </div>
         </aside>
-      </section>
-
-      {/* Compteurs. */}
-      <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          ["Membres", membres],
-          ["Sujets", posts],
-          ["Projets", projets],
-          ["Événements", evenements],
-        ].map(([label, valeur]) => (
-          <div key={label as string} className="rounded-xl border border-cx-border bg-cx-card px-4 py-3 text-center">
-            <p className="text-2xl font-black text-cx-primary tabular-nums">
-              <CompteurAnime value={valeur as number} />
-            </p>
-            <p className="text-xs text-cx-muted-fg">{label}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* Sections */}
-      <section className="mt-6">
-        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          {t(locale, "home.sections_title")}
-        </h2>
-        <p className="mt-2 max-w-2xl text-cx-muted-fg">
-          {t(locale, "home.sections_sub")}
-        </p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SECTIONS.map((s, index) => (
-            <Link
-              key={s.href}
-              href={s.href}
-              className="group rounded-xl border border-cx-border bg-cx-card p-5 transition hover:-translate-y-0.5 hover:border-cx-primary/60 hover:shadow-sm"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="size-7 text-cx-primary"
-                aria-hidden="true"
-              >
-                {ICONES[index]}
-              </svg>
-              <h3 className="mt-3 text-lg font-semibold">{t(locale, s.cle)}</h3>
-              <p className="mt-1 text-sm text-cx-muted-fg">{locale === "en" ? s.descEn : s.descFr}</p>
-            </Link>
-          ))}
-        </div>
       </section>
 
       {userId !== null && sujetsPourToi.length > 0 ? (

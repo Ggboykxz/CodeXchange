@@ -43,15 +43,15 @@ type Props = {
   slug: string;
   /** Nom complet, source des initiales. */
   nom: string;
-  /** Taille du pastille : `sm` (carte d'annuaire) ou `lg` (profil). */
-  taille?: "sm" | "lg";
+  /** Taille du pastille : `sm` (carte d'annuaire), `md` (fila façon X) ou `lg` (profil). */
+  taille?: "sm" | "md" | "lg";
   /** Data URL (base64) de l'avatar téléversé, ou absent. */
   avatar?: string;
 };
 
-/** Pastille Avatar réutilisable (annuaire, profils publics). */
+/** Pastille Avatar réutilisable (annuaire, profils publics, fila X). */
 export default function Avatar({ slug, nom, taille = "sm", avatar }: Props) {
-  const dimension = taille === "lg" ? "size-20 text-2xl" : "size-11 text-sm";
+  const dimension = taille === "lg" ? "size-20 text-2xl" : taille === "md" ? "size-10 text-sm" : "size-11 text-sm";
   if (avatar) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
