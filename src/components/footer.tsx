@@ -20,6 +20,9 @@ export async function Footer() {
           <Link href="/tutos" className="hover:text-cx-fg">
             {t(locale, "nav.tutorials")}
           </Link>
+          <Link href="/aide" className="hover:text-cx-fg">
+            {t(locale, "help.title")}
+          </Link>
           <Link href="/conditions" className="hover:text-cx-fg">
             Conditions
           </Link>

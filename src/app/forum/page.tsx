@@ -47,7 +47,7 @@ export default async function PageForum({ searchParams }: Props) {
       {/* Colonne timeline. */}
       <div className="flex min-w-0 flex-col">
         <header className="border-b border-cx-border pb-3">
-          <h1 className="text-lg font-extrabold tracking-tight">{t(locale, "forum.title")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight">{t(locale, "forum.title")}</h1>
           <p className="mt-0.5 text-xs text-cx-muted-fg">{t(locale, "forum.subtitle")}</p>
         </header>
 

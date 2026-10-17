@@ -185,13 +185,13 @@ button:not(:disabled):active,
 
 /* Placeholders lisibles (WCAG AA) : #64748b sur clair, #94a3b8 sur sombre. */
 ::placeholder {
-  color: #64748b;
-  opacity: 1;
+  color: #64748b !important;
+  opacity: 1 !important;
 }
 :root[data-theme="dark"] ::placeholder,
 :root[data-theme="auto"] ::placeholder {
-  color: #94a3b8;
-  opacity: 1;
+  color: #94a3b8 !important;
+  opacity: 1 !important;
 }
 
 /* Petites améliorations UX : prévisualisation tactile, retour haut. */
@@ -330,10 +330,10 @@ html.data-saver *::after {
   50% { transform: scale(1.3); opacity: 0.85; }
 }
 
-.animate-fade-up { animation: fade-up 0.45s cubic-bezier(.2,.9,.3,1.15) both; }
+.animate-fade-up { animation: fade-up 0.45s cubic-bezier(.2,.8,.2,1) both; }
 .animate-badge-pulse { animation: badge-pulse 1.6s ease-in-out infinite; }
 
-.animate-react-burst { animation: react-burst 0.45s cubic-bezier(.2,.9,.3,1.2); }
+.animate-react-burst { animation: react-burst 0.45s cubic-bezier(.2,.8,.2,1); }
 @keyframes count-pop {
   0% { transform: scale(0.4); opacity: 0; filter: blur(2px); }
   100% { transform: scale(1); opacity: 1; filter: blur(0); }
@@ -368,9 +368,9 @@ html.data-saver *::after {
   to { transform: rotate(360deg); }
 }
 
-.animate-pop-in { animation: pop-in 0.45s cubic-bezier(.2,.9,.3,1.2); }
-.animate-count-pop { animation: count-pop 0.32s cubic-bezier(.2,.9,.3,1.2); }
-.animate-wiggle { animation: wiggle 0.5s cubic-bezier(.2,.9,.3,1.2); }
+.animate-pop-in { animation: pop-in 0.45s cubic-bezier(.2,.8,.2,1); }
+.animate-count-pop { animation: count-pop 0.32s cubic-bezier(.2,.8,.2,1); }
+.animate-wiggle { animation: wiggle 0.5s cubic-bezier(.2,.8,.2,1); }
 .animate-tracer { animation: tracer 0.6s ease-out forwards; }
 .animate-shake { animation: shake 0.45s ease-in-out; }
 .animate-glow { animation: glow 2s ease-in-out infinite; }

@@ -10,7 +10,6 @@ import NavigationGauche from "@/components/navigation-gauche";
 import RaccourciRecherche from "@/components/raccourci-recherche";
 import RetourHaut from "@/components/retour-haut";
 import Onboarding from "@/components/onboarding";
-import PaletteCommandes from "@/components/palette-commandes";
 import { themeCourant } from "@/lib/theme";
 import { localeCourante } from "@/lib/i18n";
 import "./globals.css";

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
-import { cookieLocale, t } from "@/lib/i18n";
+import { cookieLocale, t, type Locale } from "@/lib/i18n";
 import { Icone, type NomIcone } from "@/components/icones";
 
 type ItemPalette = {
@@ -53,9 +53,9 @@ type ResultatRecherche = {
  * OUVRIT cette palette — pas deux interfaces divergentes. `pleine` rend la
  * déclencheuse en faux champ pleine largeur (look X).
  */
-export default function PaletteCommandes({ pleine = false }: { pleine?: boolean }) {
+export default function PaletteCommandes({ pleine = false, locale: localeProp }: { pleine?: boolean; locale?: Locale }) {
   const router = useRouter();
-  const [locale] = useState(() => cookieLocale());
+  const [locale] = useState(() => localeProp ?? cookieLocale());
   const [ouvert, setOuvert] = useState(false);
   const [q, setQ] = useState("");
   const [resultats, setResultats] = useState<ResultatRecherche | null>(null);

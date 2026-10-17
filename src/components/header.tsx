@@ -48,7 +48,7 @@ export async function Header() {
               mobile : menu dropdown via l'icône à droite. Pas deux interfaces. */}
           <div className="hidden flex-1 justify-center px-4 md:flex">
             <div className="w-full max-w-md">
-              <PaletteCommandes pleine />
+              <PaletteCommandes pleine locale={locale} />
             </div>
           </div>
 

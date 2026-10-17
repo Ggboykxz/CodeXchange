@@ -156,7 +156,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte, me }:
 
             {communautes.length > 0 ? (
               <Section titre={t(locale, "nav.communities")}>
-                {communautes.map((c) => (
+                {communautes.slice(0, 4).map((c) => (
                   <Lien
                     key={c.tag}
                     href={`/forum?tag=${encodeURIComponent(c.tag)}`}
