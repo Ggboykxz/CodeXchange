@@ -12,6 +12,7 @@ import RetourHaut from "@/components/retour-haut";
 import Onboarding from "@/components/onboarding";
 import PaletteCommandes from "@/components/palette-commandes";
 import { themeCourant } from "@/lib/theme";
+import { localeCourante } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,9 +40,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const theme = await themeCourant();
+  const locale = await localeCourante();
 
   return (
-    <html lang="fr" className={jakarta.variable} data-theme={theme} suppressHydrationWarning>
+    <html lang={locale} className={jakarta.variable} data-theme={theme} suppressHydrationWarning>
       <head>
         <ThemeScript />
         <DataSaverScript />
