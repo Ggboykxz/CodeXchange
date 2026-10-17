@@ -10,6 +10,7 @@ import NavigationGauche from "@/components/navigation-gauche";
 import RaccourciRecherche from "@/components/raccourci-recherche";
 import RetourHaut from "@/components/retour-haut";
 import Onboarding from "@/components/onboarding";
+import BottomNav from "@/components/bottom-nav";
 import { themeCourant } from "@/lib/theme";
 import { localeCourante } from "@/lib/i18n";
 import "./globals.css";
@@ -62,11 +63,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Navigation façon Reddit : barre latérale (drawer sur mobile) + contenu. */}
             <div className="flex">
               <NavigationGauche />
-              <main id="main" className="min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1">
+              <main id="main" className="min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 pb-20 lg:pb-0">
                 {children}
               </main>
             </div>
             <Footer />
+            <BottomNav />
           </NavProvider>
         </ToastProvider>
       </body>
