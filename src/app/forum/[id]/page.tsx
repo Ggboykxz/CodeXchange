@@ -171,6 +171,15 @@ export default async function PageSujet({ params }: Props) {
           <BoutonFavori kind="post" targetId={postId} initial={favoriDuSujet} connecte={userId !== null} variante="action" />
           <BoutonPartager path={`/forum/${postId}`} />
           <BoutonSignaler kind="post" targetId={postId} libelle="" />
+          {userId === sujet.author.id ? (
+            <Link
+              href={`/forum/${postId}/modifier`}
+              className="inline-flex min-h-[33px] items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-primary/10 hover:text-cx-primary"
+            >
+              <Icone nom="parametres" className="size-4" />
+              Modifier
+            </Link>
+          ) : null}
         </div>
 
         {/* Réactions (charte) : pastilles, sous la barre d'actions. */}

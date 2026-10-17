@@ -279,7 +279,30 @@ export async function createPost(authorId: number, i: NouveauSujet): Promise<num
   return post.id;
 }
 
-/** Réponse à un sujet ; lève `FORUM_VALIDATION` si le corps est hors limites ou le sujet absent. */
+export async function editPost(postId: number, authorId: number, i: { titre: string; corps: string; tags: string[] }): Promise<void> {
+  const sujet = await prisma.post.findUnique({ where: { id: postId }, select: { authorId: true } });
+  if (!sujet) throw new AppError("FORUM_VALIDATION", "Sujet introuvable.");
+  if (sujet.authorId !== authorId) throw new AppError("FORBIDDEN", "Tu ne peux modifier que tes propres sujets.");
+
+  const titre = i.titre.trim();
+  const corps = i.corps.trim();
+  const tags = i.tags.map((t) => t.trim()).filter(Boolean);
+
+  if (titre.length < TITRE_MIN || titre.length > TITRE_MAX) {
+    throw new AppError("FORUM_VALIDATION", `Le titre doit faire entre ${TITRE_MIN} et ${TITRE_MAX} caractères.`);
+  }
+  if (!corps || corps.length > CORPS_MAX) {
+    throw new AppError("FORUM_VALIDATION", `Le corps ne peut pas dépasser ${CORPS_MAX} caractères.`);
+  }
+  if (tags.length < TAGS_MIN || tags.length > TAGS_MAX) {
+    throw new AppError("FORUM_VALIDATION", `Entre ${TAGS_MIN} et ${TAGS_MAX} tags sont attendus.`);
+  }
+
+  await prisma.post.update({
+    where: { id: postId },
+    data: { titre, corps, tags: tags.join(",") },
+  });
+}
 export async function addReply(
   postId: number,
   authorId: number,
