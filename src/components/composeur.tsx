@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Avatar from "@/components/avatar";
+import { Icone } from "@/components/icones";
 import { t, type Locale } from "@/lib/i18n";
 
 type Props = {
@@ -22,7 +23,9 @@ export default function Composeur({ locale, connecte, me }: Props) {
         {connecte && me ? (
           <Avatar slug={me.slug} nom={me.nom} avatar={me.avatar} taille="md" />
         ) : (
-          <Avatar slug="invite" nom={connecte ? "?" : "Vous"} taille="md" />
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cx-muted text-cx-muted-fg">
+            <Icone nom="forum" className="size-5" />
+          </span>
         )}
         <span className="min-w-0 flex-1 truncate text-sm font-medium text-cx-muted-fg">
           {connecte ? t(locale, "forum.composer_placeholder") : t(locale, "forum.composer_connexion")}

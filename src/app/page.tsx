@@ -80,29 +80,31 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      {/* Hero compact (sobre, coût zéro). */}
-      <section className="relative overflow-hidden rounded-3xl border border-cx-border bg-slate-950 px-6 py-10 text-white shadow-xl sm:py-14">
+      {/* Hero éditorial : identité propre, pas un clone SaaS. */}
+      <section className="relative overflow-hidden rounded-3xl border border-cx-border bg-cx-card px-6 py-12 shadow-sm sm:py-16">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-60"
+          className="pointer-events-none absolute inset-0 opacity-40"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 22% 18%, rgba(255,255,255,.14) 1px, transparent 1px), radial-gradient(circle at 78% 72%, rgba(255,255,255,.10) 1px, transparent 1px)",
-            backgroundSize: "26px 26px, 34px 34px",
+              "radial-gradient(circle at 15% 20%, rgb(15 118 110 / 0.12) 1px, transparent 1px), radial-gradient(circle at 85% 80%, rgb(194 65 12 / 0.10) 1px, transparent 1px)",
+            backgroundSize: "28px 28px, 36px 36px",
           }}
         />
-        <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="relative grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
-            <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">
+            <p className="inline-flex items-center gap-2 rounded-full border border-cx-border bg-cx-muted px-3 py-1 text-xs font-semibold text-cx-muted-fg">
+              <span className="inline-block size-2 rounded-full bg-cx-accent" />
               {me ? `👋 ${me.nom}` : t(locale, "home.badge")}
             </p>
-            <h1 className="mt-4 text-balance text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              La communauté africaine des devs, <span className="text-orange-400">à portée de main</span>.
+            <h1 className="mt-5 text-balance text-4xl font-black tracking-tight text-cx-fg sm:text-6xl">
+              Code, communauté,<br />
+              <span className="text-cx-primary">carrière.</span>
             </h1>
-            <p className="mt-3 max-w-[60ch] text-sm text-slate-300 sm:text-base">
+            <p className="mt-4 max-w-[52ch] text-base text-cx-muted-fg sm:text-lg">
               {t(locale, "home.hero_sub")}
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Button variant="accent" href="/inscription">
                 Créer un compte
               </Button>
@@ -110,19 +112,41 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
                 Explorer le fil
               </Button>
             </div>
-          </div>
-          {membresRecents.length > 0 ? (
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {membresRecents.slice(0, 6).map((m) => (
-                  <Link key={m.id} href={`/membres/${m.slug}`} className="ring-2 ring-white/20">
-                    <Avatar slug={m.slug} nom={m.nom} avatar={m.avatar ?? undefined} />
-                  </Link>
-                ))}
+            {membresRecents.length > 0 ? (
+              <div className="mt-8 flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {membresRecents.slice(0, 6).map((m) => (
+                    <Link key={m.id} href={`/membres/${m.slug}`} className="ring-2 ring-cx-card">
+                      <Avatar slug={m.slug} nom={m.nom} avatar={m.avatar ?? undefined} />
+                    </Link>
+                  ))}
+                </div>
+                <p className="text-sm text-cx-muted-fg">
+                  <span className="font-bold tabular-nums text-cx-primary">{membres}</span> membres actifs
+                </p>
               </div>
-              <p className="text-sm text-slate-200">
-                <span className="font-bold tabular-nums text-orange-400">{membres}</span> membres
+            ) : null}
+          </div>
+
+          {dernieres[0] ? (
+            <div className="rounded-2xl border border-cx-border bg-cx-bg p-5 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-wider text-cx-accent-fort">Dernière conversation</p>
+              <h2 className="mt-2 text-lg font-bold leading-snug text-cx-fg">{dernieres[0].post.titre}</h2>
+              <p className="mt-2 line-clamp-3 text-sm text-cx-muted-fg">
+                {dernieres[0].corps.replace(/\s+/g, " ").slice(0, 160)}
               </p>
+              <div className="mt-4 flex items-center gap-2 text-xs text-cx-muted-fg">
+                <Avatar slug={dernieres[0].author.slug} nom={dernieres[0].author.nom} taille="sm" />
+                <span className="font-semibold text-cx-fg">{dernieres[0].author.nom}</span>
+                <span>·</span>
+                <span>il y a peu</span>
+              </div>
+              <Link
+                href={`/forum/${dernieres[0].post.id}`}
+                className="mt-4 inline-flex text-sm font-semibold text-cx-primary hover:underline"
+              >
+                Lire la suite →
+              </Link>
             </div>
           ) : null}
         </div>
@@ -198,7 +222,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
               {tendances.map((trend) => (
                 <Link
                   key={trend.tag}
-                  href={`/forum?tag=${encodeURIComponent(trend.tag)}`}
+                  href={`/c/${encodeURIComponent(trend.tag)}`}
                   className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary hover:bg-cx-primary/10"
                 >
                   c/{trend.tag}
