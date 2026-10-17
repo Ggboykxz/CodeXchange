@@ -5,6 +5,7 @@ import BoutonVote from "@/components/bouton-vote";
 import BoutonPartager from "@/components/bouton-partager";
 import { Icone } from "@/components/icones";
 import Avatar from "@/components/avatar";
+import { BadgeVerification } from "@/components/badges-membre";
 import LogoTechno, { logoTechno } from "@/components/logo-techno";
 import type { PostResume } from "@/lib/forum";
 import type { Locale } from "@/lib/i18n";
@@ -88,6 +89,7 @@ export default function CarteSujet({
             >
               {sujet.author.nom}
             </Link>
+            {sujet.author.verified ? <BadgeVerification /> : null}
             <span className="min-w-0 max-w-[11rem] truncate text-xs text-cx-muted-fg">@{sujet.author.slug}</span>
             <span aria-hidden className="text-xs text-cx-muted-fg">
               ·

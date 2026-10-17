@@ -26,7 +26,7 @@ const REPONSE_MIN = 1;
 const REPONSE_MAX = 2000;
 
 /** Champs auteur exposés à l'écran (jamais `passwordHash` ni l'e-mail). */
-const SELECT_AUTEUR = { id: true, nom: true, slug: true, ville: true, pays: true, avatar: true } as const;
+const SELECT_AUTEUR = { id: true, nom: true, slug: true, ville: true, pays: true, avatar: true, verified: true } as const;
 
 export type AuteurResume = Pick<User, keyof typeof SELECT_AUTEUR>;
 

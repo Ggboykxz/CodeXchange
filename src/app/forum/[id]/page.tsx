@@ -24,6 +24,7 @@ import Traduction from "@/components/traduction";
 import BoutonPartager from "@/components/bouton-partager";
 import Tendances from "@/components/tendances";
 import Avatar from "@/components/avatar";
+import { BadgeVerification } from "@/components/badges-membre";
 import { Icone } from "@/components/icones";
 
 type Props = { params: Promise<{ id: string }> };
@@ -105,6 +106,7 @@ export default async function PageSujet({ params }: Props) {
               >
                 {sujet.author.nom}
               </Link>
+              {sujet.author.verified ? <BadgeVerification /> : null}
               <span className="min-w-0 max-w-[11rem] truncate text-xs text-cx-muted-fg">@{sujet.author.slug}</span>
               <span aria-hidden className="text-xs text-cx-muted-fg">
                 ·
