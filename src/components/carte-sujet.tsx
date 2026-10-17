@@ -98,13 +98,13 @@ export default function CarteSujet({
             ) : null}
           </p>
 
-          <h2 className="mt-0.5 text-[15px] font-bold leading-5 text-cx-fg">
+          <h2 className="mt-0.5 max-w-[62ch] text-[15px] font-bold leading-5 text-cx-fg">
             <Link href={`/forum/${sujet.id}`} className="hover:underline">
               {sujet.titre}
             </Link>
           </h2>
 
-          {texte ? <p className="mt-0.5 line-clamp-2 text-sm leading-5 text-cx-muted-fg">{texte}</p> : null}
+          {texte ? <p className="mt-0.5 max-w-[62ch] line-clamp-2 text-sm leading-5 text-cx-muted-fg">{texte}</p> : null}
 
           {tags.length > 1 ? (
             <ul className="mt-2 flex flex-wrap gap-1.5">
@@ -121,25 +121,26 @@ export default function CarteSujet({
               ))}
             </ul>
           ) : null}
-        </div>
 
-        {/* Barre d'actions façon X, dans la marge de droite. */}
-        <div className="flex max-w-[15rem] shrink-0 flex-col items-end justify-between gap-2 sm:flex-row sm:items-center">
-          <Link
-            href={`/forum/${sujet.id}`}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-primary/10 hover:text-cx-primary"
-          >
-            <Icone nom="forum" className="size-4" />
-            <span className="tabular-nums">{formatNombre(sujet._count.replies)}</span> {t(locale, "forum.comments_short")}
-          </Link>
-          <BoutonVote
-            postId={sujet.id}
-            initialVote={sujet.userVote}
-            initialScore={sujet.score}
-            connecte={connecte}
-            variante="action"
-          />
-          <BoutonPartager path={`/forum/${sujet.id}`} />
+          {/* Barre d'actions façon X : répondre · voter · partager, espacée. */}
+          <div className="mt-2.5 flex max-w-[26rem] items-center justify-between gap-2">
+            <Link
+              href={`/forum/${sujet.id}`}
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-primary/10 hover:text-cx-primary"
+            >
+              <Icone nom="forum" className="size-4" />
+              <span className="tabular-nums">{formatNombre(sujet._count.replies)}</span>{" "}
+              {sujet._count.replies === 1 ? t(locale, "forum.comment_one") : t(locale, "forum.comments_short")}
+            </Link>
+            <BoutonVote
+              postId={sujet.id}
+              initialVote={sujet.userVote}
+              initialScore={sujet.score}
+              connecte={connecte}
+              variante="action"
+            />
+            <BoutonPartager path={`/forum/${sujet.id}`} />
+          </div>
         </div>
       </article>
     </li>

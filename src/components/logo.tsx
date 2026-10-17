@@ -12,7 +12,11 @@ export default function Logo({ compact = false }: { compact?: boolean }) {
         aria-hidden="true"
         className="inline-flex size-8 items-center justify-center rounded-lg bg-cx-primary text-cx-primary-fg shadow-sm"
       >
-        <Icone nom="projets" className="size-4.5" />
+        {/* Chevron `</>` façon code : la marque promesse du docstring. */}
+        <svg viewBox="0 0 24 24" className="size-4.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 6 4 12l5 6" />
+          <path d="m15 6 5 6-5 6" />
+        </svg>
       </span>
       {compact ? null : <span className="text-lg">CodeXchange</span>}
     </Link>

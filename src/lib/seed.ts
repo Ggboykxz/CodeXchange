@@ -99,6 +99,9 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
         corps: s.corps,
         tags: s.tags.join(","),
         authorId: auteur.id,
+        // Fil crédible : publications échelonnées sur les 8 derniers jours
+        // (les plus récentes d'abord), pas dix « il y a 3 minutes ».
+        createdAt: addDays(now, -(0.1 + i * 0.55)),
       },
     });
     posts.push({ id: p.id, auteur });
@@ -110,7 +113,7 @@ export async function runSeed(db: typeof prisma = prisma): Promise<SeedResult> {
     const p = posts[i]!;
     const auteur = byIndex(i + 3);
     const r = await db.reply.create({
-      data: { corps: "Merci, ça m'a aidé à avancer !", postId: p.id, authorId: auteur.id },
+      data: { corps: "Merci, ça m'a aidé à avancer !", postId: p.id, authorId: auteur.id, createdAt: addDays(now, -(0.04 + i * 0.55)) },
     });
     reponsesCreees.push({ id: r.id, postId: p.id, authorId: auteur.id });
     replies += 1;
