@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import BoutonVote from "@/components/bouton-vote";
 import BoutonPartager from "@/components/bouton-partager";
@@ -52,10 +54,12 @@ export default function CarteSujet({
   sujet,
   locale,
   connecte,
+  onMasquer,
 }: {
   sujet: PostResume;
   locale: Locale;
   connecte: boolean;
+  onMasquer?: (id: number) => void;
 }) {
   const tags = sujet.tags
     .split(",")
@@ -95,6 +99,17 @@ export default function CarteSujet({
               <span className="rounded-md bg-cx-accent/10 px-1.5 py-px text-[11px] font-bold uppercase tracking-wide text-cx-accent-fort">
                 {t(locale, "sujet.nouveau")}
               </span>
+            ) : null}
+            {onMasquer ? (
+              <button
+                type="button"
+                onClick={() => onMasquer(sujet.id)}
+                aria-label="Masquer ce sujet"
+                title="Masquer ce sujet"
+                className="ml-auto inline-flex min-h-[32px] min-w-[32px] items-center justify-center rounded-full text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg"
+              >
+                <Icone nom="masquer" className="size-4" />
+              </button>
             ) : null}
           </p>
 

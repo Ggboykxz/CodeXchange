@@ -121,6 +121,11 @@ function QueueDeFlux({
           {t(locale, "feed.erreur")}
         </p>
       ) : null}
+      {!hasMore && !enErreur ? (
+        <p role="status" className="py-6 text-center text-sm font-medium text-cx-muted-fg">
+          {t(locale, "feed.up_to_date")}
+        </p>
+      ) : null}
     </>
   );
 }

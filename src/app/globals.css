@@ -286,7 +286,22 @@ body::before {
   }
 }
 
-/* Focus visible cohérent pour la navigation clavier. */
+/* Mode léger (économie de données) : désactive animations et transitions. */
+html.data-saver *,
+html.data-saver *::before,
+html.data-saver *::after {
+  animation: none !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-data: reduce) {
+  html,
+  html * {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 :focus-visible {
   outline: 2px solid var(--cx-ring);
   outline-offset: 2px;

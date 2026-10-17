@@ -7,6 +7,7 @@ import { useNav } from "@/components/nav-context";
 import { Icone, type NomIcone } from "@/components/icones";
 import SelecteurLangue from "@/components/selecteur-langue";
 import SelecteurTheme from "@/components/selecteur-theme";
+import SelecteurModeLege from "@/components/selecteur-mode-lege";
 import Avatar from "@/components/avatar";
 import { cn } from "@/lib/cn";
 import { t, type Locale } from "@/lib/i18n";
@@ -180,6 +181,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte, me }:
           <div className="mt-4 flex items-center justify-between gap-2 border-t border-cx-border pt-3">
             <SelecteurLangue localeActuelle={locale} />
             <SelecteurTheme themeInitial={theme} />
+            <SelecteurModeLege />
           </div>
           {connecte ? null : (
             <div className="mt-3 flex gap-2">

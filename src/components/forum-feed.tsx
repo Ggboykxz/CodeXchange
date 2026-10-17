@@ -27,7 +27,35 @@ type Props = {
  * annoncée une seule fois (toast non dupliqué, message inline persistant).
  */
 export function ForumFeed({ initialItems, totalPages, currentPage, locale, connecte, params }: Props) {
+  const [hidden, setHidden] = useState<Set<number>>(new Set());
   const [items, setItems] = useState<PostResume[]>(initialItems);
+  // Charger les sujets masqués depuis localStorage (1 tap = contrôle du fil).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("cx-hidden-posts");
+      if (raw) {
+        const ids = JSON.parse(raw) as number[];
+        setHidden(new Set(ids));
+      }
+    } catch {
+      /* ignoré */
+    }
+  }, []);
+
+  const masquer = useCallback((id: number) => {
+    setHidden((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      try {
+        localStorage.setItem("cx-hidden-posts", JSON.stringify(Array.from(next)));
+      } catch {
+        /* ignoré */
+      }
+      return next;
+    });
+  }, []);
+
+  const visibles = items.filter((s) => !hidden.has(s.id));
   const [pageSuivante, setPageSuivante] = useState(currentPage + 1);
   const [hasMore, setHasMore] = useState(currentPage < totalPages);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,8 +104,8 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
   return (
     <>
       <ul>
-        {items.map((sujet) => (
-          <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={connecte} />
+        {visibles.map((sujet) => (
+          <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={connecte} onMasquer={masquer} />
         ))}
       </ul>
       {enErreur ? (
@@ -97,6 +125,11 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
             {isLoading ? t(locale, "common.loading") : t(locale, "feed.load_more")}
           </button>
         </div>
+      ) : null}
+      {!hasMore && !enErreur ? (
+        <p role="status" className="py-6 text-center text-sm font-medium text-cx-muted-fg">
+          {t(locale, "feed.up_to_date")}
+        </p>
       ) : null}
     </>
   );

@@ -3,6 +3,7 @@ import { jakarta } from "@/lib/fonts";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ThemeScript } from "@/components/theme-script";
+import { DataSaverScript } from "@/components/data-saver-script";
 import { ToastProvider } from "@/components/toast";
 import { NavProvider } from "@/components/nav-context";
 import NavigationGauche from "@/components/navigation-gauche";
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="fr" className={jakarta.variable} data-theme={theme} suppressHydrationWarning>
       <head>
         <ThemeScript />
+        <DataSaverScript />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc" />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a" />
