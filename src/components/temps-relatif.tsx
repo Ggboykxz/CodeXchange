@@ -15,8 +15,8 @@ function versTexte(date: Date, maintenant: number): string {
   const an = Math.round(j / 365);
 
   if (Math.abs(sec) < 45) return "à l'instant";
-  if (Math.abs(min) < 60) return FORMAT.format(min, "minute");
-  if (Math.abs(h) < 24) return FORMAT.format(h, "hour");
+  if (Math.abs(min) < 60) return diffMs < 0 ? `il y a ${-min} min` : `dans ${min} min`;
+  if (Math.abs(h) < 24) return diffMs < 0 ? `il y a ${-h} h` : `dans ${h} h`;
   if (Math.abs(j) < 7) return FORMAT.format(j, "day");
   if (Math.abs(sem) < 5) return FORMAT.format(sem, "week");
   if (Math.abs(mois) < 12) return FORMAT.format(mois, "month");
@@ -30,7 +30,6 @@ export default function TempsRelatif({ date }: { date: Date | string }) {
 
   useEffect(() => {
     const m = setInterval(() => setMaintenant(Date.now()), 60_000);
-    setMaintenant(Date.now());
     return () => clearInterval(m);
   }, []);
 

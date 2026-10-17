@@ -10,22 +10,29 @@ import { topHashtags } from "@/lib/hashtags";
 import { listPosts } from "@/lib/forum";
 import { parcoursUtilisateur } from "@/lib/parcours";
 import ParcoursDev from "@/components/parcours-dev";
+import Composeur from "@/components/composeur";
+import SelecteurTri from "@/components/selecteur-tri";
 import { Icone } from "@/components/icones";
 
 
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ tri?: string }> }) {
+  const paramsTri = await searchParams;
+  const triDemande = paramsTri.tri;
+  const tri: "hot" | "new" | "top" | "recent" | "populaire" =
+    triDemande === "new" || triDemande === "top" || triDemande === "recent" || triDemande === "populaire"
+      ? triDemande
+      : "hot";
   const userId = await getSessionUserId();
   const membres = await prisma.user.count();
-  const me = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { nom: true, slug: true } }) : null;
-  const [posts, projets, evenements, membresRecents, feedReddit] = await Promise.all([
+  const me = userId !== null ? await prisma.user.findUnique({ where: { id: userId }, select: { nom: true, slug: true, avatar: true } }) : null;
+  const [posts, projets, membresRecents, feedReddit] = await Promise.all([
     prisma.post.count(),
     prisma.project.count(),
-    prisma.event.count(),
     prisma.user.findMany({ take: 8, orderBy: { createdAt: "desc" }, select: { id: true, nom: true, slug: true, avatar: true } }),
-    listPosts({ page: 1, pageSize: 10, tri: "hot", userId: userId == null ? undefined : userId }),
+    listPosts({ page: 1, pageSize: 10, tri, userId: userId == null ? undefined : userId }),
   ]);
   const [dernieres, prochainEvenement, tendances] = await Promise.all([
     prisma.reply.findMany({
@@ -142,22 +149,33 @@ export default async function HomePage() {
       {/* Parcours — jauge masquée pour les visiteurs anonymes (zéro « 0 % »
           culpabilisant : le hero et le fil font office d'invitation). */}
       {userId !== null ? <ParcoursDev etapes={parcours} /> : null}
-      <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="min-w-0">
-          <div className="mb-3 flex items-center justify-between border-b border-cx-border pb-2">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-cx-muted-fg">
-              Fil d’actualité
-            </h2>
-            <Link href="/forum" className="text-sm font-semibold text-cx-primary hover:underline">
-              Voir tout le fil →
-            </Link>
+      <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,600px)_minmax(0,320px)] lg:justify-center">
+        <div className="flex min-w-0 flex-col">
+          <Composeur locale={locale} connecte={userId !== null} me={me} />
+          <div className="sticky top-0 z-10 mt-4 bg-cx-bg/85 backdrop-blur">
+            <SelecteurTri
+              basePath="/"
+              params={{}}
+              actuelle={tri}
+              options={[
+                { valeur: "hot", cle: "hot" },
+                { valeur: "new", cle: "new" },
+                { valeur: "top", cle: "top" },
+              ]}
+              libelles={{
+                tri: t(locale, "sort.label"),
+                hot: t(locale, "sort.hot"),
+                new: t(locale, "sort.new"),
+                top: t(locale, "sort.top"),
+              }}
+            />
           </div>
           <ul>
             {feedReddit.items.map((sujet) => (
               <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={userId !== null} />
             ))}
           </ul>
-          <div className="mt-6 text-center lg:hidden">
+          <div className="mt-4 text-center lg:hidden">
             <Link href="/forum" className="inline-flex rounded-full border border-cx-border px-4 py-2 text-sm text-cx-muted-fg hover:bg-cx-muted">
               Voir tout le fil →
             </Link>

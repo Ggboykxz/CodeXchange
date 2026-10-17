@@ -140,6 +140,17 @@ export default function PanneauNav({ locale, theme, communautes, connecte }: Pro
               ))}
             </Section>
 
+            {/* Bouton Poster façon X : pilule pleine largeur, action n°1. */}
+            <section className="mt-4 px-3">
+              <Link
+                href="/forum/nouveau"
+                onClick={fermer}
+                className="flex w-full items-center justify-center rounded-full bg-cx-primary px-4 py-2.5 text-sm font-bold text-cx-primary-fg transition hover:opacity-90 active:scale-[0.97]"
+              >
+                {t(locale, "forum.poster")}
+              </Link>
+            </section>
+
             {communautes.length > 0 ? (
               <Section titre={t(locale, "nav.communities")}>
                 {communautes.map((c) => (

@@ -53,38 +53,29 @@ export default function CarteSujet({
     .split(",")
     .map((m) => m.trim())
     .filter(Boolean);
-  const communaute = tags[0] ?? "codexchange";
   const texte = apercu(sujet.corps);
 
   return (
-    <li className="group border-b border-cx-border transition-colors duration-150 hover:bg-cx-muted/30">
-      <article className="flex gap-3 px-1 py-3 sm:px-2">
+    <li className="group relative border-b border-cx-border transition-colors duration-150 hover:bg-cx-muted/30">
+      <article className="relative flex gap-3 px-1 py-3 sm:px-2">
         <Link
           href={`/membres/${sujet.author.slug}`}
-          className="mt-0.5 shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cx-primary"
+          className="relative z-10 mt-0.5 shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cx-primary"
           aria-label={t(locale, "forum.by") + " " + sujet.author.nom}
         >
           <Avatar slug={sujet.author.slug} nom={sujet.author.nom} avatar={sujet.author.avatar ?? undefined} taille="md" />
         </Link>
 
         <div className="min-w-0 flex-1">
-          {/* Ligne d'en-tête façon X : nom · c/communauté · temps · Badge. */}
-          <p className="flex flex-wrap items-center gap-x-1.5 text-sm leading-5">
+          {/* Ligne d'en-tête façon X : nom @handle · temps · Badge. */}
+          <p className="relative z-10 flex flex-wrap items-center gap-x-1.5 text-sm leading-5">
             <Link
               href={`/membres/${sujet.author.slug}`}
               className="min-w-0 max-w-[14rem] truncate font-bold text-cx-fg hover:underline sm:max-w-[18rem]"
             >
               {sujet.author.nom}
             </Link>
-            <span aria-hidden className="text-cx-muted-fg">
-              ·
-            </span>
-            <Link
-              href={`/forum?tag=${encodeURIComponent(communaute)}`}
-              className="min-w-0 max-w-[11rem] truncate text-xs font-medium text-cx-muted-fg hover:underline"
-            >
-              c/{communaute}
-            </Link>
+            <span className="min-w-0 max-w-[11rem] truncate text-xs text-cx-muted-fg">@{sujet.author.slug}</span>
             <span aria-hidden className="text-xs text-cx-muted-fg">
               ·
             </span>
@@ -98,17 +89,19 @@ export default function CarteSujet({
             ) : null}
           </p>
 
+          {/* Titre : le lien s'étire sur toute la rangée (rangée cliquable
+              façon X) ; les contrôles interactifs passent au-dessus (z-10). */}
           <h2 className="mt-0.5 max-w-[62ch] text-[15px] font-bold leading-5 text-cx-fg">
-            <Link href={`/forum/${sujet.id}`} className="hover:underline">
+            <Link href={`/forum/${sujet.id}`} className="block after:absolute after:inset-0">
               {sujet.titre}
             </Link>
           </h2>
 
           {texte ? <p className="mt-0.5 max-w-[62ch] line-clamp-2 text-sm leading-5 text-cx-muted-fg">{texte}</p> : null}
 
-          {tags.length > 1 ? (
-            <ul className="mt-2 flex flex-wrap gap-1.5">
-              {tags.slice(1).map((mot) => (
+          {tags.length > 0 ? (
+            <ul className="relative z-10 mt-2 flex flex-wrap gap-1.5">
+              {tags.map((mot) => (
                 <li key={mot}>
                   <Link
                     href={`/forum?tag=${encodeURIComponent(mot)}`}
@@ -123,7 +116,7 @@ export default function CarteSujet({
           ) : null}
 
           {/* Barre d'actions façon X : répondre · voter · partager, espacée. */}
-          <div className="mt-2.5 flex max-w-[26rem] items-center justify-between gap-2">
+          <div className="relative z-10 mt-2.5 flex max-w-[26rem] items-center justify-between gap-2">
             <Link
               href={`/forum/${sujet.id}`}
               className="inline-flex min-h-9 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-primary/10 hover:text-cx-primary"
