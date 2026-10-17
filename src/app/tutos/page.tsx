@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { EmptyState } from "@/components/empty-state";
+import TutosFeed from "@/components/tutos-feed";
 import Pagination from "@/components/pagination";
 import { normalizePage } from "@/lib/pagination";
-import { formatDureeLecture } from "@/lib/lecture";
 import { localeCourante, t } from "@/lib/i18n";
 import { listTutorials } from "@/lib/tutorials";
 
@@ -13,10 +14,17 @@ export const dynamic = "force-dynamic";
 
 type Props = { searchParams: Promise<{ page?: string }> };
 
-/** /tutos — liste des articles : durée de lecture, tags, résumé. */
+/** /tutos — liste des articles : durée de lecture, tags, résumé.
+ * La page 1 est servie côté serveur ; les pages suivantes sont chargées
+ * automatiquement au défilement grâce à un Observateur d'intersection
+ * dans le composant client TutosFeed.
+ * La pagination traditionnelle reste accessible en URL pour le partage.
+ */
 export default async function PageTutos({ searchParams }: Props) {
   const params = await searchParams;
   const page = normalizePage(params.page);
+
+  // Requête initiale côté serveur (page 1).
   const [resultat, locale] = await Promise.all([
     listTutorials({ page, pageSize: 12 }),
     localeCourante(),
@@ -37,56 +45,35 @@ export default async function PageTutos({ searchParams }: Props) {
       </header>
 
       {tutos.length === 0 ? (
-        <section className="rounded-xl border border-cx-border px-6 py-12 text-center">
-          <p className="text-lg font-semibold">{t(locale, "tutorials.empty_title")}</p>
-          <p className="mt-2 text-sm text-cx-muted-fg">
-            {t(locale, "tutorials.empty_desc")}
-          </p>
-          <Link
-            href="/forum/nouveau"
-            className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
-          >
-            {t(locale, "forum.new")}
-          </Link>
-        </section>
+        <EmptyState
+          titre={t(locale, "tutorials.empty_title")}
+          description={t(locale, "tutorials.empty_desc")}
+          cta="forum.new"
+          href="/forum/nouveau"
+        />
       ) : (
-        <ul className="flex flex-col gap-3">
-          {tutos.map((tuto) => (
-            <li
-              key={tuto.id}
-              className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60"
-            >
-              <Link href={`/tutos/${tuto.slug}`} className="block">
-                <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">
-                  {tuto.titre}
-                </h2>
-              </Link>
-
-              <p className="mt-1 text-sm text-cx-muted-fg">{tuto.resume}</p>
-
-              <ul className="mt-3 flex flex-wrap items-center gap-2">
-                <li className="rounded-full border border-cx-border px-2.5 py-0.5 text-xs font-medium tabular-nums text-cx-muted-fg">
-                  ⏱ {formatDureeLecture(tuto.corps)} {t(locale, "tutorials.reading")}
-                </li>
-                {tuto.tags.map((tag) => (
-                  <li
-                    key={tag}
-                    className="rounded-full bg-cx-primary/5 px-2.5 py-0.5 text-xs font-semibold text-cx-primary"
-                  >
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
+        <TutosFeed
+          initialItems={tutos}
+          totalPages={totalPages}
+          currentPage={pageActuelle}
+          basePath="/tutos"
+          locale={locale}
+        />
       )}
 
-      <Pagination
-        page={pageActuelle}
-        totalPages={totalPages}
-        basePath="/tutos"
-      />
+      {/* Pagination traditionnelle en pied de page pour le partage direct / SEO */}
+      {totalPages > 1 && (
+        <nav
+          aria-label="Pagination"
+          className={`flex flex-wrap items-center justify-center gap-2 mt-6`}
+        >
+          <Pagination
+            page={pageActuelle}
+            totalPages={totalPages}
+            basePath="/tutos"
+          />
+        </nav>
+      )}
     </div>
   );
 }

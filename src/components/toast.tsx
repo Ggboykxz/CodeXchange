@@ -77,7 +77,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             role="status"
-            className={`pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur transition ${
+            className={`toast-entree pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur transition ${
               toast.ton === "erreur"
                 ? "border-cx-destructive/40 bg-cx-destructive/5 text-cx-fg"
                 : toast.ton === "info"

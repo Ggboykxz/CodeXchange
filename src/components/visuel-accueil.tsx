@@ -30,7 +30,7 @@ export default function VisuelAccueil({ membres, tendance, conversation }: Props
     >
       <div className="pointer-events-none absolute inset-0 bg-slate-900/10" />
 
-      <div className="absolute left-4 top-6 w-52 rounded-2xl border border-cx-border bg-white/8 backdrop-blur-xl border-white/15 p-3 shadow-2xl sm:left-10 sm:w-56">
+      <div className="absolute left-4 top-6 w-52 rounded-2xl border border-white/15 bg-white/8 backdrop-blur-xl p-3 shadow-2xl sm:left-10 sm:w-56">
         <div className="flex items-center gap-3">
           <Avatar slug={vedette.slug} nom={vedette.nom} avatar={vedette.avatar ?? undefined} />
           <div className="min-w-0">
@@ -51,7 +51,7 @@ export default function VisuelAccueil({ membres, tendance, conversation }: Props
         </div>
       </div>
 
-      <div className="absolute bottom-6 right-4 w-60 rounded-2xl border border-cx-border bg-white/8 backdrop-blur-xl border-white/15 p-3 shadow-2xl sm:right-10 sm:w-64">
+      <div className="absolute bottom-6 right-4 w-60 rounded-2xl border border-white/15 bg-white/8 backdrop-blur-xl p-3 shadow-2xl sm:right-10 sm:w-64">
         <p className="text-xs font-semibold text-slate-300">
           <span className="text-orange-400">#</span>
           {tendanceAffichee}

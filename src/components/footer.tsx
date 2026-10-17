@@ -10,7 +10,7 @@ export async function Footer() {
         <p className="text-sm text-cx-muted-fg">
           © {new Date().getFullYear()} CodeXchange — {t(locale, "footer.tagline")}
         </p>
-        <nav className="flex gap-4 text-sm text-cx-muted-fg">
+        <nav className="flex flex-wrap justify-center gap-4 text-sm text-cx-muted-fg">
           <Link href="/forum" className="hover:text-cx-fg">
             {t(locale, "nav.forum")}
           </Link>
@@ -19,6 +19,12 @@ export async function Footer() {
           </Link>
           <Link href="/tutos" className="hover:text-cx-fg">
             {t(locale, "nav.tutorials")}
+          </Link>
+          <Link href="/conditions" className="hover:text-cx-fg">
+            Conditions
+          </Link>
+          <Link href="/confidentialite" className="hover:text-cx-fg">
+            Confidentialité
           </Link>
           <Link href="https://github.com/Ggboykxz/CodeXchange" className="hover:text-cx-fg">
             GitHub

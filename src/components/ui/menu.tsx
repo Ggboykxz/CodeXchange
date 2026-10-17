@@ -37,7 +37,7 @@ export function MenuPanneau({
       <Menu.Positioner align={align} sideOffset={sideOffset} className="z-30 outline-none">
         <Menu.Popup
           className={cn(
-            "min-w-56 rounded-xl border border-cx-border bg-cx-card p-1.5 shadow-lg outline-none",
+            "[transform-origin:var(--transform-origin)] min-w-56 rounded-xl border border-cx-border bg-cx-card p-1.5 shadow-lg outline-none",
             className,
           )}
         >

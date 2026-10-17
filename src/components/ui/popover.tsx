@@ -38,7 +38,7 @@ export function PopoverPanneau({
         <Popover.Popup
           initialFocus={focusInitial}
           className={cn(
-            "min-w-56 rounded-xl border border-cx-border bg-cx-card p-1.5 shadow-lg outline-none",
+            "[transform-origin:var(--transform-origin)] min-w-56 rounded-xl border border-cx-border bg-cx-card p-1.5 shadow-lg outline-none",
             className,
           )}
         >

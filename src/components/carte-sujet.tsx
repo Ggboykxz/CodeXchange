@@ -49,7 +49,7 @@ export default function CarteSujet({
   const texte = apercu(sujet.corps);
 
   return (
-    <li className="group flex overflow-hidden rounded-lg border border-cx-border bg-cx-card transition hover:border-cx-primary/50">
+    <li className="group flex overflow-hidden bg-cx-bg transition-colors duration-150 hover:bg-cx-muted/50">
       {/* Gouttière de vote. */}
       <div className="flex w-10 shrink-0 flex-col items-center bg-cx-muted/50 py-2.5 transition group-hover:bg-cx-muted">
         <BoutonVote
@@ -78,7 +78,7 @@ export default function CarteSujet({
           <span className="inline-flex items-center gap-1">
             <TempsRelatif date={sujet.createdAt} />
             {estNouveau(sujet.createdAt) ? (
-              <span className="rounded-full bg-cx-accent/10 px-1.5 py-px text-[10px] font-bold text-cx-accent">Nouveau</span>
+              <span className="rounded-md bg-cx-accent/10 px-1.5 py-px text-[10px] font-bold uppercase tracking-wide text-cx-accent">Nouveau</span>
             ) : null}
           </span>
         </p>
