@@ -69,6 +69,13 @@ export default async function PageMembre({ params }: Props) {
     prisma.reply.count({ where: { authorId: membre.id } }),
   ]);
 
+  const publications = await prisma.post.findMany({
+    where: { authorId: membre.id },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+    select: { id: true, titre: true, corps: true, tags: true, createdAt: true, _count: { select: { replies: true, likes: true } } },
+  });
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
       <Link href="/annuaire" className="text-sm text-cx-primary">
@@ -203,6 +210,39 @@ export default async function PageMembre({ params }: Props) {
               </ul>
             </section>
           )}
+
+          <section className="flex flex-col gap-3">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-cx-muted-fg">Publications</h2>
+            {publications.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-cx-border px-5 py-6 text-sm text-cx-muted-fg">
+                Aucune publication pour le moment.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {publications.map((p) => (
+                  <li key={p.id} className="rounded-xl border border-cx-border bg-cx-card px-5 py-4 transition hover:border-cx-primary/60">
+                    <Link href={`/forum/${p.id}`} className="block">
+                      <h3 className="font-bold text-cx-fg hover:text-cx-primary">{p.titre}</h3>
+                      <p className="mt-1 line-clamp-2 text-sm text-cx-muted-fg">
+                        {p.corps.replace(/[#*>_`~-]/g, " ").replace(/\s+/g, " ").trim().slice(0, 160)}
+                      </p>
+                      <div className="mt-2 flex items-center gap-3 text-xs text-cx-muted-fg">
+                        <span>{p._count.replies} réponses</span>
+                        <span>·</span>
+                        <span>{p._count.likes} likes</span>
+                        {p.tags ? (
+                          <>
+                            <span>·</span>
+                            <span className="text-cx-primary">{p.tags.split(",").slice(0, 2).join(", ")}</span>
+                          </>
+                        ) : null}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </>
       ) : (
         <section className="rounded-xl border border-dashed border-cx-border px-5 py-8 text-center text-sm text-cx-muted-fg">
