@@ -28,20 +28,19 @@ type Props = {
  */
 export function ForumFeed({ initialItems, totalPages, currentPage, locale, connecte, params }: Props) {
   const toast = useToast();
-  const [hidden, setHidden] = useState<Set<number>>(new Set());
-  const [items, setItems] = useState<PostResume[]>(initialItems);
-  // Charger les sujets masqués depuis localStorage (1 tap = contrôle du fil).
-  useEffect(() => {
+  const [hidden, setHidden] = useState<Set<number>>(() => {
+    if (typeof window === "undefined") return new Set();
     try {
       const raw = localStorage.getItem("cx-hidden-posts");
       if (raw) {
-        const ids = JSON.parse(raw) as number[];
-        setHidden(new Set(ids));
+        return new Set(JSON.parse(raw) as number[]);
       }
     } catch {
       /* ignoré */
     }
-  }, []);
+    return new Set();
+  });
+  const [items, setItems] = useState<PostResume[]>(initialItems);
 
   const masquer = useCallback((id: number) => {
     setHidden((prev) => {

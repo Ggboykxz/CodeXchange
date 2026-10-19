@@ -5,18 +5,17 @@ import { Icone } from "@/components/icones";
 
 /** Bascule le mode léger (économie de données) : désactive animations/transitions. */
 export default function SelecteurModeLege() {
-  const [actif, setActif] = useState(false);
+  const [actif, setActif] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const v = localStorage.getItem("cx-data-saver");
+    const reduce = window.matchMedia("(prefers-reduced-data: reduce)").matches;
+    return v === "1" || (v === null && reduce);
+  });
 
   useEffect(() => {
-    const v = typeof window !== "undefined" ? localStorage.getItem("cx-data-saver") : null;
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-data: reduce)").matches;
-    const on = v === "1" || (v === null && reduce);
-    setActif(on);
-    if (on) document.documentElement.classList.add("data-saver");
+    if (actif) document.documentElement.classList.add("data-saver");
     else document.documentElement.classList.remove("data-saver");
-  }, []);
+  }, [actif]);
 
   function basculer() {
     const prochain = !actif;

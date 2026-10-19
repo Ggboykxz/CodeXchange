@@ -17,7 +17,7 @@ export default function CompteurAnime({ value }: { value: number }) {
     precedent.current = value;
     if (debut === fin) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      setAffiche(fin);
+      queueMicrotask(() => setAffiche(fin));
       return;
     }
     const debutMs = performance.now();

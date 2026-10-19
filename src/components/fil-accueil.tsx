@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import CarteSujet from "@/components/carte-sujet";
 import { useToast } from "@/components/toast";
 import type { PostResume } from "@/lib/forum";
@@ -16,15 +16,15 @@ export default function FilAccueil({
   connecte: boolean;
 }) {
   const toast = useToast();
-  const [hidden, setHidden] = useState<Set<number>>(new Set());
-  useEffect(() => {
+  const [hidden, setHidden] = useState<Set<number>>(() => {
+    if (typeof window === "undefined") return new Set();
     try {
       const raw = localStorage.getItem("cx-hidden-posts");
-      if (raw) setHidden(new Set(JSON.parse(raw) as number[]));
+      return raw ? new Set(JSON.parse(raw) as number[]) : new Set();
     } catch {
-      /* ignoré */
+      return new Set();
     }
-  }, []);
+  });
 
   const masquer = useCallback(
     (id: number) => {
