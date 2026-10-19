@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import TutosFeed from "@/components/tutos-feed";
 import Pagination from "@/components/pagination";

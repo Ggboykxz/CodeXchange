@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { localeCourante, t } from "@/lib/i18n";
 import { listPosts } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
@@ -58,7 +57,7 @@ export default async function PageCommunaute({ params }: { params: Promise<{ tag
           <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-cx-muted-fg">
             <li>Respect et bienveillance entre membres.</li>
             <li>Questions techniques avec contexte et code.</li>
-            <li>Pas de spam ni d'auto-promotion excessive.</li>
+            <li>Pas de spam ni d&apos;auto-promotion excessive.</li>
             <li>Marque les sujets résolus avec ✓.</li>
           </ol>
         </section>

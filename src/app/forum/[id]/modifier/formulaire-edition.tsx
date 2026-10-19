@@ -2,20 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { t, type Locale } from "@/lib/i18n";
 
 export default function FormulaireEdition({
   postId,
   titreInitial,
   corpsInitial,
   tagsInitial,
-  locale,
 }: {
   postId: number;
   titreInitial: string;
   corpsInitial: string;
   tagsInitial: string;
-  locale: Locale;
 }) {
   const router = useRouter();
   const [titre, setTitre] = useState(titreInitial);

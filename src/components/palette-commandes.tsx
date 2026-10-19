@@ -231,7 +231,7 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
                       "flex items-center gap-3 px-4 py-2 text-sm",
                       i === actif ? "bg-cx-muted" : "hover:bg-cx-muted/60",
                     )}
-                    aria-selected={i === actif}
+                    data-selected={i === actif}
                   >
                     {item.icone ? (
                       <Icone nom={item.icone} className="size-4 shrink-0 text-cx-muted-fg" />
