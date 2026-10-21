@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 import { effacerBrouillon, ecrireBrouillon, lireBrouillon } from "@/lib/brouillon";
 import CompteurCaracteres from "@/components/compteur-caracteres";
+import ChampMarkdown from "@/components/champ-markdown";
 
 const CLE_BROUILLON = "forum-sujet";
 
@@ -17,6 +18,7 @@ type CorpsReponse = { message?: string };
 export default function FormulaireSujet() {
   const [erreur, setErreur] = useState<string | null>(null);
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   const [enCours, setEnCours] = useState(false);
   const [titre, setTitre] = useState(() => {
     if (typeof window === "undefined") return "";
@@ -81,7 +83,7 @@ export default function FormulaireSujet() {
   }
 
   return (
-    <form onSubmit={envoyerFormulaire} className="flex flex-col gap-4">
+    <form ref={formRef} onSubmit={envoyerFormulaire} className="flex flex-col gap-4">
       <div>
         <label htmlFor="titre" className="mb-1 block text-sm font-medium">Titre du sujet</label>
         <input id="titre" name="titre" type="text" required minLength={8} maxLength={120} placeholder="Bug Flutter sur Android 14 : crash au démarrage" className={CLASS_CHAMP} value={titre} onChange={(e) => setTitre(e.target.value)} aria-describedby="titre-aide titre-compteur" />
@@ -91,14 +93,20 @@ export default function FormulaireSujet() {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="corps" className="mb-1 block text-sm font-medium">Corps du sujet</label>
-        <textarea id="corps" name="corps" required rows={8} maxLength={5000} placeholder="Décrivez le contexte…" className={`${CLASS_CHAMP} resize-y`} value={corps} onChange={(e) => setCorps(e.target.value)} aria-describedby="corps-aide corps-compteur" />
-        <div className="mt-1 flex items-center justify-between gap-2">
-          <p id="corps-aide" className="text-xs text-cx-muted-fg">5 000 caractères maximum.</p>
-          <CompteurCaracteres id="corps-compteur" valeur={corps} max={5000} paliers={[500, 100, 0]} />
-        </div>
-      </div>
+      <ChampMarkdown
+        id="corps"
+        name="corps"
+        label="Corps du sujet"
+        valeur={corps}
+        onChange={setCorps}
+        max={5000}
+        rows={8}
+        required
+        placeholder="Décrivez le contexte… **gras**, `code`, ```bloc de code```, [lien](https://)."
+        aide="5 000 caractères maximum. Markdown pris en charge."
+        paliers={[500, 100, 0]}
+        onEnvoi={() => formRef.current?.requestSubmit()}
+      />
 
       <div>
         <label htmlFor="image" className="mb-1 block text-sm font-medium">Image (URL, optionnel)</label>

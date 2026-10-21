@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { t, type Locale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
+import ChampMarkdown from "@/components/champ-markdown";
 
 export default function FormulaireEdition({
   postId,
@@ -18,6 +19,7 @@ export default function FormulaireEdition({
   locale: Locale;
 }) {
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   const [titre, setTitre] = useState(titreInitial);
   const [corps, setCorps] = useState(corpsInitial);
   const [tags, setTags] = useState(tagsInitial);
@@ -51,15 +53,24 @@ export default function FormulaireEdition({
   const input = "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
 
   return (
-    <form onSubmit={soumettre} className="flex flex-col gap-4">
+    <form ref={formRef} onSubmit={soumettre} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1 text-sm font-medium">
         Titre
         <input value={titre} onChange={(e) => setTitre(e.target.value)} className={input} required />
       </label>
-      <label className="flex flex-col gap-1 text-sm font-medium">
-        Corps (markdown)
-        <textarea value={corps} onChange={(e) => setCorps(e.target.value)} className={`${input} min-h-[200px]`} required />
-      </label>
+      <ChampMarkdown
+        id="corps-edition"
+        name="corps"
+        label="Corps (markdown)"
+        valeur={corps}
+        onChange={setCorps}
+        max={5000}
+        rows={10}
+        required
+        aide="5 000 caractères maximum. Markdown pris en charge."
+        paliers={[500, 100, 0]}
+        onEnvoi={() => formRef.current?.requestSubmit()}
+      />
       <label className="flex flex-col gap-1 text-sm font-medium">
         Tags (virgules)
         <input value={tags} onChange={(e) => setTags(e.target.value)} className={input} />

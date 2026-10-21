@@ -1,11 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
-
-const CLASS_CHAMP =
-  "w-full rounded-lg border border-cx-border-fort bg-cx-card px-3 py-2 text-sm outline-none focus:border-cx-primary focus:ring-2 focus:ring-cx-primary/30";
+import ChampMarkdown from "@/components/champ-markdown";
 
 type Props = { postId: number; parentId?: number };
 type CorpsReponse = { message?: string };
@@ -13,12 +11,14 @@ type CorpsReponse = { message?: string };
 /** Formulaire de réponse → POST /api/forum/[id]/replies, puis rafraîchit la page. */
 export default function FormulaireReponse({ postId, parentId }: Props) {
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const idCorps = useId();
+  const [corps, setCorps] = useState("");
   const [erreur, setErreur] = useState<string | null>(null);
   const [enCours, setEnCours] = useState(false);
 
   async function envoyerFormulaire(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formulaire = e.currentTarget;
     setEnCours(true);
     setErreur(null);
 
@@ -26,14 +26,14 @@ export default function FormulaireReponse({ postId, parentId }: Props) {
       const reponse = await fetch(`/api/forum/${postId}/replies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ corps: new FormData(formulaire).get("corps"), parentId: parentId ?? null }),
+        body: JSON.stringify({ corps, parentId: parentId ?? null }),
       });
       if (!reponse.ok) {
-        const corps = (await reponse.json().catch(() => null)) as CorpsReponse | null;
-        setErreur(corps?.message ?? MESSAGE_FR.FORUM_VALIDATION);
+        const corpsErreur = (await reponse.json().catch(() => null)) as CorpsReponse | null;
+        setErreur(corpsErreur?.message ?? MESSAGE_FR.FORUM_VALIDATION);
         return;
       }
-      formulaire.reset();
+      setCorps("");
       router.refresh();
     } catch {
       setErreur("Impossible de contacter le serveur. Réessayez dans un instant.");
@@ -43,19 +43,20 @@ export default function FormulaireReponse({ postId, parentId }: Props) {
   }
 
   return (
-    <form onSubmit={envoyerFormulaire} className="mt-3 flex flex-col gap-3">
-      <label htmlFor="corps" className="sr-only">
-        Votre réponse
-      </label>
-      <textarea
-        id="corps"
+    <form ref={formRef} onSubmit={envoyerFormulaire} className="mt-3 flex flex-col gap-3">
+      <ChampMarkdown
+        id={idCorps}
         name="corps"
-        required
+        label="Votre réponse"
+        valeur={corps}
+        onChange={setCorps}
+        max={2000}
         rows={4}
-        minLength={1}
-        maxLength={2000}
-        placeholder="Votre réponse… (1 à 2 000 caractères)"
-        className={`${CLASS_CHAMP} resize-y`}
+        required
+        placeholder="Votre réponse… **gras**, `code`, ```bloc```, [lien](https://)."
+        aide="1 à 2 000 caractères. Markdown pris en charge."
+        paliers={[200, 50, 0]}
+        onEnvoi={() => formRef.current?.requestSubmit()}
       />
       {erreur && (
         <p role="alert" className="rounded-lg bg-cx-destructive/5 px-3 py-2 text-sm text-cx-destructive">
