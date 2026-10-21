@@ -11,6 +11,7 @@ import RaccourciRecherche from "@/components/raccourci-recherche";
 import RetourHaut from "@/components/retour-haut";
 import Onboarding from "@/components/onboarding";
 import BottomNav from "@/components/bottom-nav";
+import TirerPourRafraichir from "@/components/tirer-pour-rafraichir";
 import { themeCourant } from "@/lib/theme";
 import { localeCourante } from "@/lib/i18n";
 import "./globals.css";
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <RaccourciRecherche />
             <RetourHaut />
             <Onboarding />
+            <TirerPourRafraichir />
             <Header />
             {/* Navigation façon Reddit : barre latérale (drawer sur mobile) + contenu. */}
             <div className="flex">

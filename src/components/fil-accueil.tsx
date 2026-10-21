@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import CarteSujet from "@/components/carte-sujet";
 import { useToast } from "@/components/toast";
+import { useRaccourcisFil } from "@/lib/use-raccourcis-fil";
 import type { PostResume } from "@/lib/forum";
 import type { Locale } from "@/lib/i18n";
 
@@ -20,6 +21,7 @@ export default function FilAccueil({
   useEffect(() => {
     try {
       const raw = localStorage.getItem("cx-hidden-posts");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- préférence locale : localStorage n'existe pas au rendu serveur, la lecture après hydratation est volontaire.
       if (raw) setHidden(new Set(JSON.parse(raw) as number[]));
     } catch {
       /* ignoré */
@@ -62,11 +64,26 @@ export default function FilAccueil({
   );
 
   const visibles = initialItems.filter((s) => !hidden.has(s.id));
+  const { actifId } = useRaccourcisFil(visibles.map((s) => s.id));
   return (
-    <ul>
-      {visibles.map((sujet) => (
-        <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={connecte} onMasquer={masquer} />
-      ))}
-    </ul>
+    <>
+      <p id="raccourcis-accueil" className="sr-only">
+        Navigation clavier : j pour le sujet suivant, k pour le précédent, Entrée ou o pour
+        ouvrir le sujet actif, Échap pour quitter.
+      </p>
+      <ul aria-describedby="raccourcis-accueil" aria-keyshortcuts="j k Enter o Escape">
+        {visibles.map((sujet, index) => (
+          <CarteSujet
+            key={sujet.id}
+            sujet={sujet}
+            locale={locale}
+            connecte={connecte}
+            onMasquer={masquer}
+            actif={sujet.id === actifId}
+            entree={index}
+          />
+        ))}
+      </ul>
+    </>
   );
 }

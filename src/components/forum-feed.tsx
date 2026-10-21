@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/toast";
 import CarteSujet from "@/components/carte-sujet";
+import { useRaccourcisFil } from "@/lib/use-raccourcis-fil";
 import type { PostResume } from "@/lib/forum";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
@@ -36,6 +37,7 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
       const raw = localStorage.getItem("cx-hidden-posts");
       if (raw) {
         const ids = JSON.parse(raw) as number[];
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- préférence locale : localStorage n'existe pas au rendu serveur, la lecture après hydratation est volontaire.
         setHidden(new Set(ids));
       }
     } catch {
@@ -76,6 +78,7 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
   }, [toast]);
 
   const visibles = items.filter((s) => !hidden.has(s.id));
+  const { actifId } = useRaccourcisFil(visibles.map((s) => s.id));
   const [pageSuivante, setPageSuivante] = useState(currentPage + 1);
   const [hasMore, setHasMore] = useState(currentPage < totalPages);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,9 +124,21 @@ export function ForumFeed({ initialItems, totalPages, currentPage, locale, conne
 
   return (
     <>
-      <ul>
-        {visibles.map((sujet) => (
-          <CarteSujet key={sujet.id} sujet={sujet} locale={locale} connecte={connecte} onMasquer={masquer} />
+      <p id="raccourcis-fil" className="sr-only">
+        Navigation clavier : j pour le sujet suivant, k pour le précédent, Entrée ou o pour
+        ouvrir le sujet actif, Échap pour quitter.
+      </p>
+      <ul aria-describedby="raccourcis-fil" aria-keyshortcuts="j k Enter o Escape">
+        {visibles.map((sujet, index) => (
+          <CarteSujet
+            key={sujet.id}
+            sujet={sujet}
+            locale={locale}
+            connecte={connecte}
+            onMasquer={masquer}
+            actif={sujet.id === actifId}
+            entree={index}
+          />
         ))}
       </ul>
       {enErreur ? (

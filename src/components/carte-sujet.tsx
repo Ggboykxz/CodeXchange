@@ -56,11 +56,17 @@ export default function CarteSujet({
   locale,
   connecte,
   onMasquer,
+  actif = false,
+  entree = 0,
 }: {
   sujet: PostResume;
   locale: Locale;
   connecte: boolean;
   onMasquer?: (id: number) => void;
+  /** Sujet mis en évidence par la navigation clavier `j`/`k`. */
+  actif?: boolean;
+  /** Rang dans le fil : sert au décalage de l'animation d'entrée. */
+  entree?: number;
 }) {
   const tags = sujet.tags
     .split(",")
@@ -70,7 +76,17 @@ export default function CarteSujet({
   const media = premiereImage(sujet.corps);
 
   return (
-    <li className="group relative border-b border-cx-border transition-colors duration-150 hover:bg-cx-muted/30">
+    <li
+      data-fil-item
+      data-id={sujet.id}
+      data-actif={actif ? "true" : undefined}
+      aria-current={actif ? "true" : undefined}
+      className={cn(
+        "group relative border-b border-cx-border transition-colors duration-150 hover:bg-cx-muted/30 animate-fade-up",
+        actif && "bg-cx-muted/40 ring-1 ring-inset ring-cx-primary/40",
+      )}
+      style={{ animationDelay: `${Math.min(entree, 8) * 35}ms` }}
+    >
       <article className="relative flex gap-3 px-1 py-3 sm:px-2">
         <Link
           href={`/membres/${sujet.author.slug}`}
@@ -118,7 +134,7 @@ export default function CarteSujet({
           {/* Titre : le lien s'étire sur toute la rangée (rangée cliquable
               façon X) ; les contrôles interactifs passent au-dessus (z-10). */}
           <h2 className="mt-0.5 max-w-[62ch] text-[15px] font-bold leading-5 text-cx-fg">
-            <Link href={`/forum/${sujet.id}`} className="block after:absolute after:inset-0">
+            <Link href={`/forum/${sujet.id}`} data-lien-principal className="block after:absolute after:inset-0">
               {sujet.titre}
             </Link>
           </h2>

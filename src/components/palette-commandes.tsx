@@ -62,6 +62,9 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
   const [actif, setActif] = useState(0);
   const entreeRef = useRef<HTMLInputElement>(null);
   const listeRef = useRef<HTMLDivElement>(null);
+  const dialogueRef = useRef<HTMLDivElement>(null);
+  const declencheurRef = useRef<HTMLButtonElement>(null);
+  const dejaOuvert = useRef(false);
 
   const fermer = useCallback(() => {
     setOuvert(false);
@@ -154,9 +157,41 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
     }
   }
 
-  // Focus sur l'ouverture.
+  // Piège de focus : Tab/Shift+Tab bouclent dans le dialogue (WCAG 2.4.3).
+  function surToucheDialogue(e: React.KeyboardEvent) {
+    if (e.key !== "Tab") return;
+    const racine = dialogueRef.current;
+    if (!racine) return;
+    const focusables = Array.from(
+      racine.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    if (focusables.length === 0) return;
+    const premier = focusables[0];
+    const dernier = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === premier) {
+      e.preventDefault();
+      dernier.focus();
+    } else if (!e.shiftKey && document.activeElement === dernier) {
+      e.preventDefault();
+      premier.focus();
+    }
+  }
+
+  // Focus : posé sur le champ à l'ouverture, rendu au déclencheur à la
+  // fermeture (WCAG 2.4.3 : l'ordre de tabulation reprend d'où il vient).
   useEffect(() => {
-    if (ouvert) setTimeout(() => entreeRef.current?.focus(), 30);
+    if (ouvert) {
+      dejaOuvert.current = true;
+      const minuteur = setTimeout(() => entreeRef.current?.focus(), 30);
+      return () => clearTimeout(minuteur);
+    }
+    if (dejaOuvert.current) {
+      dejaOuvert.current = false;
+      const frame = requestAnimationFrame(() => declencheurRef.current?.focus());
+      return () => cancelAnimationFrame(frame);
+    }
   }, [ouvert]);
 
   // Défilement de l'élément actif.
@@ -168,9 +203,12 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
   return (
     <div className="relative">
       <button
+        ref={declencheurRef}
         type="button"
         onClick={() => setOuvert(true)}
         aria-keyshortcuts="Meta+K Control+K"
+        aria-haspopup="dialog"
+        aria-expanded={ouvert}
         title={t(locale, "palette.rapide_title")}
         className={
           pleine
@@ -189,9 +227,11 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
           onClick={fermer}
         >
           <div
+            ref={dialogueRef}
             role="dialog"
             aria-modal="true"
             aria-label={t(locale, "palette.titre")}
+            onKeyDown={surToucheDialogue}
             className="w-full max-w-xl overflow-hidden rounded-2xl border border-cx-border bg-cx-bg text-cx-fg shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
@@ -207,20 +247,33 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
                 onKeyDown={surToucheListe}
                 placeholder={t(locale, "palette.placeholder")}
                 aria-label={t(locale, "palette.placeholder")}
+                role="combobox"
+                aria-expanded="true"
+                aria-controls="palette-liste"
+                aria-autocomplete="list"
+                aria-activedescendant={items[actif] ? `palette-item-${items[actif].id}` : undefined}
                 className="w-full bg-transparent text-sm outline-none placeholder:text-cx-muted-fg"
               />
               <kbd className="rounded border border-cx-border px-1.5 py-0.5 text-[11px] text-cx-muted-fg">ESC</kbd>
             </div>
 
-            <div ref={listeRef} className="max-h-[55dvh] overflow-y-auto overscroll-contain py-2">
+            <div
+              ref={listeRef}
+              id="palette-liste"
+              role="listbox"
+              aria-label={t(locale, "palette.titre")}
+              className="max-h-[55dvh] overflow-y-auto overscroll-contain py-2"
+            >
               {items.length === 0 ? (
                 <p className="px-4 py-8 text-center text-sm text-cx-muted-fg">{t(locale, "palette.vide")}</p>
               ) : (
                 items.map((item, i) => (
                   <a
                     key={item.id}
+                    id={`palette-item-${item.id}`}
                     data-index={i}
                     href={item.href}
+                    role="option"
                     onMouseEnter={() => setActif(i)}
                     onClick={(e) => {
                       e.preventDefault();
@@ -245,10 +298,12 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
               )}
             </div>
 
-            <div className="flex items-center gap-4 border-t border-cx-border px-4 py-2 text-[11px] text-cx-muted-fg">
+            <div className="flex flex-wrap items-center gap-4 border-t border-cx-border px-4 py-2 text-[11px] text-cx-muted-fg">
               <span>↑↓ naviguer</span>
               <span>↵ ouvrir</span>
               <span>Échap fermer</span>
+              <span>j/k fil</span>
+              <span>n nouveau</span>
             </div>
           </div>
         </div>

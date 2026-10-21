@@ -35,6 +35,7 @@ export default function BoutonVote({
   const toast = useToast();
   const [vote, setVote] = useState<number>(initialVote);
   const [score, setScore] = useState(initialScore);
+  const [annonce, setAnnonce] = useState("");
   const [enCours, demarrer] = useTransition();
 
   async function voter(direction: 1 | -1) {
@@ -46,9 +47,17 @@ export default function BoutonVote({
     demarrer(async () => {
       const nouvelleDirection = precedentVote === direction ? 0 : direction;
       const ancienVote = precedentVote;
+      const scoreOptimiste = score - ancienVote + nouvelleDirection;
       // optimiste
       setVote(nouvelleDirection);
-      setScore((s) => s - ancienVote + nouvelleDirection);
+      setScore(scoreOptimiste);
+      setAnnonce(
+        nouvelleDirection === 0
+          ? `Vote retiré. Score ${scoreOptimiste}.`
+          : nouvelleDirection === 1
+            ? `Vote positif enregistré. Score ${scoreOptimiste}.`
+            : `Vote négatif enregistré. Score ${scoreOptimiste}.`,
+      );
       try {
         const r = await fetch(`/api/forum/${postId}/vote`, {
           method: "POST",
@@ -62,6 +71,7 @@ export default function BoutonVote({
           // Rejet serveur (401 session expirée, 404…) : retour en arrière.
           setVote(ancienVote);
           setScore((s) => s + ancienVote - nouvelleDirection);
+          setAnnonce(`Vote impossible. Score ${score}.`);
           if (r.status === 401) {
             toast.info("Connexion requise", "Connecte-toi pour voter.");
           } else {
@@ -71,6 +81,7 @@ export default function BoutonVote({
       } catch {
         setVote(ancienVote);
         setScore((s) => s + ancienVote - nouvelleDirection);
+        setAnnonce(`Vote impossible. Score ${score}.`);
         toast.erreur("Vote impossible", "Vérifie ta connexion réseau.");
       }
     });
@@ -145,6 +156,9 @@ export default function BoutonVote({
         >
           {flecheBas}
         </button>
+        <span className="sr-only" role="status" aria-live="polite">
+          {annonce}
+        </span>
       </div>
     );
   }
@@ -178,6 +192,9 @@ export default function BoutonVote({
       >
         {flecheBas}
       </button>
+      <span className="sr-only" role="status" aria-live="polite">
+        {annonce}
+      </span>
     </div>
   );
 }

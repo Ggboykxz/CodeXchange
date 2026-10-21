@@ -72,6 +72,34 @@
   color-scheme: light;
 }
 
+/* Contraste renforcé (préférence OS / WCAG 1.4.6) : on durcit uniquement le
+   texte d'appui et les traits, sans toucher aux teintes de marque. */
+@media (prefers-contrast: more) {
+  :root {
+    --cx-muted-fg: #292524;
+    --cx-border: #57534e;
+    --cx-border-fort: #1c1917;
+  }
+  :root[data-theme="dark"] {
+    --cx-muted-fg: #f5f5f4;
+    --cx-border: #a8a29e;
+    --cx-border-fort: #e7e5e4;
+  }
+  a {
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+}
+
+/* Mode contraste forcé (Windows High Contrast) : les couleurs système
+   prennent le relais, on garantit seulement un focus toujours visible. */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
 /* Mode `auto` (défaut) : suit la préférence système. */
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] {

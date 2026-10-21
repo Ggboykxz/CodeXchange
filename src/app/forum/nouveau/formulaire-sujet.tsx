@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 import { effacerBrouillon, ecrireBrouillon, lireBrouillon } from "@/lib/brouillon";
+import CompteurCaracteres from "@/components/compteur-caracteres";
 
 const CLE_BROUILLON = "forum-sujet";
 
@@ -83,14 +84,20 @@ export default function FormulaireSujet() {
     <form onSubmit={envoyerFormulaire} className="flex flex-col gap-4">
       <div>
         <label htmlFor="titre" className="mb-1 block text-sm font-medium">Titre du sujet</label>
-        <input id="titre" name="titre" type="text" required minLength={8} maxLength={120} placeholder="Bug Flutter sur Android 14 : crash au démarrage" className={CLASS_CHAMP} value={titre} onChange={(e) => setTitre(e.target.value)} />
-        <p className="mt-1 text-xs text-cx-muted-fg">8 à 120 caractères. Brouillon sauvegardé automatiquement.</p>
+        <input id="titre" name="titre" type="text" required minLength={8} maxLength={120} placeholder="Bug Flutter sur Android 14 : crash au démarrage" className={CLASS_CHAMP} value={titre} onChange={(e) => setTitre(e.target.value)} aria-describedby="titre-aide titre-compteur" />
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <p id="titre-aide" className="text-xs text-cx-muted-fg">8 à 120 caractères. Brouillon sauvegardé automatiquement.</p>
+          <CompteurCaracteres id="titre-compteur" valeur={titre} max={120} />
+        </div>
       </div>
 
       <div>
         <label htmlFor="corps" className="mb-1 block text-sm font-medium">Corps du sujet</label>
-        <textarea id="corps" name="corps" required rows={8} maxLength={5000} placeholder="Décrivez le contexte…" className={`${CLASS_CHAMP} resize-y`} value={corps} onChange={(e) => setCorps(e.target.value)} />
-        <p className="mt-1 text-xs text-cx-muted-fg">5 000 caractères maximum.</p>
+        <textarea id="corps" name="corps" required rows={8} maxLength={5000} placeholder="Décrivez le contexte…" className={`${CLASS_CHAMP} resize-y`} value={corps} onChange={(e) => setCorps(e.target.value)} aria-describedby="corps-aide corps-compteur" />
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <p id="corps-aide" className="text-xs text-cx-muted-fg">5 000 caractères maximum.</p>
+          <CompteurCaracteres id="corps-compteur" valeur={corps} max={5000} paliers={[500, 100, 0]} />
+        </div>
       </div>
 
       <div>
