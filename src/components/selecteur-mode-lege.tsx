@@ -1,33 +1,59 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Icone } from "@/components/icones";
 
-/** Bascule le mode léger (économie de données) : désactive animations/transitions. */
+const CLE = "cx-data-saver";
+const EVENEMENT = "cx-data-saver-change";
+
+/** Lit la préférence : choix explicite, sinon `prefers-reduced-data`. */
+function lirePreference(): boolean {
+  try {
+    const valeur = localStorage.getItem(CLE);
+    if (valeur === "1") return true;
+    if (valeur === "0") return false;
+  } catch {
+    /* stockage indisponible (navigation privée) */
+  }
+  try {
+    return window.matchMedia("(prefers-reduced-data: reduce)").matches;
+  } catch {
+    return false;
+  }
+}
+
+function souscrire(callback: () => void) {
+  const media = window.matchMedia("(prefers-reduced-data: reduce)");
+  media.addEventListener("change", callback);
+  window.addEventListener("storage", callback);
+  window.addEventListener(EVENEMENT, callback);
+  return () => {
+    media.removeEventListener("change", callback);
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(EVENEMENT, callback);
+  };
+}
+
+/**
+ * Bascule le mode léger (économie de données) : désactive animations et
+ * transitions. La préférence est lue via `useSyncExternalStore` — pas de
+ * setState synchrone dans un effet, et synchronisation entre onglets.
+ */
 export default function SelecteurModeLege() {
-  const [actif, setActif] = useState(false);
+  const actif = useSyncExternalStore(souscrire, lirePreference, () => false);
 
   useEffect(() => {
-    const v = typeof window !== "undefined" ? localStorage.getItem("cx-data-saver") : null;
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-data: reduce)").matches;
-    const on = v === "1" || (v === null && reduce);
-    setActif(on);
-    if (on) document.documentElement.classList.add("data-saver");
-    else document.documentElement.classList.remove("data-saver");
-  }, []);
+    document.documentElement.classList.toggle("data-saver", actif);
+  }, [actif]);
 
   function basculer() {
     const prochain = !actif;
-    setActif(prochain);
     try {
-      localStorage.setItem("cx-data-saver", prochain ? "1" : "0");
+      localStorage.setItem(CLE, prochain ? "1" : "0");
     } catch {
       /* ignoré */
     }
-    if (prochain) document.documentElement.classList.add("data-saver");
-    else document.documentElement.classList.remove("data-saver");
+    window.dispatchEvent(new Event(EVENEMENT));
   }
 
   return (

@@ -231,7 +231,9 @@ describe("primitives — dialogue de confirmation", () => {
     const dialogue = await screen.findByRole("alertdialog");
     await user.tab();
     await user.tab();
-    expect(dialogue.contains(document.activeElement)).toBe(true);
+    // Base UI déplace le focus via ses gardes de focus : la redirection vers le
+    // premier élément tabbable est asynchrone, d'où l'attente.
+    await waitFor(() => expect(dialogue.contains(document.activeElement)).toBe(true));
 
     await user.keyboard("{Escape}");
     expect(annuler).toHaveBeenCalledTimes(1);

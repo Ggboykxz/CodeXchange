@@ -22,7 +22,14 @@ export default defineConfig(async () => {
     test: {
       globalSetup: "tests/global-setup.ts",
       environment: "node",
+      // La CI fournit DATABASE_URL ; en local, on retombe sur la base SQLite
+      // éphémère pour que `npm test` fonctionne sans `.env`.
+      env: { DATABASE_URL: process.env.DATABASE_URL ?? "file:./dev.db" },
       setupFiles: ["tests/setup-dom.ts"],
+      // Les tests d'intégration Prisma peuvent dépasser les 5 s par défaut
+      // sur un runner froid ou chargé (le seed prend ~15-20 s).
+      testTimeout: 60000,
+      hookTimeout: 60000,
       include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
       fileParallelism: false,
       sequence: { sequencer: LexicalSequencer },

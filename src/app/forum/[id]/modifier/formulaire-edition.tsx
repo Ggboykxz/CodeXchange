@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Locale } from "@/lib/i18n";
 import ChampMarkdown from "@/components/champ-markdown";
 
 export default function FormulaireEdition({
@@ -10,13 +9,11 @@ export default function FormulaireEdition({
   titreInitial,
   corpsInitial,
   tagsInitial,
-  locale,
 }: {
   postId: number;
   titreInitial: string;
   corpsInitial: string;
   tagsInitial: string;
-  locale: Locale;
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);

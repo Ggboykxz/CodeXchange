@@ -17,8 +17,10 @@ export default function CompteurAnime({ value }: { value: number }) {
     precedent.current = value;
     if (debut === fin) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      setAffiche(fin);
-      return;
+      // Pas d'animation : on publie la valeur finale à la frame suivante pour
+      // ne pas déclencher de rendu synchrone depuis l'effet.
+      const id = requestAnimationFrame(() => setAffiche(fin));
+      return () => cancelAnimationFrame(id);
     }
     const debutMs = performance.now();
     const duree = 500;

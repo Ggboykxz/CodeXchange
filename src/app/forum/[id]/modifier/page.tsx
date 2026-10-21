@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getSessionUserId } from "@/lib/session";
 import { getPost } from "@/lib/forum";
-import { localeCourante } from "@/lib/i18n";
 import FormulaireEdition from "./formulaire-edition";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +15,6 @@ export default async function PageModifier({ params }: { params: Promise<{ id: s
   const sujet = await getPost(postId, userId);
   if (!sujet) notFound();
   if (sujet.author.id !== userId) redirect(`/forum/${postId}`);
-  const locale = await localeCourante();
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
       <Link href={`/forum/${postId}`} className="text-sm text-cx-primary hover:underline">
@@ -29,7 +27,6 @@ export default async function PageModifier({ params }: { params: Promise<{ id: s
           titreInitial={sujet.titre}
           corpsInitial={sujet.corps}
           tagsInitial={sujet.tags}
-          locale={locale}
         />
       </div>
     </div>

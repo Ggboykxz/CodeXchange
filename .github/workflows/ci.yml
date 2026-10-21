@@ -5,17 +5,25 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   qualite:
     runs-on: ubuntu-latest
     env:
       # Base SQLite éphémère de la runner — `.env` n'est pas versionné.
       DATABASE_URL: "file:./dev.db"
+      NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - name: Installer les dépendances
         run: npm ci
@@ -25,5 +33,11 @@ jobs:
         run: npx prisma migrate deploy
       - name: Lint (bloquant)
         run: npm run lint
+      - name: Vérifier les types
+        run: npm run typecheck
       - name: Tests (bloquant)
         run: npm test
+      - name: Préparer la base de démonstration
+        run: npm run seed
+      - name: Build de production (bloquant)
+        run: npm run build

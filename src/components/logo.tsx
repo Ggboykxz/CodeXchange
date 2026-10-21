@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Icone } from "@/components/icones";
 
 /**
  * Logo CodeXchange : pastille dégradée avec un chevron de code (`</>` stylisé)
