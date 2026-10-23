@@ -367,7 +367,10 @@ html.data-saver *::after {
   50% { transform: scale(1.3); opacity: 0.85; }
 }
 
-.animate-fade-up { animation: fade-up 0.45s cubic-bezier(.2,.8,.2,1) both; }
+.animate-fade-up {
+  animation: fade-up 0.45s cubic-bezier(.2,.8,.2,1) both;
+  animation-delay: var(--animation-delay, 0ms);
+}
 .animate-badge-pulse { animation: badge-pulse 1.6s ease-in-out infinite; }
 
 .animate-react-burst { animation: react-burst 0.45s cubic-bezier(.2,.8,.2,1); }

@@ -4,6 +4,7 @@
  * initiales du membre en blanc. Palette d'hex fixes (pas de classes Tailwind
  * dynamiques, qui seraient purgées à la compilation).
  */
+import React from "react";
 
 const PALETTE = [
   "#C2410C", // terracotta
@@ -50,7 +51,7 @@ type Props = {
 };
 
 /** Pastille Avatar réutilisable (annuaire, profils publics, fila X). */
-export default function Avatar({ slug, nom, taille = "sm", avatar }: Props) {
+function AvatarComponent({ slug, nom, taille = "sm", avatar }: Props) {
   const dimension = taille === "lg" ? "size-20 text-2xl" : taille === "md" ? "size-10 text-sm" : "size-11 text-sm";
   if (avatar) {
     return (
@@ -66,10 +67,14 @@ export default function Avatar({ slug, nom, taille = "sm", avatar }: Props) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-bold text-white ${dimension}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full font-bold text-white ${dimension} bg-avatar`}
       style={{ backgroundColor: couleurDuSlug(slug) }}
     >
       {initiales(nom)}
     </span>
   );
 }
+
+const Avatar = React.memo(AvatarComponent);
+Avatar.displayName = "Avatar";
+export default Avatar;

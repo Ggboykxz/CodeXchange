@@ -16,7 +16,6 @@ export default function Onboarding() {
     } catch {
       // silencieux
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [toast]);
   return null;
 }

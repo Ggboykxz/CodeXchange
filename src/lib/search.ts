@@ -8,6 +8,9 @@ import { MembreResume } from "./members";
  * par groupe. Si la requête est vide ou trop courte (moins de 2 caractères
  * après trimming), on renvoie tous les groupes vides sans toucher la base
  * (YAGNI : pas de requête DB inutile, pas de résultats bruités).
+ *
+ * Optimisé : le filtrage est poussé au niveau DB via Prisma `where` +
+ * `mode: 'insensitive'` (PostgreSQL) ou fallback `contains` simple (SQLite).
  */
 
 export type ResultatRecherche = {
@@ -27,14 +30,37 @@ function motsDuCsv(csv: string): string[] {
     .filter(Boolean);
 }
 
-/** Sous-chaîne insensible à la casse. */
-function contient(texte: string, q: string): boolean {
-  return texte.toLowerCase().includes(q);
+/** Détecte si on utilise SQLite (dev) vs PostgreSQL (prod). */
+async function estSQLite(): Promise<boolean> {
+  try {
+    // Prisma ne expose pas directement le provider, on essaie une requête
+    // spécifique à SQLite pour détecter.
+    const result = await prisma.$queryRaw<[{ sqlite_version: string }]>`
+      SELECT sqlite_version()
+    `;
+    return Array.isArray(result) && result.length > 0;
+  } catch {
+    return false; // Si erreur, on assume PostgreSQL (ou autre qui supporte mode)
+  }
 }
 
-/** Passe la chaîne en minuscules pour le test d'inclusion (le q est déjà normalisé). */
-function champ(valeur: string | null | undefined): string {
-  return valeur ?? "";
+/** Construit une clause WHERE Prisma pour recherche. */
+async function ouContient(champs: string[], q: string) {
+  const sqlite = await estSQLite();
+  if (sqlite) {
+    // SQLite : contains sans mode (case-sensitive), on filtrera en mémoire si besoin
+    return {
+      OR: champs.map((champ) => ({
+        [champ]: { contains: q },
+      })),
+    };
+  }
+  // PostgreSQL / autres : mode insensitive supporté
+  return {
+    OR: champs.map((champ) => ({
+      [champ]: { contains: q, mode: "insensitive" as const },
+    })),
+  };
 }
 
 export async function searchCodeXchange(q: string): Promise<ResultatRecherche> {
@@ -42,47 +68,45 @@ export async function searchCodeXchange(q: string): Promise<ResultatRecherche> {
   if (requete.length < 2) {
     return { sujets: [], offres: [], projets: [], membres: [], tutos: [] };
   }
-  const needle = requete.toLowerCase();
 
-  const [postsBruts, jobsBruts, projectsBruts, usersBruts, tutorialsBruts] = await Promise.all([
-    prisma.post.findMany({ orderBy: [{ createdAt: "desc" }, { id: "desc" }] }),
-    prisma.job.findMany({ orderBy: [{ createdAt: "desc" }, { id: "desc" }] }),
-    prisma.project.findMany({ orderBy: [{ createdAt: "desc" }, { id: "desc" }] }),
-    prisma.user.findMany({ orderBy: [{ nom: "asc" }, { id: "asc" }] }),
-    prisma.tutorial.findMany({ orderBy: [{ createdAt: "desc" }, { id: "desc" }] }),
+  const [sujets, offres, projets, usersBruts, tutos] = await Promise.all([
+    // Sujets (forum)
+    prisma.post.findMany({
+      where: await ouContient(["titre", "corps"], requete),
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: LIMITE,
+    }),
+
+    // Offres d'emploi
+    prisma.job.findMany({
+      where: await ouContient(["titre", "entreprise", "pays"], requete),
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: LIMITE,
+    }),
+
+    // Projets
+    prisma.project.findMany({
+      where: await ouContient(["titre", "description", "stack"], requete),
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: LIMITE,
+    }),
+
+    // Membres (users) - on récupère plus large puis on mappe
+    prisma.user.findMany({
+      where: await ouContient(["nom", "titre", "ville", "pays", "stack"], requete),
+      orderBy: [{ nom: "asc" }, { id: "asc" }],
+      take: LIMITE * 2, // marge pour le mapping
+    }),
+
+    // Tutoriels
+    prisma.tutorial.findMany({
+      where: await ouContient(["titre", "resume", "corps"], requete),
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: LIMITE,
+    }),
   ]);
 
-  const sujets = postsBruts
-    .filter((post) => contient(champ(post.titre) + " " + champ(post.corps), needle))
-    .slice(0, LIMITE);
-
-  const offres = jobsBruts
-    .filter((job) =>
-      contient(champ(job.titre) + " " + champ(job.entreprise) + " " + champ(job.pays), needle),
-    )
-    .slice(0, LIMITE);
-
-  const projets = projectsBruts
-    .filter((project) =>
-      contient(champ(project.titre) + " " + champ(project.description) + " " + champ(project.stack), needle),
-    )
-    .slice(0, LIMITE);
-
   const membres: MembreResume[] = usersBruts
-    .filter((user) =>
-      contient(
-        champ(user.nom) +
-          " " +
-          champ(user.titre) +
-          " " +
-          champ(user.ville) +
-          " " +
-          champ(user.pays) +
-          " " +
-          champ(user.stack),
-        needle,
-      ),
-    )
     .slice(0, LIMITE)
     .map((user) => ({
       id: user.id,
@@ -96,10 +120,6 @@ export async function searchCodeXchange(q: string): Promise<ResultatRecherche> {
       stack: motsDuCsv(user.stack),
       avatar: user.avatar,
     }));
-
-  const tutos = tutorialsBruts
-    .filter((tuto) => contient(champ(tuto.titre) + " " + champ(tuto.resume) + " " + champ(tuto.corps), needle))
-    .slice(0, LIMITE);
 
   return { sujets, offres, projets, membres, tutos };
 }

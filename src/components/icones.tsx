@@ -5,6 +5,7 @@
  *
  * Usage : `<Icone nom="forum" className="size-4" />`
  */
+import React from "react";
 
 export type NomIcone =
   | "accueil"
@@ -254,7 +255,7 @@ const D: Record<NomIcone, React.ReactNode> = {
 type Props = { nom: NomIcone; className?: string };
 
 /** Icône SVG stroke 24×24, couleur héritée via `currentColor`. */
-export function Icone({ nom, className = "size-4" }: Props) {
+function IconeComponent({ nom, className = "size-4" }: Props) {
   return (
     <svg
       className={className}
@@ -271,3 +272,6 @@ export function Icone({ nom, className = "size-4" }: Props) {
     </svg>
   );
 }
+
+export const Icone = React.memo(IconeComponent);
+Icone.displayName = "Icone";

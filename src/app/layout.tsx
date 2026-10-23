@@ -14,6 +14,7 @@ import BottomNav from "@/components/bottom-nav";
 import TirerPourRafraichir from "@/components/tirer-pour-rafraichir";
 import { themeCourant } from "@/lib/theme";
 import { localeCourante } from "@/lib/i18n";
+import { getCsrfToken } from "@/lib/csrf";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const theme = await themeCourant();
   const locale = await localeCourante();
+  const csrfToken = await getCsrfToken();
 
   return (
     <html lang={locale} className={jakarta.variable} data-theme={theme} suppressHydrationWarning>
@@ -51,6 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc" />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a" />
+        <meta name="csrf-token" content={csrfToken} />
       </head>
       <body className="min-h-dvh bg-cx-bg font-sans text-cx-fg antialiased">
         {/* Skip to content */}

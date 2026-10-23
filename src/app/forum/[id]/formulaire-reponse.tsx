@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { MESSAGE_FR } from "@/lib/errors";
 import ChampMarkdown from "@/components/champ-markdown";
+import { fetchWithCsrf } from "@/lib/csrf-client";
 
 type Props = { postId: number; parentId?: number };
 type CorpsReponse = { message?: string };
@@ -12,7 +13,7 @@ type CorpsReponse = { message?: string };
 export default function FormulaireReponse({ postId, parentId }: Props) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-  const idCorps = useId();
+  const idCorps = `reply-body-${postId}-${parentId ?? "root"}`;
   const [corps, setCorps] = useState("");
   const [erreur, setErreur] = useState<string | null>(null);
   const [enCours, setEnCours] = useState(false);
@@ -23,7 +24,7 @@ export default function FormulaireReponse({ postId, parentId }: Props) {
     setErreur(null);
 
     try {
-      const reponse = await fetch(`/api/forum/${postId}/replies`, {
+      const reponse = await fetchWithCsrf(`/api/forum/${postId}/replies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ corps, parentId: parentId ?? null }),

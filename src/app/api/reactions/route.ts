@@ -3,6 +3,7 @@ import { errorResponse } from "@/lib/errors";
 import { NON_CONNECTE } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
 import { toggleReaction, type ReactionKind } from "@/lib/reactions";
+import { verifyCsrf, rotateCsrfToken } from "@/lib/csrf";
 
 type Corps = { kind?: unknown; targetId?: unknown; emoji?: unknown };
 
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
     if (userId === null) {
       return NextResponse.json(NON_CONNECTE.body, { status: NON_CONNECTE.status });
     }
+    await verifyCsrf(request);
 
     const corps = (await request.json().catch(() => null)) as Corps | null;
     const kind = String(corps?.kind ?? "") as ReactionKind;
@@ -24,7 +26,9 @@ export async function POST(request: Request) {
     const emoji = String(corps?.emoji ?? "");
 
     const agregats = await toggleReaction(userId, kind, targetId, emoji);
-    return NextResponse.json(agregats);
+    const response = NextResponse.json(agregats);
+    await rotateCsrfToken(response);
+    return response;
   } catch (erreur) {
     const { status, body } = errorResponse(erreur);
     return NextResponse.json(body, { status });

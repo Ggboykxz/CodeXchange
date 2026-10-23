@@ -3,19 +3,18 @@
  *
  * Règle de sécurité : tout le HTML d'entrée est échappé avant l'interprétation
  * (`echapperHtml`). Les liens et images ne sont émis que pour `http(s)://`.
- * La sortie peut donc être injectée avec `dangerouslySetInnerHTML` sans filtre
- * supplémentaire — comme `src/lib/markdown.ts`, mais avec en plus les
- * citations, les listes, les titres et les blocs de code étiquetés.
+ * La sortie est un arbre de nœuds React-ready (pas de HTML string),
+ * éliminant le besoin de `dangerouslySetInnerHTML`.
  *
  * Les fonctions sont pures et testables sans DOM.
  */
 
 const ENTITES: Record<string, string> = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-  "'": "&#39;",
+  "&": "\u0026", // &
+  "<": "\u003C", // <
+  ">": "\u003E", // >
+  '"': "\u0022", // "
+  "'": "\u0027", // '
 };
 
 /**
@@ -32,26 +31,42 @@ function estUrlSure(url: string): boolean {
   return /^https?:\/\//i.test(url);
 }
 
+/** Nœuds de l'AST de rendu (React-ready). */
+export type NoeudEnLigne =
+  | { type: "texte"; contenu: string }
+  | { type: "code"; contenu: string }
+  | { type: "lien"; url: string; libelle: string }
+  | { type: "image"; url: string; alt: string }
+  | { type: "hashtag"; tag: string }
+  | { type: "mention"; slug: string }
+  | { type: "gras"; contenu: string }
+  | { type: "italique"; contenu: string };
+
+export type BlocMarkdown =
+  | { type: "code"; langage: string; code: string }
+  | { type: "titre"; niveau: number; enfants: NoeudEnLigne[] }
+  | { type: "citation"; enfants: NoeudEnLigne[] }
+  | { type: "liste"; ordonnee: boolean; items: NoeudEnLigne[][] }
+  | { type: "paragraphe"; enfants: NoeudEnLigne[] };
+
 /**
- * Met en forme une ligne (ou un bloc de lignes) : code inline, images, liens,
- * hashtags, mentions, gras et italique. Le texte est échappé en premier ;
- * les fragments déjà transformés sont mis en réserve pour ne pas être
- * réinterprétés (URL dans un `href`, contenu de code, etc.).
+ * Parse une ligne/bloc en nœuds inline (code, images, liens, hashtags, mentions, gras, italique).
+ * Retourne un tableau de nœuds structurés (pas de HTML string).
+ * Exporté pour les tests.
  */
-export function enLigne(source: string): string {
+export function parserEnLigne(source: string): NoeudEnLigne[] {
   const codes: string[] = [];
   const images: { alt: string; url: string }[] = [];
-  const liens: string[] = [];
+  const liens: { url: string; libelle: string }[] = [];
 
+  // Étape 1: protéger le code inline
   let sortie = echapperHtml(source);
-
-  // 1. Code inline : son contenu est du texte, jamais du balisage.
   sortie = sortie.replace(/`([^`\n]+)`/g, (_m, contenu: string) => {
     codes.push(contenu);
     return `\u0000${codes.length - 1}\u0000`;
   });
 
-  // 2. Images, avant les liens pour ne pas réécrire l'URL dans `src`.
+  // Étape 2: protéger les images
   sortie = sortie.replace(
     /!\[([^\]\n]*)\]\(([^()\s]+)\)/g,
     (_m, alt: string, url: string) => {
@@ -61,58 +76,88 @@ export function enLigne(source: string): string {
     },
   );
 
-  // 3. Liens http(s) uniquement.
+  // Étape 3: protéger les liens
   sortie = sortie.replace(
     /\[([^\]\n]+)\]\(([^()\s]+)\)/g,
     (_m, libelle: string, url: string) => {
       if (!estUrlSure(url)) return libelle;
-      liens.push(
-        `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-cx-primary underline break-all">${libelle}</a>`,
-      );
+      liens.push({ url, libelle });
       return `\u0002${liens.length - 1}\u0002`;
     },
   );
 
-  // 4. Hashtags et mentions : jamais dans une URL, déjà mise en réserve.
-  sortie = sortie.replace(
-    /(^|[\s(])#([\p{L}\p{N}_]{2,40})/gu,
-    (_m, pre: string, tag: string) =>
-      `${pre}<a href="/forum?tag=${encodeURIComponent(tag)}" class="font-semibold text-cx-primary hover:underline">#${tag}</a>`,
-  );
-  sortie = sortie.replace(
-    /(^|[\s(])@([a-z0-9][a-z0-9-]{1,39})/gi,
-    (_m, pre: string, slug: string) =>
-      `${pre}<a href="/membres/${encodeURIComponent(slug)}" class="font-semibold text-cx-primary hover:underline">@${slug}</a>`,
-  );
+  // Étape 4: hashtags et mentions (sur le texte déjà échappé)
+  const noeuds: NoeudEnLigne[] = [];
 
-  sortie = sortie.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
-  sortie = sortie.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+  function analyserSegment(segment: string): NoeudEnLigne[] {
+    const resultat: NoeudEnLigne[] = [];
+    let dernierIndex = 0;
 
-  // 5. Restauration des fragments protégés.
-  sortie = sortie.replace(/\u0001(\d+)\u0001/g, (_m, index: string) => {
-    const image = images[Number(index)];
-    if (!image) return "";
-    return `<img src="${image.url}" alt="${image.alt}" loading="lazy" class="my-2 max-h-[480px] w-full rounded-2xl border border-cx-border object-cover" />`;
-  });
-  sortie = sortie.replace(
-    /\u0002(\d+)\u0002/g,
-    (_m, index: string) => liens[Number(index)] ?? "",
-  );
-  sortie = sortie.replace(
-    /\u0000(\d+)\u0000/g,
-    (_m, index: string) =>
-      `<code class="rounded bg-cx-muted px-1 py-0.5 font-mono text-xs">${codes[Number(index)] ?? ""}</code>`,
-  );
+    // Regex combinée pour hashtags, mentions, gras, italique
+    const regex = /(^|[\s(])#([\p{L}\p{N}_]{2,40})|(^|[\s(])@([a-z0-9][a-z0-9-]{1,39})|\*\*([^*\n]+)\*\*|\*([^*\n]+)\*/gu;
+    let match: RegExpExecArray | null;
 
-  return sortie;
+    while ((match = regex.exec(segment)) !== null) {
+      // Texte avant le match
+      if (match.index > dernierIndex) {
+        resultat.push({ type: "texte", contenu: segment.slice(dernierIndex, match.index) });
+      }
+
+      if (match[1] !== undefined) {
+        // Hashtag: match[1] = préfixe, match[2] = tag
+        if (match[1]) resultat.push({ type: "texte", contenu: match[1] });
+        resultat.push({ type: "hashtag", tag: match[2] });
+      } else if (match[3] !== undefined) {
+        // Mention: match[3] = préfixe, match[4] = slug
+        if (match[3]) resultat.push({ type: "texte", contenu: match[3] });
+        resultat.push({ type: "mention", slug: match[4] });
+      } else if (match[5] !== undefined) {
+        // Gras: match[5] = contenu
+        resultat.push({ type: "gras", contenu: match[5] });
+      } else if (match[6] !== undefined) {
+        // Italique: match[6] = contenu
+        resultat.push({ type: "italique", contenu: match[6] });
+      }
+
+      dernierIndex = regex.lastIndex;
+    }
+
+    // Texte restant
+    if (dernierIndex < segment.length) {
+      resultat.push({ type: "texte", contenu: segment.slice(dernierIndex) });
+    }
+
+    return resultat;
+  }
+
+  // Découper par placeholders protégés
+  const parties = sortie.split(/(\u0000\d+\u0000|\u0001\d+\u0001|\u0002\d+\u0002)/);
+
+  for (const partie of parties) {
+    if (partie.match(/^\u0000\d+\u0000$/)) {
+      const index = Number(partie.slice(1, -1));
+      if (codes[index] !== undefined) {
+        noeuds.push({ type: "code", contenu: codes[index] });
+      }
+    } else if (partie.match(/^\u0001\d+\u0001$/)) {
+      const index = Number(partie.slice(1, -1));
+      const image = images[index];
+      if (image) {
+        noeuds.push({ type: "image", url: image.url, alt: image.alt });
+      }
+    } else if (partie.match(/^\u0002\d+\u0002$/)) {
+      const index = Number(partie.slice(1, -1));
+      const lien = liens[index];
+      if (lien) {
+        noeuds.push({ type: "lien", url: lien.url, libelle: lien.libelle });
+      }
+    } else if (partie) {
+      noeuds.push(...analyserSegment(partie));
+    }
+  }
+
+  return noeuds;
 }
-
-export type BlocMarkdown =
-  | { type: "code"; langage: string; code: string }
-  | { type: "titre"; niveau: number; html: string }
-  | { type: "citation"; html: string }
-  | { type: "liste"; ordonnee: boolean; items: string[] }
-  | { type: "paragraphe"; html: string };
 
 function estDebutDeBloc(ligne: string): boolean {
   return (
@@ -127,6 +172,7 @@ function estDebutDeBloc(ligne: string): boolean {
 /**
  * Découpe une source Markdown en blocs affichables dans l'ordre :
  * titres, citations, listes, blocs de code et paragraphes.
+ * Retourne un AST structuré (pas de HTML).
  */
 export function decouperMarkdown(source: string): BlocMarkdown[] {
   const lignes = source.replace(/\r\n?/g, "\n").split("\n");
@@ -168,7 +214,7 @@ export function decouperMarkdown(source: string): BlocMarkdown[] {
       blocs.push({
         type: "titre",
         niveau: Math.min(6, titre[1].length + 2),
-        html: enLigne(titre[2]),
+        enfants: parserEnLigne(titre[2]),
       });
       i++;
       continue;
@@ -181,15 +227,15 @@ export function decouperMarkdown(source: string): BlocMarkdown[] {
         contenu.push(lignes[i].replace(/^\s*>\s?/, ""));
         i++;
       }
-      blocs.push({ type: "citation", html: enLigne(contenu.join("\n")) });
+      blocs.push({ type: "citation", enfants: parserEnLigne(contenu.join("\n")) });
       continue;
     }
 
     // Liste à puces : - / * / +
     if (/^\s*[-*+]\s+/.test(ligne)) {
-      const items: string[] = [];
+      const items: NoeudEnLigne[][] = [];
       while (i < lignes.length && /^\s*[-*+]\s+/.test(lignes[i])) {
-        items.push(enLigne(lignes[i].replace(/^\s*[-*+]\s+/, "").trim()));
+        items.push(parserEnLigne(lignes[i].replace(/^\s*[-*+]\s+/, "").trim()));
         i++;
       }
       blocs.push({ type: "liste", ordonnee: false, items });
@@ -198,9 +244,9 @@ export function decouperMarkdown(source: string): BlocMarkdown[] {
 
     // Liste numérotée : 1. / 1)
     if (/^\s*\d+[.)]\s+/.test(ligne)) {
-      const items: string[] = [];
+      const items: NoeudEnLigne[][] = [];
       while (i < lignes.length && /^\s*\d+[.)]\s+/.test(lignes[i])) {
-        items.push(enLigne(lignes[i].replace(/^\s*\d+[.)]\s+/, "").trim()));
+        items.push(parserEnLigne(lignes[i].replace(/^\s*\d+[.)]\s+/, "").trim()));
         i++;
       }
       blocs.push({ type: "liste", ordonnee: true, items });
@@ -217,7 +263,7 @@ export function decouperMarkdown(source: string): BlocMarkdown[] {
       paragraphe.push(lignes[i].trim());
       i++;
     }
-    blocs.push({ type: "paragraphe", html: enLigne(paragraphe.join("\n")) });
+    blocs.push({ type: "paragraphe", enfants: parserEnLigne(paragraphe.join("\n")) });
   }
 
   return blocs;

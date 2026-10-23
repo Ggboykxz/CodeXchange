@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { errorResponse } from "@/lib/errors";
 import { NON_CONNECTE, createPost, listPosts } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
+import { verifyCsrf, rotateCsrfToken } from "@/lib/csrf";
 
 type CorpsSujet = Partial<{
   titre: unknown;
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
     if (userId === null) {
       return NextResponse.json(NON_CONNECTE.body, { status: NON_CONNECTE.status });
     }
+    await verifyCsrf(request);
 
     const corps = (await request.json().catch(() => null)) as CorpsSujet & { sondage?: unknown } | null;
     const options = Array.isArray(corps?.sondage)
@@ -50,7 +52,9 @@ export async function POST(request: Request) {
       tags: tagsRecus(corps?.tags),
       sondage: options ? { options } : undefined,
     });
-    return NextResponse.json({ id }, { status: 201 });
+    const response = NextResponse.json({ id }, { status: 201 });
+    await rotateCsrfToken(response);
+    return response;
   } catch (erreur) {
     const { status, body } = errorResponse(erreur);
     return NextResponse.json(body, { status });

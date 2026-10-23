@@ -1,3 +1,4 @@
+import React from "react";
 import {
   siAngular,
   siAnsible,
@@ -212,7 +213,7 @@ export function logoTechno(nom: string): IconeTechno | null {
 }
 
 /** Composant badge technologique — vrai logo Simple Icons, sinon initiales. */
-export default function LogoTechno({ nom, className = "size-4" }: { nom: string; className?: string }) {
+function LogoTechnoComponent({ nom, className = "size-4" }: { nom: string; className?: string }) {
   const icon = logoTechno(nom);
   if (!icon) {
     const initiales = String(nom || "?")
@@ -248,3 +249,7 @@ export default function LogoTechno({ nom, className = "size-4" }: { nom: string;
     </svg>
   );
 }
+
+const LogoTechno = React.memo(LogoTechnoComponent);
+LogoTechno.displayName = "LogoTechno";
+export default LogoTechno;

@@ -7,6 +7,7 @@ import { MESSAGE_FR } from "@/lib/errors";
 import { effacerBrouillon, ecrireBrouillon, lireBrouillon } from "@/lib/brouillon";
 import CompteurCaracteres from "@/components/compteur-caracteres";
 import ChampMarkdown from "@/components/champ-markdown";
+import { fetchWithCsrf } from "@/lib/csrf-client";
 
 const CLE_BROUILLON = "forum-sujet";
 
@@ -55,7 +56,7 @@ export default function FormulaireSujet() {
       .map((tag) => tag.trim())
       .filter(Boolean);
     try {
-      const reponse = await fetch("/api/forum", {
+      const reponse = await fetchWithCsrf("/api/forum", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

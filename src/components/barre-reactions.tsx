@@ -4,6 +4,7 @@ import { useState, useTransition, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { REACTIONS, type ReactionCounts } from "@/lib/reactions";
 import { Icone } from "@/components/icones";
+import { fetchWithCsrf } from "@/lib/csrf-client";
 
 type Props = {
   kind: "post" | "reply";
@@ -73,7 +74,7 @@ export default function BarreReactions({ kind, targetId, initial, connecte, comp
 
     demarrer(async () => {
       try {
-        const r = await fetch("/api/reactions", {
+        const r = await fetchWithCsrf("/api/reactions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ kind, targetId, emoji }),

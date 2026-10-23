@@ -3,6 +3,7 @@ import { errorResponse } from "@/lib/errors";
 import { NON_CONNECTE, addReply, parseId } from "@/lib/forum";
 import { getSessionUserId } from "@/lib/session";
 import { limiteEcriture } from "@/lib/rate-limit";
+import { verifyCsrf, rotateCsrfToken } from "@/lib/csrf";
 
 type Contexte = { params: Promise<{ id: string }> };
 type CorpsReponse = Partial<{ corps: unknown; parentId: unknown }>;
@@ -16,6 +17,7 @@ export async function POST(request: Request, { params }: Contexte) {
     if (userId === null) {
       return NextResponse.json(NON_CONNECTE.body, { status: NON_CONNECTE.status });
     }
+    await verifyCsrf(request);
 
     const limite = await limiteEcriture(`replies:user:${userId}`, 20);
     if (!limite.ok) {
@@ -33,7 +35,9 @@ export async function POST(request: Request, { params }: Contexte) {
     const parentIdRaw = corps?.parentId;
     const parentId = parentIdRaw === undefined || parentIdRaw === null ? undefined : Number(parentIdRaw);
     const newReplyId = await addReply(postId, userId, String(corps?.corps ?? ""), parentId);
-    return NextResponse.json({ ok: true, postId, replyId: newReplyId }, { status: 201 });
+    const response = NextResponse.json({ ok: true, postId, replyId: newReplyId }, { status: 201 });
+    await rotateCsrfToken(response);
+    return response;
   } catch (erreur) {
     const { status, body } = errorResponse(erreur);
     return NextResponse.json(body, { status });

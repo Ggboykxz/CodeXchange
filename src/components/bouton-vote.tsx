@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { cn } from "@/lib/cn";
 import { RAYON } from "@/lib/design";
 import { useToast } from "./toast";
+import { fetchWithCsrf } from "@/lib/csrf-client";
 
 /**
  * Contrôleur de vote : ▲ score ▼.
@@ -59,7 +60,7 @@ export default function BoutonVote({
             : `Vote négatif enregistré. Score ${scoreOptimiste}.`,
       );
       try {
-        const r = await fetch(`/api/forum/${postId}/vote`, {
+        const r = await fetchWithCsrf(`/api/forum/${postId}/vote`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ direction }),

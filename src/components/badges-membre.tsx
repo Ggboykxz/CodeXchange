@@ -1,3 +1,4 @@
+import React from "react";
 import { calculerNiveau } from "@/lib/gamification";
 import { Icone } from "@/components/icones";
 
@@ -6,7 +7,8 @@ import { Icone } from "@/components/icones";
  * Présentation pure — s'affiche à côté du nom sur profil, annuaire, messages.
  */
 
-export function BadgeVerification() {
+/** Badge de vérification — coche verte. */
+function BadgeVerificationComponent() {
   return (
     <span
       title="Membre vérifié"
@@ -20,7 +22,7 @@ export function BadgeVerification() {
   );
 }
 
-export function BadgeNiveau({ karma }: { karma: number }) {
+function BadgeNiveauComponent({ karma }: { karma: number }) {
   const n = calculerNiveau(karma);
   return (
     <span
@@ -32,3 +34,9 @@ export function BadgeNiveau({ karma }: { karma: number }) {
     </span>
   );
 }
+
+export const BadgeVerification = React.memo(BadgeVerificationComponent);
+BadgeVerification.displayName = "BadgeVerification";
+
+export const BadgeNiveau = React.memo(BadgeNiveauComponent);
+BadgeNiveau.displayName = "BadgeNiveau";

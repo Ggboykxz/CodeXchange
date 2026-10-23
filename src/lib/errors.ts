@@ -14,7 +14,8 @@ export type Code =
   | "MENTOR_DUPLICATE"
   | "FORBIDDEN"
   | "RATE_LIMITED"
-  | "USER_BANNED";
+  | "USER_BANNED"
+  | "CSRF_INVALID";
 
 export type Status = 401 | 403 | 409 | 422 | 429;
 
@@ -28,6 +29,7 @@ export const STATUS_BY_CODE: Record<Code, Status> = {
   FORBIDDEN: 403,
   RATE_LIMITED: 429,
   USER_BANNED: 403,
+  CSRF_INVALID: 403,
 };
 
 /** Messages FR affichés à l'utilisateur (copy, pas des erreurs techniques). */
@@ -41,6 +43,7 @@ export const MESSAGE_FR: Record<Code, string> = {
   FORBIDDEN: "Vous n'êtes pas autorisé à effectuer cette action.",
   RATE_LIMITED: "Trop de tentatives. Réessayez dans quelques instants.",
   USER_BANNED: "Ce compte a été suspendu. Contactez un administrateur.",
+  CSRF_INVALID: "Requête invalide. Veuillez rafraîchir la page et réessayer.",
 };
 
 export class AppError extends Error {
