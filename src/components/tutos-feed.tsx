@@ -81,7 +81,7 @@ export function TutosFeed({ initialItems, totalPages, currentPage, locale }: Pro
     <>
       <ul className="flex flex-col gap-3">
         {items.map((tuto) => (
-          <li key={tuto.id} className="rounded-xl border border-cx-border bg-cx-card/50 transition hover:border-cx-primary/60 hover:bg-cx-muted/20">
+          <li key={tuto.id} className="rounded-xl border border-cx-border bg-cx-card/50 transition hover:border-cx-primary/60 hover:bg-cx-muted/20 hover:shadow-md">
             <Link href={`/tutos/${tuto.slug}`} className="block rounded-xl px-5 py-4">
               <h2 className="text-[15px] font-bold leading-5 text-cx-fg">{tuto.titre}</h2>
               {tuto.resume ? <p className="mt-1 text-sm text-cx-muted-fg">{tuto.resume}</p> : null}

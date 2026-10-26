@@ -35,7 +35,7 @@ function BlocCodeCopiable({ code, langage }: { code: string; langage: string }) 
           onClick={copier}
           aria-label="Copier le code"
           title="Copier le code"
-          className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-semibold text-cx-muted-fg transition-colors duration-150 hover:bg-cx-card hover:text-cx-fg"
+          className="inline-flex items-center gap-1 rounded-full px-1.5 py-1 text-[11px] font-semibold text-cx-muted-fg transition-colors duration-150 hover:bg-cx-card hover:text-cx-fg"
         >
           <IconeAnimee nom="copie" className="size-3" />
           Copier

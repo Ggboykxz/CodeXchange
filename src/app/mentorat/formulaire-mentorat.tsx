@@ -43,7 +43,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
         </p>
         <Link
           href="/connexion"
-          className="mt-3 inline-block rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          className="mt-3 inline-block rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           Se connecter pour demander un mentorat
         </Link>
@@ -146,7 +146,7 @@ export default function FormulaireMentorat({ mentors, connecte }: Props) {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
+          className="rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
         >
           {enCours ? "Envoi…" : "Envoyer la demande"}
         </button>

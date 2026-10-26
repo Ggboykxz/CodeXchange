@@ -168,7 +168,7 @@ export default function PanneauNav({ locale, theme, communautes, connecte, me }:
                   <Link
                     href="/forum/tags"
                     onClick={fermer}
-                    className="block rounded-lg px-3 py-2 pl-11 text-xs font-semibold text-cx-primary hover:bg-cx-muted"
+                    className="block rounded-full px-3 py-2 pl-11 text-xs font-semibold text-cx-primary hover:bg-cx-muted"
                   >
                     {t(locale, "nav.discover")} →
                   </Link>
@@ -188,14 +188,14 @@ export default function PanneauNav({ locale, theme, communautes, connecte, me }:
               <Link
                 href="/connexion"
                 onClick={fermer}
-                className="flex-1 rounded-lg border border-cx-border px-3 py-2 text-center text-sm font-medium text-cx-card-fg hover:bg-cx-muted"
+                className="flex-1 rounded-full border border-cx-border px-3 py-2 text-center text-sm font-medium text-cx-card-fg hover:bg-cx-muted"
               >
                 {t(locale, "nav.login")}
               </Link>
               <Link
                 href="/inscription"
                 onClick={fermer}
-                className="flex-1 rounded-lg bg-cx-primary px-3 py-2 text-center text-sm font-semibold text-cx-primary-fg hover:opacity-90 active:scale-[0.97]"
+                className="flex-1 rounded-full bg-cx-primary px-3 py-2 text-center text-sm font-semibold text-cx-primary-fg hover:opacity-90 active:scale-[0.97]"
               >
                 {t(locale, "nav.join")}
               </Link>

@@ -26,7 +26,7 @@ export default function BoutonPartager({ path, libelle = "Partager" }: { path: s
       type="button"
       onClick={() => void partager()}
       aria-label={copie ? "Copié !" : libelle}
-      className="inline-flex min-h-[36px] max-w-full cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg active:scale-[0.97]"
+      className="inline-flex min-h-[36px] max-w-full cursor-pointer items-center gap-1.5 rounded-full px-2 py-1 text-xs font-semibold text-cx-muted-fg transition hover:bg-cx-muted hover:text-cx-fg active:scale-[0.97]"
     >
       <Icone nom={copie ? "coche" : "partage"} className="size-4" />
       {/* Façon X : libellé sur desktop, icône seule (44px) sur mobile. */}

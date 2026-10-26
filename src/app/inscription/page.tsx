@@ -219,7 +219,7 @@ export default function PageInscription() {
         <button
           type="submit"
           disabled={enCours}
-          className="mt-2 min-h-[44px] rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60 active:scale-[0.97]"
+          className="mt-2 min-h-[44px] rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60 active:scale-[0.97]"
         >
           {enCours ? t(locale, "common.loading") : t(locale, "auth.register_submit")}
         </button>

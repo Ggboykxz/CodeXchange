@@ -68,7 +68,7 @@ export default function BoutonSondage({
               type="button"
               disabled={voted || enCours || !connecte}
               onClick={() => void voter(option.id)}
-              className={`relative overflow-hidden rounded-lg border px-4 py-2 text-left text-sm font-medium transition ${option.userVoted ? "border-cx-primary text-cx-primary" : "border-cx-border hover:bg-cx-muted"}`}
+              className={`relative overflow-hidden rounded-full border px-4 py-2 text-left text-sm font-medium transition ${option.userVoted ? "border-cx-primary text-cx-primary" : "border-cx-border hover:bg-cx-muted"}`}
             >
               <span className="absolute inset-y-0 left-0 bg-cx-primary/5" style={{ width: `${pourcent}%` }} />
               <span className="relative z-10 flex items-center justify-between gap-2">

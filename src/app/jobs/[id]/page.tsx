@@ -120,7 +120,7 @@ export default async function PageOffre({ params }: Props) {
           href={offre.lien}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-primary"
+          className="mt-3 inline-block rounded-full border border-cx-border px-4 py-2.5 font-medium hover:border-cx-primary"
         >
           {t(locale, "jobs.external_link")}
         </a>

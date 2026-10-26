@@ -31,7 +31,7 @@ export default function ActionsSignalement({ reportId }: Props) {
         type="button"
         onClick={() => traiter("TRAITE")}
         disabled={busy}
-        className="rounded-md bg-cx-destructive/5 px-2 py-1 text-xs font-semibold text-cx-destructive hover:bg-cx-destructive/20"
+        className="rounded-full bg-cx-destructive/5 px-2 py-1 text-xs font-semibold text-cx-destructive hover:bg-cx-destructive/20"
       >
         {t(locale, "admin.sanction")}
       </button>
@@ -39,7 +39,7 @@ export default function ActionsSignalement({ reportId }: Props) {
         type="button"
         onClick={() => traiter("REJETE")}
         disabled={busy}
-        className="rounded-md bg-cx-muted px-2 py-1 text-xs font-semibold text-cx-muted-fg hover:opacity-80"
+        className="rounded-full bg-cx-muted px-2 py-1 text-xs font-semibold text-cx-muted-fg hover:opacity-80"
       >
         {t(locale, "admin.reject")}
       </button>

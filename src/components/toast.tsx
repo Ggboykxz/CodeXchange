@@ -101,7 +101,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   toast.action?.onClick();
                   retirer(toast.id);
                 }}
-                className="shrink-0 rounded-md px-2 py-1 text-xs font-bold text-cx-primary hover:bg-cx-primary/5"
+                className="shrink-0 rounded-full px-2 py-1 text-xs font-bold text-cx-primary hover:bg-cx-primary/5"
               >
                 {toast.action.label}
               </button>
@@ -110,7 +110,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               type="button"
               onClick={() => retirer(toast.id)}
               aria-label="Fermer"
-              className="shrink-0 cursor-pointer rounded-md px-1 text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]"
+              className="shrink-0 cursor-pointer rounded-full px-1 text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]"
             >
               <IconeAnimee nom="fermer" className="size-4" />
             </button>

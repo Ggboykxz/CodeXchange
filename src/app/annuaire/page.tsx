@@ -45,7 +45,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
         </div>
         <Link
           href="/inscription"
-          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          className="rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           {t(locale, "nav.join")} · {t(locale, "directory.title")}
         </Link>
@@ -87,7 +87,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
         />
         <button
           type="submit"
-          className="min-h-[44px] rounded-lg border border-cx-border px-4 py-2 text-sm font-medium transition hover:border-cx-primary active:scale-[0.97]"
+          className="min-h-[44px] rounded-full border border-cx-border px-4 py-2 text-sm font-medium transition hover:border-cx-primary active:scale-[0.97]"
         >
           {t(locale, "directory.filter")}
         </button>
@@ -112,13 +112,13 @@ export default async function PageAnnuaire({ searchParams }: Props) {
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/annuaire"
-                  className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium"
+                  className="rounded-full border border-cx-border px-4 py-2 text-sm font-medium"
                 >
                   {t(locale, "directory.title")}
                 </Link>
                 <Link
                   href="/inscription"
-                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
+                  className="rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
                 >
                   {t(locale, "auth.register_link")}
                 </Link>
@@ -133,7 +133,7 @@ export default async function PageAnnuaire({ searchParams }: Props) {
               </p>
               <Link
                 href="/inscription"
-                className="mt-5 inline-block rounded-lg bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
+                className="mt-5 inline-block rounded-full bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
               >
                 Créer le premier profil
               </Link>

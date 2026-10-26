@@ -99,7 +99,7 @@ export default function FormulaireAvatar({ avatarActuel }: Props) {
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={busy}
-          className="rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-sm font-medium hover:bg-cx-muted disabled:opacity-60"
+          className="rounded-full border border-cx-border bg-cx-card px-4 py-2 text-sm font-medium hover:bg-cx-muted disabled:opacity-60"
         >
           Choisir une image
         </button>
@@ -108,7 +108,7 @@ export default function FormulaireAvatar({ avatarActuel }: Props) {
             type="button"
             onClick={supprimer}
             disabled={busy}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-cx-destructive hover:bg-cx-destructive/5 disabled:opacity-60"
+            className="rounded-full px-3 py-2 text-sm font-medium text-cx-destructive hover:bg-cx-destructive/5 disabled:opacity-60"
           >
             Supprimer
           </button>

@@ -41,7 +41,7 @@ export default function SelecteurTheme({ themeInitial }: { themeInitial: Theme }
           onClick={() => changer(valeur)}
           aria-pressed={theme === valeur}
           title={`${LIBELLES[valeur]} (${themeEffectif(valeur)})`}
-          className={`inline-flex min-h-[28px] cursor-pointer items-center gap-1 rounded-md px-2 py-0.5 text-xs font-bold transition ${
+          className={`inline-flex min-h-[28px] cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold transition ${
             theme === valeur ? "bg-cx-primary text-cx-primary-fg" : "text-cx-muted-fg hover:bg-cx-muted"
           }`}
         >

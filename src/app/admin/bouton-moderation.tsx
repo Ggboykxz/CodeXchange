@@ -34,7 +34,7 @@ export default function BoutonModeration({ type, id, label }: Props) {
         type="button"
         onClick={() => setConfirmation(true)}
         disabled={busy}
-        className="rounded-md px-2 py-1 text-xs font-medium text-cx-destructive transition hover:bg-cx-destructive/5 disabled:opacity-60"
+        className="rounded-full px-2 py-1 text-xs font-medium text-cx-destructive transition hover:bg-cx-destructive/5 disabled:opacity-60"
       >
         {t(locale, "admin.delete")}
       </button>

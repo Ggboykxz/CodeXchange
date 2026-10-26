@@ -138,13 +138,13 @@ export default function FormulaireProjet() {
         <button
           type="submit"
           disabled={enCours}
-          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
+          className="rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg disabled:opacity-60"
         >
           {enCours ? "Publication…" : "Lancer le projet"}
         </button>
         <Link
           href="/projets"
-          className="rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium"
+          className="rounded-full border border-cx-border px-4 py-2.5 text-sm font-medium"
         >
           Annuler
         </Link>

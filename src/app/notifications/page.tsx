@@ -60,7 +60,7 @@ export default async function PageNotifications({ searchParams }: { searchParams
           <form action="/api/notifications/tout-lire" method="post">
             <button
               type="submit"
-              className="rounded-lg border border-cx-border px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+              className="rounded-full border border-cx-border px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
             >
               {t(locale, "notifications.mark_all")}
             </button>
@@ -108,7 +108,7 @@ export default async function PageNotifications({ searchParams }: { searchParams
                         {notification.lien ? (
                           <Link
                             href={notification.lien}
-                            className="rounded-lg px-2 py-1 text-xs font-medium text-cx-primary hover:bg-cx-muted"
+                            className="rounded-full px-2 py-1 text-xs font-medium text-cx-primary hover:bg-cx-muted"
                           >
                             {t(locale, "notifications.see")}
                           </Link>
@@ -117,7 +117,7 @@ export default async function PageNotifications({ searchParams }: { searchParams
                           <form action={`/api/notifications/${notification.id}/lu`} method="post">
                             <button
                               type="submit"
-                              className="rounded-lg px-2 py-1 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted"
+                              className="rounded-full px-2 py-1 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted"
                             >
                               {t(locale, "notifications.mark_read")}
                             </button>

@@ -160,7 +160,7 @@ export default function ChampMarkdown({
             aria-keyshortcuts={bouton.raccourci ? `Control+${bouton.raccourci.slice(-1)} Meta+${bouton.raccourci.slice(-1)}` : undefined}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => appliquer(bouton.action)}
-            className="inline-flex size-9 items-center justify-center rounded-md text-sm text-cx-muted-fg transition-colors duration-150 hover:bg-cx-card hover:text-cx-fg"
+            className="inline-flex size-9 items-center justify-center rounded-full text-sm text-cx-muted-fg transition-colors duration-150 hover:bg-cx-card hover:text-cx-fg"
           >
             {bouton.contenu}
           </button>

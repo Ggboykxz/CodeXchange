@@ -39,7 +39,7 @@ export default function PageMotDePasseOublie() {
         <button
           type="submit"
           disabled={busy}
-          className="min-h-[44px] rounded-lg bg-cx-primary px-4 py-2.5 text-sm font-semibold text-cx-primary-fg transition disabled:opacity-60 active:scale-[0.97]"
+          className="min-h-[44px] rounded-full bg-cx-primary px-4 py-2.5 text-sm font-semibold text-cx-primary-fg transition disabled:opacity-60 active:scale-[0.97]"
         >
           Envoyer le lien
         </button>

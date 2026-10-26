@@ -116,7 +116,7 @@ export default function BoutonRepost({ postId, initial, connecte, variante = "en
           aria-pressed={etat.jeLaiReposte}
           className={cn(
             "inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 border px-3 py-2 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
-            RAYON.md,
+            RAYON.pill,
             etat.jeLaiReposte
               ? "border-cx-success/60 bg-cx-success/5 text-cx-success"
               : "border-cx-border bg-cx-card text-cx-card-fg hover:border-cx-success/60 hover:text-cx-success",
@@ -138,7 +138,7 @@ export default function BoutonRepost({ postId, initial, connecte, variante = "en
           onClick={copierLien}
           className={cn(
             "inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 border border-cx-border bg-cx-card px-3 py-2 text-xs font-semibold text-cx-card-fg transition hover:border-cx-primary/60 hover:text-cx-primary active:scale-[0.97]",
-            RAYON.md,
+            RAYON.pill,
           )}
         >
           {copie ? <Icone nom="copie" className="size-4" /> : <Icone nom="partage" className="size-4" />}

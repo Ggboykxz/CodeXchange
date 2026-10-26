@@ -45,7 +45,7 @@ export default async function PageEvenements({ searchParams }: Props) {
           </p>
           <Link
             href="/forum/nouveau"
-            className="mt-5 inline-block rounded-lg bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
+            className="mt-5 inline-block rounded-full bg-cx-accent px-5 py-2.5 text-sm font-semibold text-cx-accent-fg"
           >
             Annoncer un événement sur le forum
           </Link>

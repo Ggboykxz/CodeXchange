@@ -39,7 +39,7 @@ function LienExterne({ url, libelle }: { url: string; libelle: string }) {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block rounded-lg border border-cx-border px-4 py-2.5 text-sm font-medium hover:border-cx-primary"
+        className="inline-block rounded-full border border-cx-border px-4 py-2.5 text-sm font-medium hover:border-cx-primary"
       >
         {libelle} ↗
       </a>
@@ -129,7 +129,7 @@ export default async function PageMembre({ params }: Props) {
               />
               <Link
                 href={`/messagerie?with=${membre.id}`}
-                className="inline-flex min-h-[40px] items-center rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-xs font-semibold text-cx-card-fg hover:bg-cx-muted"
+                className="inline-flex min-h-[40px] items-center rounded-full border border-cx-border bg-cx-card px-4 py-2 text-xs font-semibold text-cx-card-fg hover:bg-cx-muted"
               >
                 {t(locale, "directory.message")}
               </Link>
@@ -220,7 +220,7 @@ export default async function PageMembre({ params }: Props) {
             ) : (
               <ul className="flex flex-col gap-3">
                 {publications.map((p) => (
-                  <li key={p.id} className="rounded-xl border border-cx-border bg-cx-card px-5 py-4 transition hover:border-cx-primary/60">
+                  <li key={p.id} className="rounded-xl border border-cx-border bg-cx-card px-5 py-4 transition hover:border-cx-primary/60 hover:shadow-md">
                     <Link href={`/forum/${p.id}`} className="block">
                       <h3 className="font-bold text-cx-fg hover:text-cx-primary">{p.titre}</h3>
                       <p className="mt-1 line-clamp-2 text-sm text-cx-muted-fg">

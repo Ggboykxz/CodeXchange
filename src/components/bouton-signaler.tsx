@@ -74,7 +74,7 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
                 aria-busy={busy}
               className={cn(
                 "min-h-[44px] cursor-pointer bg-cx-primary px-2 text-xs font-semibold text-cx-primary-fg active:scale-[0.97]",
-                RAYON.md,
+                RAYON.pill,
               )}
             >
               Envoyer
@@ -84,7 +84,7 @@ export default function BoutonSignaler({ kind, targetId, libelle = "Signaler" }:
               onClick={() => setOuvert(false)}
               className={cn(
                 "min-h-[44px] cursor-pointer px-2 text-xs text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97]",
-                RAYON.md,
+                RAYON.pill,
               )}
             >
               Annuler

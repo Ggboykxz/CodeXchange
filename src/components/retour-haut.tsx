@@ -21,7 +21,7 @@ export default function RetourHaut() {
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Retour en haut"
-      className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-6 z-30 rounded-full bg-cx-primary px-4 py-2 text-sm font-bold text-cx-primary-fg shadow-lg active:scale-[0.97]"
+      className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-6 z-30 rounded-full bg-cx-primary px-4 py-2 text-sm font-bold text-cx-primary-fg shadow-lg transition-transform duration-150 hover:scale-110 active:scale-[0.97]"
     >
       <IconeAnimee nom="haut" className="size-4" />
     </button>

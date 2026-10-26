@@ -66,7 +66,7 @@ export default function BoutonBloquer({ cibleId, bloqueInitialement, connecte }:
         aria-pressed={bloque}
         className={cn(
           "inline-flex min-h-[44px] cursor-pointer items-center border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
-          RAYON.md,
+          RAYON.pill,
           bloque
             ? "border-cx-destructive/60 bg-cx-destructive/5 text-cx-destructive"
             : "border-cx-border text-cx-muted-fg hover:border-cx-destructive/50 hover:text-cx-destructive",

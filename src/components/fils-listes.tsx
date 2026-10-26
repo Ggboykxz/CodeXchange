@@ -150,7 +150,7 @@ type JobLigne = {
 /** Rangée d'offre d'emploi (identique à la page 1 historique). */
 function RangJob({ offre, locale }: { offre: JobLigne; locale: Locale }) {
   return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60 hover:shadow-md">
       <Link href={`/jobs/${offre.id}`} className="block">
         <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">{offre.titre}</h2>
       </Link>
@@ -206,7 +206,7 @@ function BadgeStack({ technologie }: { technologie: string }) {
 /** Rangée de projet. */
 function RangProjet({ projet, locale }: { projet: ProjetLigne; locale: Locale }) {
   return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60 hover:shadow-md">
       <Link href={`/projets/${projet.id}`} className="block">
         <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">{projet.titre}</h2>
       </Link>
@@ -250,7 +250,7 @@ function RangMembre({ membre }: { membre: MembreLigne }) {
   const visibles = membre.stack.slice(0, 3);
   const restantes = membre.stack.length - visibles.length;
   return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60 hover:shadow-md">
       <Link href={`/membres/${membre.slug}`} className="flex items-start gap-4">
         <Avatar slug={membre.slug} nom={membre.nom} avatar={membre.avatar || undefined} />
         <div className="min-w-0">
@@ -334,7 +334,7 @@ function RangEvenement({
   const date = new Date(evenement.date);
   const passe = date.getTime() <= maintenant;
   return (
-    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60">
+    <li className="rounded-xl border border-cx-border px-5 py-4 transition hover:border-cx-primary/60 hover:shadow-md">
       <Link href={`/evenements/${evenement.id}`} className="block">
         <h2 className="text-lg font-semibold leading-snug hover:text-cx-primary">{evenement.titre}</h2>
       </Link>

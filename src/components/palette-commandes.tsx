@@ -213,7 +213,7 @@ export default function PaletteCommandes({ pleine = false, locale: localeProp }:
         className={
           pleine
             ? "flex w-full items-center gap-2 rounded-full border border-cx-border-fort bg-cx-muted/40 px-4 py-2.5 text-sm text-cx-muted-fg transition hover:border-cx-border hover:bg-cx-muted"
-            : "hidden items-center gap-2 rounded-lg border border-cx-border bg-cx-card px-3 py-2 text-sm text-cx-muted-fg transition hover:bg-cx-muted sm:inline-flex"
+            : "hidden items-center gap-2 rounded-full border border-cx-border bg-cx-card px-3 py-2 text-sm text-cx-muted-fg transition hover:bg-cx-muted sm:inline-flex"
         }
       >
         <Icone nom="recherche" className="size-4" />

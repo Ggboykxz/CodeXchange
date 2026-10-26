@@ -53,7 +53,7 @@ export default async function PageJobs({ searchParams }: Props) {
         </div>
         <Link
           href="/jobs/nouveau"
-          className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
+          className="rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg"
         >
           {t(locale, "jobs.new")}
         </Link>
@@ -113,7 +113,7 @@ export default async function PageJobs({ searchParams }: Props) {
         </select>
         <button
           type="submit"
-          className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-primary"
+          className="rounded-full border border-cx-border px-4 py-2 text-sm font-medium hover:border-cx-primary"
         >
           {t(locale, "jobs.filter")}
         </button>
@@ -160,13 +160,13 @@ export default async function PageJobs({ searchParams }: Props) {
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/jobs"
-                  className="rounded-lg border border-cx-border px-4 py-2 text-sm font-medium"
+                  className="rounded-full border border-cx-border px-4 py-2 text-sm font-medium"
                 >
                   {t(locale, "jobs.title")}
                 </Link>
                 <Link
                   href="/jobs/nouveau"
-                  className="rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
+                  className="rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg"
                 >
                   {t(locale, "jobs.new")}
                 </Link>
@@ -180,7 +180,7 @@ export default async function PageJobs({ searchParams }: Props) {
               </p>
               <Link
                 href="/jobs/nouveau"
-                className="mt-5 inline-block rounded-lg bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
+                className="mt-5 inline-block rounded-full bg-cx-primary px-5 py-2.5 text-sm font-semibold text-cx-primary-fg"
               >
                 {t(locale, "jobs.new")}
               </Link>

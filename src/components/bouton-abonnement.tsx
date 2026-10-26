@@ -39,7 +39,7 @@ export default function BoutonAbonnement({ tag, initial }: { tag: string; initia
       aria-busy={busy}
       className={cn(
         "inline-flex min-h-[44px] cursor-pointer items-center justify-center px-3 py-1 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
-        RAYON.md,
+        RAYON.pill,
         suivi
           ? "bg-cx-primary text-cx-primary-fg hover:opacity-90"
           : "border border-cx-border text-cx-muted-fg hover:bg-cx-muted",

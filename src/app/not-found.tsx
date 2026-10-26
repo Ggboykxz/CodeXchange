@@ -20,7 +20,7 @@ export default async function NotFound() {
         </Link>
         <Link
           href="/inscription"
-          className="min-h-[44px] rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition active:scale-[0.97]"
+          className="min-h-[44px] rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition active:scale-[0.97]"
         >
           {t(locale, "nav.join")}
         </Link>

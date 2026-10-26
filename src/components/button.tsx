@@ -23,7 +23,7 @@ export function Button({ children, variant = "primary", href, type = "button", c
   const variante = variant === "accent" ? "primary" : variant;
   const cls = cn(
     "inline-flex cursor-pointer items-center justify-center px-4 py-2.5 text-sm min-h-[44px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-cx-ring active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50",
-    RAYON.md,
+    RAYON.pill,
     variants[variante],
     className,
   );

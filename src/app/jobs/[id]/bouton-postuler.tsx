@@ -32,7 +32,7 @@ export default function BoutonPostuler({ jobId, connecte, dejaPostule, compteur 
         disabled
         aria-disabled="true"
         title="Connectez-vous pour postuler à cette offre"
-        className="cursor-not-allowed rounded-lg border border-cx-border px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
+        className="cursor-not-allowed rounded-full border border-cx-border px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
       >
         Postuler · connectez-vous
       </button>
@@ -47,7 +47,7 @@ export default function BoutonPostuler({ jobId, connecte, dejaPostule, compteur 
           disabled
           aria-disabled="true"
           title="Vous avez déjà postulé à cette offre"
-          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-primary/5 px-4 py-2.5 text-sm font-medium text-cx-primary"
+          className="cursor-not-allowed rounded-full border border-cx-accent bg-cx-primary/5 px-4 py-2.5 text-sm font-medium text-cx-primary"
         >
           <IconeAnimee nom="coche" className="mr-1 inline size-3" /> Candidature envoyée
         </button>
@@ -84,7 +84,7 @@ export default function BoutonPostuler({ jobId, connecte, dejaPostule, compteur 
         type="button"
         onClick={postulerOffre}
         disabled={enCours}
-        className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
+        className="rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
       >
         {enCours ? "Envoi…" : "Postuler"}
       </button>

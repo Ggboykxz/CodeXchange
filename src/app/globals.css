@@ -204,6 +204,20 @@ select {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Langage « pilule » : tous les boutons sont arrondis comme ceux du header.
+   Les utilitaires Tailwind (`rounded-*`) restent prioritaires. */
+button:not(:disabled),
+summary {
+  border-radius: 9999px;
+}
+
+/* Micro-interaction : soulèvement subtil au survol d'un contrôle actif
+   (écrasé par l'enfoncement ci-dessous, et neutralisé par
+   prefers-reduced-motion via la règle globale plus bas). */
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
 /* Retour tactile : léger enfoncement au clic sur les actions (pas les liens
    texte, ni les contrôles désactivés). Neutralisé par prefers-reduced-motion. */
 button:not(:disabled):active,

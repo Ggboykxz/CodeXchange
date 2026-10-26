@@ -62,7 +62,7 @@ export default function SelecteurModeLege() {
       onClick={basculer}
       aria-pressed={actif}
       title={actif ? "Désactiver le mode léger" : "Activer le mode léger (réseau lent)"}
-      className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center rounded-lg border border-cx-border px-2 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted"
+      className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center rounded-full border border-cx-border px-2 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted"
     >
       <Icone nom="parametres" className="size-4" />
       <span className="sr-only">Mode léger</span>

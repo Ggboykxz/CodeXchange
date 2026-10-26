@@ -52,7 +52,7 @@ export default function BoutonFavori({ kind, targetId, initial, connecte, varian
       className={cn(
         variante === "action"
           ? "inline-flex min-h-[33px] cursor-pointer items-center rounded-full px-2.5 py-1.5 text-xs font-semibold transition active:scale-[0.97] disabled:opacity-60"
-          : "inline-flex min-h-[44px] cursor-pointer items-center gap-1 rounded-lg border px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+          : "inline-flex min-h-[44px] cursor-pointer items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
         variante === "action"
           ? favori
             ? "text-cx-warning hover:bg-cx-warning/10"

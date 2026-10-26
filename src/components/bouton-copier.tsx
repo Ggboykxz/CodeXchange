@@ -25,7 +25,7 @@ export default function BoutonCopier({ url, libelle }: { url: string; libelle?: 
     <button
       type="button"
       onClick={() => void copier()}
-      className="inline-flex min-h-[44px] cursor-pointer items-center rounded-lg border border-cx-border bg-cx-card px-3 py-1.5 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex min-h-[44px] cursor-pointer items-center rounded-full border border-cx-border bg-cx-card px-3 py-1.5 text-xs font-medium text-cx-muted-fg transition hover:bg-cx-muted active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {copie ? (<><IconeAnimee nom="coche" className="mr-1 inline size-3" />Copié</>) : (libelle ?? "Copier le lien")}
     </button>

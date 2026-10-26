@@ -46,7 +46,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur, vari
         disabled
         aria-disabled="true"
         title="Connectez-vous pour liker ce sujet"
-        className="cursor-not-allowed rounded-lg border border-cx-border px-3 py-1.5 text-sm text-cx-muted-fg opacity-60"
+        className="cursor-not-allowed rounded-full border border-cx-border px-3 py-1.5 text-sm text-cx-muted-fg opacity-60"
       >
         <Icone nom="coeur" className={`size-4 ${aime ? "fill-current" : ""}`} /> {nombre} · connectez-vous pour liker
       </button>
@@ -108,7 +108,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur, vari
         disabled={enCours}
         aria-busy={enCours}
         aria-pressed={aime}
-        className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition disabled:opacity-60 ${
+        className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition disabled:opacity-60 ${
           aime
             ? "border-cx-accent bg-cx-accent/5 text-cx-accent"
             : "border-cx-border hover:border-cx-accent"

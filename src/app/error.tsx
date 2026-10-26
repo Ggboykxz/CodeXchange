@@ -29,13 +29,13 @@ export default function GlobalError({
         <button
           type="button"
           onClick={reset}
-          className="min-h-[44px] rounded-lg bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 active:scale-[0.97]"
+          className="min-h-[44px] rounded-full bg-cx-accent px-4 py-2 text-sm font-semibold text-cx-accent-fg transition hover:opacity-90 active:scale-[0.97]"
         >
           Réessayer
         </button>
         <Link
           href="/"
-          className="min-h-[44px] rounded-lg border border-cx-border bg-cx-card px-4 py-2 text-sm font-semibold transition hover:bg-cx-muted active:scale-[0.97]"
+          className="min-h-[44px] rounded-full border border-cx-border bg-cx-card px-4 py-2 text-sm font-semibold transition hover:bg-cx-muted active:scale-[0.97]"
         >
           Retour à l&apos;accueil
         </Link>

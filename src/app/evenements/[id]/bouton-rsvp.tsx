@@ -33,7 +33,7 @@ export default function BoutonRsvp({ eventId, connecte, dejaConfirme, compteur }
         disabled
         aria-disabled="true"
         title="Connectez-vous pour confirmer votre présence"
-        className="cursor-not-allowed rounded-lg border border-cx-border px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
+        className="cursor-not-allowed rounded-full border border-cx-border px-4 py-2.5 text-sm text-cx-muted-fg opacity-60"
       >
         Participer · connectez-vous
       </button>
@@ -48,7 +48,7 @@ export default function BoutonRsvp({ eventId, connecte, dejaConfirme, compteur }
           disabled
           aria-disabled="true"
           title="Vous avez déjà confirmé votre présence"
-          className="cursor-not-allowed rounded-lg border border-cx-accent bg-cx-primary/5 px-4 py-2.5 text-sm font-medium text-cx-primary"
+          className="cursor-not-allowed rounded-full border border-cx-accent bg-cx-primary/5 px-4 py-2.5 text-sm font-medium text-cx-primary"
         >
           <IconeAnimee nom="coche" className="mr-1 inline size-3" /> Présence confirmée
         </button>
@@ -85,7 +85,7 @@ export default function BoutonRsvp({ eventId, connecte, dejaConfirme, compteur }
         type="button"
         onClick={confirmerPresence}
         disabled={enCours}
-        className="rounded-lg bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
+        className="rounded-full bg-cx-accent px-4 py-2.5 text-sm font-semibold text-cx-accent-fg transition disabled:opacity-60"
       >
         {enCours ? "Envoi…" : "Je participe"}
       </button>

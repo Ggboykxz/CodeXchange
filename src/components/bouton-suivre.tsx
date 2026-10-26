@@ -70,7 +70,7 @@ export default function BoutonSuivre({ cibleId, initial, connecte }: Props) {
         aria-pressed={etat.jeLeSuis}
         className={cn(
           "inline-flex min-h-[44px] cursor-pointer items-center justify-center px-4 py-2 text-xs font-semibold transition disabled:opacity-60 active:scale-[0.97]",
-          RAYON.md,
+          RAYON.pill,
           etat.jeLeSuis
             ? "border border-cx-border bg-cx-muted text-cx-fg hover:border-cx-destructive/50 hover:text-cx-destructive"
             : "bg-cx-primary text-cx-primary-fg hover:opacity-90",

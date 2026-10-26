@@ -29,9 +29,9 @@ function buildHref(props: PaginationProps, p: number): string {
 }
 
 const CLASSES_LIEN =
-  "rounded-lg border border-cx-border px-3 py-1.5 text-sm font-medium hover:border-cx-primary";
+  "rounded-full border border-cx-border px-3 py-1.5 text-sm font-medium hover:border-cx-primary";
 const CLASSES_DESACTIVE =
-  "cursor-not-allowed rounded-lg border border-cx-muted/30 px-3 py-1.5 text-sm font-medium text-cx-muted-fg opacity-90";
+  "cursor-not-allowed rounded-full border border-cx-muted/30 px-3 py-1.5 text-sm font-medium text-cx-muted-fg opacity-90";
 
 export function Pagination(props: PaginationProps) {
   const { page, totalPages, className } = props;

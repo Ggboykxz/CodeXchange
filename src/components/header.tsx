@@ -72,7 +72,7 @@ export async function Header() {
                 <Link
                   href="/notifications"
                   title={t(locale, "nav.notifications")}
-                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg transition-transform duration-150 hover:scale-105 hover:bg-cx-muted hover:text-cx-fg"
+                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-cx-muted-fg transition-transform duration-150 hover:scale-105 hover:bg-cx-muted hover:text-cx-fg"
 
                 >
                   <Icone nom="notifications" className="size-5" />
@@ -86,7 +86,7 @@ export async function Header() {
                 <Link
                   href="/messagerie"
                   title={t(locale, "nav.messages")}
-                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-cx-muted-fg transition-transform duration-150 hover:scale-105 hover:bg-cx-muted hover:text-cx-fg"
+                  className="relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-cx-muted-fg transition-transform duration-150 hover:scale-105 hover:bg-cx-muted hover:text-cx-fg"
 
                 >
                   <Icone nom="messagerie" className="size-5" />
@@ -105,13 +105,13 @@ export async function Header() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/connexion"
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+                  className="rounded-full px-3 py-2 text-sm font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
                 >
                   {t(locale, "nav.login")}
                 </Link>
                 <Link
                   href="/inscription"
-                  className="hidden rounded-lg border border-cx-border px-3 py-2 text-sm font-semibold text-cx-fg transition hover:bg-cx-muted active:scale-[0.97] sm:inline-flex"
+                  className="hidden rounded-full border border-cx-border px-3 py-2 text-sm font-semibold text-cx-fg transition hover:bg-cx-muted active:scale-[0.97] sm:inline-flex"
                 >
                   {t(locale, "nav.join")}
                 </Link>

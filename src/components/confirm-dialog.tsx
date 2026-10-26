@@ -56,14 +56,14 @@ export function ConfirmDialog({
             ref={refAnnuler}
             type="button"
             onClick={annuler}
-            className="min-h-[44px] rounded-lg border border-cx-border px-3 py-2 text-sm font-medium transition outline-none hover:bg-cx-muted focus-visible:ring-2 focus-visible:ring-cx-primary/40 active:scale-[0.97]"
+            className="min-h-[44px] rounded-full border border-cx-border px-3 py-2 text-sm font-medium transition outline-none hover:bg-cx-muted focus-visible:ring-2 focus-visible:ring-cx-primary/40 active:scale-[0.97]"
           >
             {labelAnnuler}
           </button>
           <button
             type="button"
             onClick={confirmer}
-            className="min-h-[44px] rounded-lg bg-cx-destructive px-3 py-2 text-sm font-bold text-cx-destructive-fg transition outline-none focus-visible:ring-2 focus-visible:ring-cx-destructive/40 active:scale-[0.97]"
+            className="min-h-[44px] rounded-full bg-cx-destructive px-3 py-2 text-sm font-bold text-cx-destructive-fg transition outline-none focus-visible:ring-2 focus-visible:ring-cx-destructive/40 active:scale-[0.97]"
           >
             {labelConfirmer}
           </button>

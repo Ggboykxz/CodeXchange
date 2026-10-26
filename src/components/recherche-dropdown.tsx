@@ -31,7 +31,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
     <PopoverRacine>
       <PopoverDeclencheur
         aria-label={t(locale, "nav.search")}
-        className="rounded-lg p-2 text-cx-muted-fg transition hover:bg-cx-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cx-primary/50"
+        className="rounded-full p-2 text-cx-muted-fg transition hover:bg-cx-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cx-primary/50"
       >
         <Icone nom="recherche" className="size-5" />
       </PopoverDeclencheur>
@@ -50,7 +50,7 @@ export default function RechercheDropdown({ locale, suggestions }: Props) {
           <button
             type="submit"
             aria-label={t(locale, "nav.search")}
-            className="rounded-lg bg-cx-primary px-3 text-cx-primary-fg transition active:scale-[0.97]"
+            className="rounded-full bg-cx-primary px-3 text-cx-primary-fg transition active:scale-[0.97]"
           >
             <Icone nom="recherche" className="size-4" />
           </button>

@@ -109,7 +109,7 @@ function Noeud({ reply, replies, postId, userId, likes, connecte, locale }: { re
               onClick={() => setAfficheEnfants((v) => !v)}
               aria-expanded={afficheEnfants}
               aria-controls={`reponses-${reply.id}`}
-              className="rounded-md px-2 py-1 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
+              className="rounded-full px-2 py-1 text-xs font-medium text-cx-muted-fg hover:bg-cx-muted hover:text-cx-fg"
             >
               {afficheEnfants ? `▾ Masquer ${enfants.length} réponses` : `▸ Afficher ${enfants.length} réponses`}
             </button>

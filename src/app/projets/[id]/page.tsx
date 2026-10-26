@@ -124,7 +124,7 @@ export default async function PageProjet({ params }: Props) {
             href={projet.lien}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block rounded-lg border border-cx-border px-4 py-2.5 font-medium hover:border-cx-primary"
+            className="mt-3 inline-block rounded-full border border-cx-border px-4 py-2.5 font-medium hover:border-cx-primary"
           >
             Ouvrir le lien du projet ↗
           </a>

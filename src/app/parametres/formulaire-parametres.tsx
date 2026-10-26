@@ -154,7 +154,7 @@ export default function FormulaireParametres({ profil }: Props) {
           <button
             type="submit"
             disabled={busy}
-            className="self-start rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg disabled:opacity-60 active:scale-[0.97]"
+            className="self-start rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg disabled:opacity-60 active:scale-[0.97]"
           >
             Enregistrer
           </button>
@@ -185,7 +185,7 @@ export default function FormulaireParametres({ profil }: Props) {
           <button
             type="submit"
             disabled={busy}
-            className="self-start rounded-lg bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg disabled:opacity-60 active:scale-[0.97]"
+            className="self-start rounded-full bg-cx-primary px-4 py-2 text-sm font-semibold text-cx-primary-fg disabled:opacity-60 active:scale-[0.97]"
           >
             Changer
           </button>
@@ -200,7 +200,7 @@ export default function FormulaireParametres({ profil }: Props) {
         <button
           type="button"
           onClick={() => setConfirmationSuppression(true)}
-          className="rounded-lg bg-cx-destructive px-4 py-2 text-sm font-semibold text-cx-destructive-fg"
+          className="rounded-full bg-cx-destructive px-4 py-2 text-sm font-semibold text-cx-destructive-fg"
         >
           Supprimer mon compte
         </button>
