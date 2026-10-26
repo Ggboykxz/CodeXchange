@@ -15,6 +15,8 @@
 | `tests/forum-reponses.test.tsx` | 2 | Contrat de l'arbre de réponses : rendu imbriqué à 2 niveaux, état `likesReponses` restitué sans fonction |
 
 Total de la suite : **247 tests / 38 fichiers**, tous verts au 2026-10-16.
+
+- **Boutons pilule** : tous les `<button>` et les liens avec classe `rounded-*` ont désormais `border-radius: 9999px` via le style global `globals.css`. Les captures d’écran (voir `docs/screenshots/`) confirment le rayon `9999px` sur la home, les pages jobs et forum.
 - `tests/seed.test.ts` : verrouille l'absence de pages vides à la démo (messagerie 10 msgs dont 2 non lus, notifications 5 dont 2 non lues, 8 favoris couvrant les 6 types, 3 demandes mentorat, fil imbriqué).
 
 ## 2. Audité statiquement (recherche dans `src/`)

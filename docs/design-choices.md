@@ -23,7 +23,7 @@ Retenu le **2026-10-13** via le moteur du skill `ui-ux-pro-max` (requête « dev
 - **Plus Jakarta Sans** (400/500/600/700) pour titres **et** texte — une seule famille, chargement léger (~30 ko), mood friendly/modern/saas/clean/approachable/professional. Chargée avec `next/font/google` (variable `--font-plex`, `display: swap`).
 
 ## Rayons / ombres
-- Rayons : `rounded-xl` pour les cartes, `rounded-lg` pour les boutons, `rounded-full` pour les avatars/tags.
+- Rayons : `rounded-xl` pour les cartes, `rounded-full` pour les boutons (pilule), `rounded-full` pour les avatars/tags.
 - Ombre carte : `shadow-sm` en clair, aucune ombre en sombre (Borders only).
 - Transitions : 150–250 ms sur hover/focus.
 

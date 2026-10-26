@@ -1,5 +1,7 @@
 # CodeXchange
 
+![CI](https://github.com/Ggboykxz/CodeXchange/actions/workflows/ci.yml/badge.svg)
+
 **La plateforme africaine pour les développeurs — par les devs, pour les devs.**
 
 > 🏆 Projet de hackathon — démo prévue le **25 octobre 2026**.  
@@ -69,6 +71,13 @@ L'interface a été reprise sur une base de design system vérifiable :
   (contenu derrière le voile en `inert`).
 
 Preuves et checklist navigateur : [`docs/verification-ui.md`](docs/verification-ui.md).
+
+### Screenshots (nouvelle UI pilule)
+
+- Accueil : ![Accueil](docs/screenshots/home.png)
+- Forum : ![Forum](docs/screenshots/forum.png)
+- Boutons arrondis partout – rayon `9999px` (voir console du navigateur).
+
 
 ## Langue
 
