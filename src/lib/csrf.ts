@@ -23,23 +23,20 @@ function genererToken(): string {
 }
 
 /**
- * Récupère ou crée le token CSRF depuis le cookie.
+ * Récupère le token CSRF depuis le cookie.
  * À appeler dans les Server Components / layouts pour injecter le token dans le DOM.
+ *
+ * Next 16 : l'écriture du cookie est interdite dans les Server Components
+ * (`cookies().set()` → Server Functions / Route Handlers uniquement). Le
+ * cookie est créé par `src/proxy.ts` avant le rendu ; cette fonction reste
+ * en lecture seule. Si le cookie est absent (contexte hors requête, tests),
+ * un token frais est retourné sans écriture.
  */
 export async function getCsrfToken(): Promise<string> {
   const stockage = await cookies();
-  let token = stockage.get(COOKIE_CSRF)?.value;
-  if (!token) {
-    token = genererToken();
-    stockage.set(COOKIE_CSRF, token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 14, // 14 jours
-    });
-  }
-  return token;
+  const token = stockage.get(COOKIE_CSRF)?.value;
+  if (token) return token;
+  return genererToken();
 }
 
 /**

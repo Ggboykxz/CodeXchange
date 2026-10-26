@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Icone } from "@/components/icones";
+import { fetchWithCsrf } from "@/lib/csrf-client";
 
 type Props = {
   postId: number;
@@ -56,7 +57,7 @@ export default function BoutonLike({ postId, connecte, likedByMe, compteur, vari
     setEnCours(true);
     setErreur(null);
     try {
-      const reponse = await fetch(`/api/forum/${postId}/like`, { method: "POST" });
+      const reponse = await fetchWithCsrf(`/api/forum/${postId}/like`, { method: "POST" });
       const corps = (await reponse.json().catch(() => null)) as CorpsReponse | null;
       if (!reponse.ok) {
         setErreur(corps?.message ?? "Une erreur est survenue.");

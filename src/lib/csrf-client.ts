@@ -3,23 +3,27 @@
 /**
  * Utilitaires CSRF côté client.
  * Le token est récupéré depuis une balise `<meta name="csrf-token">` injectée par le layout.
+ *
+ * ⚠️ Le serveur fait TOURNER le token à chaque mutation réussie (`rotateCsrfToken`,
+ * `src/lib/csrf.ts`) et le layout met à jour la balise `<meta>` via `router.refresh()`
+ * après chaque mutation. Le token est donc relu depuis le `<meta>` à CHAQUE mutation :
+ * une mise en cache le rendrait obsolète dès la 1re mutation et provoquerait des
+ * `CSRF_INVALID` (403) sur toutes les suivantes, sans rechargement de la page.
  */
-
-let csrfTokenCache: string | null = null;
 
 export function getCsrfToken(): string | null {
   if (typeof window === "undefined") return null;
-  if (csrfTokenCache) return csrfTokenCache;
   const meta = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]');
-  if (meta) {
-    csrfTokenCache = meta.content;
-    return csrfTokenCache;
-  }
-  return null;
+  return meta ? meta.content : null;
 }
 
-export function clearCsrfTokenCache() {
-  csrfTokenCache = null;
+/**
+ * Conserve la compatibilité d'API (export historiquement utilisé pour invalider le
+ * cache). Sans effet aujourd'hui : le token n'est plus mis en cache, il est relu
+ * depuis le `<meta>` à chaque appel de `getCsrfToken()` / `fetchWithCsrf()`.
+ */
+export function clearCsrfTokenCache(): void {
+  /* Rien à invalider : le token est relu depuis le <meta> à chaque mutation. */
 }
 
 /**
