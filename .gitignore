@@ -27,4 +27,11 @@ coverage/
 npm-debug.log*
 
 # Skills UI/UX installees localement par uipro (non versionnees)
-.opencode/
+.opencode/*
+
+# Surface ECC du tri projet (agents DAILY, manifeste, router) — versionnee
+!.opencode/agents/
+!.opencode/ecc-sort.md
+!.opencode/skills/
+.opencode/skills/*
+!.opencode/skills/skill-library/
